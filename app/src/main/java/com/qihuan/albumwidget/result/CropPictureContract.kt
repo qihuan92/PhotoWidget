@@ -1,4 +1,4 @@
-package com.qihuan.albumwidget
+package com.qihuan.albumwidget.result
 
 import android.app.Activity
 import android.content.Context
@@ -7,6 +7,8 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContract
+import com.qihuan.albumwidget.R
+import com.qihuan.albumwidget.bean.CropPictureInfo
 import com.yalantis.ucrop.UCrop
 
 

@@ -6,6 +6,10 @@ import android.content.Context
 import android.graphics.*
 import android.provider.MediaStore
 import android.widget.RemoteViews
+import com.qihuan.albumwidget.bean.WidgetInfo
+import com.qihuan.albumwidget.db.AppDatabase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 
 
@@ -19,15 +23,29 @@ class AlbumWidget : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        // 更新微件
+        val widgetInfoDao = AppDatabase.getDatabase(context).widgetInfoDao()
+        GlobalScope.launch {
+            // 更新微件
+            for (appWidgetId in appWidgetIds) {
+                val widgetInfo = widgetInfoDao.selectById(appWidgetId)
+                if (widgetInfo != null) {
+                    updateAppWidget(context, appWidgetManager, widgetInfo)
+                }
+            }
+        }
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        val widgetInfoDao = AppDatabase.getDatabase(context).widgetInfoDao()
         // 删除一些缓存数据
-        for (appWidgetId in appWidgetIds) {
-            val outFile = File(context.filesDir, "widget_${appWidgetId}.png")
-            if (outFile.exists()) {
-                outFile.delete()
+        GlobalScope.launch {
+            for (appWidgetId in appWidgetIds) {
+                widgetInfoDao.deleteById(appWidgetId)
+
+                val outFile = File(context.filesDir, "widget_${appWidgetId}.png")
+                if (outFile.exists()) {
+                    outFile.delete()
+                }
             }
         }
     }
@@ -36,15 +54,14 @@ class AlbumWidget : AppWidgetProvider() {
 internal fun updateAppWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
-    appWidgetId: Int,
-    pictureInfo: PictureInfo
+    widgetInfo: WidgetInfo
 ) {
     val views = RemoteViews(context.packageName, R.layout.album_widget)
-    val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, pictureInfo.uri)
-    views.setImageViewBitmap(R.id.iv_picture, getRoundedBitmap(bitmap, pictureInfo.widgetRadius))
+    val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, widgetInfo.uri)
+    views.setImageViewBitmap(R.id.iv_picture, getRoundedBitmap(bitmap, widgetInfo.widgetRadius))
 
-    val horizontalPadding = pictureInfo.horizontalPadding
-    val verticalPadding = pictureInfo.verticalPadding
+    val horizontalPadding = widgetInfo.horizontalPadding
+    val verticalPadding = widgetInfo.verticalPadding
     views.setViewPadding(
         R.id.root,
         horizontalPadding,
@@ -52,7 +69,7 @@ internal fun updateAppWidget(
         horizontalPadding,
         verticalPadding
     )
-    appWidgetManager.updateAppWidget(appWidgetId, views)
+    appWidgetManager.updateAppWidget(widgetInfo.widgetId, views)
 }
 
 private fun getRoundedBitmap(bitmap: Bitmap, radius: Int): Bitmap {

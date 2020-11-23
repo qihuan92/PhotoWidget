@@ -7,9 +7,15 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.qihuan.albumwidget.bean.CropPictureInfo
+import com.qihuan.albumwidget.bean.WidgetInfo
 import com.qihuan.albumwidget.databinding.AlbumWidgetConfigureBinding
+import com.qihuan.albumwidget.db.AppDatabase
 import com.qihuan.albumwidget.ktx.dp
 import com.qihuan.albumwidget.ktx.viewBinding
+import com.qihuan.albumwidget.result.CropPictureContract
+import kotlinx.coroutines.launch
 import java.io.File
 
 /**
@@ -32,6 +38,10 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
                 binding.ivPicturePrev.tag = result
             }
         }
+
+    private val widgetInfoDao by lazy {
+        AppDatabase.getDatabase(this).widgetInfoDao()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,14 +81,20 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
                     .show()
                 return@setOnClickListener
             }
-            val uri = binding.ivPicturePrev.tag as Uri
 
-            // It is the responsibility of the configuration activity to update the app widget
-            val appWidgetManager = AppWidgetManager.getInstance(this)
-            updateAppWidget(
-                this, appWidgetManager, appWidgetId,
-                PictureInfo(uri, verticalPadding, horizontalPadding, widgetRadius)
+            val uri = binding.ivPicturePrev.tag as Uri
+            val widgetInfo = WidgetInfo(
+                appWidgetId, uri, verticalPadding, horizontalPadding, widgetRadius
             )
+            addWidget(widgetInfo)
+        }
+    }
+
+    private fun addWidget(widgetInfo: WidgetInfo) {
+        val appWidgetManager = AppWidgetManager.getInstance(this)
+        lifecycleScope.launch {
+            widgetInfoDao.save(widgetInfo)
+            updateAppWidget(this@AlbumWidgetConfigureActivity, appWidgetManager, widgetInfo)
 
             // Make sure we pass back the original appWidgetId
             val resultValue = Intent()

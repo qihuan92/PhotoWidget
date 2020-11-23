@@ -1,4 +1,4 @@
-package com.qihuan.albumwidget
+package com.qihuan.albumwidget.bean
 
 import android.net.Uri
 
