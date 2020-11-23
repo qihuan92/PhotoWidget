@@ -24,8 +24,9 @@ import java.io.File
  */
 class AlbumWidgetConfigureActivity : AppCompatActivity() {
 
-    private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private val binding by viewBinding(AlbumWidgetConfigureBinding::inflate)
+
+    private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
             val outFile = File(filesDir, "widget_${appWidgetId}.png")

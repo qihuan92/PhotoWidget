@@ -21,7 +21,7 @@ class CropPictureContract : ActivityResultContract<CropPictureInfo, Uri?>() {
     override fun createIntent(context: Context, input: CropPictureInfo): Intent {
         return UCrop.of(input.inUri, input.outUri)
             .withOptions(UCrop.Options().apply {
-                setStatusBarColor(context.getColor(R.color.purple_700))
+                setStatusBarColor(context.getColor(R.color.purple_500))
                 setToolbarWidgetColor(Color.WHITE)
                 setToolbarColor(context.getColor(R.color.purple_500))
                 setActiveControlsWidgetColor(context.getColor(R.color.purple_500))
