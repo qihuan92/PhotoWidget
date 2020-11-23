@@ -11,4 +11,13 @@
         android:id="@+id/iv_picture"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/iv_info"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_info"
+        android:layout_margin="5dp"/>
 </RelativeLayout>

@@ -13,6 +13,7 @@ import com.qihuan.albumwidget.bean.WidgetInfo
 import com.qihuan.albumwidget.databinding.AlbumWidgetConfigureBinding
 import com.qihuan.albumwidget.db.AppDatabase
 import com.qihuan.albumwidget.ktx.dp
+import com.qihuan.albumwidget.ktx.toDp
 import com.qihuan.albumwidget.ktx.viewBinding
 import com.qihuan.albumwidget.result.CropPictureContract
 import kotlinx.coroutines.launch
@@ -34,8 +35,7 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
     private val cropPicForResult =
         registerForActivityResult(CropPictureContract()) { result ->
             if (result != null) {
-                binding.ivPicturePrev.setImageURI(result)
-                binding.ivPicturePrev.tag = result
+                bindImage(result)
             }
         }
 
@@ -67,11 +67,20 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun bindView() {
+        lifecycleScope.launch {
+            val widgetInfo = widgetInfoDao.selectById(appWidgetId)
+            if (widgetInfo != null) {
+                bindImage(widgetInfo.uri)
+                bindRadius(widgetInfo.widgetRadius)
+                bindPadding(widgetInfo.verticalPadding, widgetInfo.horizontalPadding)
+            }
+        }
+
         binding.btnSelectPicture.setOnClickListener {
             selectPicForResult.launch("image/*")
         }
 
-        binding.btnAddWidget.setOnClickListener {
+        binding.btnConfirm.setOnClickListener {
             val verticalPadding = binding.sliderVerticalPadding.value.dp
             val horizontalPadding = binding.sliderHorizontalPadding.value.dp
             val widgetRadius = binding.sliderWidgetRadius.value.dp
@@ -88,6 +97,20 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
             )
             addWidget(widgetInfo)
         }
+    }
+
+    private fun bindImage(uri: Uri) {
+        binding.ivPicturePrev.setImageURI(uri)
+        binding.ivPicturePrev.tag = uri
+    }
+
+    private fun bindRadius(radius: Int) {
+        binding.sliderWidgetRadius.value = radius.toDp(this)
+    }
+
+    private fun bindPadding(verticalPadding: Int, horizontalPadding: Int) {
+        binding.sliderVerticalPadding.value = verticalPadding.toDp(this)
+        binding.sliderHorizontalPadding.value = horizontalPadding.toDp(this)
     }
 
     private fun addWidget(widgetInfo: WidgetInfo) {

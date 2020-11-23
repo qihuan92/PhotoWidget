@@ -1,9 +1,12 @@
 package com.qihuan.albumwidget
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.content.Intent
 import android.graphics.*
+import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.RemoteViews
 import com.qihuan.albumwidget.bean.WidgetInfo
@@ -56,6 +59,8 @@ internal fun updateAppWidget(
     appWidgetManager: AppWidgetManager,
     widgetInfo: WidgetInfo
 ) {
+    val widgetId = widgetInfo.widgetId
+
     val views = RemoteViews(context.packageName, R.layout.album_widget)
     val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, widgetInfo.uri)
     views.setImageViewBitmap(R.id.iv_picture, getRoundedBitmap(bitmap, widgetInfo.widgetRadius))
@@ -69,7 +74,16 @@ internal fun updateAppWidget(
         horizontalPadding,
         verticalPadding
     )
-    appWidgetManager.updateAppWidget(widgetInfo.widgetId, views)
+
+    val intent = Intent(context, AlbumWidgetConfigureActivity::class.java).apply {
+        val extras = Bundle().apply {
+            putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+        }
+        putExtras(extras)
+    }
+    views.setOnClickPendingIntent(R.id.iv_info, PendingIntent.getActivity(context, 0, intent, 0))
+
+    appWidgetManager.updateAppWidget(widgetId, views)
 }
 
 private fun getRoundedBitmap(bitmap: Bitmap, radius: Int): Bitmap {

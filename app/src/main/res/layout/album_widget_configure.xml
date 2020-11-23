@@ -143,11 +143,11 @@
         </com.google.android.material.card.MaterialCardView>
 
         <Button
-            android:id="@+id/btn_add_widget"
+            android:id="@+id/btn_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginTop="8dp"
-            android:text="@string/add_widget" />
+            android:text="@string/confirm" />
     </LinearLayout>
 </ScrollView>

@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">相册微件</string>
-    <string name="add_widget">添加微件</string>
     <string name="vertical_padding">上下边距</string>
     <string name="horizontal_padding">左右边距</string>
     <string name="widget_radius">组件圆角</string>
     <string name="select_picture">选择图片</string>
     <string name="warning_select_picture">请选择一张照片</string>
+    <string name="confirm">确定</string>
 </resources>
