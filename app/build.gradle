@@ -4,6 +4,21 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('../album_widget.jks')
+            storePassword 'zxc123'
+            keyAlias 'album_widget'
+            keyPassword 'zxc123'
+        }
+        release {
+            storeFile file('../album_widget.jks')
+            storePassword 'zxc123'
+            keyAlias 'album_widget'
+            keyPassword 'zxc123'
+        }
+    }
+
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
@@ -19,8 +34,12 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.debug
         }
     }
     compileOptions {
