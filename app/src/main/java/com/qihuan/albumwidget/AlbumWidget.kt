@@ -3,7 +3,8 @@ package com.qihuan.albumwidget
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.graphics.ImageDecoder
+import android.graphics.*
+import android.provider.MediaStore
 import android.widget.RemoteViews
 
 
@@ -32,9 +33,8 @@ internal fun updateAppWidget(
     pictureInfo: PictureInfo
 ) {
     val views = RemoteViews(context.packageName, R.layout.album_widget)
-    val source = ImageDecoder.createSource(context.contentResolver, pictureInfo.uri)
-    val bitmap = ImageDecoder.decodeBitmap(source)
-    views.setImageViewBitmap(R.id.iv_picture, bitmap)
+    val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, pictureInfo.uri)
+    views.setImageViewBitmap(R.id.iv_picture, getRoundedBitmap(bitmap, pictureInfo.widgetRadius))
 
     val horizontalPadding = pictureInfo.horizontalPadding
     val verticalPadding = pictureInfo.verticalPadding
@@ -46,4 +46,23 @@ internal fun updateAppWidget(
         verticalPadding
     )
     appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+
+private fun getRoundedBitmap(bitmap: Bitmap, radius: Int): Bitmap {
+    val radiusPx = radius.toFloat() * 2
+    val roundedBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+
+    val canvas = Canvas(roundedBitmap)
+    val paint = Paint()
+    paint.isAntiAlias = true
+
+    val rect = Rect(0, 0, bitmap.width, bitmap.height)
+    val rectF = RectF(rect)
+
+    canvas.drawARGB(0, 0, 0, 0)
+    canvas.drawRoundRect(rectF, radiusPx, radiusPx, paint)
+    paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+
+    canvas.drawBitmap(bitmap, rect, rect, paint)
+    return roundedBitmap
 }
