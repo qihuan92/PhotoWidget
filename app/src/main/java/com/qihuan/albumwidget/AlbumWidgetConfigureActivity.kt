@@ -2,6 +2,7 @@ package com.qihuan.albumwidget
 
 import android.appwidget.AppWidgetManager
 import android.content.Intent
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
@@ -101,7 +102,8 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun bindImage(uri: Uri) {
-        binding.ivPicturePrev.setImageURI(uri)
+        val source = ImageDecoder.createSource(contentResolver, uri)
+        binding.ivPicturePrev.setImageBitmap(ImageDecoder.decodeBitmap(source))
         binding.ivPicturePrev.tag = uri
     }
 
