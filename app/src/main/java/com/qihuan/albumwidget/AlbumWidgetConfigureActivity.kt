@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.qihuan.albumwidget.databinding.AlbumWidgetConfigureBinding
 import com.qihuan.albumwidget.ktx.dp
 import com.qihuan.albumwidget.ktx.viewBinding
+import java.io.File
 
 /**
  * The configuration screen for the [AlbumWidget] AppWidget.
@@ -20,7 +21,8 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
     private val binding by viewBinding(AlbumWidgetConfigureBinding::inflate)
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
-            cropPicForResult.launch(result)
+            val outFile = File(filesDir, "widget_${appWidgetId}.png")
+            cropPicForResult.launch(CropPictureInfo(result, Uri.fromFile(outFile)))
         }
 
     private val cropPicForResult =

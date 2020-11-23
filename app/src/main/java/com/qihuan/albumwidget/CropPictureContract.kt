@@ -7,7 +7,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContract
 import com.yalantis.ucrop.UCrop
-import java.io.File
 
 
 /**
@@ -15,9 +14,9 @@ import java.io.File
  * @author qi
  * @since 11/20/20
  */
-class CropPictureContract : ActivityResultContract<Uri, Uri?>() {
-    override fun createIntent(context: Context, input: Uri): Intent {
-        return UCrop.of(input, Uri.fromFile(File(context.cacheDir, "WidgetPicture.png")))
+class CropPictureContract : ActivityResultContract<CropPictureInfo, Uri?>() {
+    override fun createIntent(context: Context, input: CropPictureInfo): Intent {
+        return UCrop.of(input.inUri, input.outUri)
             .withOptions(UCrop.Options().apply {
                 setCompressionFormat(Bitmap.CompressFormat.PNG)
             })

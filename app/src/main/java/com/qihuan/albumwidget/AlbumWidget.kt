@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.*
 import android.provider.MediaStore
 import android.widget.RemoteViews
+import java.io.File
 
 
 /**
@@ -23,6 +24,12 @@ class AlbumWidget : AppWidgetProvider() {
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         // 删除一些缓存数据
+        for (appWidgetId in appWidgetIds) {
+            val outFile = File(context.filesDir, "widget_${appWidgetId}.png")
+            if (outFile.exists()) {
+                outFile.delete()
+            }
+        }
     }
 }
 
