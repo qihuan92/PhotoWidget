@@ -83,6 +83,7 @@ internal fun updateAppWidget(
             putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }
         putExtras(extras)
+        flags = Intent.FLAG_ACTIVITY_NO_HISTORY
     }
     views.setOnClickPendingIntent(R.id.iv_info, PendingIntent.getActivity(context, 0, intent, 0))
 

@@ -34,6 +34,7 @@
 
         <activity
             android:name=".AlbumWidgetConfigureActivity"
+            android:noHistory="true"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
