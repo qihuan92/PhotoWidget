@@ -1,8 +1,9 @@
 package com.qihuan.albumwidget
 
+import android.Manifest
+import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
@@ -29,15 +30,30 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private val selectPicForResult =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
-            val outFile = File(filesDir, "widget_${appWidgetId}.png")
-            cropPicForResult.launch(CropPictureInfo(result, Uri.fromFile(outFile)))
+        registerForActivityResult(ActivityResultContracts.GetContent()) {
+            if (it != null) {
+                val outFile = File(filesDir, "widget_${appWidgetId}.png")
+                cropPicForResult.launch(CropPictureInfo(it, Uri.fromFile(outFile)))
+            }
         }
 
     private val cropPicForResult =
-        registerForActivityResult(CropPictureContract()) { result ->
-            if (result != null) {
-                bindImage(result)
+        registerForActivityResult(CropPictureContract()) {
+            val radius = binding.sliderWidgetRadius.value.dp
+            if (it != null) {
+                bindImage(it, radius)
+            }
+        }
+
+    private val externalStorageResult =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it) {
+                val wallpaperManager = WallpaperManager.getInstance(this)
+                val wallpaperDrawable = wallpaperManager.drawable
+                binding.ivWallpaper.setImageDrawable(wallpaperDrawable)
+            } else {
+                binding.cardPicture.strokeColor = getColor(R.color.colorDivider)
+                binding.cardPicture.strokeWidth = 1F.dp
             }
         }
 
@@ -72,11 +88,13 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val widgetInfo = widgetInfoDao.selectById(appWidgetId)
             if (widgetInfo != null) {
-                bindImage(widgetInfo.uri)
+                bindImage(widgetInfo.uri, widgetInfo.widgetRadius)
                 bindRadius(widgetInfo.widgetRadius)
                 bindPadding(widgetInfo.verticalPadding, widgetInfo.horizontalPadding)
             }
         }
+
+        externalStorageResult.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
 
         binding.btnSelectPicture.setOnClickListener {
             selectPicForResult.launch("image/*")
@@ -87,13 +105,14 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
             val horizontalPadding = binding.sliderHorizontalPadding.value.dp
             val widgetRadius = binding.sliderWidgetRadius.value.dp
 
-            if (binding.ivPicturePrev.tag == null) {
+            val ivPicture = binding.layoutAlbumWidget.ivPicture
+            if (ivPicture.tag == null) {
                 Toast.makeText(this, getString(R.string.warning_select_picture), Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
 
-            val uri = binding.ivPicturePrev.tag as Uri
+            val uri = ivPicture.tag as Uri
             val widgetInfo = WidgetInfo(
                 appWidgetId, uri, verticalPadding, horizontalPadding, widgetRadius
             )
@@ -101,10 +120,10 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private fun bindImage(uri: Uri) {
-        val source = ImageDecoder.createSource(contentResolver, uri)
-        binding.ivPicturePrev.setImageBitmap(ImageDecoder.decodeBitmap(source))
-        binding.ivPicturePrev.tag = uri
+    private fun bindImage(uri: Uri, radius: Int) {
+        val ivPicture = binding.layoutAlbumWidget.ivPicture
+        ivPicture.setImageBitmap(createWidgetBitmap(this, uri, radius))
+        ivPicture.tag = uri
     }
 
     private fun bindRadius(radius: Int) {

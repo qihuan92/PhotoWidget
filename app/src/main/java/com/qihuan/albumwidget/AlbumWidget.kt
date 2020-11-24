@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.graphics.*
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.RemoteViews
@@ -62,8 +63,10 @@ internal fun updateAppWidget(
     val widgetId = widgetInfo.widgetId
 
     val views = RemoteViews(context.packageName, R.layout.album_widget)
-    val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, widgetInfo.uri)
-    views.setImageViewBitmap(R.id.iv_picture, getRoundedBitmap(bitmap, widgetInfo.widgetRadius))
+    views.setImageViewBitmap(
+        R.id.iv_picture,
+        createWidgetBitmap(context, widgetInfo.uri, widgetInfo.widgetRadius)
+    )
 
     val horizontalPadding = widgetInfo.horizontalPadding
     val verticalPadding = widgetInfo.verticalPadding
@@ -84,6 +87,11 @@ internal fun updateAppWidget(
     views.setOnClickPendingIntent(R.id.iv_info, PendingIntent.getActivity(context, 0, intent, 0))
 
     appWidgetManager.updateAppWidget(widgetId, views)
+}
+
+internal fun createWidgetBitmap(context: Context, uri: Uri, radius: Int): Bitmap {
+    val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+    return getRoundedBitmap(bitmap, radius)
 }
 
 private fun getRoundedBitmap(bitmap: Bitmap, radius: Int): Bitmap {
