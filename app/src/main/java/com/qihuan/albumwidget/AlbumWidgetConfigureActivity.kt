@@ -39,9 +39,8 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
 
     private val cropPicForResult =
         registerForActivityResult(CropPictureContract()) {
-            val radius = binding.sliderWidgetRadius.value.dp
             if (it != null) {
-                bindImage(it, radius)
+                bindImage(it)
             }
         }
 
@@ -88,9 +87,9 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val widgetInfo = widgetInfoDao.selectById(appWidgetId)
             if (widgetInfo != null) {
-                bindImage(widgetInfo.uri, widgetInfo.widgetRadius)
                 bindRadius(widgetInfo.widgetRadius)
                 bindPadding(widgetInfo.verticalPadding, widgetInfo.horizontalPadding)
+                bindImage(widgetInfo.uri)
             }
         }
 
@@ -105,25 +104,65 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
             val horizontalPadding = binding.sliderHorizontalPadding.value.dp
             val widgetRadius = binding.sliderWidgetRadius.value.dp
 
-            val ivPicture = binding.layoutAlbumWidget.ivPicture
-            if (ivPicture.tag == null) {
+            val uri = getUriFromWidget()
+            if (uri == null) {
                 Toast.makeText(this, getString(R.string.warning_select_picture), Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
 
-            val uri = ivPicture.tag as Uri
             val widgetInfo = WidgetInfo(
                 appWidgetId, uri, verticalPadding, horizontalPadding, widgetRadius
             )
             addWidget(widgetInfo)
         }
+
+        binding.sliderWidgetRadius.addOnChangeListener { _, _, _ ->
+            val uri = getUriFromWidget()
+            if (uri != null) {
+                bindImage(uri)
+            }
+        }
+
+        binding.sliderHorizontalPadding.addOnChangeListener { _, _, _ ->
+            val uri = getUriFromWidget()
+            if (uri != null) {
+                bindImage(uri)
+            }
+        }
+
+        binding.sliderVerticalPadding.addOnChangeListener { _, _, _ ->
+            val uri = getUriFromWidget()
+            if (uri != null) {
+                bindImage(uri)
+            }
+        }
     }
 
-    private fun bindImage(uri: Uri, radius: Int) {
+    private fun getUriFromWidget(): Uri? {
         val ivPicture = binding.layoutAlbumWidget.ivPicture
-        ivPicture.setImageBitmap(createWidgetBitmap(this, uri, radius))
+        if (ivPicture.tag == null) {
+            return null
+        }
+        return ivPicture.tag as Uri
+    }
+
+    private fun bindImage(uri: Uri) {
+        val verticalPadding = binding.sliderVerticalPadding.value.dp
+        val horizontalPadding = binding.sliderHorizontalPadding.value.dp
+        val widgetRadius = binding.sliderWidgetRadius.value.dp
+
+        val ivPicture = binding.layoutAlbumWidget.ivPicture
+        ivPicture.setImageBitmap(createWidgetBitmap(this, uri, widgetRadius))
         ivPicture.tag = uri
+
+        val widgetRoot = binding.layoutAlbumWidget.root
+        widgetRoot.setPadding(
+            horizontalPadding,
+            verticalPadding,
+            horizontalPadding,
+            verticalPadding
+        )
     }
 
     private fun bindRadius(radius: Int) {
