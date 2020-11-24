@@ -84,7 +84,7 @@ internal fun updateAppWidget(
         }
         putExtras(extras)
     }
-    views.setOnClickPendingIntent(R.id.iv_info, PendingIntent.getActivity(context, 0, intent, 0))
+    views.setOnClickPendingIntent(R.id.iv_info, PendingIntent.getActivity(context, widgetId, intent, 0))
 
     appWidgetManager.updateAppWidget(widgetId, views)
 }
