@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:configure="com.qihuan.photowidget.PhotoWidgetConfigureActivity"
-    android:initialKeyguardLayout="@layout/album_widget"
-    android:initialLayout="@layout/album_widget"
+    android:initialKeyguardLayout="@layout/photo_widget"
+    android:initialLayout="@layout/photo_widget"
     android:minWidth="110dp"
     android:minHeight="110dp"
     android:previewImage="@drawable/ic_launcher_foreground"

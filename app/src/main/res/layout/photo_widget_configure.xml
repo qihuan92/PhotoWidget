@@ -29,8 +29,8 @@
                     android:scaleType="centerCrop" />
 
                 <include
-                    android:id="@+id/layout_album_widget"
-                    layout="@layout/album_widget"
+                    android:id="@+id/layout_photo_widget"
+                    layout="@layout/photo_widget"
                     android:layout_width="300dp"
                     android:layout_height="300dp"
                     android:layout_gravity="center"

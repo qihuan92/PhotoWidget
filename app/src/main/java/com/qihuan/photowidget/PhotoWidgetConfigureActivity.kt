@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.WidgetInfo
-import com.qihuan.photowidget.databinding.AlbumWidgetConfigureBinding
+import com.qihuan.photowidget.databinding.PhotoWidgetConfigureBinding
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.toDp
@@ -22,11 +22,11 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 /**
- * The configuration screen for the [AlbumWidget] AppWidget.
+ * The configuration screen for the [PhotoWidgetProvider] AppWidget.
  */
 class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
-    private val binding by viewBinding(AlbumWidgetConfigureBinding::inflate)
+    private val binding by viewBinding(PhotoWidgetConfigureBinding::inflate)
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private val selectPicForResult =
@@ -140,7 +140,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun getUriFromWidget(): Uri? {
-        val ivPicture = binding.layoutAlbumWidget.ivPicture
+        val ivPicture = binding.layoutPhotoWidget.ivPicture
         if (ivPicture.tag == null) {
             return null
         }
@@ -152,11 +152,11 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         val horizontalPadding = binding.sliderHorizontalPadding.value.dp
         val widgetRadius = binding.sliderWidgetRadius.value.dp
 
-        val ivPicture = binding.layoutAlbumWidget.ivPicture
+        val ivPicture = binding.layoutPhotoWidget.ivPicture
         ivPicture.setImageBitmap(createWidgetBitmap(this, uri, widgetRadius))
         ivPicture.tag = uri
 
-        val widgetRoot = binding.layoutAlbumWidget.root
+        val widgetRoot = binding.layoutPhotoWidget.root
         widgetRoot.setPadding(
             horizontalPadding,
             verticalPadding,

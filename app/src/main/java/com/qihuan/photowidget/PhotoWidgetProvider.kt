@@ -21,7 +21,7 @@ import java.io.File
  * Implementation of App Widget functionality.
  * App Widget Configuration implemented in [PhotoWidgetConfigureActivity]
  */
-class AlbumWidget : AppWidgetProvider() {
+class PhotoWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -62,7 +62,7 @@ internal fun updateAppWidget(
 ) {
     val widgetId = widgetInfo.widgetId
 
-    val views = RemoteViews(context.packageName, R.layout.album_widget)
+    val views = RemoteViews(context.packageName, R.layout.photo_widget)
     views.setImageViewBitmap(
         R.id.iv_picture,
         createWidgetBitmap(context, widgetInfo.uri, widgetInfo.widgetRadius)

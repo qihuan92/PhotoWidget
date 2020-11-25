@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AlbumWidget">
+        android:theme="@style/Theme.PhotoWidget">
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -22,7 +22,7 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <receiver android:name="com.qihuan.photowidget.AlbumWidget">
+        <receiver android:name="com.qihuan.photowidget.PhotoWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
