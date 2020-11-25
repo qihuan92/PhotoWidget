@@ -5,7 +5,10 @@ import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -79,6 +82,10 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         AppDatabase.getDatabase(this).widgetInfoDao()
     }
 
+    private val vibrator by lazy {
+        getSystemService(Vibrator::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setResult(RESULT_CANCELED)
@@ -145,25 +152,40 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             addWidget(widgetInfo)
         }
 
-        binding.sliderWidgetRadius.addOnChangeListener { _, _, _ ->
+        binding.sliderWidgetRadius.addOnChangeListener { _, _, fromUser ->
+            if (fromUser) {
+                sliderVibrate()
+            }
             val uri = getUriFromWidget()
             if (uri != null) {
                 bindImage(uri)
             }
         }
 
-        binding.sliderHorizontalPadding.addOnChangeListener { _, _, _ ->
+        binding.sliderHorizontalPadding.addOnChangeListener { _, _, fromUser ->
+            if (fromUser) {
+                sliderVibrate()
+            }
             val uri = getUriFromWidget()
             if (uri != null) {
                 bindImage(uri)
             }
         }
 
-        binding.sliderVerticalPadding.addOnChangeListener { _, _, _ ->
+        binding.sliderVerticalPadding.addOnChangeListener { _, _, fromUser ->
+            if (fromUser) {
+                sliderVibrate()
+            }
             val uri = getUriFromWidget()
             if (uri != null) {
                 bindImage(uri)
             }
+        }
+    }
+
+    private fun sliderVibrate() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
         }
     }
 
