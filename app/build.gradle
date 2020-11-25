@@ -54,6 +54,12 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "photowidget_${variant.buildType.name}_${defaultConfig.versionName}.apk"
+        }
+    }
 }
 
 dependencies {
