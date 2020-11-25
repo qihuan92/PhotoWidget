@@ -78,9 +78,16 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setResult(RESULT_CANCELED)
         setContentView(binding.root)
+        handleIntent(intent)
+    }
 
-        // Find the widget id from the intent.
-        val extras = intent.extras
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        val extras = intent?.extras
         if (extras != null) {
             appWidgetId = extras.getInt(
                 AppWidgetManager.EXTRA_APPWIDGET_ID,
