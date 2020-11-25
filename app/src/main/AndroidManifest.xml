@@ -34,6 +34,7 @@
 
         <activity
             android:name="com.qihuan.photowidget.PhotoWidgetConfigureActivity"
+            android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
