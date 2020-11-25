@@ -152,7 +152,7 @@
                         android:layout_height="wrap_content"
                         android:stepSize="1"
                         android:valueFrom="0"
-                        android:valueTo="20" />
+                        android:valueTo="50" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
