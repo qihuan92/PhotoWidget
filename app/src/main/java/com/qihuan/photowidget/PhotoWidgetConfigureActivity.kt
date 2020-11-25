@@ -10,6 +10,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.WidgetInfo
@@ -19,13 +20,19 @@ import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.toDp
 import com.qihuan.photowidget.ktx.viewBinding
 import com.qihuan.photowidget.result.CropPictureContract
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
  * The configuration screen for the [PhotoWidgetProvider] AppWidget.
  */
 class PhotoWidgetConfigureActivity : AppCompatActivity() {
+
+    companion object {
+        const val TEMP_FILE_NAME = "temp.png"
+    }
 
     private val binding by viewBinding(PhotoWidgetConfigureBinding::inflate)
 
@@ -37,7 +44,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
             if (it != null) {
-                val outFile = File(filesDir, "widget_${appWidgetId}.png")
+                val outFile = File(cacheDir, TEMP_FILE_NAME)
                 cropPicForResult.launch(CropPictureInfo(it, Uri.fromFile(outFile)))
             }
         }
@@ -184,7 +191,11 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private fun addWidget(widgetInfo: WidgetInfo) {
         val appWidgetManager = AppWidgetManager.getInstance(this)
         lifecycleScope.launch {
+            val widgetId = widgetInfo.widgetId
+            val uri = saveWidgetPhoto(widgetId)
+            widgetInfo.uri = uri
             widgetInfoDao.save(widgetInfo)
+
             updateAppWidget(this@PhotoWidgetConfigureActivity, appWidgetManager, widgetInfo)
 
             // Make sure we pass back the original appWidgetId
@@ -192,6 +203,26 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             setResult(RESULT_OK, resultValue)
             finish()
+        }
+    }
+
+    private suspend fun saveWidgetPhoto(widgetId: Int): Uri {
+        return withContext(Dispatchers.IO) {
+            val tempFile = File(cacheDir, TEMP_FILE_NAME)
+            val widgetPhotoFile = File(filesDir, "widget_${widgetId}.png")
+            if (tempFile.exists()) {
+                tempFile.copyTo(widgetPhotoFile, overwrite = true)
+                tempFile.delete()
+            }
+            return@withContext widgetPhotoFile.toUri()
+        }
+    }
+
+    override fun finish() {
+        super.finish()
+        val tempFile = File(cacheDir, TEMP_FILE_NAME)
+        if (tempFile.exists()) {
+            tempFile.delete()
         }
     }
 }
