@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.qihuan.albumwidget">
+    package="com.qihuan.photowidget">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -22,18 +22,18 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <receiver android:name=".AlbumWidget">
+        <receiver android:name="com.qihuan.photowidget.AlbumWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/album_widget_info" />
+                android:resource="@xml/photo_widget_info" />
         </receiver>
 
         <activity
-            android:name=".AlbumWidgetConfigureActivity"
+            android:name="com.qihuan.photowidget.PhotoWidgetConfigureActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

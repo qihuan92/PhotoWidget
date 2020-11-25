@@ -1,12 +1,12 @@
-package com.qihuan.albumwidget.db
+package com.qihuan.photowidget.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.qihuan.albumwidget.bean.WidgetInfo
-import com.qihuan.albumwidget.bean.WidgetInfoDao
+import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.bean.WidgetInfoDao
 
 /**
  * AppDatabase

@@ -1,4 +1,4 @@
-package com.qihuan.albumwidget.db
+package com.qihuan.photowidget.db
 
 import android.net.Uri
 import androidx.room.TypeConverter

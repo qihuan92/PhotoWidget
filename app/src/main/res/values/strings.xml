@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">相册微件</string>
+    <string name="app_name">相片微件</string>
     <string name="vertical_padding">上下边距</string>
     <string name="horizontal_padding">左右边距</string>
     <string name="widget_radius">组件圆角</string>

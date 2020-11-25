@@ -1,4 +1,4 @@
-package com.qihuan.albumwidget
+package com.qihuan.photowidget
 
 import android.Manifest
 import android.app.WallpaperManager
@@ -10,21 +10,21 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.qihuan.albumwidget.bean.CropPictureInfo
-import com.qihuan.albumwidget.bean.WidgetInfo
-import com.qihuan.albumwidget.databinding.AlbumWidgetConfigureBinding
-import com.qihuan.albumwidget.db.AppDatabase
-import com.qihuan.albumwidget.ktx.dp
-import com.qihuan.albumwidget.ktx.toDp
-import com.qihuan.albumwidget.ktx.viewBinding
-import com.qihuan.albumwidget.result.CropPictureContract
+import com.qihuan.photowidget.bean.CropPictureInfo
+import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.databinding.AlbumWidgetConfigureBinding
+import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.ktx.toDp
+import com.qihuan.photowidget.ktx.viewBinding
+import com.qihuan.photowidget.result.CropPictureContract
 import kotlinx.coroutines.launch
 import java.io.File
 
 /**
  * The configuration screen for the [AlbumWidget] AppWidget.
  */
-class AlbumWidgetConfigureActivity : AppCompatActivity() {
+class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
     private val binding by viewBinding(AlbumWidgetConfigureBinding::inflate)
 
@@ -178,7 +178,7 @@ class AlbumWidgetConfigureActivity : AppCompatActivity() {
         val appWidgetManager = AppWidgetManager.getInstance(this)
         lifecycleScope.launch {
             widgetInfoDao.save(widgetInfo)
-            updateAppWidget(this@AlbumWidgetConfigureActivity, appWidgetManager, widgetInfo)
+            updateAppWidget(this@PhotoWidgetConfigureActivity, appWidgetManager, widgetInfo)
 
             // Make sure we pass back the original appWidgetId
             val resultValue = Intent()

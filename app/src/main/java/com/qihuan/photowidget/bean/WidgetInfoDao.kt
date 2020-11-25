@@ -1,4 +1,4 @@
-package com.qihuan.albumwidget.bean
+package com.qihuan.photowidget.bean
 
 import androidx.room.Dao
 import androidx.room.Insert

@@ -1,4 +1,4 @@
-package com.qihuan.albumwidget
+package com.qihuan.photowidget
 
 import org.junit.Test
 

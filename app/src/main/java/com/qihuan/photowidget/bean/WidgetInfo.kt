@@ -1,4 +1,4 @@
-package com.qihuan.albumwidget.bean
+package com.qihuan.photowidget.bean
 
 import android.net.Uri
 import androidx.room.Entity

@@ -1,4 +1,4 @@
-package com.qihuan.albumwidget
+package com.qihuan.photowidget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -10,8 +10,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.RemoteViews
-import com.qihuan.albumwidget.bean.WidgetInfo
-import com.qihuan.albumwidget.db.AppDatabase
+import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.db.AppDatabase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -19,7 +19,7 @@ import java.io.File
 
 /**
  * Implementation of App Widget functionality.
- * App Widget Configuration implemented in [AlbumWidgetConfigureActivity]
+ * App Widget Configuration implemented in [PhotoWidgetConfigureActivity]
  */
 class AlbumWidget : AppWidgetProvider() {
     override fun onUpdate(
@@ -78,7 +78,7 @@ internal fun updateAppWidget(
         verticalPadding
     )
 
-    val intent = Intent(context, AlbumWidgetConfigureActivity::class.java).apply {
+    val intent = Intent(context, PhotoWidgetConfigureActivity::class.java).apply {
         val extras = Bundle().apply {
             putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }

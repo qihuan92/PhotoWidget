@@ -1,4 +1,4 @@
-package com.qihuan.albumwidget.ktx
+package com.qihuan.photowidget.ktx
 
 import android.content.Context
 import android.content.res.Resources
