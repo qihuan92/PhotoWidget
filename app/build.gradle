@@ -7,16 +7,16 @@ plugins {
 android {
     signingConfigs {
         debug {
-            storeFile file('../album_widget.jks')
-            storePassword 'zxc123'
-            keyAlias 'album_widget'
-            keyPassword 'zxc123'
+            storeFile file('../photo_widget.jks')
+            storePassword '123456'
+            keyAlias 'photo_widget'
+            keyPassword '123456'
         }
         release {
-            storeFile file('../album_widget.jks')
-            storePassword 'zxc123'
-            keyAlias 'album_widget'
-            keyPassword 'zxc123'
+            storeFile file('../photo_widget.jks')
+            storePassword '123456'
+            keyAlias 'photo_widget'
+            keyPassword '123456'
         }
     }
 
