@@ -135,6 +135,8 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         }
 
         binding.btnConfirm.setOnClickListener {
+            doneEffect()
+
             val verticalPadding = binding.sliderVerticalPadding.value.dp
             val horizontalPadding = binding.sliderHorizontalPadding.value.dp
             val widgetRadius = binding.sliderWidgetRadius.value.dp
@@ -154,7 +156,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
         binding.sliderWidgetRadius.addOnChangeListener { _, _, fromUser ->
             if (fromUser) {
-                sliderVibrate()
+                sliderEffect()
             }
             val uri = getUriFromWidget()
             if (uri != null) {
@@ -164,7 +166,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
         binding.sliderHorizontalPadding.addOnChangeListener { _, _, fromUser ->
             if (fromUser) {
-                sliderVibrate()
+                sliderEffect()
             }
             val uri = getUriFromWidget()
             if (uri != null) {
@@ -174,7 +176,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
         binding.sliderVerticalPadding.addOnChangeListener { _, _, fromUser ->
             if (fromUser) {
-                sliderVibrate()
+                sliderEffect()
             }
             val uri = getUriFromWidget()
             if (uri != null) {
@@ -183,7 +185,13 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private fun sliderVibrate() {
+    private fun sliderEffect() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
+        }
+    }
+
+    private fun doneEffect() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
         }
