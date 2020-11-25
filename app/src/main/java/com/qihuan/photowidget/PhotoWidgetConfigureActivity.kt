@@ -192,7 +192,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         val appWidgetManager = AppWidgetManager.getInstance(this)
         lifecycleScope.launch {
             val widgetId = widgetInfo.widgetId
-            val uri = saveWidgetPhoto(widgetId)
+            val uri = saveWidgetPhotoFile(widgetId)
             widgetInfo.uri = uri
             widgetInfoDao.save(widgetInfo)
 
@@ -206,7 +206,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun saveWidgetPhoto(widgetId: Int): Uri {
+    private suspend fun saveWidgetPhotoFile(widgetId: Int): Uri {
         return withContext(Dispatchers.IO) {
             val tempFile = File(cacheDir, TEMP_FILE_NAME)
             val widgetPhotoFile = File(filesDir, "widget_${widgetId}.png")
