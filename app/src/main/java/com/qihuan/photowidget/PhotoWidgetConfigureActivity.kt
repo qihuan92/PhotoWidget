@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,6 +33,10 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
     companion object {
         const val TEMP_FILE_NAME = "temp.png"
+    }
+
+    private enum class UIState {
+        LOADING, SHOW_CONTENT
     }
 
     private val binding by viewBinding(PhotoWidgetConfigureBinding::inflate)
@@ -106,12 +111,14 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
     private fun bindView() {
         lifecycleScope.launch {
+            changeUIState(UIState.LOADING)
             val widgetInfo = widgetInfoDao.selectById(appWidgetId)
             if (widgetInfo != null) {
                 bindRadius(widgetInfo.widgetRadius)
                 bindPadding(widgetInfo.verticalPadding, widgetInfo.horizontalPadding)
                 bindImage(widgetInfo.uri)
             }
+            changeUIState(UIState.SHOW_CONTENT)
         }
 
         externalStorageResult.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -156,6 +163,21 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             val uri = getUriFromWidget()
             if (uri != null) {
                 bindImage(uri)
+            }
+        }
+    }
+
+    private fun changeUIState(uiState: UIState) {
+        when (uiState) {
+            UIState.LOADING -> {
+                binding.layoutInfo.visibility = View.GONE
+                binding.loadingView.visibility = View.VISIBLE
+            }
+            UIState.SHOW_CONTENT -> {
+                binding.layoutInfo.visibility = View.VISIBLE
+                binding.layoutInfo.scheduleLayoutAnimation()
+
+                binding.loadingView.visibility = View.GONE
             }
         }
     }
