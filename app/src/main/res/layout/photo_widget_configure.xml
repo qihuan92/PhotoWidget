@@ -19,7 +19,6 @@
                 android:id="@+id/card_picture"
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
-                android:layoutAnimation="@anim/layout_anim_fail_down"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="0dp"
                 app:cardPreventCornerOverlap="false">

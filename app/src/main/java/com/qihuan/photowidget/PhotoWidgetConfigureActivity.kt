@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +30,10 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private val binding by viewBinding(PhotoWidgetConfigureBinding::inflate)
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+    private val failAnimation by lazy {
+        AnimationUtils.loadAnimation(this, R.anim.item_anim_fall_down)
+    }
+
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
             if (it != null) {
@@ -40,6 +45,8 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private val cropPicForResult =
         registerForActivityResult(CropPictureContract()) {
             if (it != null) {
+                val widgetLayout = binding.layoutPhotoWidget.root
+                widgetLayout.startAnimation(failAnimation)
                 bindImage(it)
             }
         }
