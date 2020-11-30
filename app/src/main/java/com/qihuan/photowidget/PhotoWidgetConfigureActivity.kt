@@ -11,10 +11,14 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.core.text.buildSpannedString
+import androidx.core.text.italic
+import androidx.core.text.scale
 import androidx.lifecycle.lifecycleScope
 import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.WidgetInfo
@@ -154,7 +158,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             addWidget(widgetInfo)
         }
 
-        binding.sliderWidgetRadius.addOnChangeListener { _, _, fromUser ->
+        binding.sliderWidgetRadius.addOnChangeListener { _, value, fromUser ->
             if (fromUser) {
                 sliderEffect()
             }
@@ -162,9 +166,14 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             if (uri != null) {
                 bindImage(uri)
             }
+            setTitleAndProp(
+                binding.tvWidgetRadius,
+                getString(R.string.widget_radius),
+                value
+            )
         }
 
-        binding.sliderHorizontalPadding.addOnChangeListener { _, _, fromUser ->
+        binding.sliderHorizontalPadding.addOnChangeListener { _, value, fromUser ->
             if (fromUser) {
                 sliderEffect()
             }
@@ -172,9 +181,14 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             if (uri != null) {
                 bindImage(uri)
             }
+            setTitleAndProp(
+                binding.tvHorizontalPadding,
+                getString(R.string.horizontal_padding),
+                value
+            )
         }
 
-        binding.sliderVerticalPadding.addOnChangeListener { _, _, fromUser ->
+        binding.sliderVerticalPadding.addOnChangeListener { _, value, fromUser ->
             if (fromUser) {
                 sliderEffect()
             }
@@ -182,6 +196,18 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             if (uri != null) {
                 bindImage(uri)
             }
+            setTitleAndProp(
+                binding.tvVerticalPadding,
+                getString(R.string.vertical_padding),
+                value
+            )
+        }
+    }
+
+    private fun setTitleAndProp(textView: TextView, title: String, value: Float) {
+        textView.text = buildSpannedString {
+            append(title)
+            scale(0.8F) { italic { append(" ${value.toInt()} dp ") } }
         }
     }
 

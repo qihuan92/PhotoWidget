@@ -69,6 +69,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_vertical_padding"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
@@ -104,6 +105,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_horizontal_padding"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
@@ -139,6 +141,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/tv_widget_radius"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
