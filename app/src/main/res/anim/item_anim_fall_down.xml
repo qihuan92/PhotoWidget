@@ -2,18 +2,16 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:duration="@android:integer/config_longAnimTime">
     <translate
-        android:fromXDelta="5%"
         android:fromYDelta="10%"
         android:interpolator="@android:anim/decelerate_interpolator"
-        android:toXDelta="0"
-        android:toYDelta="0" />
+        android:toXDelta="0" />
     <alpha
-        android:fromAlpha="0"
+        android:fromAlpha="0.5"
         android:interpolator="@android:anim/decelerate_interpolator"
         android:toAlpha="1" />
     <scale
-        android:fromXScale="105%"
-        android:fromYScale="105%"
+        android:fromXScale="130%"
+        android:fromYScale="130%"
         android:interpolator="@android:anim/decelerate_interpolator"
         android:pivotX="50%"
         android:pivotY="50%"
