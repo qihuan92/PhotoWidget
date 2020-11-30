@@ -187,7 +187,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
     private fun sliderEffect() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
+            vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK))
         }
     }
 
