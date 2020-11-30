@@ -6,8 +6,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
+import android.util.TypedValue
 import androidx.activity.result.contract.ActivityResultContract
-import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.CropPictureInfo
 import com.yalantis.ucrop.UCrop
 
@@ -21,10 +21,14 @@ class CropPictureContract : ActivityResultContract<CropPictureInfo, Uri?>() {
     override fun createIntent(context: Context, input: CropPictureInfo): Intent {
         return UCrop.of(input.inUri, input.outUri)
             .withOptions(UCrop.Options().apply {
-                setStatusBarColor(context.getColor(R.color.purple_500))
+                val value = TypedValue()
+                context.theme.resolveAttribute(android.R.attr.colorPrimary, value, true)
+                val mainColor = value.data
+
+                setStatusBarColor(mainColor)
                 setToolbarWidgetColor(Color.WHITE)
-                setToolbarColor(context.getColor(R.color.purple_500))
-                setActiveControlsWidgetColor(context.getColor(R.color.purple_500))
+                setToolbarColor(mainColor)
+                setActiveControlsWidgetColor(mainColor)
                 setCompressionFormat(Bitmap.CompressFormat.PNG)
             })
             .withMaxResultSize(1000, 1000)
