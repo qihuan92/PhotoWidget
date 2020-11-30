@@ -30,6 +30,7 @@ class CropPictureContract : ActivityResultContract<CropPictureInfo, Uri?>() {
                 setToolbarColor(mainColor)
                 setActiveControlsWidgetColor(mainColor)
                 setCompressionFormat(Bitmap.CompressFormat.PNG)
+                setFreeStyleCropEnabled(true)
             })
             .withMaxResultSize(1000, 1000)
             .getIntent(context)
