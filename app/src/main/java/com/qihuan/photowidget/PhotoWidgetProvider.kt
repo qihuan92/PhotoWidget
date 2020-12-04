@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.widget.RemoteViews
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.ktx.dp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -65,11 +66,11 @@ internal fun updateAppWidget(
     val views = RemoteViews(context.packageName, R.layout.photo_widget)
     views.setImageViewBitmap(
         R.id.iv_picture,
-        createWidgetBitmap(context, widgetInfo.uri, widgetInfo.widgetRadius)
+        createWidgetBitmap(context, widgetInfo.uri, widgetInfo.widgetRadius.dp)
     )
 
-    val horizontalPadding = widgetInfo.horizontalPadding
-    val verticalPadding = widgetInfo.verticalPadding
+    val horizontalPadding = widgetInfo.horizontalPadding.dp
+    val verticalPadding = widgetInfo.verticalPadding.dp
     views.setViewPadding(
         R.id.root,
         horizontalPadding,

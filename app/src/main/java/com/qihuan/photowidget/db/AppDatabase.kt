@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.bean.WidgetInfoDao
+import com.qihuan.photowidget.db.migration.MigrationFor1To2
 
 /**
  * AppDatabase
@@ -17,7 +18,7 @@ import com.qihuan.photowidget.bean.WidgetInfoDao
     entities = [
         WidgetInfo::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -39,6 +40,8 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "photo_widget"
+                ).addMigrations(
+                    MigrationFor1To2(context)
                 ).build()
                 INSTANCE = instance
                 return instance

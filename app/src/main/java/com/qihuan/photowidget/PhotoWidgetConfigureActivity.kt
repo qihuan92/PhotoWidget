@@ -26,7 +26,6 @@ import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.databinding.PhotoWidgetConfigureBinding
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.toDp
 import com.qihuan.photowidget.ktx.viewBinding
 import com.qihuan.photowidget.result.CropPictureContract
 import kotlinx.coroutines.Dispatchers
@@ -155,9 +154,9 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         binding.btnConfirm.setOnClickListener {
             doneEffect()
 
-            val verticalPadding = binding.sliderVerticalPadding.value.dp
-            val horizontalPadding = binding.sliderHorizontalPadding.value.dp
-            val widgetRadius = binding.sliderWidgetRadius.value.dp
+            val verticalPadding = binding.sliderVerticalPadding.value
+            val horizontalPadding = binding.sliderHorizontalPadding.value
+            val widgetRadius = binding.sliderWidgetRadius.value
 
             val uri = getUriFromWidget()
             if (uri == null) {
@@ -278,13 +277,13 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         )
     }
 
-    private fun bindRadius(radius: Int) {
-        binding.sliderWidgetRadius.value = radius.toDp(this)
+    private fun bindRadius(radius: Float) {
+        binding.sliderWidgetRadius.value = radius
     }
 
-    private fun bindPadding(verticalPadding: Int, horizontalPadding: Int) {
-        binding.sliderVerticalPadding.value = verticalPadding.toDp(this)
-        binding.sliderHorizontalPadding.value = horizontalPadding.toDp(this)
+    private fun bindPadding(verticalPadding: Float, horizontalPadding: Float) {
+        binding.sliderVerticalPadding.value = verticalPadding
+        binding.sliderHorizontalPadding.value = horizontalPadding
     }
 
     private fun addWidget(widgetInfo: WidgetInfo) {

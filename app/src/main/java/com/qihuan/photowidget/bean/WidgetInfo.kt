@@ -14,7 +14,7 @@ data class WidgetInfo(
     @PrimaryKey
     val widgetId: Int,
     var uri: Uri,
-    val verticalPadding: Int,
-    val horizontalPadding: Int,
-    val widgetRadius: Int,
+    val verticalPadding: Float,
+    val horizontalPadding: Float,
+    val widgetRadius: Float,
 )
