@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
@@ -50,7 +51,20 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private val failAnimation by lazy {
-        AnimationUtils.loadAnimation(this, R.anim.item_anim_fall_down)
+        val animation = AnimationUtils.loadAnimation(this, R.anim.item_anim_fall_down)
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                binding.btnSelectPicture.visibility = View.GONE
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                binding.btnSelectPicture.show()
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
+        })
+        animation
     }
 
     private val selectPicForResult =
