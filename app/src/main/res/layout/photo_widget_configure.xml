@@ -5,63 +5,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/layout_info"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layoutAnimation="@anim/layout_anim_bottom"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:layout_height="350dp">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_picture"
-                android:layout_width="match_parent"
-                android:layout_height="350dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                app:cardPreventCornerOverlap="false">
+            <include
+                android:id="@+id/layout_photo_widget"
+                layout="@layout/photo_widget"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center"
+                android:layout_margin="16dp" />
 
-                <ImageView
-                    android:id="@+id/iv_wallpaper"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_select_picture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_round_add_24"
+                app:fabSize="mini"
+                app:tint="@android:color/white" />
+        </FrameLayout>
 
-                <include
-                    android:id="@+id/layout_photo_widget"
-                    layout="@layout/photo_widget"
-                    android:layout_width="300dp"
-                    android:layout_height="300dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="25dp" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/btn_select_picture"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_round_add_24"
-                    app:fabSize="mini"
-                    app:tint="@android:color/white" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
-
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
+                android:id="@+id/layout_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/colorDivider"
-                app:strokeWidth="1dp">
+                android:layoutAnimation="@anim/layout_anim_bottom"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -85,19 +68,10 @@
                         android:valueFrom="0"
                         android:valueTo="20" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/colorDivider"
-                app:strokeWidth="1dp">
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -121,19 +95,10 @@
                         android:valueFrom="0"
                         android:valueTo="20" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/colorDivider"
-                app:strokeWidth="1dp">
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -157,9 +122,9 @@
                         android:valueFrom="0"
                         android:valueTo="50" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/loading_view"

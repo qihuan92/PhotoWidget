@@ -88,10 +88,9 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             if (it) {
                 val wallpaperManager = WallpaperManager.getInstance(this)
                 val wallpaperDrawable = wallpaperManager.drawable
-                binding.ivWallpaper.setImageDrawable(wallpaperDrawable)
+                binding.root.background = wallpaperDrawable
             } else {
-                binding.cardPicture.strokeColor = getColor(R.color.colorDivider)
-                binding.cardPicture.strokeWidth = 1F.dp
+                // todo 设置默认背景图片
             }
         }
 
