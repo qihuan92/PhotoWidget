@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
@@ -21,7 +22,7 @@ import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
 import androidx.core.text.italic
 import androidx.core.text.scale
-import androidx.core.view.WindowCompat
+import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.WidgetInfo
@@ -109,9 +110,36 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        adaptBars()
         setResult(RESULT_CANCELED)
         setContentView(binding.root)
         handleIntent(intent)
+    }
+
+    private fun adaptBars() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.scrollViewInfo) { view, insets ->
+            val barInsets = insets.getInsets(
+                WindowInsetsCompat.Type.ime() or WindowInsetsCompat.Type.navigationBars()
+            )
+            view.post {
+                view.updatePadding(bottom = barInsets.bottom + binding.btnConfirm.height)
+            }
+            insets
+        }
+
+        val fabTopMarginBottom = binding.btnConfirm.marginBottom
+        ViewCompat.setOnApplyWindowInsetsListener(binding.btnConfirm) { view, insets ->
+            val navigationBarInserts = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            view.updateLayoutParams {
+                (this as ViewGroup.MarginLayoutParams).setMargins(
+                    leftMargin,
+                    topMargin,
+                    rightMargin,
+                    fabTopMarginBottom + navigationBarInserts.bottom
+                )
+            }
+            insets
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
