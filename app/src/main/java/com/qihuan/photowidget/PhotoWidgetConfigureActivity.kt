@@ -16,15 +16,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
 import androidx.core.text.italic
 import androidx.core.text.scale
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.databinding.PhotoWidgetConfigureBinding
 import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.ktx.blurBackground
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.viewBinding
 import com.qihuan.photowidget.result.CropPictureContract
@@ -89,6 +92,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
                 val wallpaperManager = WallpaperManager.getInstance(this)
                 val wallpaperDrawable = wallpaperManager.drawable
                 binding.root.background = wallpaperDrawable
+                binding.scrollViewInfo.blurBackground(wallpaperDrawable.toBitmap())
             } else {
                 // todo 设置默认背景图片
             }
@@ -104,6 +108,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setResult(RESULT_CANCELED)
         setContentView(binding.root)
         handleIntent(intent)
