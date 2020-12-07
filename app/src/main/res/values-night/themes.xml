@@ -15,6 +15,10 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Theme.PhotoWidget.Default">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
     <style name="ThemeOverlay.PhotoWidget.AppWidgetContainer" parent="">
         <item name="appWidgetBackgroundColor">@android:color/transparent</item>
         <item name="appWidgetTextColor">@color/light_blue_50</item>

@@ -94,8 +94,6 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
                 val wallpaperDrawable = wallpaperManager.drawable
                 binding.root.background = wallpaperDrawable
                 binding.scrollViewInfo.blurBackground(wallpaperDrawable.toBitmap())
-            } else {
-                // todo 设置默认背景图片
             }
         }
 
