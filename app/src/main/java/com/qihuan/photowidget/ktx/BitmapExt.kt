@@ -21,9 +21,9 @@ import kotlinx.coroutines.withContext
  */
 suspend fun Bitmap.blur(
     context: Context,
-    @IntRange(from = 0, to = 25) radius: Int = 20,
     width: Int,
     height: Int,
+    @IntRange(from = 0, to = 25) radius: Int = 20,
     translateX: Int = 0,
     translateY: Int = 0,
     sampleFactor: Float = 5.0f,
