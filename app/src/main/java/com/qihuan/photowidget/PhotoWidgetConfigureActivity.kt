@@ -1,6 +1,7 @@
 package com.qihuan.photowidget
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -11,12 +12,14 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.addListener
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
@@ -70,6 +73,10 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         animation
     }
 
+    private val defAnimTime by lazy {
+        resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+    }
+
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
             if (it != null) {
@@ -90,10 +97,18 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private val externalStorageResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
-                val wallpaperManager = WallpaperManager.getInstance(this)
-                val wallpaperDrawable = wallpaperManager.drawable
-                binding.root.background = wallpaperDrawable
-                binding.scrollViewInfo.blurBackground(wallpaperDrawable.toBitmap())
+                val alphaAnimator = ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0.0f, 1.0f)
+                alphaAnimator.addListener(
+                    onStart = {
+                        val wallpaperManager = WallpaperManager.getInstance(this)
+                        val wallpaperDrawable = wallpaperManager.drawable
+                        binding.root.background = wallpaperDrawable
+                        binding.scrollViewInfo.blurBackground(wallpaperDrawable.toBitmap())
+                    }
+                )
+                alphaAnimator.duration = defAnimTime
+                alphaAnimator.interpolator = AccelerateInterpolator()
+                alphaAnimator.start()
             }
         }
 
