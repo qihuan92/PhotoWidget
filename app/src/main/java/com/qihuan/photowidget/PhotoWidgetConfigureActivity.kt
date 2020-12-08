@@ -5,6 +5,8 @@ import android.animation.ObjectAnimator
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -31,7 +33,7 @@ import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.databinding.PhotoWidgetConfigureBinding
 import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.blurBackground
+import com.qihuan.photowidget.ktx.blur
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.viewBinding
 import com.qihuan.photowidget.result.CropPictureContract
@@ -97,18 +99,9 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private val externalStorageResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
-                val alphaAnimator = ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0.0f, 1.0f)
-                alphaAnimator.addListener(
-                    onStart = {
-                        val wallpaperManager = WallpaperManager.getInstance(this)
-                        val wallpaperDrawable = wallpaperManager.drawable
-                        binding.root.background = wallpaperDrawable
-                        binding.scrollViewInfo.blurBackground(wallpaperDrawable.toBitmap())
-                    }
-                )
-                alphaAnimator.duration = defAnimTime
-                alphaAnimator.interpolator = AccelerateInterpolator()
-                alphaAnimator.start()
+                val wallpaperManager = WallpaperManager.getInstance(this)
+                val wallpaperDrawable = wallpaperManager.drawable
+                rootAnimIn(wallpaperDrawable)
             }
         }
 
@@ -152,6 +145,39 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
                 )
             }
             insets
+        }
+    }
+
+    private fun rootAnimIn(wallpaperDrawable: Drawable) {
+        val alphaAnimator = ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0.0f, 1.0f)
+        alphaAnimator.addListener(
+            onStart = {
+                setBackground(wallpaperDrawable)
+            }
+        )
+        alphaAnimator.duration = defAnimTime
+        alphaAnimator.interpolator = AccelerateInterpolator()
+        alphaAnimator.start()
+    }
+
+    private fun setBackground(wallpaper: Drawable) {
+        // 设置壁纸背景
+        binding.root.background = wallpaper
+        // 设置设置区域背景
+        binding.scrollViewInfo.apply {
+            post {
+                val wallpaperBitmap = wallpaper.toBitmap()
+                val translateY = wallpaperBitmap.height - height
+                lifecycleScope.launch {
+                    val blurBitmap = wallpaperBitmap.blur(
+                        this@apply.context,
+                        width = width,
+                        height = height,
+                        translateY = translateY
+                    )
+                    background = BitmapDrawable(resources, blurBitmap)
+                }
+            }
         }
     }
 
