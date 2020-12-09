@@ -5,7 +5,9 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.renderscript.Allocation
+import android.renderscript.Element
 import android.renderscript.RenderScript
+import android.renderscript.ScriptIntrinsicBlur
 import android.util.Log
 import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
@@ -40,7 +42,8 @@ suspend fun Bitmap.blur(
         val input = Allocation.createFromBitmap(renderScript, scaledBitmap)
         val output = Allocation.createFromBitmap(renderScript, Bitmap.createBitmap(scaledBitmap))
         try {
-            doStackBlur(renderScript, scaledBitmap, radius, input, output)
+            //doStackBlur(renderScript, scaledBitmap, radius, input, output)
+            doGaussianBlur(renderScript, scaledBitmap, radius, input, output)
             output.copyTo(scaledBitmap)
         } catch (e: Exception) {
             Log.e("Blur", "Blur error", e)
@@ -52,6 +55,19 @@ suspend fun Bitmap.blur(
 
         getScaledBitmap(scaledBitmap, 1f / sampleFactor)
     }
+}
+
+private fun doGaussianBlur(
+    renderScript: RenderScript,
+    srcBitmap: Bitmap,
+    radius: Int,
+    input: Allocation,
+    output: Allocation
+) {
+    val scriptIntrinsicBlur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript))
+    scriptIntrinsicBlur.setRadius(radius.toFloat())
+    scriptIntrinsicBlur.setInput(input)
+    scriptIntrinsicBlur.forEach(output)
 }
 
 private fun doStackBlur(

@@ -5,13 +5,14 @@ import android.animation.ObjectAnimator
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
@@ -31,6 +32,7 @@ import androidx.core.text.scale
 import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import com.qihuan.photowidget.bean.CropPictureInfo
+import com.qihuan.photowidget.bean.ScreenSize
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.databinding.PhotoWidgetConfigureBinding
 import com.qihuan.photowidget.db.AppDatabase
@@ -77,7 +79,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private val defAnimTime by lazy {
-        resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
     }
 
     private val selectPicForResult =
@@ -99,14 +101,16 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
     private val externalStorageResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            val wallpaperDrawable = if (it) {
+            val wallpaper = if (it) {
                 val wallpaperManager = WallpaperManager.getInstance(this)
-                wallpaperManager.drawable
+                wallpaperManager.drawable.toBitmap()
             } else {
-                ContextCompat.getDrawable(this, R.drawable.wallpaper_def)
+                ContextCompat.getDrawable(this, R.drawable.wallpaper_def)?.toBitmap(
+                    screenSize.width, screenSize.height
+                )
             }
-            if (wallpaperDrawable != null) {
-                rootAnimIn(wallpaperDrawable)
+            if (wallpaper != null) {
+                rootAnimIn(wallpaper)
             }
         }
 
@@ -116,6 +120,12 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
     private val vibrator by lazy {
         getSystemService(Vibrator::class.java)
+    }
+
+    private val screenSize by lazy {
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        ScreenSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -153,7 +163,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private fun rootAnimIn(wallpaperDrawable: Drawable) {
+    private fun rootAnimIn(wallpaperDrawable: Bitmap) {
         val alphaAnimator = ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0.0f, 1.0f)
         alphaAnimator.addListener(
             onStart = {
@@ -165,16 +175,15 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         alphaAnimator.start()
     }
 
-    private fun setBackground(wallpaper: Drawable) {
+    private fun setBackground(wallpaper: Bitmap) {
         // 设置壁纸背景
-        binding.root.background = wallpaper
+        binding.root.background = BitmapDrawable(resources, wallpaper)
         // 设置设置区域背景
         binding.scrollViewInfo.apply {
             post {
-                val wallpaperBitmap = wallpaper.toBitmap()
-                val translateY = wallpaperBitmap.height - height
+                val translateY = wallpaper.height - height
                 lifecycleScope.launch {
-                    val blurBitmap = wallpaperBitmap.blur(
+                    val blurBitmap = wallpaper.blur(
                         this@apply.context,
                         width = width,
                         height = height,
