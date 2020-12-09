@@ -43,7 +43,7 @@ suspend fun Bitmap.blur(
         val output = Allocation.createFromBitmap(renderScript, Bitmap.createBitmap(scaledBitmap))
         try {
             //doStackBlur(renderScript, scaledBitmap, radius, input, output)
-            doGaussianBlur(renderScript, scaledBitmap, radius, input, output)
+            doGaussianBlur(renderScript, radius, input, output)
             output.copyTo(scaledBitmap)
         } catch (e: Exception) {
             Log.e("Blur", "Blur error", e)
@@ -59,7 +59,6 @@ suspend fun Bitmap.blur(
 
 private fun doGaussianBlur(
     renderScript: RenderScript,
-    srcBitmap: Bitmap,
     radius: Int,
     input: Allocation,
     output: Allocation
