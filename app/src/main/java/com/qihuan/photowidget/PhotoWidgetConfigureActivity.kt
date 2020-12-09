@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
@@ -98,9 +99,13 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
     private val externalStorageResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it) {
+            val wallpaperDrawable = if (it) {
                 val wallpaperManager = WallpaperManager.getInstance(this)
-                val wallpaperDrawable = wallpaperManager.drawable
+                wallpaperManager.drawable
+            } else {
+                ContextCompat.getDrawable(this, R.drawable.wallpaper_def)
+            }
+            if (wallpaperDrawable != null) {
                 rootAnimIn(wallpaperDrawable)
             }
         }
