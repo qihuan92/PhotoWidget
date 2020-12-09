@@ -264,7 +264,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             if (uri != null) {
                 bindImage(uri)
             }
-            setTitleAndProp(
+            setPropTitle(
                 binding.tvWidgetRadius,
                 getString(R.string.widget_radius),
                 value
@@ -279,7 +279,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             if (uri != null) {
                 bindImage(uri)
             }
-            setTitleAndProp(
+            setPropTitle(
                 binding.tvHorizontalPadding,
                 getString(R.string.horizontal_padding),
                 value
@@ -294,7 +294,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             if (uri != null) {
                 bindImage(uri)
             }
-            setTitleAndProp(
+            setPropTitle(
                 binding.tvVerticalPadding,
                 getString(R.string.vertical_padding),
                 value
@@ -302,7 +302,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private fun setTitleAndProp(textView: TextView, title: String, value: Float) {
+    private fun setPropTitle(textView: TextView, title: String, value: Float) {
         textView.text = buildSpannedString {
             append(title)
             scale(0.8F) { italic { append(" ${value.toInt()} dp ") } }
