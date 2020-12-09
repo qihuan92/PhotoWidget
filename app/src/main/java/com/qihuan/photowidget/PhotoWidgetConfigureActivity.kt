@@ -6,6 +6,7 @@ import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
@@ -31,6 +32,7 @@ import androidx.core.text.italic
 import androidx.core.text.scale
 import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
+import androidx.palette.graphics.Palette
 import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.ScreenSize
 import com.qihuan.photowidget.bean.WidgetInfo
@@ -38,6 +40,7 @@ import com.qihuan.photowidget.databinding.PhotoWidgetConfigureBinding
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.blur
 import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.ktx.isDark
 import com.qihuan.photowidget.ktx.viewBinding
 import com.qihuan.photowidget.result.CropPictureContract
 import kotlinx.coroutines.Dispatchers
@@ -137,6 +140,37 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         handleIntent(intent)
     }
 
+    override fun finish() {
+        super.finish()
+        val tempFile = File(cacheDir, TEMP_FILE_NAME)
+        if (tempFile.exists()) {
+            tempFile.delete()
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        val extras = intent?.extras
+        if (extras != null) {
+            appWidgetId = extras.getInt(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID
+            )
+        }
+
+        // If this activity was started with an intent without an app widget ID, finish with an error.
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            finish()
+            return
+        }
+
+        bindView()
+    }
+
     private fun adaptBars() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.scrollViewInfo) { view, insets ->
             val barInsets = insets.getInsets(
@@ -163,6 +197,20 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         }
     }
 
+    private fun adaptStatusBarTextColor(wallpaper: Bitmap) {
+        val statusBarSize = 30F.dp
+        val statusBarAreaBitmap =
+            Bitmap.createBitmap(wallpaper, 0, 0, wallpaper.width, statusBarSize)
+        Palette.from(statusBarAreaBitmap).generate {
+            if (it != null) {
+                val dominantColor = it.getDominantColor(Color.WHITE)
+                WindowCompat.getInsetsController(window, binding.root)?.apply {
+                    isAppearanceLightStatusBars = !dominantColor.isDark()
+                }
+            }
+        }
+    }
+
     private fun rootAnimIn(wallpaperDrawable: Bitmap) {
         val alphaAnimator = ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0.0f, 1.0f)
         alphaAnimator.addListener(
@@ -178,6 +226,8 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private fun setBackground(wallpaper: Bitmap) {
         // 设置壁纸背景
         binding.root.background = BitmapDrawable(resources, wallpaper)
+        // 状态栏文字颜色适配
+        adaptStatusBarTextColor(wallpaper)
         // 设置设置区域背景
         binding.scrollViewInfo.apply {
             post {
@@ -193,29 +243,6 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        handleIntent(intent)
-    }
-
-    private fun handleIntent(intent: Intent?) {
-        val extras = intent?.extras
-        if (extras != null) {
-            appWidgetId = extras.getInt(
-                AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID
-            )
-        }
-
-        // If this activity was started with an intent without an app widget ID, finish with an error.
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            finish()
-            return
-        }
-
-        bindView()
     }
 
     private fun bindView() {
@@ -398,14 +425,6 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
                 tempFile.delete()
             }
             return@withContext widgetPhotoFile.toUri()
-        }
-    }
-
-    override fun finish() {
-        super.finish()
-        val tempFile = File(cacheDir, TEMP_FILE_NAME)
-        if (tempFile.exists()) {
-            tempFile.delete()
         }
     }
 }
