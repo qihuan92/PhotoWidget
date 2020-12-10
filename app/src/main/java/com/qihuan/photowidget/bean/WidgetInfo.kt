@@ -13,7 +13,7 @@ import androidx.room.PrimaryKey
 data class WidgetInfo(
     @PrimaryKey
     val widgetId: Int,
-    var uri: Uri,
+    var uri: List<Uri>,
     val verticalPadding: Float,
     val horizontalPadding: Float,
     val widgetRadius: Float,

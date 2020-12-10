@@ -6,4 +6,5 @@
     <string name="select_picture">选择图片</string>
     <string name="warning_select_picture">请选择一张照片</string>
     <string name="confirm">确定</string>
+    <string name="text_photo">相片</string>
 </resources>

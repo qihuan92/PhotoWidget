@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.widget.RemoteViews
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.ktx.dp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -47,10 +48,8 @@ class PhotoWidgetProvider : AppWidgetProvider() {
             for (appWidgetId in appWidgetIds) {
                 widgetInfoDao.deleteById(appWidgetId)
 
-                val outFile = File(context.filesDir, "widget_${appWidgetId}.png")
-                if (outFile.exists()) {
-                    outFile.delete()
-                }
+                val outFile = File(context.filesDir, "widget_${appWidgetId}")
+                outFile.deleteDir()
             }
         }
     }
@@ -64,10 +63,10 @@ internal fun updateAppWidget(
     val widgetId = widgetInfo.widgetId
 
     val views = RemoteViews(context.packageName, R.layout.photo_widget)
-    views.setImageViewBitmap(
-        R.id.iv_picture,
-        createWidgetBitmap(context, widgetInfo.uri, widgetInfo.widgetRadius.dp)
-    )
+    views.setRemoteAdapter(R.id.vf_picture, Intent(context, WidgetPhotoService::class.java).apply {
+        putExtra(EXTRA_IMAGE_URI, widgetInfo.uri.joinToString(","))
+        putExtra(EXTRA_IMAGE_RADIUS, widgetInfo.widgetRadius)
+    })
 
     val horizontalPadding = widgetInfo.horizontalPadding.dp
     val verticalPadding = widgetInfo.verticalPadding.dp

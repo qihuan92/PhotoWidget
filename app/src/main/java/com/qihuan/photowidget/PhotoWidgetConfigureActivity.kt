@@ -17,8 +17,6 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,10 +36,7 @@ import com.qihuan.photowidget.bean.ScreenSize
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.databinding.PhotoWidgetConfigureBinding
 import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.blur
-import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.isDark
-import com.qihuan.photowidget.ktx.viewBinding
+import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.result.CropPictureContract
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,7 +49,7 @@ import java.io.File
 class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
     companion object {
-        const val TEMP_FILE_NAME = "temp.png"
+        const val TEMP_DIR_NAME = "temp"
     }
 
     private enum class UIState {
@@ -62,25 +57,17 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private val binding by viewBinding(PhotoWidgetConfigureBinding::inflate)
-
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
-    private val failAnimation by lazy {
-        val animation = AnimationUtils.loadAnimation(this, R.anim.item_anim_fall_down)
-        animation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-                binding.btnSelectPicture.visibility = View.GONE
-            }
-
-            override fun onAnimationEnd(animation: Animation?) {
-                binding.btnSelectPicture.show()
-            }
-
-            override fun onAnimationRepeat(animation: Animation?) {
-            }
-        })
-        animation
+    private val imageUriList by lazy { mutableListOf<Uri>() }
+    private val previewAdapter by lazy { PreviewPhotoAdapter() }
+    private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
+    private val widgetInfoDao by lazy { AppDatabase.getDatabase(this).widgetInfoDao() }
+    private val vibrator by lazy { getSystemService(Vibrator::class.java) }
+    private val screenSize by lazy {
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        ScreenSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
     }
-
     private val defAnimTime by lazy {
         resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
     }
@@ -88,7 +75,12 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
             if (it != null) {
-                val outFile = File(cacheDir, TEMP_FILE_NAME)
+                val outDir = File(cacheDir, TEMP_DIR_NAME)
+                if (!outDir.exists()) {
+                    outDir.mkdirs()
+                }
+
+                val outFile = File(outDir, "${System.currentTimeMillis()}.png")
                 cropPicForResult.launch(CropPictureInfo(it, Uri.fromFile(outFile)))
             }
         }
@@ -96,9 +88,9 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private val cropPicForResult =
         registerForActivityResult(CropPictureContract()) {
             if (it != null) {
-                val widgetLayout = binding.layoutPhotoWidget.root
-                widgetLayout.startAnimation(failAnimation)
-                bindImage(it)
+                imageUriList.add(it)
+                previewAdapter.submitList(imageUriList.toList())
+                bindImage()
             }
         }
 
@@ -117,35 +109,22 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             }
         }
 
-    private val widgetInfoDao by lazy {
-        AppDatabase.getDatabase(this).widgetInfoDao()
-    }
-
-    private val vibrator by lazy {
-        getSystemService(Vibrator::class.java)
-    }
-
-    private val screenSize by lazy {
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        ScreenSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         adaptBars()
         setResult(RESULT_CANCELED)
         setContentView(binding.root)
+
+        binding.rvPreviewList.adapter = previewAdapter
+        binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
         handleIntent(intent)
     }
 
     override fun finish() {
         super.finish()
-        val tempFile = File(cacheDir, TEMP_FILE_NAME)
-        if (tempFile.exists()) {
-            tempFile.delete()
-        }
+        val tempDir = File(cacheDir, TEMP_DIR_NAME)
+        tempDir.deleteDir()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -250,9 +229,11 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             changeUIState(UIState.LOADING)
             val widgetInfo = widgetInfoDao.selectById(appWidgetId)
             if (widgetInfo != null) {
+                copyToTempDir(widgetInfo.widgetId)
                 bindRadius(widgetInfo.widgetRadius)
                 bindPadding(widgetInfo.verticalPadding, widgetInfo.horizontalPadding)
-                bindImage(widgetInfo.uri)
+                bindImage()
+                previewAdapter.submitList(imageUriList.toList())
             }
             changeUIState(UIState.SHOW_CONTENT)
         }
@@ -270,15 +251,14 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             val horizontalPadding = binding.sliderHorizontalPadding.value
             val widgetRadius = binding.sliderWidgetRadius.value
 
-            val uri = getUriFromWidget()
-            if (uri == null) {
+            if (imageUriList.isNullOrEmpty()) {
                 Toast.makeText(this, getString(R.string.warning_select_picture), Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
 
             val widgetInfo = WidgetInfo(
-                appWidgetId, uri, verticalPadding, horizontalPadding, widgetRadius
+                appWidgetId, imageUriList, verticalPadding, horizontalPadding, widgetRadius
             )
             addWidget(widgetInfo)
         }
@@ -287,10 +267,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             if (fromUser) {
                 sliderEffect()
             }
-            val uri = getUriFromWidget()
-            if (uri != null) {
-                bindImage(uri)
-            }
+            bindImage()
             setPropTitle(
                 binding.tvWidgetRadius,
                 getString(R.string.widget_radius),
@@ -302,10 +279,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             if (fromUser) {
                 sliderEffect()
             }
-            val uri = getUriFromWidget()
-            if (uri != null) {
-                bindImage(uri)
-            }
+            bindImage()
             setPropTitle(
                 binding.tvHorizontalPadding,
                 getString(R.string.horizontal_padding),
@@ -317,10 +291,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             if (fromUser) {
                 sliderEffect()
             }
-            val uri = getUriFromWidget()
-            if (uri != null) {
-                bindImage(uri)
-            }
+            bindImage()
             setPropTitle(
                 binding.tvVerticalPadding,
                 getString(R.string.vertical_padding),
@@ -363,22 +334,12 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private fun getUriFromWidget(): Uri? {
-        val ivPicture = binding.layoutPhotoWidget.ivPicture
-        if (ivPicture.tag == null) {
-            return null
-        }
-        return ivPicture.tag as Uri
-    }
-
-    private fun bindImage(uri: Uri) {
+    private fun bindImage() {
         val verticalPadding = binding.sliderVerticalPadding.value.dp
         val horizontalPadding = binding.sliderHorizontalPadding.value.dp
         val widgetRadius = binding.sliderWidgetRadius.value.dp
 
-        val ivPicture = binding.layoutPhotoWidget.ivPicture
-        ivPicture.setImageBitmap(createWidgetBitmap(this, uri, widgetRadius))
-        ivPicture.tag = uri
+        widgetAdapter.setData(imageUriList, widgetRadius)
 
         val widgetRoot = binding.layoutPhotoWidget.root
         widgetRoot.setPadding(
@@ -402,7 +363,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         val appWidgetManager = AppWidgetManager.getInstance(this)
         lifecycleScope.launch {
             val widgetId = widgetInfo.widgetId
-            val uri = saveWidgetPhotoFile(widgetId)
+            val uri = saveWidgetPhotoFiles(widgetId)
             widgetInfo.uri = uri
             widgetInfoDao.save(widgetInfo)
 
@@ -416,15 +377,33 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun saveWidgetPhotoFile(widgetId: Int): Uri {
+    private suspend fun saveWidgetPhotoFiles(widgetId: Int): List<Uri> {
         return withContext(Dispatchers.IO) {
-            val tempFile = File(cacheDir, TEMP_FILE_NAME)
-            val widgetPhotoFile = File(filesDir, "widget_${widgetId}.png")
-            if (tempFile.exists()) {
-                tempFile.copyTo(widgetPhotoFile, overwrite = true)
-                tempFile.delete()
+            val tempDir = File(cacheDir, TEMP_DIR_NAME)
+            val widgetDir = File(filesDir, "widget_${widgetId}")
+            copyDir(tempDir, widgetDir, override = true)
+
+            val uriList = mutableListOf<Uri>()
+            if (widgetDir.exists()) {
+                widgetDir.listFiles()?.forEach {
+                    uriList.add(it.toUri())
+                }
             }
-            return@withContext widgetPhotoFile.toUri()
+            return@withContext uriList
+        }
+    }
+
+    private suspend fun copyToTempDir(widgetId: Int) {
+        withContext(Dispatchers.IO) {
+            val tempDir = File(cacheDir, TEMP_DIR_NAME)
+            val widgetDir = File(filesDir, "widget_${widgetId}")
+            copyDir(widgetDir, tempDir, override = true)
+
+            if (tempDir.exists()) {
+                tempDir.listFiles()?.forEach {
+                    imageUriList.add(it.toUri())
+                }
+            }
         }
     }
 }
