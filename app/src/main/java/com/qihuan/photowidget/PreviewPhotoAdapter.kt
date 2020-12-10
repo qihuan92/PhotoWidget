@@ -36,37 +36,50 @@ class PreviewPhotoAdapter : ListAdapter<Uri, RecyclerView.ViewHolder>(DiffCallba
     ) : RecyclerView.ViewHolder(binding.root)
 
     class ViewHolder(
-        private val binding: ItemPreviewPhotoBinding
+        private val binding: ItemPreviewPhotoBinding,
+        private val onItemDeleteListener: ((Int, Uri) -> Unit)?
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Uri) {
+        fun bind(item: Uri, position: Int) {
             binding.ivPicture.setImageURI(item)
+            binding.btnDelete.setOnClickListener {
+                onItemDeleteListener?.invoke(position, item)
+            }
         }
     }
 
+    private var onItemDeleteListener: ((Int, Uri) -> Unit)? = null
+    private var onItemAddListener: (() -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == TYPE_HEADER) {
-            HeaderViewHolder(
+        if (viewType == TYPE_HEADER) {
+            val headerViewHolder = HeaderViewHolder(
                 ItemPreviewPhotoAddBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
+            headerViewHolder.itemView.setOnClickListener {
+                onItemAddListener?.invoke()
+            }
+            return headerViewHolder
         } else {
-            ViewHolder(
+            return ViewHolder(
                 ItemPreviewPhotoBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
-                )
+                ),
+                onItemDeleteListener
             )
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ViewHolder) {
-            holder.bind(getItem(position - 1))
+            val realPosition = position - 1
+            holder.bind(getItem(realPosition), realPosition)
         }
     }
 
@@ -80,5 +93,13 @@ class PreviewPhotoAdapter : ListAdapter<Uri, RecyclerView.ViewHolder>(DiffCallba
         } else {
             TYPE_ITEM
         }
+    }
+
+    fun setOnItemDeleteListener(onItemDeleteListener: ((Int, Uri) -> Unit)) {
+        this.onItemDeleteListener = onItemDeleteListener
+    }
+
+    fun setOnItemAddListener(onItemAddListener: (() -> Unit)?) {
+        this.onItemAddListener = onItemAddListener
     }
 }

@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
 import androidx.core.text.italic
@@ -117,6 +118,19 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.rvPreviewList.adapter = previewAdapter
+        previewAdapter.setOnItemDeleteListener { position, uri ->
+            imageUriList.removeAt(position)
+            previewAdapter.submitList(imageUriList.toList())
+
+            val tempFile = uri.toFile()
+            if (tempFile.exists()) {
+                tempFile.delete()
+            }
+        }
+        previewAdapter.setOnItemAddListener {
+            selectPicForResult.launch("image/*")
+        }
+
         binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
         handleIntent(intent)
     }
@@ -239,10 +253,6 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         }
 
         externalStorageResult.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
-
-        binding.btnSelectPicture.setOnClickListener {
-            selectPicForResult.launch("image/*")
-        }
 
         binding.btnConfirm.setOnClickListener {
             doneEffect()

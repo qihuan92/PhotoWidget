@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="80dp"
     android:layout_height="80dp"
     android:layout_marginHorizontal="2dp"
-    android:background="@drawable/bg_add_photo">
+    android:background="@drawable/bg_add_photo"
+    android:foreground="?selectableItemBackground">
 
     <ImageView
         android:id="@+id/btn_delete"
