@@ -34,6 +34,9 @@ class WidgetPhotoAdapter(
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
+        if (itemList.isNullOrEmpty()) {
+            return null
+        }
         var binding: LayoutWidgetImageBinding? = null
         if (convertView == null) {
             binding =

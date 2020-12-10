@@ -121,6 +121,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         previewAdapter.setOnItemDeleteListener { position, uri ->
             imageUriList.removeAt(position)
             previewAdapter.submitList(imageUriList.toList())
+            bindImage()
 
             val tempFile = uri.toFile()
             if (tempFile.exists()) {
@@ -372,12 +373,13 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private fun addWidget(widgetInfo: WidgetInfo) {
         val appWidgetManager = AppWidgetManager.getInstance(this)
         lifecycleScope.launch {
+            changeUIState(UIState.LOADING)
             val widgetId = widgetInfo.widgetId
             val uri = saveWidgetPhotoFiles(widgetId)
             widgetInfo.uri = uri
             widgetInfoDao.save(widgetInfo)
-
             updateAppWidget(this@PhotoWidgetConfigureActivity, appWidgetManager, widgetInfo)
+            changeUIState(UIState.SHOW_CONTENT)
 
             // Make sure we pass back the original appWidgetId
             val resultValue = Intent()
