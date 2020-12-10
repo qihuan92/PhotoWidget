@@ -33,21 +33,24 @@ class WidgetPhotoAdapter(
         return position.toLong()
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         if (itemList.isNullOrEmpty()) {
-            return null
+            return View(context)
         }
         var binding: LayoutWidgetImageBinding? = null
         if (convertView == null) {
             binding =
                 LayoutWidgetImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         }
-        binding?.apply {
+        if (binding == null) {
+            return View(context)
+        }
+        binding.apply {
             val uri = itemList[position]
             val bitmap = createWidgetBitmap(context, uri, radius)
             ivPicture.setImageBitmap(bitmap)
         }
-        return binding?.root
+        return binding.root
     }
 
     fun setData(itemList: List<Uri>, @Px radius: Int) {
