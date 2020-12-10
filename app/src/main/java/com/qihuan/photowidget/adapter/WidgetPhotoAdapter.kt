@@ -1,4 +1,4 @@
-package com.qihuan.photowidget
+package com.qihuan.photowidget.adapter
 
 import android.content.Context
 import android.net.Uri
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import androidx.annotation.Px
+import com.qihuan.photowidget.createWidgetBitmap
 import com.qihuan.photowidget.databinding.LayoutWidgetImageBinding
 
 /**

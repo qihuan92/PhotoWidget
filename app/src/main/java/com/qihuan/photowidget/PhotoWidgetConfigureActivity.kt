@@ -32,6 +32,10 @@ import androidx.core.text.scale
 import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
+import androidx.recyclerview.widget.ConcatAdapter
+import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
+import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
+import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.ScreenSize
 import com.qihuan.photowidget.bean.WidgetInfo
@@ -61,6 +65,11 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private val imageUriList by lazy { mutableListOf<Uri>() }
     private val previewAdapter by lazy { PreviewPhotoAdapter() }
+    private val previewAddAdapter by lazy {
+        val previewPhotoAddAdapter = PreviewPhotoAddAdapter()
+        previewPhotoAddAdapter.submitList(listOf(1))
+        previewPhotoAddAdapter
+    }
     private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
     private val widgetInfoDao by lazy { AppDatabase.getDatabase(this).widgetInfoDao() }
     private val vibrator by lazy { getSystemService(Vibrator::class.java) }
@@ -117,7 +126,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         setResult(RESULT_CANCELED)
         setContentView(binding.root)
 
-        binding.rvPreviewList.adapter = previewAdapter
+        binding.rvPreviewList.adapter = ConcatAdapter(previewAddAdapter, previewAdapter)
         previewAdapter.setOnItemDeleteListener { position, uri ->
             imageUriList.removeAt(position)
             previewAdapter.submitList(imageUriList.toList())
@@ -128,7 +137,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
                 tempFile.delete()
             }
         }
-        previewAdapter.setOnItemAddListener {
+        previewAddAdapter.setOnItemAddListener {
             selectPicForResult.launch("image/*")
         }
 
