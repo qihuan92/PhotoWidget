@@ -1,9 +1,10 @@
-package com.qihuan.photowidget.bean
+package com.qihuan.photowidget.db
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.qihuan.photowidget.bean.WidgetInfo
 
 /**
  * PictureInfoDao

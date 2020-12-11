@@ -6,6 +6,9 @@ import androidx.room.PrimaryKey
 
 /**
  * PictureInfo
+ * Dao: [com.qihuan.photowidget.db.WidgetInfoDao]
+ * Database:[com.qihuan.photowidget.db.AppDatabase]
+ *
  * @author qi
  * @since 11/19/20
  */
@@ -17,4 +20,6 @@ data class WidgetInfo(
     val verticalPadding: Float,
     val horizontalPadding: Float,
     val widgetRadius: Float,
+    val autoPlay: Boolean,
+    val autoPlayInterval: Int?
 )

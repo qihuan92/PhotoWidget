@@ -77,6 +77,9 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private val defAnimTime by lazy {
         resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
     }
+    // todo
+    private var autoPlay: Boolean = false
+    private var autoPlayInterval = 0
 
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
@@ -275,7 +278,13 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             }
 
             val widgetInfo = WidgetInfo(
-                appWidgetId, imageUriList, verticalPadding, horizontalPadding, widgetRadius
+                appWidgetId,
+                imageUriList,
+                verticalPadding,
+                horizontalPadding,
+                widgetRadius,
+                autoPlay,
+                autoPlayInterval
             )
             addWidget(widgetInfo)
         }
@@ -336,6 +345,8 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
         binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
         widgetAdapter.setData(imageUriList, widgetRadius)
+
+        // todo
 
         val widgetRoot = binding.layoutPhotoWidget.root
         widgetRoot.setPadding(
