@@ -17,7 +17,6 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -26,9 +25,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.core.text.buildSpannedString
-import androidx.core.text.italic
-import androidx.core.text.scale
 import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
@@ -283,47 +279,25 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             addWidget(widgetInfo)
         }
 
-        binding.sliderWidgetRadius.addOnChangeListener { _, value, fromUser ->
+        binding.sliderWidgetRadius.addOnChangeListener { _, _, fromUser ->
             if (fromUser) {
                 sliderEffect()
             }
             bindImage()
-            setPropTitle(
-                binding.tvWidgetRadius,
-                getString(R.string.widget_radius),
-                value
-            )
         }
 
-        binding.sliderHorizontalPadding.addOnChangeListener { _, value, fromUser ->
+        binding.sliderHorizontalPadding.addOnChangeListener { _, _, fromUser ->
             if (fromUser) {
                 sliderEffect()
             }
             bindImage()
-            setPropTitle(
-                binding.tvHorizontalPadding,
-                getString(R.string.horizontal_padding),
-                value
-            )
         }
 
-        binding.sliderVerticalPadding.addOnChangeListener { _, value, fromUser ->
+        binding.sliderVerticalPadding.addOnChangeListener { _, _, fromUser ->
             if (fromUser) {
                 sliderEffect()
             }
             bindImage()
-            setPropTitle(
-                binding.tvVerticalPadding,
-                getString(R.string.vertical_padding),
-                value
-            )
-        }
-    }
-
-    private fun setPropTitle(textView: TextView, title: String, value: Float) {
-        textView.text = buildSpannedString {
-            append(title)
-            scale(0.8F) { italic { append(" ${value.toInt()} dp ") } }
         }
     }
 

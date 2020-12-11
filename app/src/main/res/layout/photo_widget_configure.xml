@@ -49,14 +49,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:padding="5dp"
-                        android:text="@string/text_photo"
-                        android:textStyle="bold" />
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_preview_list"
                         android:layout_width="match_parent"
@@ -66,6 +58,15 @@
                         android:paddingHorizontal="5dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:listitem="@layout/item_preview_photo" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switch_auto_play"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="@string/switch_auto_play"
+                        android:textAppearance="?textAppearanceBody2"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <Space
@@ -75,7 +76,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tv_vertical_padding"
@@ -84,6 +86,7 @@
                         android:layout_marginStart="5dp"
                         android:padding="5dp"
                         android:text="@string/vertical_padding"
+                        android:textAppearance="?textAppearanceBody2"
                         android:textStyle="bold" />
 
                     <com.google.android.material.slider.Slider
@@ -102,7 +105,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tv_horizontal_padding"
@@ -111,6 +115,7 @@
                         android:layout_marginStart="5dp"
                         android:padding="5dp"
                         android:text="@string/horizontal_padding"
+                        android:textAppearance="?textAppearanceBody2"
                         android:textStyle="bold" />
 
                     <com.google.android.material.slider.Slider
@@ -129,7 +134,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tv_widget_radius"
@@ -138,6 +144,7 @@
                         android:layout_marginStart="5dp"
                         android:padding="5dp"
                         android:text="@string/widget_radius"
+                        android:textAppearance="?textAppearanceBody2"
                         android:textStyle="bold" />
 
                     <com.google.android.material.slider.Slider
