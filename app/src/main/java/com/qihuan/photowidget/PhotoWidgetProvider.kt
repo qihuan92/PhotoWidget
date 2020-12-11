@@ -66,6 +66,7 @@ internal fun updateAppWidget(
     views.setRemoteAdapter(R.id.vf_picture, Intent(context, WidgetPhotoService::class.java).apply {
         putExtra(EXTRA_IMAGE_URI, widgetInfo.uri.joinToString(","))
         putExtra(EXTRA_IMAGE_RADIUS, widgetInfo.widgetRadius)
+        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
     })
 
     val horizontalPadding = widgetInfo.horizontalPadding.dp
@@ -90,6 +91,7 @@ internal fun updateAppWidget(
     )
 
     appWidgetManager.updateAppWidget(widgetId, views)
+    appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.vf_picture)
 }
 
 internal fun createWidgetBitmap(context: Context, uri: Uri, radius: Int): Bitmap {

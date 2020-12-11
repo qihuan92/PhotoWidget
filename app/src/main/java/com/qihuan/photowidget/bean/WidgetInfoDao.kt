@@ -16,6 +16,9 @@ interface WidgetInfoDao {
     @Query("select * from widget_info where widgetId = :id")
     suspend fun selectById(id: Int): WidgetInfo?
 
+    @Query("select * from widget_info where widgetId = :id")
+    fun selectByIdSync(id: Int): WidgetInfo?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(record: WidgetInfo)
 

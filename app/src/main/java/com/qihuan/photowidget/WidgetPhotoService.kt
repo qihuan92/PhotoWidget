@@ -1,10 +1,12 @@
 package com.qihuan.photowidget
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
 
 /**
@@ -28,22 +30,26 @@ class WidgetPhotoViewFactory(
     private val intent: Intent?
 ) : RemoteViewsService.RemoteViewsFactory {
 
+    private val widgetInfoDao by lazy { AppDatabase.getDatabase(context).widgetInfoDao() }
     private val imageUriList by lazy { mutableListOf<Uri>() }
     private var radius = 0f
+    private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     override fun onCreate() {
-        val imageUriArray = intent?.getStringExtra(EXTRA_IMAGE_URI)
-        imageUriArray?.apply {
-            split(",").forEach {
-                imageUriList.add(Uri.parse(it))
-            }
-        }
-
-        radius = intent?.getFloatExtra(EXTRA_IMAGE_RADIUS, 0f) ?: 0f
+        widgetId = intent?.getIntExtra(
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            AppWidgetManager.INVALID_APPWIDGET_ID
+        ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
     }
 
     override fun onDataSetChanged() {
-
+        imageUriList.clear()
+        radius = 0f
+        val widgetInfo = widgetInfoDao.selectByIdSync(widgetId)
+        if (widgetInfo != null) {
+            imageUriList.addAll(widgetInfo.uri)
+            radius = widgetInfo.widgetRadius
+        }
     }
 
     override fun onDestroy() {
@@ -54,7 +60,10 @@ class WidgetPhotoViewFactory(
         return imageUriList.size
     }
 
-    override fun getViewAt(position: Int): RemoteViews {
+    override fun getViewAt(position: Int): RemoteViews? {
+        if (imageUriList.isNullOrEmpty()) {
+            return null
+        }
         val remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image)
         remoteViews.setImageViewBitmap(
             R.id.iv_picture,
