@@ -44,30 +44,24 @@
                 android:visibility="gone"
                 tools:visibility="visible">
 
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_preview_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="5dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_preview_photo" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_auto_play"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_preview_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:clipToPadding="false"
-                        android:orientation="horizontal"
-                        android:paddingHorizontal="5dp"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:listitem="@layout/item_preview_photo" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switch_auto_play"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="@string/switch_auto_play"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                    android:layout_margin="10dp"
+                    android:text="@string/switch_auto_play"
+                    android:textAppearance="?textAppearanceBody2"
+                    android:textStyle="bold" />
 
                 <Space
                     android:layout_width="match_parent"
