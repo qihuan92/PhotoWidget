@@ -334,6 +334,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         val horizontalPadding = binding.sliderHorizontalPadding.value.dp
         val widgetRadius = binding.sliderWidgetRadius.value.dp
 
+        binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
         widgetAdapter.setData(imageUriList, widgetRadius)
 
         val widgetRoot = binding.layoutPhotoWidget.root
