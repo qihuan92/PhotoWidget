@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.net.toFile
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
 
@@ -65,10 +66,15 @@ class WidgetPhotoViewFactory(
             return null
         }
         val remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image)
-        remoteViews.setImageViewBitmap(
-            R.id.iv_picture,
-            createWidgetBitmap(context, imageUriList[position], radius.dp)
-        )
+        val uri = imageUriList[position]
+        if (uri.toFile().exists()) {
+            remoteViews.setImageViewBitmap(
+                R.id.iv_picture,
+                createWidgetBitmap(context, uri, radius.dp)
+            )
+        } else {
+            remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
+        }
         return remoteViews
     }
 
