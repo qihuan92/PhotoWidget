@@ -77,6 +77,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private val defAnimTime by lazy {
         resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
     }
+
     // todo
     private var autoPlay: Boolean = false
     private var autoPlayInterval = 0
@@ -256,6 +257,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
                 copyToTempDir(widgetInfo.widgetId)
                 bindRadius(widgetInfo.widgetRadius)
                 bindPadding(widgetInfo.verticalPadding, widgetInfo.horizontalPadding)
+                bindAutoPlay(widgetInfo.autoPlay, widgetInfo.autoPlayInterval)
                 bindImage()
                 previewAdapter.submitList(imageUriList.toList())
             }
@@ -308,6 +310,12 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
                 sliderEffect()
             }
             bindImage()
+        }
+
+        binding.switchAutoPlay.setOnCheckedChangeListener { _, isChecked ->
+            binding.tvAutoPlayInterval.text = ""
+            binding.tvAutoPlayInterval.tag = null
+            binding.layoutAutoPlayInterval.isGone = !isChecked
         }
     }
 
@@ -364,6 +372,27 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     private fun bindPadding(verticalPadding: Float, horizontalPadding: Float) {
         binding.sliderVerticalPadding.value = verticalPadding
         binding.sliderHorizontalPadding.value = horizontalPadding
+    }
+
+    private fun bindAutoPlay(autoPlay: Boolean, autoPlayInterval: Int?) {
+        if (imageUriList.size <= 1) {
+            binding.switchAutoPlay.isEnabled = false
+            binding.tvAutoPlayInterval.text = ""
+            binding.tvAutoPlayInterval.tag = null
+            return
+        }
+        binding.switchAutoPlay.isChecked = autoPlay
+        if (autoPlay) {
+            var interval = resources.getInteger(R.integer.def_auto_play_interval)
+            if (autoPlayInterval != null) {
+                interval = autoPlayInterval
+            }
+            binding.tvAutoPlayInterval.text = "${(interval / 1000)} s"
+            binding.tvAutoPlayInterval.tag = interval
+        } else {
+            binding.tvAutoPlayInterval.text = ""
+            binding.tvAutoPlayInterval.tag = null
+        }
     }
 
     private fun addWidget(widgetInfo: WidgetInfo) {
