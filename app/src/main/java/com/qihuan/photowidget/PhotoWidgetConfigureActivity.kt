@@ -249,6 +249,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             changeUIState(UIState.LOADING)
             val widgetInfo = widgetInfoDao.selectById(appWidgetId)
             if (widgetInfo != null) {
+                imageUriList.clear()
                 copyToTempDir(widgetInfo.widgetId)
                 bindRadius(widgetInfo.widgetRadius)
                 bindPadding(widgetInfo.verticalPadding, widgetInfo.horizontalPadding)
