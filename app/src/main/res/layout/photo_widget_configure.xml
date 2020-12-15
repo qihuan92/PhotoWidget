@@ -62,8 +62,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_auto_play"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_prop_item">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -94,7 +93,6 @@
                     android:id="@+id/layout_auto_play_interval"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_prop_item"
                     android:paddingVertical="10dp"
                     android:visibility="gone"
                     tools:visibility="visible">
@@ -131,7 +129,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_prop_item"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -161,7 +158,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_prop_item"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -191,7 +187,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_prop_item"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
