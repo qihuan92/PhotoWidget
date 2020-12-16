@@ -26,8 +26,23 @@ abstract class WidgetDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertImage(imageList: List<WidgetImage>)
 
+    @Query("delete from widget_info where widgetId = :id")
+    abstract suspend fun deleteInfoById(id: Int)
+
+    @Query("delete from widget_image where widgetId = :id")
+    abstract suspend fun deleteImageByWidgetId(id: Int)
+
+    @Query("delete from widget_image where imageId = :id")
+    abstract suspend fun deleteImageById(id: Int)
+
     suspend fun save(widgetBean: WidgetBean) {
         insertInfo(widgetBean.widgetInfo)
+        deleteImageByWidgetId(widgetBean.widgetInfo.widgetId)
         insertImage(widgetBean.imageList)
+    }
+
+    suspend fun deleteByWidgetId(widgetId: Int) {
+        deleteInfoById(widgetId)
+        deleteImageByWidgetId(widgetId)
     }
 }

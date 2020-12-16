@@ -21,7 +21,7 @@ import java.io.File
 
 /**
  * Implementation of App Widget functionality.
- * App Widget Configuration implemented in [PhotoWidgetConfigureActivity]
+ * App Widget Configuration implemented in [ConfigureActivity]
  */
 class PhotoWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
@@ -42,11 +42,11 @@ class PhotoWidgetProvider : AppWidgetProvider() {
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
-        val widgetInfoDao = AppDatabase.getDatabase(context).widgetInfoDao()
+        val widgetDao = AppDatabase.getDatabase(context).widgetDao()
         // 删除一些缓存数据
         GlobalScope.launch {
             for (appWidgetId in appWidgetIds) {
-                widgetInfoDao.deleteById(appWidgetId)
+                widgetDao.deleteByWidgetId(appWidgetId)
 
                 val outFile = File(context.filesDir, "widget_${appWidgetId}")
                 outFile.deleteDir()
@@ -78,7 +78,7 @@ internal fun updateAppWidget(
         verticalPadding
     )
 
-    val intent = Intent(context, PhotoWidgetConfigureActivity::class.java).apply {
+    val intent = Intent(context, ConfigureActivity::class.java).apply {
         val extras = Bundle().apply {
             putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         }

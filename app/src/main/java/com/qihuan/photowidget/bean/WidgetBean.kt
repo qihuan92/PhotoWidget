@@ -11,6 +11,6 @@ import androidx.room.Relation
 data class WidgetBean(
     @Embedded
     val widgetInfo: WidgetInfo,
-    @Relation(parentColumn = "widgetId", entityColumn = "imageId")
+    @Relation(parentColumn = "widgetId", entityColumn = "widgetId")
     var imageList: List<WidgetImage>,
 )
