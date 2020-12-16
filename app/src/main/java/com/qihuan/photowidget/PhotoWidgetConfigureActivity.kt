@@ -32,9 +32,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
-import com.qihuan.photowidget.bean.CropPictureInfo
-import com.qihuan.photowidget.bean.ScreenSize
-import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.databinding.PhotoWidgetConfigureBinding
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.*
@@ -68,6 +66,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     }
     private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
     private val widgetInfoDao by lazy { AppDatabase.getDatabase(this).widgetInfoDao() }
+    private val widgetDao by lazy { AppDatabase.getDatabase(this).widgetDao() }
     private val vibrator by lazy { getSystemService(Vibrator::class.java) }
     private val screenSize by lazy {
         val displayMetrics = DisplayMetrics()
@@ -79,7 +78,6 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     }
 
     // todo
-    private var autoPlay: Boolean = false
     private var autoPlayInterval = 0
 
     private val selectPicForResult =
@@ -257,7 +255,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
                 copyToTempDir(widgetInfo.widgetId)
                 bindRadius(widgetInfo.widgetRadius)
                 bindPadding(widgetInfo.verticalPadding, widgetInfo.horizontalPadding)
-                bindAutoPlay(widgetInfo.autoPlay, widgetInfo.autoPlayInterval)
+                bindAutoPlay(widgetInfo.autoPlayInterval)
                 bindImage()
                 previewAdapter.submitList(imageUriList.toList())
             }
@@ -281,11 +279,9 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
             val widgetInfo = WidgetInfo(
                 appWidgetId,
-                imageUriList,
                 verticalPadding,
                 horizontalPadding,
                 widgetRadius,
-                autoPlay,
                 autoPlayInterval
             )
             addWidget(widgetInfo)
@@ -326,7 +322,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun doneEffect() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
         }
     }
@@ -374,7 +370,8 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         binding.sliderHorizontalPadding.value = horizontalPadding
     }
 
-    private fun bindAutoPlay(autoPlay: Boolean, autoPlayInterval: Int?) {
+    private fun bindAutoPlay(autoPlayInterval: Int?) {
+        val autoPlay = autoPlayInterval != null
         if (imageUriList.size <= 1) {
             binding.switchAutoPlay.isEnabled = false
             binding.tvAutoPlayInterval.text = ""
@@ -400,10 +397,19 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         lifecycleScope.launch {
             changeUIState(UIState.LOADING)
             val widgetId = widgetInfo.widgetId
-            val uri = saveWidgetPhotoFiles(widgetId)
-            widgetInfo.uri = uri
-            widgetInfoDao.save(widgetInfo)
-            updateAppWidget(this@PhotoWidgetConfigureActivity, appWidgetManager, widgetInfo)
+            val uriList = saveWidgetPhotoFiles(widgetId)
+
+            val imageList = uriList.map {
+                WidgetImage(
+                    widgetId = appWidgetId,
+                    imageUri = it,
+                    createTime = System.currentTimeMillis()
+                )
+            }
+
+            val widgetBean = WidgetBean(widgetInfo, imageList)
+            widgetDao.save(widgetBean)
+            updateAppWidget(this@PhotoWidgetConfigureActivity, appWidgetManager, widgetBean)
             changeUIState(UIState.SHOW_CONTENT)
 
             // Make sure we pass back the original appWidgetId

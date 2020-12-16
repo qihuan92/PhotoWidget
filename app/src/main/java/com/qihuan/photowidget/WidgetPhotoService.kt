@@ -3,10 +3,10 @@ package com.qihuan.photowidget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.net.toFile
+import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
 
@@ -15,9 +15,6 @@ import com.qihuan.photowidget.ktx.dp
  * @author qi
  * @since 12/9/20
  */
-
-internal const val EXTRA_IMAGE_URI = "image_uri"
-internal const val EXTRA_IMAGE_RADIUS = "image_radius"
 
 class WidgetPhotoService : RemoteViewsService() {
 
@@ -31,8 +28,8 @@ class WidgetPhotoViewFactory(
     private val intent: Intent?
 ) : RemoteViewsService.RemoteViewsFactory {
 
-    private val widgetInfoDao by lazy { AppDatabase.getDatabase(context).widgetInfoDao() }
-    private val imageUriList by lazy { mutableListOf<Uri>() }
+    private val widgetDao by lazy { AppDatabase.getDatabase(context).widgetDao() }
+    private val imageList by lazy { mutableListOf<WidgetImage>() }
     private var radius = 0f
     private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
@@ -44,29 +41,30 @@ class WidgetPhotoViewFactory(
     }
 
     override fun onDataSetChanged() {
-        imageUriList.clear()
+        imageList.clear()
         radius = 0f
-        val widgetInfo = widgetInfoDao.selectByIdSync(widgetId)
-        if (widgetInfo != null) {
-            imageUriList.addAll(widgetInfo.uri)
+        val widgetBean = widgetDao.selectByIdSync(widgetId)
+        if (widgetBean != null) {
+            imageList.addAll(widgetBean.imageList)
+            val widgetInfo = widgetBean.widgetInfo
             radius = widgetInfo.widgetRadius
         }
     }
 
     override fun onDestroy() {
-        imageUriList.clear()
+        imageList.clear()
     }
 
     override fun getCount(): Int {
-        return imageUriList.size
+        return imageList.size
     }
 
     override fun getViewAt(position: Int): RemoteViews? {
-        if (imageUriList.isNullOrEmpty()) {
+        if (imageList.isNullOrEmpty()) {
             return null
         }
         val remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image)
-        val uri = imageUriList[position]
+        val uri = imageList[position].imageUri
         if (uri.toFile().exists()) {
             remoteViews.setImageViewBitmap(
                 R.id.iv_picture,

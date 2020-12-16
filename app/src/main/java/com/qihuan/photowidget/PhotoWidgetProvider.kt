@@ -10,7 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.RemoteViews
-import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.ktx.dp
@@ -29,13 +29,13 @@ class PhotoWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        val widgetInfoDao = AppDatabase.getDatabase(context).widgetInfoDao()
+        val widgetDao = AppDatabase.getDatabase(context).widgetDao()
         GlobalScope.launch {
             // 更新微件
             for (appWidgetId in appWidgetIds) {
-                val widgetInfo = widgetInfoDao.selectById(appWidgetId)
-                if (widgetInfo != null) {
-                    updateAppWidget(context, appWidgetManager, widgetInfo)
+                val widgetBean = widgetDao.selectById(appWidgetId)
+                if (widgetBean != null) {
+                    updateAppWidget(context, appWidgetManager, widgetBean)
                 }
             }
         }
@@ -58,14 +58,13 @@ class PhotoWidgetProvider : AppWidgetProvider() {
 internal fun updateAppWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
-    widgetInfo: WidgetInfo
+    widgetBean: WidgetBean
 ) {
+    val widgetInfo = widgetBean.widgetInfo
     val widgetId = widgetInfo.widgetId
 
     val views = RemoteViews(context.packageName, R.layout.photo_widget)
     views.setRemoteAdapter(R.id.vf_picture, Intent(context, WidgetPhotoService::class.java).apply {
-        putExtra(EXTRA_IMAGE_URI, widgetInfo.uri.joinToString(","))
-        putExtra(EXTRA_IMAGE_RADIUS, widgetInfo.widgetRadius)
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
     })
 

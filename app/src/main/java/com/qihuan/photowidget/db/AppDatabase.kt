@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.migration.MigrationFor1To2
 import com.qihuan.photowidget.db.migration.MigrationFor2To3
@@ -16,7 +17,8 @@ import com.qihuan.photowidget.db.migration.MigrationFor2To3
  */
 @Database(
     entities = [
-        WidgetInfo::class
+        WidgetInfo::class,
+        WidgetImage::class,
     ],
     version = 3,
     exportSchema = false
@@ -25,6 +27,8 @@ import com.qihuan.photowidget.db.migration.MigrationFor2To3
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun widgetInfoDao(): WidgetInfoDao
+
+    abstract fun widgetDao(): WidgetDao
 
     companion object {
         @Volatile
