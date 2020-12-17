@@ -217,6 +217,13 @@ class ConfigureActivity : AppCompatActivity() {
             doneEffect()
             viewModel.saveWidget(appWidgetId)
         }
+
+        binding.layoutPhotoWidget.areaLeft.setOnClickListener {
+            binding.layoutPhotoWidget.vfPicture.showPrevious()
+        }
+        binding.layoutPhotoWidget.areaRight.setOnClickListener {
+            binding.layoutPhotoWidget.vfPicture.showNext()
+        }
     }
 
     override fun finish() {
