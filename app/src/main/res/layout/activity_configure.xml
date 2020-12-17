@@ -72,12 +72,12 @@
                         android:id="@+id/layout_auto_play_interval"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:paddingHorizontal="10dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
                             android:text="@string/auto_play_interval"
                             android:textAppearance="?textAppearanceBody2"
                             android:textStyle="bold" />
@@ -86,7 +86,8 @@
                             android:id="@+id/tv_auto_play_interval"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="10s" />
+                            android:text="@{viewModel.autoPlayInterval == null ? @string/auto_play_interval_empty : String.format(@string/auto_play_interval_content, viewModel.autoPlayInterval / 1000)}"
+                            android:textAppearance="?textAppearanceCaption" />
                     </LinearLayout>
 
                     <Space

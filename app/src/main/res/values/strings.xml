@@ -9,4 +9,6 @@
     <string name="text_photo">相片</string>
     <string name="switch_auto_play">自动播放</string>
     <string name="auto_play_interval">播放间隔</string>
+    <string name="auto_play_interval_empty">无（可以点击左右边缘进行切换）</string>
+    <string name="auto_play_interval_content">%s 秒</string>
 </resources>

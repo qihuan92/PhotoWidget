@@ -17,29 +17,26 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.net.toUri
 import androidx.core.view.*
-import androidx.databinding.Observable
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.ConcatAdapter
+import com.google.android.material.slider.Slider
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
-import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.result.CropPictureContract
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
@@ -59,6 +56,11 @@ class ConfigureActivity : AppCompatActivity() {
     private val viewModel by viewModels<ConfigureViewModel>()
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+    private val sliderEffectCallback = Slider.OnChangeListener { _, _, fromUser ->
+        if (fromUser) {
+            sliderEffect()
+        }
+    }
 
     private val previewAdapter by lazy { PreviewPhotoAdapter() }
     private val previewAddAdapter by lazy {
@@ -67,7 +69,6 @@ class ConfigureActivity : AppCompatActivity() {
         previewPhotoAddAdapter
     }
     private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
-    private val widgetDao by lazy { AppDatabase.getDatabase(this).widgetDao() }
     private val vibrator by lazy { getSystemService(Vibrator::class.java) }
     private val screenSize by lazy {
         val displayMetrics = DisplayMetrics()
@@ -130,88 +131,91 @@ class ConfigureActivity : AppCompatActivity() {
 
         binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
         binding.rvPreviewList.adapter = ConcatAdapter(previewAddAdapter, previewAdapter)
-        previewAdapter.setOnItemDeleteListener { position, uri ->
-            viewModel.deleteImage(position, uri)
+        previewAdapter.setOnItemDeleteListener { uri ->
+            viewModel.deleteImage(uri)
         }
         previewAddAdapter.setOnItemAddListener {
             selectPicForResult.launch("image/*")
         }
 
         viewModel.imageUriList.observe(this) {
+            if (it.size <= 1) {
+                viewModel.autoPlayInterval.value = null
+                binding.layoutAutoPlayInterval.isGone = true
+            } else {
+                binding.layoutAutoPlayInterval.isGone = false
+            }
+
             previewAdapter.submitList(it.toList())
             binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
-            val widgetRadius = (viewModel.widgetRadius.get() ?: 0f).dp
+            val widgetRadius = viewModel.widgetRadius.get().dp
             widgetAdapter.setData(it, widgetRadius)
         }
 
-        viewModel.horizontalPadding.addOnPropertyChangedCallback(object :
-            Observable.OnPropertyChangedCallback() {
-            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                val widgetRoot = binding.layoutPhotoWidget.root
-                val horizontalPadding = (viewModel.horizontalPadding.get() ?: 0f).dp
-                widgetRoot.updatePadding(
-                    left = horizontalPadding,
-                    right = horizontalPadding
-                )
-            }
-        })
+        viewModel.horizontalPadding.observe {
+            val horizontalPadding = it.dp
+            binding.layoutPhotoWidget.root.updatePadding(
+                left = horizontalPadding,
+                right = horizontalPadding
+            )
+        }
 
-        viewModel.verticalPadding.addOnPropertyChangedCallback(object :
-            Observable.OnPropertyChangedCallback() {
-            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                val widgetRoot = binding.layoutPhotoWidget.root
-                val verticalPadding = (viewModel.verticalPadding.get() ?: 0f).dp
-                widgetRoot.updatePadding(
-                    top = verticalPadding,
-                    bottom = verticalPadding
-                )
-            }
-        })
+        viewModel.verticalPadding.observe {
+            val verticalPadding = it.dp
+            binding.layoutPhotoWidget.root.updatePadding(
+                top = verticalPadding,
+                bottom = verticalPadding
+            )
+        }
 
-        viewModel.widgetRadius.addOnPropertyChangedCallback(object :
-            Observable.OnPropertyChangedCallback() {
-            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-                val imageUriList = viewModel.imageUriList.value.orEmpty()
-                binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
-                val widgetRadius = (viewModel.widgetRadius.get() ?: 0f).dp
-                widgetAdapter.setData(imageUriList, widgetRadius)
-            }
-        })
+        viewModel.widgetRadius.observe {
+            val imageUriList = viewModel.imageUriList.value.orEmpty()
+            binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
+            widgetAdapter.setData(imageUriList, it.dp)
+        }
 
         viewModel.autoPlayInterval.observe(this) {
             val vfPicture = binding.layoutPhotoWidget.vfPicture
             if (it == null) {
                 vfPicture.isAutoStart = false
-                binding.tvAutoPlayInterval.text = "无（可以点击左右边缘进行切换）"
             } else {
                 vfPicture.isAutoStart = true
                 vfPicture.flipInterval = it
-                binding.tvAutoPlayInterval.text = "${it} ms"
             }
         }
 
+        viewModel.isLoading.observe(this) {
+            if (it != null) {
+                if (it) {
+                    changeUIState(UIState.LOADING)
+                } else {
+                    changeUIState(UIState.SHOW_CONTENT)
+                }
+            }
+        }
+
+        viewModel.isDone.observe(this) {
+            if (it != null && it) {
+                setResult(RESULT_OK, Intent().apply {
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                })
+                finish()
+            }
+        }
+
+        viewModel.message.observe(this) {
+            if (it != null) {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.sliderHorizontalPadding.addOnChangeListener(sliderEffectCallback)
+        binding.sliderVerticalPadding.addOnChangeListener(sliderEffectCallback)
+        binding.sliderWidgetRadius.addOnChangeListener(sliderEffectCallback)
+
         binding.btnConfirm.setOnClickListener {
             doneEffect()
-
-            val verticalPadding = binding.sliderVerticalPadding.value
-            val horizontalPadding = binding.sliderHorizontalPadding.value
-            val widgetRadius = binding.sliderWidgetRadius.value
-            val autoPlayInterval = viewModel.autoPlayInterval.value
-
-//            if (imageUriList.isNullOrEmpty()) {
-//                Toast.makeText(this, getString(R.string.warning_select_picture), Toast.LENGTH_SHORT)
-//                    .show()
-//                return@setOnClickListener
-//            }
-
-            val widgetInfo = WidgetInfo(
-                appWidgetId,
-                verticalPadding,
-                horizontalPadding,
-                widgetRadius,
-                autoPlayInterval
-            )
-            addWidget(widgetInfo)
+            viewModel.saveWidget(appWidgetId)
         }
     }
 
@@ -342,50 +346,6 @@ class ConfigureActivity : AppCompatActivity() {
 
                 binding.loadingView.visibility = View.GONE
             }
-        }
-    }
-
-    private fun addWidget(widgetInfo: WidgetInfo) {
-        val appWidgetManager = AppWidgetManager.getInstance(this)
-        lifecycleScope.launch {
-            changeUIState(UIState.LOADING)
-            val widgetId = widgetInfo.widgetId
-            val uriList = saveWidgetPhotoFiles(widgetId)
-
-            val imageList = uriList.map {
-                WidgetImage(
-                    widgetId = appWidgetId,
-                    imageUri = it,
-                    createTime = System.currentTimeMillis()
-                )
-            }
-
-            val widgetBean = WidgetBean(widgetInfo, imageList)
-            widgetDao.save(widgetBean)
-            updateAppWidget(this@ConfigureActivity, appWidgetManager, widgetBean)
-            changeUIState(UIState.SHOW_CONTENT)
-
-            // Make sure we pass back the original appWidgetId
-            val resultValue = Intent()
-            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            setResult(RESULT_OK, resultValue)
-            finish()
-        }
-    }
-
-    private suspend fun saveWidgetPhotoFiles(widgetId: Int): List<Uri> {
-        return withContext(Dispatchers.IO) {
-            val tempDir = File(cacheDir, TEMP_DIR_NAME)
-            val widgetDir = File(filesDir, "widget_${widgetId}")
-            copyDir(tempDir, widgetDir, override = true)
-
-            val uriList = mutableListOf<Uri>()
-            if (widgetDir.exists()) {
-                widgetDir.listFiles()?.forEach {
-                    uriList.add(it.toUri())
-                }
-            }
-            return@withContext uriList
         }
     }
 }

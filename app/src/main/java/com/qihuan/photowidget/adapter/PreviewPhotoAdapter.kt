@@ -13,7 +13,7 @@ import com.qihuan.photowidget.databinding.ItemPreviewPhotoBinding
  * @author qi
  * @since 12/9/20
  */
-class PreviewPhotoAdapter : ListAdapter<Uri, RecyclerView.ViewHolder>(DiffCallback()) {
+class PreviewPhotoAdapter : ListAdapter<Uri, PreviewPhotoAdapter.ViewHolder>(DiffCallback()) {
 
     private class DiffCallback : DiffUtil.ItemCallback<Uri>() {
         override fun areItemsTheSame(oldItem: Uri, newItem: Uri): Boolean {
@@ -25,39 +25,35 @@ class PreviewPhotoAdapter : ListAdapter<Uri, RecyclerView.ViewHolder>(DiffCallba
         }
     }
 
-    class ViewHolder(
-        private val binding: ItemPreviewPhotoBinding,
-        private val onItemDeleteListener: ((Int, Uri) -> Unit)?
+    inner class ViewHolder(
+        private val binding: ItemPreviewPhotoBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Uri, position: Int) {
+        fun bind(item: Uri) {
             binding.ivPicture.setImageURI(item)
             binding.btnDelete.setOnClickListener {
-                onItemDeleteListener?.invoke(position, item)
+                onItemDeleteListener?.invoke(item)
             }
         }
     }
 
-    private var onItemDeleteListener: ((Int, Uri) -> Unit)? = null
+    private var onItemDeleteListener: ((Uri) -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             ItemPreviewPhotoBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ),
-            onItemDeleteListener
+            )
         )
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is ViewHolder) {
-            holder.bind(getItem(position), position)
-        }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
-    fun setOnItemDeleteListener(onItemDeleteListener: ((Int, Uri) -> Unit)) {
+    fun setOnItemDeleteListener(onItemDeleteListener: ((Uri) -> Unit)) {
         this.onItemDeleteListener = onItemDeleteListener
     }
 }
