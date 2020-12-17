@@ -6,6 +6,10 @@
         <variable
             name="viewModel"
             type="com.qihuan.photowidget.ConfigureViewModel" />
+
+        <variable
+            name="activity"
+            type="com.qihuan.photowidget.ConfigureActivity" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -195,6 +199,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="15dp"
+            android:onClick="@{() -> viewModel.saveWidget(activity.appWidgetId)}"
             android:src="@drawable/ic_round_done_24"
             app:borderWidth="0dp"
             app:tint="@android:color/white" />

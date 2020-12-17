@@ -9,10 +9,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +25,6 @@ import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.ConcatAdapter
-import com.google.android.material.slider.Slider
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
@@ -55,12 +51,7 @@ class ConfigureActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivityConfigureBinding::inflate)
     private val viewModel by viewModels<ConfigureViewModel>()
 
-    private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
-    private val sliderEffectCallback = Slider.OnChangeListener { _, _, fromUser ->
-        if (fromUser) {
-            sliderEffect()
-        }
-    }
+    var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     private val previewAdapter by lazy { PreviewPhotoAdapter() }
     private val previewAddAdapter by lazy {
@@ -69,7 +60,6 @@ class ConfigureActivity : AppCompatActivity() {
         previewPhotoAddAdapter
     }
     private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
-    private val vibrator by lazy { getSystemService(Vibrator::class.java) }
     private val screenSize by lazy {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -121,6 +111,7 @@ class ConfigureActivity : AppCompatActivity() {
         setResult(RESULT_CANCELED)
         setContentView(binding.root)
         binding.viewModel = viewModel
+        binding.activity = this
         bindView()
         handleIntent(intent)
     }
@@ -207,15 +198,6 @@ class ConfigureActivity : AppCompatActivity() {
             if (it != null) {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
             }
-        }
-
-        binding.sliderHorizontalPadding.addOnChangeListener(sliderEffectCallback)
-        binding.sliderVerticalPadding.addOnChangeListener(sliderEffectCallback)
-        binding.sliderWidgetRadius.addOnChangeListener(sliderEffectCallback)
-
-        binding.btnConfirm.setOnClickListener {
-            doneEffect()
-            viewModel.saveWidget(appWidgetId)
         }
 
         binding.layoutPhotoWidget.areaLeft.setOnClickListener {
@@ -326,18 +308,6 @@ class ConfigureActivity : AppCompatActivity() {
                     background = BitmapDrawable(resources, blurBitmap)
                 }
             }
-        }
-    }
-
-    private fun sliderEffect() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(1, 1))
-        }
-    }
-
-    private fun doneEffect() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
         }
     }
 
