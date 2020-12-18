@@ -17,6 +17,7 @@ import android.view.animation.AccelerateInterpolator
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
@@ -67,6 +68,15 @@ class ConfigureActivity : AppCompatActivity() {
     }
     private val defAnimTime by lazy {
         resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+    }
+    private val intervalItems by lazy {
+        listOf(
+            Pair("无", null),
+            Pair("3秒", 3000),
+            Pair("5秒", 5000),
+            Pair("10秒", 10000),
+            Pair("30秒", 30000),
+        )
     }
 
     private val selectPicForResult =
@@ -169,9 +179,21 @@ class ConfigureActivity : AppCompatActivity() {
             val vfPicture = binding.layoutPhotoWidget.vfPicture
             if (it == null) {
                 vfPicture.isAutoStart = false
+                vfPicture.stopFlipping()
+
+                binding.tvAutoPlayInterval.text = getString(R.string.auto_play_interval_empty)
             } else {
                 vfPicture.isAutoStart = true
                 vfPicture.flipInterval = it
+                vfPicture.startFlipping()
+
+                binding.tvAutoPlayInterval.text =
+                    String.format(
+                        getString(
+                            R.string.auto_play_interval_content,
+                            (it / 1000).toString()
+                        )
+                    )
             }
         }
 
@@ -200,10 +222,10 @@ class ConfigureActivity : AppCompatActivity() {
             }
         }
 
-        binding.layoutPhotoWidget.areaLeft.setOnClickListener {
+        binding.layoutPhotoWidget.photoWidgetInfo.areaLeft.setOnClickListener {
             binding.layoutPhotoWidget.vfPicture.showPrevious()
         }
-        binding.layoutPhotoWidget.areaRight.setOnClickListener {
+        binding.layoutPhotoWidget.photoWidgetInfo.areaRight.setOnClickListener {
             binding.layoutPhotoWidget.vfPicture.showNext()
         }
     }
@@ -324,5 +346,18 @@ class ConfigureActivity : AppCompatActivity() {
                 binding.loadingView.visibility = View.GONE
             }
         }
+    }
+
+    fun showIntervalSelector() {
+        val itemNameList = intervalItems.map { it.first }.toTypedArray()
+        val itemValueList = intervalItems.map { it.second }.toTypedArray()
+        AlertDialog.Builder(this)
+            .setSingleChoiceItems(
+                itemNameList,
+                itemValueList.indexOf(viewModel.autoPlayInterval.value)
+            ) { dialog, i ->
+                viewModel.autoPlayInterval.value = intervalItems[i].second
+                dialog.dismiss()
+            }.show()
     }
 }

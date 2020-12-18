@@ -18,6 +18,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 
+const val EXTRA_INTERVAL = "interval"
 const val EXTRA_NAV = "nav"
 const val NAV_WIDGET_PREV = "nav_widget_prev"
 const val NAV_WIDGET_NEXT = "nav_widget_next"
@@ -55,17 +56,17 @@ class PhotoWidgetProvider : AppWidgetProvider() {
     }
 
     private fun navWidget(context: Context, intent: Intent, navAction: String) {
-        val views = RemoteViews(context.packageName, R.layout.photo_widget)
+        val widgetId = intent.getIntExtra(
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            AppWidgetManager.INVALID_APPWIDGET_ID
+        )
+        val interval = intent.getIntExtra(EXTRA_INTERVAL, -1)
+        val views = createRemoteViews(context, interval)
         when (navAction) {
             NAV_WIDGET_NEXT -> views.showNext(R.id.vf_picture)
             NAV_WIDGET_PREV -> views.showPrevious(R.id.vf_picture)
         }
-        AppWidgetManager.getInstance(context).updateAppWidget(
-            intent.getIntExtra(
-                AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID
-            ), views
-        )
+        AppWidgetManager.getInstance(context).updateAppWidget(widgetId, views)
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
@@ -90,7 +91,8 @@ internal fun updateAppWidget(
     val widgetInfo = widgetBean.widgetInfo
     val widgetId = widgetInfo.widgetId
 
-    val views = RemoteViews(context.packageName, R.layout.photo_widget)
+    val autoPlayInterval = widgetInfo.autoPlayInterval
+    val views = createRemoteViews(context, autoPlayInterval)
     views.setRemoteAdapter(R.id.vf_picture, Intent(context, WidgetPhotoService::class.java).apply {
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
     })
@@ -118,32 +120,53 @@ internal fun updateAppWidget(
 
     views.setOnClickPendingIntent(
         R.id.area_left,
-        getWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_PREV)
+        getWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_PREV, autoPlayInterval)
     )
 
     views.setOnClickPendingIntent(
         R.id.area_right,
-        getWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_NEXT)
+        getWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_NEXT, autoPlayInterval)
     )
 
     appWidgetManager.updateAppWidget(widgetId, views)
     appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.vf_picture)
 }
 
-fun getWidgetNavPendingIntent(context: Context, widgetId: Int, navAction: String): PendingIntent {
+fun createRemoteViews(context: Context, interval: Int?): RemoteViews {
+    if (interval == null || interval < 0) {
+        return RemoteViews(context.packageName, R.layout.photo_widget)
+    }
+    val layoutId = context.resources.getIdentifier(
+        "photo_widget_interval_${interval}",
+        "layout",
+        context.packageName
+    )
+    if (layoutId <= 0) {
+        return RemoteViews(context.packageName, R.layout.photo_widget)
+    }
+    return RemoteViews(context.packageName, layoutId)
+}
+
+fun getWidgetNavPendingIntent(
+    context: Context,
+    widgetId: Int,
+    navAction: String,
+    interval: Int?
+): PendingIntent {
     return PendingIntent.getBroadcast(
         context,
         0,
-        getWidgetNavIntent(context, widgetId, navAction),
+        getWidgetNavIntent(context, widgetId, navAction, interval),
         PendingIntent.FLAG_UPDATE_CURRENT
     )
 }
 
-fun getWidgetNavIntent(context: Context, widgetId: Int, navAction: String): Intent {
+fun getWidgetNavIntent(context: Context, widgetId: Int, navAction: String, interval: Int?): Intent {
     return Intent(context, PhotoWidgetProvider::class.java).apply {
         action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         putExtra(EXTRA_NAV, navAction)
+        putExtra(EXTRA_INTERVAL, interval)
     }
 }
 

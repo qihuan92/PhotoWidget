@@ -7,7 +7,9 @@
     <AdapterViewFlipper
         android:id="@+id/vf_picture"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:autoStart="true"
+        android:flipInterval="5000" />
 
     <include
         android:id="@+id/photo_widget_info"
