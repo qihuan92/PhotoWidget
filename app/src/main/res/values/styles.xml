@@ -5,4 +5,9 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
     </style>
+
+    <style name="ViewFlipperStyle">
+        <item name="android:inAnimation">@animator/anim_view_flipper_in</item>
+        <item name="android:outAnimation">@animator/anim_view_flipper_out</item>
+    </style>
 </resources>

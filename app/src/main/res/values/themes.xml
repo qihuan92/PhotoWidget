@@ -14,9 +14,4 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <!-- Customize your theme here. -->
     </style>
-
-    <style name="ThemeOverlay.PhotoWidget.AppWidgetContainer" parent="">
-        <item name="appWidgetBackgroundColor">@android:color/transparent</item>
-        <item name="appWidgetTextColor">@color/light_blue_50</item>
-    </style>
 </resources>
