@@ -1,16 +1,40 @@
 package com.qihuan.photowidget.db.migration
 
+import android.content.Context
+import androidx.core.net.toUri
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import java.io.File
 
 /**
  * MigrationFor2To3
  * @author qi
  * @since 12/11/20
  */
-class MigrationFor2To3 : Migration(2, 3) {
+class MigrationFor2To3(
+    private val context: Context
+) : Migration(2, 3) {
 
     override fun migrate(database: SupportSQLiteDatabase) {
+        // 迁移图片地址
+        database.query("select * from widget_info").use { cursor ->
+            while (cursor.moveToNext()) {
+                val widgetId = cursor.getInt(cursor.getColumnIndex("widgetId"))
+                val sourceFile = File(context.filesDir, "widget_${widgetId}.png")
+                if (sourceFile.exists()) {
+                    val targetDir = File(context.filesDir, "widget_${widgetId}")
+                    if (!targetDir.exists()) {
+                        targetDir.mkdirs()
+                    }
+                    val targetFile = File(targetDir, "${System.currentTimeMillis()}.png")
+                    sourceFile.copyTo(targetFile, overwrite = true)
+                    sourceFile.delete()
+
+                    database.execSQL("update widget_info set uri = ?", arrayOf(targetFile.toUri().toString()))
+                }
+            }
+        }
+
         // 新增字段
         database.execSQL("ALTER TABLE widget_info ADD COLUMN autoPlayInterval INTEGER")
         // 创建图片表

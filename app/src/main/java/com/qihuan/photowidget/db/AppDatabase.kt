@@ -46,7 +46,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "photo_widget"
                 ).addMigrations(
                     MigrationFor1To2(context),
-                    MigrationFor2To3(),
+                    MigrationFor2To3(context),
                 ).build()
                 INSTANCE = instance
                 return instance

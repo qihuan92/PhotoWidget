@@ -9,7 +9,7 @@
 
         <variable
             name="activity"
-            type="com.qihuan.photowidget.ConfigureActivity" />
+            type="com.qihuan.photowidget.PhotoWidgetConfigureActivity" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
