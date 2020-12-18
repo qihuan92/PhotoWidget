@@ -32,6 +32,7 @@ class MigrationFor2To3 : Migration(2, 3) {
                 `verticalPadding` REAL NOT NULL,
                 `horizontalPadding` REAL NOT NULL, 
                 `widgetRadius` REAL NOT NULL,
+                `autoPlayInterval` INTEGER,
                 PRIMARY KEY(`widgetId`)
                 )
             """
@@ -39,7 +40,7 @@ class MigrationFor2To3 : Migration(2, 3) {
         database.execSQL(
             """
                 insert into temp_widget_info(widgetId, verticalPadding, horizontalPadding, widgetRadius, autoPlayInterval)
-                select widgetId, verticalPadding, horizontalPadding, widgetRadius, autoPlayInterval
+                select widgetId, verticalPadding, horizontalPadding, widgetRadius, null
                 from widget_info
             """
         )
