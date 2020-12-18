@@ -30,7 +30,7 @@ class MigrationFor2To3(
                     sourceFile.copyTo(targetFile, overwrite = true)
                     sourceFile.delete()
 
-                    database.execSQL("update widget_info set uri = ?", arrayOf(targetFile.toUri().toString()))
+                    database.execSQL("update widget_info set uri = ? where widgetId = ?", arrayOf(targetFile.toUri().toString(), widgetId))
                 }
             }
         }
