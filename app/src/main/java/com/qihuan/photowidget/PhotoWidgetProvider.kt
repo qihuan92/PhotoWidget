@@ -17,6 +17,7 @@ import com.qihuan.photowidget.ktx.dp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.random.Random
 
 const val EXTRA_INTERVAL = "interval"
 const val EXTRA_NAV = "nav"
@@ -94,6 +95,7 @@ internal fun updateAppWidget(
     val autoPlayInterval = widgetInfo.autoPlayInterval
     val views = createRemoteViews(context, autoPlayInterval)
     views.setRemoteAdapter(R.id.vf_picture, Intent(context, WidgetPhotoService::class.java).apply {
+        type = Random.nextInt().toString()
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
     })
 
