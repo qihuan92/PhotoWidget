@@ -11,4 +11,5 @@
     <string name="auto_play_interval">播放间隔</string>
     <string name="auto_play_interval_empty">无（可以点击左右边缘进行切换）</string>
     <string name="auto_play_interval_content">%s 秒</string>
+    <string name="confirm">确定</string>
 </resources>
