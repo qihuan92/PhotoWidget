@@ -5,6 +5,8 @@ import android.appwidget.AppWidgetManager
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
 import androidx.databinding.ObservableFloat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -37,6 +39,8 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     val widgetRadius by lazy { ObservableFloat(0f) }
     val verticalPadding by lazy { ObservableFloat(0f) }
     val horizontalPadding by lazy { ObservableFloat(0f) }
+    val reEdit by lazy { ObservableBoolean(true) }
+    val openUrl by lazy { ObservableField<String>() }
     val autoPlayInterval by lazy { MutableLiveData<Int?>() }
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
     val isLoading by lazy { SingleLiveEvent<Boolean?>(null) }
@@ -111,7 +115,9 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 verticalPadding.get(),
                 horizontalPadding.get(),
                 widgetRadius.get(),
-                autoPlayInterval.value
+                autoPlayInterval.value,
+                reEdit.get(),
+                openUrl.get(),
             )
 
             val uriList = saveWidgetPhotoFiles(widgetId)

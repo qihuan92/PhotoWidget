@@ -9,6 +9,7 @@ import android.graphics.*
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.RemoteViews
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.db.AppDatabase
@@ -115,10 +116,14 @@ internal fun updateAppWidget(
         }
         putExtras(extras)
     }
-    views.setOnClickPendingIntent(
-        R.id.iv_info,
-        PendingIntent.getActivity(context, widgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-    )
+
+    views.setViewVisibility(R.id.iv_info, if (widgetInfo.reEdit) View.VISIBLE else View.GONE)
+    if (widgetInfo.reEdit) {
+        views.setOnClickPendingIntent(
+            R.id.iv_info,
+            PendingIntent.getActivity(context, widgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        )
+    }
 
     views.setOnClickPendingIntent(
         R.id.area_left,

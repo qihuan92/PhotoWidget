@@ -1,15 +1,15 @@
 <resources>
-    <string name="app_name">相片微件</string>
-    <string name="vertical_padding">上下边距</string>
-    <string name="horizontal_padding">左右边距</string>
-    <string name="widget_radius">组件圆角</string>
-    <string name="select_picture">选择图片</string>
-    <string name="warning_select_picture">请选择一张照片</string>
-    <string name="confirm">确定</string>
-    <string name="text_photo">相片</string>
-    <string name="switch_auto_play">自动播放</string>
-    <string name="auto_play_interval">播放间隔</string>
-    <string name="auto_play_interval_empty">无（可以点击左右边缘进行切换）</string>
-    <string name="auto_play_interval_content">%s 秒</string>
-    <string name="confirm">确定</string>
+    <string name="app_name" translatable="false">相片微件</string>
+    <string name="vertical_padding" translatable="false">上下边距</string>
+    <string name="horizontal_padding" translatable="false">左右边距</string>
+    <string name="widget_radius" translatable="false">组件圆角</string>
+    <string name="select_picture" translatable="false">选择图片</string>
+    <string name="warning_select_picture" translatable="false">请选择一张照片</string>
+    <string name="confirm" translatable="false">确定</string>
+    <string name="text_photo" translatable="false">相片</string>
+    <string name="switch_auto_play" translatable="false">自动播放</string>
+    <string name="auto_play_interval" translatable="false">播放间隔</string>
+    <string name="auto_play_interval_empty" translatable="false">无（可以点击左右边缘进行切换）</string>
+    <string name="auto_play_interval_content" translatable="false">%s 秒</string>
+    <string name="widget_re_edit">是否可以再次编辑</string>
 </resources>
