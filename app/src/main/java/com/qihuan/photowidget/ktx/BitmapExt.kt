@@ -12,7 +12,6 @@ import android.util.Log
 import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.renderscript.ScriptC_StackBlur
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -67,26 +66,6 @@ private fun doGaussianBlur(
     scriptIntrinsicBlur.setRadius(radius.toFloat())
     scriptIntrinsicBlur.setInput(input)
     scriptIntrinsicBlur.forEach(output)
-}
-
-private fun doStackBlur(
-    renderScript: RenderScript,
-    srcBitmap: Bitmap,
-    radius: Int,
-    input: Allocation,
-    output: Allocation
-) {
-    val stackBlurScript = ScriptC_StackBlur(renderScript)
-    stackBlurScript._input = input
-    stackBlurScript._output = output
-    stackBlurScript._width = srcBitmap.width
-    stackBlurScript._height = srcBitmap.height
-    stackBlurScript._radius = radius
-    stackBlurScript.forEach_stackblur_v(input)
-
-    stackBlurScript._input = output
-    stackBlurScript._output = input
-    stackBlurScript.forEach_stackblur_h(output)
 }
 
 private fun getScaledBitmap(bitmap: Bitmap, factor: Float): Bitmap {
