@@ -110,30 +110,44 @@ internal fun updateAppWidget(
         verticalPadding
     )
 
-    val intent = Intent(context, PhotoWidgetConfigureActivity::class.java).apply {
-        val extras = Bundle().apply {
-            putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-        }
-        putExtras(extras)
-    }
-
     views.setViewVisibility(R.id.iv_info, if (widgetInfo.reEdit) View.VISIBLE else View.GONE)
     if (widgetInfo.reEdit) {
+        val intent = Intent(context, PhotoWidgetConfigureActivity::class.java).apply {
+            val extras = Bundle().apply {
+                putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+            }
+            putExtras(extras)
+        }
+
         views.setOnClickPendingIntent(
             R.id.iv_info,
             PendingIntent.getActivity(context, widgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         )
     }
 
-    views.setOnClickPendingIntent(
-        R.id.area_left,
-        getWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_PREV, autoPlayInterval)
-    )
+    if (!widgetInfo.openUrl.isNullOrBlank()) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(widgetInfo.openUrl))
+        val pendingIntent =
+            PendingIntent.getActivity(context, widgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        views.setOnClickPendingIntent(R.id.area_center, pendingIntent)
 
-    views.setOnClickPendingIntent(
-        R.id.area_right,
-        getWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_NEXT, autoPlayInterval)
-    )
+        if (widgetBean.imageList.size == 1) {
+            views.setOnClickPendingIntent(R.id.area_left, pendingIntent)
+            views.setOnClickPendingIntent(R.id.area_right, pendingIntent)
+        }
+    }
+
+    if (widgetBean.imageList.size > 1) {
+        views.setOnClickPendingIntent(
+            R.id.area_left,
+            getWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_PREV, autoPlayInterval)
+        )
+
+        views.setOnClickPendingIntent(
+            R.id.area_right,
+            getWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_NEXT, autoPlayInterval)
+        )
+    }
 
     appWidgetManager.updateAppWidget(widgetId, views)
     appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.vf_picture)

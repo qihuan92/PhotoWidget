@@ -265,9 +265,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
 
     private fun adaptBars() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.scrollViewInfo) { view, insets ->
-            val barInsets = insets.getInsets(
-                WindowInsetsCompat.Type.ime() or WindowInsetsCompat.Type.navigationBars()
-            )
+            val barInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
             view.post {
                 view.updatePadding(bottom = barInsets.bottom + binding.btnConfirm.height)
             }

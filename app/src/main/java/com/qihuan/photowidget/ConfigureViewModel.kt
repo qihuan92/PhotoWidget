@@ -40,7 +40,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     val verticalPadding by lazy { ObservableFloat(0f) }
     val horizontalPadding by lazy { ObservableFloat(0f) }
     val reEdit by lazy { ObservableBoolean(true) }
-    val openUrl by lazy { ObservableField<String>() }
+    val openUrl by lazy { ObservableField("") }
     val autoPlayInterval by lazy { MutableLiveData<Int?>() }
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
     val isLoading by lazy { SingleLiveEvent<Boolean?>(null) }
@@ -95,6 +95,8 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 verticalPadding.set(widgetInfo.verticalPadding)
                 horizontalPadding.set(widgetInfo.horizontalPadding)
                 widgetRadius.set(widgetInfo.widgetRadius)
+                reEdit.set(widgetInfo.reEdit)
+                openUrl.set(widgetInfo.openUrl)
                 autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
             }
             isLoading.value = false

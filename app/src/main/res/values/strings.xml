@@ -12,4 +12,6 @@
     <string name="auto_play_interval_empty" translatable="false">无（可以点击左右边缘进行切换）</string>
     <string name="auto_play_interval_content" translatable="false">%s 秒</string>
     <string name="widget_re_edit">是否可以再次编辑</string>
+    <string name="widget_open_url">相片链接</string>
+    <string name="widget_open_url_help_text">支持 http/https 链接，以及 URL Scheme</string>
 </resources>
