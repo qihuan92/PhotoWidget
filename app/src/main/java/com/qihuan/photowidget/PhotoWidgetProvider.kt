@@ -5,12 +5,14 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.graphics.*
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.RemoteViews
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.core.graphics.drawable.toBitmap
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.deleteDir
@@ -193,24 +195,9 @@ fun getWidgetNavIntent(context: Context, widgetId: Int, navAction: String, inter
 
 internal fun createWidgetBitmap(context: Context, uri: Uri, radius: Int): Bitmap {
     val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-    return getRoundedBitmap(bitmap, radius)
-}
-
-private fun getRoundedBitmap(bitmap: Bitmap, radius: Int): Bitmap {
+    val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(context.resources, bitmap)
     val radiusPx = radius.toFloat() * 2
-    val roundedBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
-
-    val canvas = Canvas(roundedBitmap)
-    val paint = Paint()
-    paint.isAntiAlias = true
-
-    val rect = Rect(0, 0, bitmap.width, bitmap.height)
-    val rectF = RectF(rect)
-
-    canvas.drawARGB(0, 0, 0, 0)
-    canvas.drawRoundRect(rectF, radiusPx, radiusPx, paint)
-    paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-
-    canvas.drawBitmap(bitmap, rect, rect, paint)
-    return roundedBitmap
+    roundedBitmapDrawable.cornerRadius = radiusPx
+    roundedBitmapDrawable.setAntiAlias(true)
+    return roundedBitmapDrawable.toBitmap(bitmap.width, bitmap.height)
 }
