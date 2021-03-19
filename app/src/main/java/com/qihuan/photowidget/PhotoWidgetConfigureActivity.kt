@@ -78,6 +78,7 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             Pair("30秒", 30000),
         )
     }
+    private var tempOutFile: File? = null
 
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
@@ -87,8 +88,8 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
                     outDir.mkdirs()
                 }
 
-                val outFile = File(outDir, "${System.currentTimeMillis()}.png")
-                cropPicForResult.launch(CropPictureInfo(it, Uri.fromFile(outFile)))
+                tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
+                cropPicForResult.launch(CropPictureInfo(it, Uri.fromFile(tempOutFile)))
             }
         }
 
@@ -96,6 +97,8 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         registerForActivityResult(CropPictureContract()) {
             if (it != null) {
                 viewModel.addImage(it)
+            } else {
+                tempOutFile?.delete()
             }
         }
 
