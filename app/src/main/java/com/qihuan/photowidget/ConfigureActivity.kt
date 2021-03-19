@@ -2,6 +2,7 @@ package com.qihuan.photowidget
 
 import android.Manifest
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -39,7 +40,7 @@ import java.io.File
 /**
  * The configuration screen for the [PhotoWidgetProvider] AppWidget.
  */
-class PhotoWidgetConfigureActivity : AppCompatActivity() {
+class ConfigureActivity : AppCompatActivity() {
 
     companion object {
         const val TEMP_DIR_NAME = "temp"
@@ -114,6 +115,16 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
             }
             if (wallpaper != null) {
                 rootAnimIn(wallpaper)
+            }
+        }
+
+    private val linkSelectResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                it.data?.apply {
+                    val link = getStringExtra("link")
+                    viewModel.openUrl.set(link)
+                }
             }
         }
 
@@ -234,6 +245,9 @@ class PhotoWidgetConfigureActivity : AppCompatActivity() {
         }
         binding.layoutPhotoWidget.photoWidgetInfo.areaRight.setOnClickListener {
             binding.layoutPhotoWidget.vfPicture.showNext()
+        }
+        binding.layoutOpenUrl.setOnClickListener {
+            linkSelectResult.launch(Intent(this, LinkSelectActivity::class.java))
         }
     }
 

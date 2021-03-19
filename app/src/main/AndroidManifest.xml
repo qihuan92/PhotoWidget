@@ -4,6 +4,12 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,7 +28,7 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <receiver android:name="com.qihuan.photowidget.PhotoWidgetProvider">
+        <receiver android:name=".PhotoWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -41,11 +47,11 @@
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
-            android:name="com.qihuan.photowidget.PhotoWidgetConfigureActivity"
+            android:name=".ConfigureActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -55,6 +61,8 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity android:name=".LinkSelectActivity" />
     </application>
 
 </manifest>

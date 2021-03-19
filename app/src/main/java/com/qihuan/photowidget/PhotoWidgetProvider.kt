@@ -29,7 +29,7 @@ const val NAV_WIDGET_NEXT = "nav_widget_next"
 
 /**
  * Implementation of App Widget functionality.
- * App Widget Configuration implemented in [PhotoWidgetConfigureActivity]
+ * App Widget Configuration implemented in [ConfigureActivity]
  */
 class PhotoWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
@@ -118,7 +118,7 @@ internal fun updateAppWidget(
         PendingIntent.getActivity(
             context,
             widgetId,
-            Intent(context, PhotoWidgetConfigureActivity::class.java).apply {
+            Intent(context, ConfigureActivity::class.java).apply {
                 val extras = Bundle().apply {
                     putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                 }
