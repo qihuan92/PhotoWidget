@@ -11,6 +11,7 @@ import androidx.databinding.ObservableFloat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.bean.WidgetInfo
@@ -46,6 +47,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     val isLoading by lazy { SingleLiveEvent<Boolean?>(null) }
     val isDone by lazy { SingleLiveEvent(false) }
     val message by lazy { SingleLiveEvent<String>(null) }
+    val linkInfo by lazy { MutableLiveData<LinkInfo>() }
 
     fun addImage(uri: Uri) {
         val value = imageUriList.value

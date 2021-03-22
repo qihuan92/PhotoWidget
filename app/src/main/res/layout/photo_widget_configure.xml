@@ -52,7 +52,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:animateLayoutChanges="true"
-                    android:layoutAnimation="@anim/layout_anim_bottom"
                     android:orientation="vertical"
                     android:padding="16dp"
                     android:visibility="gone"
@@ -140,12 +139,70 @@
                             android:textAppearance="?textAppearanceBody2"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/tv_open_url"
-                            android:layout_width="wrap_content"
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="5dp" />
+
+                        <FrameLayout
+                            android:id="@+id/layout_add_link"
+                            android:layout_width="match_parent"
+                            android:layout_height="80dp"
+                            android:background="@drawable/bg_add_photo"
+                            android:foreground="?selectableItemBackground"
+                            android:isVisible="@{viewModel.linkInfo == null}">
+
+                            <ImageView
+                                android:id="@+id/btn_add_link"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:layout_gravity="center"
+                                android:padding="2dp"
+                                android:src="@drawable/ic_round_add_24"
+                                app:tint="@color/colorDivider" />
+                        </FrameLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@{viewModel.openUrl}"
-                            android:textAppearance="?textAppearanceCaption" />
+                            android:background="@drawable/bg_link"
+                            android:foreground="?selectableItemBackground"
+                            android:isVisible="@{viewModel.linkInfo != null}"
+                            android:padding="10dp">
+
+                            <ImageView
+                                android:id="@+id/iv_link_icon"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:src="@{viewModel.linkInfo.icon}"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:src="@drawable/ic_round_link_24" />
+
+                            <TextView
+                                android:id="@+id/tv_link_title"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:text="@{viewModel.linkInfo.title}"
+                                android:textAppearance="?textAppearanceBody1"
+                                app:layout_constraintLeft_toRightOf="@id/iv_link_icon"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="@id/iv_link_icon"
+                                tools:text="打开链接" />
+
+                            <TextView
+                                android:id="@+id/tv_link_description"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:text="@{viewModel.linkInfo.description}"
+                                android:textAppearance="?textAppearanceCaption"
+                                app:layout_constraintLeft_toLeftOf="@id/tv_link_title"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tv_link_title"
+                                tools:text="https://github.com/qihuan92" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
                     </LinearLayout>
 
                     <Space
