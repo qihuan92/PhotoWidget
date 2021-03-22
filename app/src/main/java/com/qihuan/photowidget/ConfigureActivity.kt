@@ -247,7 +247,7 @@ class ConfigureActivity : AppCompatActivity() {
             binding.layoutPhotoWidget.vfPicture.showNext()
         }
         binding.layoutOpenUrl.setOnClickListener {
-            linkSelectResult.launch(Intent(this, LinkSelectActivity::class.java))
+            linkSelectResult.launch(Intent(this, InstalledAppActivity::class.java))
         }
     }
 

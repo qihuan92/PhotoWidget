@@ -6,12 +6,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.qihuan.photowidget.adapter.InstalledAppAdapter
 import com.qihuan.photowidget.bean.InstalledAppInfo
-import com.qihuan.photowidget.databinding.ActivityLinkSelectBinding
+import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
 import com.qihuan.photowidget.ktx.viewBinding
 
-class LinkSelectActivity : AppCompatActivity() {
-    private val binding by viewBinding(ActivityLinkSelectBinding::inflate)
-    private val viewModel by viewModels<LinkSelectViewModel>()
+class InstalledAppActivity : AppCompatActivity() {
+    private val binding by viewBinding(ActivityInstalledAppBinding::inflate)
+    private val viewModel by viewModels<InstalledAppViewModel>()
 
     private val installedAppAdapter by lazy { InstalledAppAdapter() }
 

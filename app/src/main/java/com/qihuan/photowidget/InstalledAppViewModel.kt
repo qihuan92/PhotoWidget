@@ -4,10 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 
 /**
- * LinkSelectViewModel
+ * InstalledAppViewModel
  * @author qi
  * @since 3/19/21
  */
-class LinkSelectViewModel(application: Application) : AndroidViewModel(application) {
+class InstalledAppViewModel(application: Application) : AndroidViewModel(application) {
 
 }

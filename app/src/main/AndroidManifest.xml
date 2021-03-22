@@ -62,7 +62,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <activity android:name=".LinkSelectActivity" />
+        <activity android:name=".InstalledAppActivity" />
     </application>
 
 </manifest>
