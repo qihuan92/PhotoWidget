@@ -142,6 +142,10 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    fun deleteLink() {
+        linkInfo.value = null
+    }
+
     private suspend fun saveWidgetPhotoFiles(widgetId: Int): List<Uri> {
         val cacheDir = context.cacheDir
         val filesDir = context.filesDir
