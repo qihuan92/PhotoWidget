@@ -11,10 +11,7 @@ import androidx.databinding.ObservableFloat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.WidgetBean
-import com.qihuan.photowidget.bean.WidgetImage
-import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.SingleLiveEvent
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.copyDir
@@ -41,13 +38,12 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     val verticalPadding by lazy { ObservableFloat(0f) }
     val horizontalPadding by lazy { ObservableFloat(0f) }
     val reEdit by lazy { ObservableBoolean(true) }
-    val openUrl by lazy { ObservableField("") }
     val autoPlayInterval by lazy { MutableLiveData<Int?>() }
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
     val isLoading by lazy { SingleLiveEvent<Boolean?>(null) }
     val isDone by lazy { SingleLiveEvent(false) }
     val message by lazy { SingleLiveEvent<String>(null) }
-    val linkInfo by lazy { MutableLiveData<LinkInfo>() }
+    val linkInfo by lazy { ObservableField<LinkInfo>() }
 
     fun addImage(uri: Uri) {
         val value = imageUriList.value
@@ -98,7 +94,22 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 horizontalPadding.set(widgetInfo.horizontalPadding)
                 widgetRadius.set(widgetInfo.widgetRadius)
                 reEdit.set(widgetInfo.reEdit)
-                openUrl.set(widgetInfo.openUrl)
+
+                widgetInfo.openUrl?.let {
+                    if (it.startsWith("openApp/")) {
+                        val info = it.split("/")
+                        linkInfo.set(
+                            LinkInfo(
+                                LinkType.OPEN_APP,
+                                "打开应用: [ ${info[1]} ]",
+                                "包名: ${info[2]}",
+                                it
+                            )
+                        )
+                    } else {
+                        linkInfo.set(LinkInfo(LinkType.URL, "打开链接", "地址: $it", it))
+                    }
+                }
                 autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
             }
             isLoading.value = false
@@ -121,7 +132,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 widgetRadius.get(),
                 autoPlayInterval.value,
                 reEdit.get(),
-                openUrl.get(),
+                linkInfo.get()?.link
             )
 
             val uriList = saveWidgetPhotoFiles(widgetId)
@@ -143,7 +154,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun deleteLink() {
-        linkInfo.value = null
+        linkInfo.set(null)
     }
 
     private suspend fun saveWidgetPhotoFiles(widgetId: Int): List<Uri> {

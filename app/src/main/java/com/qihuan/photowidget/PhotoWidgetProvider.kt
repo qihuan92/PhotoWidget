@@ -129,7 +129,12 @@ internal fun updateAppWidget(
     )
 
     if (!widgetInfo.openUrl.isNullOrBlank()) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(widgetInfo.openUrl))
+        val intent = if (widgetInfo.openUrl.startsWith("openApp/")) {
+            val info = widgetInfo.openUrl.split("/")
+            context.packageManager.getLaunchIntentForPackage(info[2])
+        } else {
+            Intent(Intent.ACTION_VIEW, Uri.parse(widgetInfo.openUrl))
+        }
         val pendingIntent =
             PendingIntent.getActivity(context, widgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         views.setOnClickPendingIntent(R.id.area_center, pendingIntent)

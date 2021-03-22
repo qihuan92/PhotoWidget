@@ -1,6 +1,7 @@
 package com.qihuan.photowidget.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -16,21 +17,7 @@ import com.qihuan.photowidget.databinding.ItemAppBinding
 class InstalledAppAdapter :
     ListAdapter<InstalledAppInfo, InstalledAppAdapter.ViewHolder>(DiffCallback()) {
 
-    private class DiffCallback : DiffUtil.ItemCallback<InstalledAppInfo>() {
-        override fun areItemsTheSame(
-            oldItem: InstalledAppInfo,
-            newItem: InstalledAppInfo
-        ): Boolean {
-            return oldItem == newItem
-        }
-
-        override fun areContentsTheSame(
-            oldItem: InstalledAppInfo,
-            newItem: InstalledAppInfo
-        ): Boolean {
-            return oldItem == newItem
-        }
-    }
+    private var onItemClickListener: ((Int, View) -> Unit)? = null
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -49,14 +36,40 @@ class InstalledAppAdapter :
         holder.bind(getItem(position))
     }
 
+    fun setOnItemListener(listener: ((Int, View) -> Unit)) {
+        this.onItemClickListener = listener
+    }
+
     inner class ViewHolder(
         private val binding: ItemAppBinding
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                onItemClickListener?.invoke(layoutPosition, it)
+            }
+        }
 
         fun bind(item: InstalledAppInfo) {
             binding.ivIcon.setImageDrawable(item.icon)
             binding.tvAppName.text = item.appName
             binding.tvPackageName.text = item.packageName
+        }
+    }
+
+    private class DiffCallback : DiffUtil.ItemCallback<InstalledAppInfo>() {
+        override fun areItemsTheSame(
+            oldItem: InstalledAppInfo,
+            newItem: InstalledAppInfo
+        ): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(
+            oldItem: InstalledAppInfo,
+            newItem: InstalledAppInfo
+        ): Boolean {
+            return oldItem == newItem
         }
     }
 }

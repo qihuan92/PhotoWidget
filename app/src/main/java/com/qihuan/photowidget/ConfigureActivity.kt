@@ -2,7 +2,6 @@ package com.qihuan.photowidget
 
 import android.Manifest
 import android.animation.ObjectAnimator
-import android.app.Activity
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -118,12 +117,11 @@ class ConfigureActivity : AppCompatActivity() {
             }
         }
 
-    private val linkSelectResult =
+    private val appSelectResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
+            if (it.resultCode == RESULT_OK) {
                 it.data?.apply {
-                    val link = getStringExtra("link")
-                    viewModel.openUrl.set(link)
+                    viewModel.linkInfo.set(getParcelableExtra("linkInfo"))
                 }
             }
         }
@@ -247,7 +245,7 @@ class ConfigureActivity : AppCompatActivity() {
             binding.layoutPhotoWidget.vfPicture.showNext()
         }
         binding.layoutOpenUrl.setOnClickListener {
-            linkSelectResult.launch(Intent(this, InstalledAppActivity::class.java))
+            appSelectResult.launch(Intent(this, InstalledAppActivity::class.java))
         }
     }
 
