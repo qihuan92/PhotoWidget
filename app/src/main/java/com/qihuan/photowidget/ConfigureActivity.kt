@@ -30,7 +30,7 @@ import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.*
-import com.qihuan.photowidget.databinding.PhotoWidgetConfigureBinding
+import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.result.CropPictureContract
 import kotlinx.coroutines.launch
@@ -49,7 +49,7 @@ class ConfigureActivity : AppCompatActivity() {
         LOADING, SHOW_CONTENT
     }
 
-    private val binding by viewBinding(PhotoWidgetConfigureBinding::inflate)
+    private val binding by viewBinding(ActivityConfigureBinding::inflate)
     private val viewModel by viewModels<ConfigureViewModel>()
 
     var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID

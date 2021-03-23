@@ -65,6 +65,10 @@
         <activity
             android:name=".InstalledAppActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".UrlInputActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
