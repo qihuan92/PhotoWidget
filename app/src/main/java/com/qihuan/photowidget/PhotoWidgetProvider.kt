@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
@@ -143,13 +144,23 @@ internal fun updateAppWidget(
         } else {
             Intent(Intent.ACTION_VIEW, Uri.parse(widgetInfo.openUrl))
         }
-        val pendingIntent =
-            PendingIntent.getActivity(context, widgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        views.setOnClickPendingIntent(R.id.area_center, pendingIntent)
-
-        if (widgetBean.imageList.size == 1) {
-            views.setOnClickPendingIntent(R.id.area_left, pendingIntent)
-            views.setOnClickPendingIntent(R.id.area_right, pendingIntent)
+        if (intent != null) {
+            val pendingIntent =
+                PendingIntent.getActivity(
+                    context,
+                    widgetId,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            try {
+                views.setOnClickPendingIntent(R.id.area_center, pendingIntent)
+                if (widgetBean.imageList.size == 1) {
+                    views.setOnClickPendingIntent(R.id.area_left, pendingIntent)
+                    views.setOnClickPendingIntent(R.id.area_right, pendingIntent)
+                }
+            } catch (e: Exception) {
+                Log.e("PhotoWidgetProvider", e.message, e)
+            }
         }
     }
 
