@@ -188,7 +188,7 @@ class ConfigureActivity : AppCompatActivity() {
         }
 
         viewModel.reEdit.observe {
-            binding.layoutPhotoWidget.photoWidgetInfo.ivInfo.isVisible = it
+            binding.layoutPhotoWidget.photoWidgetInfo.ivInfo?.isVisible = it
         }
 
         viewModel.autoPlayInterval.observe(this) {

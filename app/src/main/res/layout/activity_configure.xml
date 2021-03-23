@@ -12,6 +12,8 @@
         <variable
             name="activity"
             type="com.qihuan.photowidget.ConfigureActivity" />
+
+        <import type="android.os.Build" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -72,7 +74,7 @@
                         android:id="@+id/layout_auto_play_interval"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="10dp"
                         android:onClick="@{() -> activity.showIntervalSelector()}"
                         android:orientation="vertical"
                         android:paddingHorizontal="10dp">
@@ -91,15 +93,13 @@
                             android:textAppearance="?textAppearanceCaption" />
                     </LinearLayout>
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="5dp" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        app:isVisible="@{Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.P}">
 
                         <TextView
                             android:id="@+id/tv_widget_re_edit"
@@ -119,14 +119,11 @@
                             android:checked="@={viewModel.reEdit}" />
                     </LinearLayout>
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="5dp" />
-
                     <LinearLayout
                         android:id="@+id/layout_open_url"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:onClick="@{() -> activity.showLinkTypeSelector()}"
                         android:orientation="vertical"
                         android:paddingHorizontal="10dp">
