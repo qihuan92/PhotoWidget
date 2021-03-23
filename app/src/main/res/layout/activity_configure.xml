@@ -61,21 +61,18 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_preview_list"
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="60dp"
                         android:clipToPadding="false"
                         android:orientation="horizontal"
                         android:paddingHorizontal="5dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:listitem="@layout/item_preview_photo" />
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="5dp" />
-
                     <LinearLayout
                         android:id="@+id/layout_auto_play_interval"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:onClick="@{() -> activity.showIntervalSelector()}"
                         android:orientation="vertical"
                         android:paddingHorizontal="10dp">
