@@ -26,6 +26,11 @@ class UrlInputActivity : AppCompatActivity() {
 
     private fun bindView() {
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.etOpenUrl.post {
+            binding.etOpenUrl.requestFocus()
+            WindowCompat.getInsetsController(window, binding.etOpenUrl)
+                ?.show(WindowInsetsCompat.Type.ime())
+        }
         binding.btnConfirm.setOnClickListener {
             val url = binding.etOpenUrl.text.toString().trim()
             if (url.isBlank()) {
