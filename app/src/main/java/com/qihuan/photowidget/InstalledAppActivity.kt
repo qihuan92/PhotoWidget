@@ -10,9 +10,8 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.qihuan.photowidget.adapter.InstalledAppAdapter
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
+import com.qihuan.photowidget.ktx.parseLink
 import com.qihuan.photowidget.ktx.viewBinding
 
 class InstalledAppActivity : AppCompatActivity() {
@@ -54,12 +53,7 @@ class InstalledAppActivity : AppCompatActivity() {
                 val intent = Intent().apply {
                     putExtra(
                         "linkInfo",
-                        LinkInfo(
-                            LinkType.OPEN_APP,
-                            "打开应用: [ $appName ]",
-                            "包名: $packageName",
-                            "openApp/$appName/${packageName}"
-                        )
+                        "openApp/$appName/$packageName".parseLink()
                     )
                 }
                 setResult(RESULT_OK, intent)

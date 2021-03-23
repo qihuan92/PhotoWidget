@@ -17,6 +17,7 @@ import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.ktx.isOpenAppLink
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -129,7 +130,7 @@ internal fun updateAppWidget(
     )
 
     if (!widgetInfo.openUrl.isNullOrBlank()) {
-        val intent = if (widgetInfo.openUrl.startsWith("openApp/")) {
+        val intent = if (widgetInfo.openUrl.isOpenAppLink()) {
             val info = widgetInfo.openUrl.split("/")
             context.packageManager.getLaunchIntentForPackage(info[2])
         } else {

@@ -15,6 +15,7 @@ import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.SingleLiveEvent
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.copyDir
+import com.qihuan.photowidget.ktx.parseLink
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -96,19 +97,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 reEdit.set(widgetInfo.reEdit)
 
                 widgetInfo.openUrl?.let {
-                    if (it.startsWith("openApp/")) {
-                        val info = it.split("/")
-                        linkInfo.set(
-                            LinkInfo(
-                                LinkType.OPEN_APP,
-                                "打开应用: [ ${info[1]} ]",
-                                "包名: ${info[2]}",
-                                it
-                            )
-                        )
-                    } else {
-                        linkInfo.set(LinkInfo(LinkType.URL, "打开链接", "地址: $it", it))
-                    }
+                    linkInfo.set(it.parseLink())
                 }
                 autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
             }
