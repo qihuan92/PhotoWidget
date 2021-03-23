@@ -14,6 +14,7 @@ import com.qihuan.photowidget.ktx.viewBinding
 class UrlInputActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityUrlInputBinding::inflate)
+    private var url: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,12 +22,14 @@ class UrlInputActivity : AppCompatActivity() {
         setContentView(binding.root)
         adaptBars()
 
+        url = intent.getStringExtra("url")
         bindView()
     }
 
     private fun bindView() {
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
         binding.etOpenUrl.post {
+            binding.etOpenUrl.setText(url)
             binding.etOpenUrl.requestFocus()
             WindowCompat.getInsetsController(window, binding.etOpenUrl)
                 ?.show(WindowInsetsCompat.Type.ime())

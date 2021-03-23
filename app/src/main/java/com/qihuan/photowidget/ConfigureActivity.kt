@@ -382,7 +382,13 @@ class ConfigureActivity : AppCompatActivity() {
             .setItems(R.array.open_link_types) { dialog, i ->
                 when (i) {
                     0 -> appSelectResult.launch(Intent(this, InstalledAppActivity::class.java))
-                    1 -> appSelectResult.launch(Intent(this, UrlInputActivity::class.java))
+                    1 -> appSelectResult.launch(Intent(this, UrlInputActivity::class.java).apply {
+                        viewModel.linkInfo.get()?.let {
+                            if (!it.link.isOpenAppLink()) {
+                                putExtra("url", it.link)
+                            }
+                        }
+                    })
                 }
                 dialog.dismiss()
             }.show()
