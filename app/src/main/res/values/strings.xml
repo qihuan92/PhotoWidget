@@ -15,4 +15,10 @@
     <string name="widget_open_url">相片链接</string>
     <string name="widget_open_url_help_text">支持 http/https 链接，以及 URL Scheme</string>
     <string name="warn_url_empty">URL不能为空</string>
+    <string name="alert_title_interval">请选择播放间隔</string>
+    <string name="alert_title_link_type">请选择链接类型</string>
+    <string-array name="open_link_types">
+        <item>打开应用</item>
+        <item>打开URL</item>
+    </string-array>
 </resources>

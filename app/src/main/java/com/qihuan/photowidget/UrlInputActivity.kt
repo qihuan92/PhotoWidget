@@ -25,6 +25,7 @@ class UrlInputActivity : AppCompatActivity() {
     }
 
     private fun bindView() {
+        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
         binding.btnConfirm.setOnClickListener {
             val url = binding.etOpenUrl.text.toString().trim()
             if (url.isBlank()) {

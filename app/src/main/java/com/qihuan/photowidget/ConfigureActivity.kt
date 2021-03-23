@@ -17,7 +17,6 @@ import android.view.animation.AccelerateInterpolator
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
@@ -26,6 +25,7 @@ import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.ConcatAdapter
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
@@ -244,9 +244,6 @@ class ConfigureActivity : AppCompatActivity() {
         binding.layoutPhotoWidget.photoWidgetInfo.areaRight.setOnClickListener {
             binding.layoutPhotoWidget.vfPicture.showNext()
         }
-        binding.layoutOpenUrl.setOnClickListener {
-            appSelectResult.launch(Intent(this, InstalledAppActivity::class.java))
-        }
     }
 
     override fun finish() {
@@ -368,12 +365,25 @@ class ConfigureActivity : AppCompatActivity() {
     fun showIntervalSelector() {
         val itemNameList = intervalItems.map { it.first }.toTypedArray()
         val itemValueList = intervalItems.map { it.second }.toTypedArray()
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
+            .setTitle(R.string.alert_title_interval)
             .setSingleChoiceItems(
                 itemNameList,
                 itemValueList.indexOf(viewModel.autoPlayInterval.value)
             ) { dialog, i ->
                 viewModel.autoPlayInterval.value = intervalItems[i].second
+                dialog.dismiss()
+            }.show()
+    }
+
+    fun showLinkTypeSelector() {
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
+            .setTitle(R.string.alert_title_link_type)
+            .setItems(R.array.open_link_types) { dialog, i ->
+                when (i) {
+                    0 -> appSelectResult.launch(Intent(this, InstalledAppActivity::class.java))
+                    1 -> appSelectResult.launch(Intent(this, UrlInputActivity::class.java))
+                }
                 dialog.dismiss()
             }.show()
     }
