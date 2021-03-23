@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,6 +16,10 @@ import com.qihuan.photowidget.ktx.parseLink
 import com.qihuan.photowidget.ktx.viewBinding
 
 class InstalledAppActivity : AppCompatActivity() {
+    enum class UIState {
+        LOADING, SHOW_CONTENT
+    }
+
     private val binding by viewBinding(ActivityInstalledAppBinding::inflate)
     private val viewModel by viewModels<InstalledAppViewModel>()
 
@@ -24,6 +29,7 @@ class InstalledAppActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(binding.root)
+        binding.viewModel = viewModel
         adaptBars()
 
         bindView()
@@ -47,6 +53,33 @@ class InstalledAppActivity : AppCompatActivity() {
 
     private fun bindView() {
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.inflateMenu(R.menu.menu_installed_app)
+        binding.toolbar.findViewById<SearchView>(R.id.search).apply {
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    viewModel.queryKeyWord.value = query
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    viewModel.queryKeyWord.value = newText
+                    return true
+                }
+            })
+        }
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.show_system_apps -> {
+                    val curr = viewModel.showSystemApps.value ?: true
+                    viewModel.showSystemApps.value = !curr
+                    it.isChecked = !curr
+                }
+                else -> {
+                }
+            }
+            true
+        }
+
         binding.rvList.adapter = installedAppAdapter
         installedAppAdapter.setOnItemListener { position, _ ->
             viewModel.installedAppList.value?.get(position)?.apply {
@@ -65,6 +98,12 @@ class InstalledAppActivity : AppCompatActivity() {
     private fun bindData() {
         viewModel.installedAppList.observe(this) {
             installedAppAdapter.submitList(it)
+        }
+        viewModel.showSystemApps.observe(this) {
+            viewModel.loadInstalledApp()
+        }
+        viewModel.queryKeyWord.observe(this) {
+            viewModel.loadInstalledApp()
         }
     }
 }

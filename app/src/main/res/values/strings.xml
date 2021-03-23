@@ -17,6 +17,8 @@
     <string name="warn_url_empty">URL不能为空</string>
     <string name="alert_title_interval">请选择播放间隔</string>
     <string name="alert_title_link_type">请选择链接类型</string>
+    <string name="search">搜索</string>
+    <string name="system_apps">显示系统应用</string>
     <string-array name="open_link_types">
         <item>打开应用</item>
         <item>打开URL</item>
