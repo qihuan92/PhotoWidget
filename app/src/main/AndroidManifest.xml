@@ -148,6 +148,18 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/photo_widget_info_44" />
         </receiver>
+        <receiver android:name=".PhotoWidgetProviderNoName" android:label="">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
+                <action android:name="android.appwidget.action.APPWIDGET_DISABLED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/photo_widget_info" />
+        </receiver>
 
         <service
             android:name=".WidgetPhotoService"
