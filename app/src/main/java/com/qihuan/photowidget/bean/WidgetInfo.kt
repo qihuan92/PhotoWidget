@@ -19,6 +19,6 @@ data class WidgetInfo(
     val horizontalPadding: Float,
     val widgetRadius: Float,
     val autoPlayInterval: Int?,
-    val reEdit: Boolean,
-    val openUrl: String?
+    val openUrl: String?,
+    val createTime: Long? = System.currentTimeMillis(),
 )

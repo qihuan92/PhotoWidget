@@ -10,6 +10,7 @@ import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.migration.MigrationFor1To2
 import com.qihuan.photowidget.db.migration.MigrationFor2To3
 import com.qihuan.photowidget.db.migration.MigrationFor3To4
+import com.qihuan.photowidget.db.migration.MigrationFor4To5
 
 /**
  * AppDatabase
@@ -21,7 +22,7 @@ import com.qihuan.photowidget.db.migration.MigrationFor3To4
         WidgetInfo::class,
         WidgetImage::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -49,6 +50,7 @@ abstract class AppDatabase : RoomDatabase() {
                     MigrationFor1To2(context),
                     MigrationFor2To3(context),
                     MigrationFor3To4(),
+                    MigrationFor4To5(),
                 ).build()
                 INSTANCE = instance
                 return instance

@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.View
 import android.widget.RemoteViews
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.graphics.drawable.toBitmap
@@ -117,10 +116,6 @@ internal fun updateAppWidget(
 
     // 系统版本低于 9.0 的可选择编辑按钮
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-        views.setViewVisibility(
-            R.id.iv_info,
-            if (widgetInfo.reEdit) View.VISIBLE else View.INVISIBLE
-        )
         views.setOnClickPendingIntent(
             R.id.iv_info,
             PendingIntent.getActivity(

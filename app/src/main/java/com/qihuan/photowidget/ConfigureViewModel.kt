@@ -94,7 +94,6 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 verticalPadding.set(widgetInfo.verticalPadding)
                 horizontalPadding.set(widgetInfo.horizontalPadding)
                 widgetRadius.set(widgetInfo.widgetRadius)
-                reEdit.set(widgetInfo.reEdit)
 
                 widgetInfo.openUrl?.let {
                     linkInfo.set(it.parseLink())
@@ -120,7 +119,6 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 horizontalPadding.get(),
                 widgetRadius.get(),
                 autoPlayInterval.value,
-                reEdit.get(),
                 linkInfo.get()?.link
             )
 
