@@ -26,6 +26,8 @@
     <string name="alert_msg_delete_widget">是否删除该组件？</string>
     <string name="sure">确定</string>
     <string name="cancel">取消</string>
+    <string name="tips_widget_empty">请在桌面添加相片微件</string>
+    <string name="click_to_refresh">点击刷新</string>
     <string-array name="open_link_types">
         <item>打开应用</item>
         <item>打开URL</item>

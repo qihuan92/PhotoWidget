@@ -10,6 +10,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.databinding.ObservableBoolean
+import androidx.paging.LoadState
 import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
 import com.qihuan.photowidget.adapter.WidgetPagingAdapter
 import com.qihuan.photowidget.databinding.ActivityMainBinding
@@ -20,11 +22,13 @@ class MainActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivityMainBinding::inflate)
     private val viewModel by viewModels<MainViewModel>()
     private val widgetAdapter by lazy { WidgetPagingAdapter() }
+    val isEmpty by lazy { ObservableBoolean(true) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(binding.root)
+        binding.activity = this
         binding.viewModel = viewModel
         adaptBars()
 
@@ -66,6 +70,13 @@ class MainActivity : AppCompatActivity() {
                 }
             )
         }
+        widgetAdapter.addLoadStateListener { loadState ->
+            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && widgetAdapter.itemCount < 1) {
+                isEmpty.set(true)
+            } else {
+                isEmpty.set(false)
+            }
+        }
 
         binding.refreshLayout.setOnRefreshListener {
             widgetAdapter.refresh()
@@ -77,5 +88,9 @@ class MainActivity : AppCompatActivity() {
             binding.refreshLayout.isRefreshing = false
             widgetAdapter.submitData(lifecycle, it)
         }
+    }
+
+    fun refresh() {
+        widgetAdapter.refresh()
     }
 }
