@@ -31,7 +31,7 @@ const val NAV_WIDGET_NEXT = "nav_widget_next"
  * Implementation of App Widget functionality.
  * App Widget Configuration implemented in [ConfigureActivity]
  */
-class PhotoWidgetProvider : AppWidgetProvider() {
+open class PhotoWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
