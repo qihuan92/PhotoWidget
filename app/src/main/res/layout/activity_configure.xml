@@ -12,8 +12,6 @@
         <variable
             name="activity"
             type="com.qihuan.photowidget.ConfigureActivity" />
-
-        <import type="android.os.Build" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -91,32 +89,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="?textAppearanceCaption" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        app:isVisible="@{Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.P}">
-
-                        <TextView
-                            android:id="@+id/tv_widget_re_edit"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:padding="5dp"
-                            android:text="@string/widget_re_edit"
-                            android:textAppearance="?textAppearanceBody2"
-                            android:textStyle="bold" />
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/switch_re_edit"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:checked="@={viewModel.reEdit}" />
                     </LinearLayout>
 
                     <LinearLayout

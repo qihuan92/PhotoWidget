@@ -187,10 +187,6 @@ class ConfigureActivity : AppCompatActivity() {
             widgetAdapter.setData(imageUriList, it.dp)
         }
 
-        viewModel.reEdit.observe {
-            binding.layoutPhotoWidget.photoWidgetInfo.ivInfo?.isVisible = it
-        }
-
         viewModel.autoPlayInterval.observe(this) {
             val vfPicture = binding.layoutPhotoWidget.vfPicture
             if (it == null) {

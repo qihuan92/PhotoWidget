@@ -7,8 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.RemoteViews
@@ -113,24 +111,6 @@ internal fun updateAppWidget(
         horizontalPadding,
         verticalPadding
     )
-
-    // 系统版本低于 9.0 的可选择编辑按钮
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-        views.setOnClickPendingIntent(
-            R.id.iv_info,
-            PendingIntent.getActivity(
-                context,
-                widgetId,
-                Intent(context, ConfigureActivity::class.java).apply {
-                    val extras = Bundle().apply {
-                        putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                    }
-                    putExtras(extras)
-                },
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        )
-    }
 
     if (!widgetInfo.openUrl.isNullOrBlank()) {
         val intent = if (widgetInfo.openUrl.isOpenAppLink()) {
