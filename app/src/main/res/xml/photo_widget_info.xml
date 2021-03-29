@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:configure="com.qihuan.photowidget.ConfigureActivity"
     android:initialKeyguardLayout="@layout/photo_widget"
     android:initialLayout="@layout/photo_widget"
@@ -10,4 +11,6 @@
     android:previewImage="@drawable/preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"
-    android:widgetCategory="home_screen" />
+    android:widgetCategory="home_screen"
+    android:widgetFeatures="reconfigurable"
+    tools:targetApi="p" />
