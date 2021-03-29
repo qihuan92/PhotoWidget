@@ -1,5 +1,6 @@
 package com.qihuan.photowidget.db
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.bean.WidgetImage
@@ -12,6 +13,10 @@ import com.qihuan.photowidget.bean.WidgetInfo
  */
 @Dao
 abstract class WidgetDao {
+    @Transaction
+    @Query("select * from widget_info order by createTime desc")
+    abstract fun selectAll(): PagingSource<Int, WidgetBean>
+
     @Transaction
     @Query("select * from widget_info where widgetId = :id")
     abstract suspend fun selectById(id: Int): WidgetBean?

@@ -1,8 +1,6 @@
 package com.qihuan.photowidget.adapter
 
-import android.graphics.drawable.Drawable
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
@@ -21,13 +19,13 @@ import com.qihuan.photowidget.bean.LinkType
 object BindingAdapters {
 
     @JvmStatic
-    @InverseBindingAdapter(attribute = "android:value", event = "app:sliderAttrChanged")
+    @InverseBindingAdapter(attribute = "android:value", event = "sliderAttrChanged")
     fun getSliderValue(view: Slider): Float {
         return view.value
     }
 
     @JvmStatic
-    @BindingAdapter("app:sliderAttrChanged")
+    @BindingAdapter("sliderAttrChanged")
     fun setSliderListeners(view: Slider, attrChange: InverseBindingListener) {
         view.addOnChangeListener { _, _, _ ->
             attrChange.onChange()
@@ -35,25 +33,13 @@ object BindingAdapters {
     }
 
     @JvmStatic
-    @BindingAdapter("app:isVisible")
+    @BindingAdapter("isVisible")
     fun setVisible(view: View, value: Boolean) {
         view.isVisible = value
     }
 
     @JvmStatic
-    @BindingAdapter("android:src")
-    fun setImageDrawable(view: ImageView, drawable: Drawable?) {
-        view.setImageDrawable(drawable)
-    }
-
-    @JvmStatic
-    @BindingAdapter("android:src")
-    fun setImageResource(view: ImageView, resource: Int) {
-        view.setImageResource(resource)
-    }
-
-    @JvmStatic
-    @BindingAdapter("app:linkTypeIcon")
+    @BindingAdapter("linkTypeIcon")
     fun linkTypeIcon(view: TextView, type: LinkType?) {
         if (type == null) {
             return

@@ -42,6 +42,11 @@ class InstalledAppActivity : AppCompatActivity() {
             view.updatePadding(top = barInsets.top)
             insets
         }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.rvList) { view, insets ->
+            val navigationBarInserts = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            view.updatePadding(bottom = navigationBarInserts.bottom)
+            insets
+        }
         WindowCompat.getInsetsController(window, binding.root)?.apply {
             when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
                 Configuration.UI_MODE_NIGHT_NO -> isAppearanceLightStatusBars = true
@@ -81,7 +86,7 @@ class InstalledAppActivity : AppCompatActivity() {
         }
 
         binding.rvList.adapter = installedAppAdapter
-        installedAppAdapter.setOnItemListener { position, _ ->
+        installedAppAdapter.setOnItemClickListener { position, _ ->
             viewModel.installedAppList.value?.get(position)?.apply {
                 val intent = Intent().apply {
                     putExtra(

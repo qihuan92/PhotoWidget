@@ -36,7 +36,7 @@ class InstalledAppAdapter :
         holder.bind(getItem(position))
     }
 
-    fun setOnItemListener(listener: ((Int, View) -> Unit)) {
+    fun setOnItemClickListener(listener: ((Int, View) -> Unit)) {
         this.onItemClickListener = listener
     }
 
