@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import androidx.annotation.Px
-import com.qihuan.photowidget.createWidgetBitmap
 import com.qihuan.photowidget.databinding.LayoutWidgetImageBinding
+import com.qihuan.photowidget.ktx.loadRounded
 
 /**
  * WidgetPhotoAdapter
@@ -48,8 +48,7 @@ class WidgetPhotoAdapter(
         }
         binding.apply {
             val uri = itemList[position]
-            val bitmap = createWidgetBitmap(context, uri, radius)
-            ivPicture.setImageBitmap(bitmap)
+            ivPicture.loadRounded(uri, radius)
         }
         return binding.root
     }

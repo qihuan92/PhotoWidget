@@ -9,6 +9,7 @@ import androidx.core.net.toFile
 import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.ktx.getRoundedBitmap
 
 /**
  * PhotoImageService
@@ -68,7 +69,7 @@ class WidgetPhotoViewFactory(
         if (uri.toFile().exists()) {
             remoteViews.setImageViewBitmap(
                 R.id.iv_picture,
-                createWidgetBitmap(context, uri, radius.dp)
+                uri.getRoundedBitmap(context, radius.dp)
             )
         } else {
             remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)

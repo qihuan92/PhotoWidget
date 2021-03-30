@@ -5,13 +5,9 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.RemoteViews
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
-import androidx.core.graphics.drawable.toBitmap
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.deleteDir
@@ -191,13 +187,4 @@ fun getWidgetNavIntent(context: Context, widgetId: Int, navAction: String, inter
         putExtra(EXTRA_NAV, navAction)
         putExtra(EXTRA_INTERVAL, interval)
     }
-}
-
-internal fun createWidgetBitmap(context: Context, uri: Uri, radius: Int): Bitmap {
-    val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-    val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(context.resources, bitmap)
-    val radiusPx = radius.toFloat() * 2
-    roundedBitmapDrawable.cornerRadius = radiusPx
-    roundedBitmapDrawable.setAntiAlias(true)
-    return roundedBitmapDrawable.toBitmap(bitmap.width, bitmap.height)
 }
