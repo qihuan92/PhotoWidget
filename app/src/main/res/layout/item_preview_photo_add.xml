@@ -12,6 +12,7 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_gravity="center"
+        android:contentDescription="@string/delete_photo"
         android:padding="2dp"
         android:src="@drawable/ic_round_add_24"
         app:tint="@color/colorDivider" />

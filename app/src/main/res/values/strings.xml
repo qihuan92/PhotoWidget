@@ -28,6 +28,11 @@
     <string name="cancel">取消</string>
     <string name="tips_widget_empty">请在桌面添加相片微件</string>
     <string name="click_to_refresh">点击刷新</string>
+    <string name="add_widget_link">添加微件链接</string>
+    <string name="delete_widget_link">删除微件链接</string>
+    <string name="app_icon">应用图标</string>
+    <string name="delete_photo">删除相片</string>
+    <string name="widget_photo">微件相片</string>
     <string-array name="open_link_types">
         <item>打开应用</item>
         <item>打开URL</item>

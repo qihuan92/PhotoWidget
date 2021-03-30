@@ -124,6 +124,7 @@
                                 android:layout_width="45dp"
                                 android:layout_height="45dp"
                                 android:layout_gravity="center"
+                                android:contentDescription="@string/add_widget_link"
                                 android:padding="2dp"
                                 android:src="@drawable/ic_round_add_24"
                                 app:tint="@color/colorDivider" />
@@ -167,6 +168,7 @@
                                 android:id="@+id/btn_delete_link"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
+                                android:contentDescription="@string/delete_widget_link"
                                 android:onClick="@{() -> viewModel.deleteLink()}"
                                 android:src="@drawable/ic_round_delete_24"
                                 app:layout_constraintBottom_toBottomOf="parent"
