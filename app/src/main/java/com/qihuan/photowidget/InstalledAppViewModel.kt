@@ -9,6 +9,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.bean.InstalledAppInfo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -17,15 +22,20 @@ import kotlinx.coroutines.withContext
  * @author qi
  * @since 3/19/21
  */
+@FlowPreview
 class InstalledAppViewModel(application: Application) : AndroidViewModel(application) {
     private val packageManager by lazy { application.packageManager }
     val installedAppList by lazy { MutableLiveData<MutableList<InstalledAppInfo>>(mutableListOf()) }
     val uiState by lazy { ObservableField(InstalledAppActivity.UIState.LOADING) }
     val showSystemApps by lazy { MutableLiveData(false) }
-    val queryKeyWord by lazy { MutableLiveData<String?>() }
+    val queryKeyWord by lazy { MutableStateFlow<String?>(null) }
 
     init {
-        loadInstalledApp()
+        viewModelScope.launch {
+            queryKeyWord.sample(500)
+                .filter { it != null }
+                .collect { installedAppList.value = getInstalledPackages() }
+        }
     }
 
     fun loadInstalledApp() {

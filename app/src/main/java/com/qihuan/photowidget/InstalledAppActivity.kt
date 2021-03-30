@@ -14,7 +14,9 @@ import com.qihuan.photowidget.adapter.InstalledAppAdapter
 import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
 import com.qihuan.photowidget.ktx.parseLink
 import com.qihuan.photowidget.ktx.viewBinding
+import kotlinx.coroutines.FlowPreview
 
+@FlowPreview
 class InstalledAppActivity : AppCompatActivity() {
     enum class UIState {
         LOADING, SHOW_CONTENT
@@ -62,12 +64,12 @@ class InstalledAppActivity : AppCompatActivity() {
         binding.toolbar.findViewById<SearchView>(R.id.search).apply {
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    viewModel.queryKeyWord.value = query
+                    viewModel.queryKeyWord.value = query ?: ""
                     return true
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    viewModel.queryKeyWord.value = newText
+                    viewModel.queryKeyWord.value = newText ?: ""
                     return true
                 }
             })
@@ -105,9 +107,6 @@ class InstalledAppActivity : AppCompatActivity() {
             installedAppAdapter.submitList(it)
         }
         viewModel.showSystemApps.observe(this) {
-            viewModel.loadInstalledApp()
-        }
-        viewModel.queryKeyWord.observe(this) {
             viewModel.loadInstalledApp()
         }
     }

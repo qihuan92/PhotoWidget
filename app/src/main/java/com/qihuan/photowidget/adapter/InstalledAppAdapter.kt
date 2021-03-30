@@ -62,14 +62,14 @@ class InstalledAppAdapter :
             oldItem: InstalledAppInfo,
             newItem: InstalledAppInfo
         ): Boolean {
-            return oldItem == newItem
+            return oldItem.packageName == newItem.packageName
         }
 
         override fun areContentsTheSame(
             oldItem: InstalledAppInfo,
             newItem: InstalledAppInfo
         ): Boolean {
-            return oldItem == newItem
+            return oldItem.appName == newItem.appName
         }
     }
 }
