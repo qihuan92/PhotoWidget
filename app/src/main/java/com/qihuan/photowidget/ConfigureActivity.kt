@@ -159,6 +159,8 @@ class ConfigureActivity : AppCompatActivity() {
                 binding.layoutAutoPlayInterval.isGone = false
             }
 
+            binding.layoutPhotoWidgetPreview.strokeWidth = if (it.isEmpty()) 2f.dp else 0
+
             previewAdapter.submitList(it.toList())
             binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
             widgetAdapter.setData(it)
