@@ -144,7 +144,8 @@ class ConfigureActivity : AppCompatActivity() {
 
         binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
         binding.rvPreviewList.adapter = ConcatAdapter(previewAddAdapter, previewAdapter)
-        previewAdapter.setOnItemDeleteListener { position, _ ->
+        previewAdapter.setOnItemDeleteListener { position, view ->
+            view.isEnabled = false
             viewModel.deleteImage(position)
         }
         previewAddAdapter.setOnItemAddListener {
