@@ -54,15 +54,27 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
         imageUriList.postValue(uriList.toMutableList())
     }
 
-    fun deleteImage(uri: Uri) {
+    fun deleteImage(position: Int) {
         val value = imageUriList.value
+        val uri = value?.get(position)
         value?.removeAt(value.indexOf(uri))
-
-        val tempFile = uri.toFile()
-        if (tempFile.exists()) {
-            tempFile.delete()
-        }
         imageUriList.postValue(value)
+
+        viewModelScope.launch {
+            deleteFile(uri)
+        }
+    }
+
+    private suspend fun deleteFile(uri: Uri?) {
+        if (uri == null) {
+            return
+        }
+        withContext(Dispatchers.IO) {
+            val tempFile = uri.toFile()
+            if (tempFile.exists()) {
+                tempFile.delete()
+            }
+        }
     }
 
     private suspend fun copyToTempDir(widgetId: Int) {

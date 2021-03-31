@@ -2,6 +2,7 @@ package com.qihuan.photowidget.adapter
 
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -29,15 +30,18 @@ class PreviewPhotoAdapter : ListAdapter<Uri, PreviewPhotoAdapter.ViewHolder>(Dif
         private val binding: ItemPreviewPhotoBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.btnDelete.setOnClickListener {
+                onItemDeleteListener?.invoke(layoutPosition - 1, it)
+            }
+        }
+
         fun bind(item: Uri) {
             binding.ivPicture.setImageURI(item)
-            binding.btnDelete.setOnClickListener {
-                onItemDeleteListener?.invoke(item)
-            }
         }
     }
 
-    private var onItemDeleteListener: ((Uri) -> Unit)? = null
+    private var onItemDeleteListener: ((Int, View) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -53,7 +57,7 @@ class PreviewPhotoAdapter : ListAdapter<Uri, PreviewPhotoAdapter.ViewHolder>(Dif
         holder.bind(getItem(position))
     }
 
-    fun setOnItemDeleteListener(onItemDeleteListener: ((Uri) -> Unit)) {
+    fun setOnItemDeleteListener(onItemDeleteListener: ((Int, View) -> Unit)) {
         this.onItemDeleteListener = onItemDeleteListener
     }
 }

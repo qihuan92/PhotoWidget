@@ -144,14 +144,18 @@ class ConfigureActivity : AppCompatActivity() {
 
         binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
         binding.rvPreviewList.adapter = ConcatAdapter(previewAddAdapter, previewAdapter)
-        previewAdapter.setOnItemDeleteListener { uri ->
-            viewModel.deleteImage(uri)
+        previewAdapter.setOnItemDeleteListener { position, _ ->
+            viewModel.deleteImage(position)
         }
         previewAddAdapter.setOnItemAddListener {
             selectPicForResult.launch("image/*")
         }
 
         viewModel.imageUriList.observe(this) {
+            previewAdapter.submitList(it.toList())
+            binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
+            widgetAdapter.setData(it)
+
             if (it.size <= 1) {
                 viewModel.autoPlayInterval.value = null
                 binding.layoutAutoPlayInterval.isGone = true
@@ -160,10 +164,6 @@ class ConfigureActivity : AppCompatActivity() {
             }
 
             binding.layoutPhotoWidgetPreview.strokeWidth = if (it.isEmpty()) 2f.dp else 0
-
-            previewAdapter.submitList(it.toList())
-            binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
-            widgetAdapter.setData(it)
         }
 
         viewModel.horizontalPadding.observe {
