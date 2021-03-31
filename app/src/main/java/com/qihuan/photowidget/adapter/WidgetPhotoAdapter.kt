@@ -6,9 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import androidx.annotation.Px
 import com.qihuan.photowidget.databinding.LayoutWidgetImageBinding
-import com.qihuan.photowidget.ktx.loadRounded
+import com.qihuan.photowidget.ktx.load
 
 /**
  * WidgetPhotoAdapter
@@ -20,7 +19,6 @@ class WidgetPhotoAdapter(
 ) : BaseAdapter() {
 
     private val itemList = mutableListOf<Uri>()
-    private var radius: Int = 0
 
     override fun getCount(): Int {
         return itemList.size
@@ -48,15 +46,14 @@ class WidgetPhotoAdapter(
         }
         binding.apply {
             val uri = itemList[position]
-            ivPicture.loadRounded(uri, radius)
+            ivPicture.load(uri)
         }
         return binding.root
     }
 
-    fun setData(itemList: List<Uri>, @Px radius: Int) {
+    fun setData(itemList: List<Uri>) {
         this.itemList.clear()
         this.itemList.addAll(itemList)
-        this.radius = radius
         notifyDataSetChanged()
     }
 }

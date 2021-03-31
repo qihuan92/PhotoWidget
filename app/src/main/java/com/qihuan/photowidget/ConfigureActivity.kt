@@ -161,8 +161,7 @@ class ConfigureActivity : AppCompatActivity() {
 
             previewAdapter.submitList(it.toList())
             binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
-            val widgetRadius = viewModel.widgetRadius.get().dp
-            widgetAdapter.setData(it, widgetRadius)
+            widgetAdapter.setData(it)
         }
 
         viewModel.horizontalPadding.observe {
@@ -182,9 +181,7 @@ class ConfigureActivity : AppCompatActivity() {
         }
 
         viewModel.widgetRadius.observe {
-            val imageUriList = viewModel.imageUriList.value.orEmpty()
-            binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
-            widgetAdapter.setData(imageUriList, it.dp)
+            binding.layoutPhotoWidgetPreview.radius = it.dp.toFloat() * 2
         }
 
         viewModel.autoPlayInterval.observe(this) {

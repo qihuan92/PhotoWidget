@@ -22,18 +22,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <include
-                android:id="@+id/layout_photo_widget"
-                layout="@layout/photo_widget"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/layout_photo_widget_preview"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginRight="30dp"
+                app:cardElevation="0dp"
                 app:layout_constraintDimensionRatio="h,1:1"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <include
+                    android:id="@+id/layout_photo_widget"
+                    layout="@layout/photo_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </androidx.cardview.widget.CardView>
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/scroll_view_info"
@@ -45,7 +52,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_photo_widget">
+                app:layout_constraintTop_toBottomOf="@id/layout_photo_widget_preview">
 
                 <LinearLayout
                     android:id="@+id/layout_info"
