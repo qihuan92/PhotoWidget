@@ -67,9 +67,14 @@ class WidgetPhotoViewFactory(
         val remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image)
         val uri = imageList[position].imageUri
         if (uri.toFile().exists()) {
+            val width = AppWidgetManager.getInstance(context).getAppWidgetOptions(widgetId)
+                .getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+            val height = AppWidgetManager.getInstance(context).getAppWidgetOptions(widgetId)
+                .getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+
             remoteViews.setImageViewBitmap(
                 R.id.iv_picture,
-                uri.getRoundedBitmap(context, radius.dp)
+                uri.getRoundedBitmap(context, radius.dp, width.toFloat().dp, height.toFloat().dp)
             )
         } else {
             remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)

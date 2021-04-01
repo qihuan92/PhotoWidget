@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import com.qihuan.photowidget.databinding.LayoutWidgetImageBinding
+import com.qihuan.photowidget.databinding.LayoutWidgetImagePreviewBinding
 import com.qihuan.photowidget.ktx.load
 
 /**
@@ -36,10 +36,10 @@ class WidgetPhotoAdapter(
         if (itemList.isNullOrEmpty()) {
             return View(context)
         }
-        var binding: LayoutWidgetImageBinding? = null
+        var binding: LayoutWidgetImagePreviewBinding? = null
         if (convertView == null) {
             binding =
-                LayoutWidgetImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                LayoutWidgetImagePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         }
         if (binding == null) {
             return View(context)
