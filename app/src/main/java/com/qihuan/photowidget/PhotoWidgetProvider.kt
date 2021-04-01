@@ -191,7 +191,7 @@ fun getWidgetNavPendingIntent(
 ): PendingIntent {
     return PendingIntent.getBroadcast(
         context,
-        0,
+        Random.nextInt(),
         getWidgetNavIntent(context, widgetId, navAction, interval),
         PendingIntent.FLAG_UPDATE_CURRENT
     )
