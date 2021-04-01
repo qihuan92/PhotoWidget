@@ -2,11 +2,11 @@ package com.qihuan.photowidget.adapter
 
 import android.content.Context
 import android.net.Uri
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.BaseAdapter
-import com.qihuan.photowidget.databinding.LayoutWidgetImagePreviewBinding
+import android.widget.ImageView
 import com.qihuan.photowidget.ktx.load
 
 /**
@@ -36,19 +36,12 @@ class WidgetPhotoAdapter(
         if (itemList.isNullOrEmpty()) {
             return View(context)
         }
-        var binding: LayoutWidgetImagePreviewBinding? = null
-        if (convertView == null) {
-            binding =
-                LayoutWidgetImagePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+        return ImageView(parent.context).apply {
+            layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            load(itemList[position])
         }
-        if (binding == null) {
-            return View(context)
-        }
-        binding.apply {
-            val uri = itemList[position]
-            ivPicture.load(uri)
-        }
-        return binding.root
     }
 
     fun setData(itemList: List<Uri>) {
