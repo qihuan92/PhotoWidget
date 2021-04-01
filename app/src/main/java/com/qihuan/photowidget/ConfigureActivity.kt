@@ -169,7 +169,7 @@ class ConfigureActivity : AppCompatActivity() {
 
         viewModel.horizontalPadding.observe {
             val horizontalPadding = it.dp
-            binding.layoutPhotoWidget.root.updatePadding(
+            binding.layoutPhotoWidgetContainer.updatePadding(
                 left = horizontalPadding,
                 right = horizontalPadding
             )
@@ -177,7 +177,7 @@ class ConfigureActivity : AppCompatActivity() {
 
         viewModel.verticalPadding.observe {
             val verticalPadding = it.dp
-            binding.layoutPhotoWidget.root.updatePadding(
+            binding.layoutPhotoWidgetContainer.updatePadding(
                 top = verticalPadding,
                 bottom = verticalPadding
             )
