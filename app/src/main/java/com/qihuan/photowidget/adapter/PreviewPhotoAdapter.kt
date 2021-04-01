@@ -37,6 +37,7 @@ class PreviewPhotoAdapter : ListAdapter<Uri, PreviewPhotoAdapter.ViewHolder>(Dif
         }
 
         fun bind(item: Uri) {
+            binding.btnDelete.isEnabled = true
             binding.ivPicture.setImageURI(item)
         }
     }
