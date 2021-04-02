@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
@@ -46,14 +47,24 @@ fun ImageView.load(uri: Uri) {
 
 fun Uri.getRoundedBitmap(context: Context, radius: Int, width: Int, height: Int): Bitmap {
     val radiusPx = radius * 2
-    val builder = Glide.with(context)
+    var builder = Glide.with(context)
         .asBitmap()
         .load(this)
-    if (width == 0 || height == 0) {
-        return builder.transform(RoundedCorners(radiusPx)).submit().get()
+
+    val transformList = mutableListOf<Transformation<Bitmap>>()
+    if (width > 0 && height > 0) {
+        transformList.add(CenterCrop())
     }
-    return builder
-        .transform(CenterCrop(), RoundedCorners(radiusPx))
-        .submit(width, height)
-        .get()
+    if (radiusPx > 0) {
+        transformList.add(RoundedCorners(radiusPx))
+    }
+
+    if (transformList.isNotEmpty()) {
+        builder = builder.transform(*transformList.toTypedArray())
+    }
+
+    if (width == 0 || height == 0) {
+        return builder.submit().get()
+    }
+    return builder.submit(width, height).get()
 }
