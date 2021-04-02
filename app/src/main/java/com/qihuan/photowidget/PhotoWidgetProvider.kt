@@ -90,13 +90,7 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
         newOptions: Bundle?
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
-        val widgetDao = AppDatabase.getDatabase(context).widgetDao()
-        GlobalScope.launch {
-            val widgetBean = widgetDao.selectById(appWidgetId)
-            if (widgetBean != null) {
-                updateAppWidget(context, appWidgetManager, widgetBean)
-            }
-        }
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.vf_picture)
     }
 }
 

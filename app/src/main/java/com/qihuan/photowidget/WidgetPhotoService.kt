@@ -33,6 +33,7 @@ class WidgetPhotoViewFactory(
     private val imageList by lazy { mutableListOf<WidgetImage>() }
     private var radius = 0f
     private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+    private val appWidgetManager by lazy { AppWidgetManager.getInstance(context) }
 
     override fun onCreate() {
         widgetId = intent?.getIntExtra(
@@ -64,13 +65,17 @@ class WidgetPhotoViewFactory(
         if (imageList.isNullOrEmpty()) {
             return null
         }
-        val remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image)
+        var remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image_fitxy)
         val uri = imageList[position].imageUri
         if (uri.toFile().exists()) {
-            val width = AppWidgetManager.getInstance(context).getAppWidgetOptions(widgetId)
+            val width = appWidgetManager.getAppWidgetOptions(widgetId)
                 .getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
-            val height = AppWidgetManager.getInstance(context).getAppWidgetOptions(widgetId)
+            val height = appWidgetManager.getAppWidgetOptions(widgetId)
                 .getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+
+            if (width == 0 || height == 0) {
+                remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image)
+            }
 
             remoteViews.setImageViewBitmap(
                 R.id.iv_picture,

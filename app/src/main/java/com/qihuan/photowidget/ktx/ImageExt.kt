@@ -46,9 +46,13 @@ fun ImageView.load(uri: Uri) {
 
 fun Uri.getRoundedBitmap(context: Context, radius: Int, width: Int, height: Int): Bitmap {
     val radiusPx = radius * 2
-    return Glide.with(context)
+    val builder = Glide.with(context)
         .asBitmap()
         .load(this)
+    if (width == 0 || height == 0) {
+        return builder.transform(RoundedCorners(radiusPx)).submit().get()
+    }
+    return builder
         .transform(CenterCrop(), RoundedCorners(radiusPx))
         .submit(width, height)
         .get()
