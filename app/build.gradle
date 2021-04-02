@@ -66,7 +66,6 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.6.0-alpha01'
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation 'androidx.appcompat:appcompat:1.2.0'
