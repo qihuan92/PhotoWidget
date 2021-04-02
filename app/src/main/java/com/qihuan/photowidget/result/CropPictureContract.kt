@@ -32,7 +32,6 @@ class CropPictureContract : ActivityResultContract<CropPictureInfo, Uri?>() {
                 setCompressionFormat(Bitmap.CompressFormat.PNG)
                 setFreeStyleCropEnabled(true)
             })
-            .withMaxResultSize(1000, 1000)
             .getIntent(context)
     }
 

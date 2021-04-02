@@ -14,6 +14,7 @@ import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.SingleLiveEvent
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.copyDir
+import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.ktx.parseLink
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -82,6 +83,10 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
         val filesDir = context.filesDir
 
         withContext(Dispatchers.IO) {
+            // remove compressor cache
+            val compressorCacheDir = File(cacheDir, "compressor")
+            compressorCacheDir.deleteDir()
+
             val tempDir = File(cacheDir, TEMP_DIR_NAME)
             val widgetDir = File(filesDir, "widget_${widgetId}")
             copyDir(widgetDir, tempDir, override = true)

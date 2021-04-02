@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
@@ -33,6 +35,9 @@ import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.result.CropPictureContract
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.default
+import id.zelory.compressor.constraint.destination
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -88,6 +93,7 @@ class ConfigureActivity : AppCompatActivity() {
                     outDir.mkdirs()
                 }
 
+
                 tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
                 cropPicForResult.launch(CropPictureInfo(it, Uri.fromFile(tempOutFile)))
             }
@@ -96,7 +102,13 @@ class ConfigureActivity : AppCompatActivity() {
     private val cropPicForResult =
         registerForActivityResult(CropPictureContract()) {
             if (it != null) {
-                viewModel.addImage(it)
+                lifecycleScope.launch {
+                    val compressFile = Compressor.compress(this@ConfigureActivity, it.toFile()) {
+                        default()
+                        destination(it.toFile())
+                    }
+                    viewModel.addImage(compressFile.toUri())
+                }
             } else {
                 tempOutFile?.delete()
             }
