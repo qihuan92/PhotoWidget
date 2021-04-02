@@ -37,3 +37,6 @@
 -keep class com.bumptech.glide.load.data.ParcelFileDescriptorRewinder$InternalRewinder {
   *** rewind();
 }
+
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.*{*;}
