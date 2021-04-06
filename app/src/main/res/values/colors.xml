@@ -14,6 +14,6 @@
 
     <color name="colorDivider">#EEEEEE</color>
     <color name="purple_7F63C3">#7F63C3</color>
-    <color name="blur_mask">#80ffffff</color>
+    <color name="blur_mask">#45ffffff</color>
     <color name="red">#FF5252</color>
 </resources>

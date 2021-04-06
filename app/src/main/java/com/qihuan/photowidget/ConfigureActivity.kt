@@ -326,6 +326,12 @@ class ConfigureActivity : AppCompatActivity() {
         alphaAnimator.addListener(
             onStart = {
                 setBackground(wallpaperDrawable)
+                binding.blurLayout.startBlur()
+            },
+            onEnd = {
+                binding.btnConfirm.show()
+                binding.blurLayout.lockView()
+                binding.blurLayout.isVisible = true
             }
         )
         alphaAnimator.duration = defAnimTime
@@ -338,21 +344,6 @@ class ConfigureActivity : AppCompatActivity() {
         binding.root.background = BitmapDrawable(resources, wallpaper)
         // 状态栏文字颜色适配
         adaptStatusBarTextColor(wallpaper)
-        // 设置设置区域背景
-        binding.scrollViewInfo.apply {
-            post {
-                val translateY = wallpaper.height - height
-                lifecycleScope.launch {
-                    val blurBitmap = wallpaper.blur(
-                        this@apply.context,
-                        width = width,
-                        height = height,
-                        translateY = translateY
-                    )
-                    background = BitmapDrawable(resources, blurBitmap)
-                }
-            }
-        }
     }
 
     private fun changeUIState(uiState: UIState) {
