@@ -321,11 +321,15 @@ class ConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private fun rootAnimIn(wallpaperDrawable: Bitmap) {
+    private fun rootAnimIn(wallpaper: Bitmap) {
         val alphaAnimator = ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0.0f, 1.0f)
         alphaAnimator.addListener(
             onStart = {
-                setBackground(wallpaperDrawable)
+                // 设置壁纸背景
+                binding.root.background = BitmapDrawable(resources, wallpaper)
+                // 状态栏文字颜色适配
+                adaptStatusBarTextColor(wallpaper)
+                // 设置区域模糊处理
                 binding.blurLayout.startBlur()
             },
             onEnd = {
@@ -337,13 +341,6 @@ class ConfigureActivity : AppCompatActivity() {
         alphaAnimator.duration = defAnimTime
         alphaAnimator.interpolator = AccelerateInterpolator()
         alphaAnimator.start()
-    }
-
-    private fun setBackground(wallpaper: Bitmap) {
-        // 设置壁纸背景
-        binding.root.background = BitmapDrawable(resources, wallpaper)
-        // 状态栏文字颜色适配
-        adaptStatusBarTextColor(wallpaper)
     }
 
     private fun changeUIState(uiState: UIState) {
