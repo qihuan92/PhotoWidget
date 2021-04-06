@@ -329,8 +329,8 @@ class ConfigureActivity : AppCompatActivity() {
                 binding.blurLayout.startBlur()
             },
             onEnd = {
-                binding.btnConfirm.show()
                 binding.blurLayout.lockView()
+                binding.btnConfirm.show()
                 binding.blurLayout.isVisible = true
             }
         )
