@@ -7,7 +7,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -326,7 +325,7 @@ class ConfigureActivity : AppCompatActivity() {
         alphaAnimator.addListener(
             onStart = {
                 // 设置壁纸背景
-                binding.root.background = BitmapDrawable(resources, wallpaper)
+                binding.ivWallpaper.setImageBitmap(wallpaper)
                 // 状态栏文字颜色适配
                 adaptStatusBarTextColor(wallpaper)
                 // 设置区域模糊处理

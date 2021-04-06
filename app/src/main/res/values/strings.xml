@@ -33,6 +33,7 @@
     <string name="app_icon">应用图标</string>
     <string name="delete_photo">删除相片</string>
     <string name="widget_photo">微件相片</string>
+    <string name="wallpaper">壁纸</string>
     <string-array name="open_link_types">
         <item>打开应用</item>
         <item>打开URL</item>
