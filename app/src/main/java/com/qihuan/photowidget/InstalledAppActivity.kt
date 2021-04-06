@@ -1,7 +1,6 @@
 package com.qihuan.photowidget
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.qihuan.photowidget.adapter.InstalledAppAdapter
 import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
+import com.qihuan.photowidget.ktx.adapterBarsColor
 import com.qihuan.photowidget.ktx.parseLink
 import com.qihuan.photowidget.ktx.viewBinding
 import kotlinx.coroutines.FlowPreview
@@ -39,6 +39,7 @@ class InstalledAppActivity : AppCompatActivity() {
     }
 
     private fun adaptBars() {
+        adapterBarsColor(resources, window, binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val barInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
             view.updatePadding(top = barInsets.top)
@@ -48,13 +49,6 @@ class InstalledAppActivity : AppCompatActivity() {
             val navigationBarInserts = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
             view.updatePadding(bottom = navigationBarInserts.bottom)
             insets
-        }
-        WindowCompat.getInsetsController(window, binding.root)?.apply {
-            when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
-                Configuration.UI_MODE_NIGHT_NO -> isAppearanceLightStatusBars = true
-                Configuration.UI_MODE_NIGHT_YES -> isAppearanceLightStatusBars = false
-            }
-
         }
     }
 
