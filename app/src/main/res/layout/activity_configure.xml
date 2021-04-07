@@ -70,8 +70,8 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:visibility="gone"
                 android:alpha="0"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -321,6 +321,10 @@
                                 android:valueFrom="0"
                                 android:valueTo="100" />
                         </LinearLayout>
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="56dp" />
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>
             </com.qihuan.photowidget.common.blur.BlurLayout>

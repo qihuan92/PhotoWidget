@@ -295,7 +295,7 @@ class ConfigureActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.scrollViewInfo) { view, insets ->
             val barInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
             view.post {
-                view.updatePadding(bottom = barInsets.bottom + binding.btnConfirm.height)
+                view.updatePadding(bottom = barInsets.bottom)
             }
             insets
         }
