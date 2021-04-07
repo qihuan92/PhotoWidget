@@ -30,13 +30,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
-import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.bean.CropPictureInfo
+import com.qihuan.photowidget.bean.ScreenSize
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.result.CropPictureContract
-import id.zelory.compressor.Compressor
-import id.zelory.compressor.constraint.default
-import id.zelory.compressor.constraint.destination
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -85,16 +83,27 @@ class ConfigureActivity : AppCompatActivity() {
     private var tempOutFile: File? = null
 
     private val selectPicForResult =
-        registerForActivityResult(ActivityResultContracts.GetContent()) {
-            if (it != null) {
-                val outDir = File(cacheDir, TEMP_DIR_NAME)
-                if (!outDir.exists()) {
-                    outDir.mkdirs()
-                }
+        registerForActivityResult(ActivityResultContracts.GetMultipleContents()) {
+            if (it.isNullOrEmpty()) {
+                return@registerForActivityResult
+            }
 
+            val outDir = File(cacheDir, TEMP_DIR_NAME)
+            if (!outDir.exists()) {
+                outDir.mkdirs()
+            }
 
+            if (it.size == 1) {
                 tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
-                cropPicForResult.launch(CropPictureInfo(it, Uri.fromFile(tempOutFile)))
+                cropPicForResult.launch(CropPictureInfo(it[0], Uri.fromFile(tempOutFile)))
+            } else {
+                lifecycleScope.launch {
+                    for (uri in it) {
+                        val tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
+                        copyFile(uri, tempOutFile.toUri())
+                        viewModel.addImage(compressImageFile(tempOutFile).toUri())
+                    }
+                }
             }
         }
 
@@ -102,11 +111,7 @@ class ConfigureActivity : AppCompatActivity() {
         registerForActivityResult(CropPictureContract()) {
             if (it != null) {
                 lifecycleScope.launch {
-                    val compressFile = Compressor.compress(this@ConfigureActivity, it.toFile()) {
-                        default()
-                        destination(it.toFile())
-                    }
-                    viewModel.addImage(compressFile.toUri())
+                    viewModel.addImage(compressImageFile(it.toFile()).toUri())
                 }
             } else {
                 tempOutFile?.delete()

@@ -1,6 +1,5 @@
 package com.qihuan.photowidget.ktx
 
-import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -18,7 +17,7 @@ fun Long?.toDateStr(pattern: String = "yyyy-MM-dd HH:mm:ss"): String {
         val sdf = SimpleDateFormat(pattern, Locale.getDefault())
         dateStr = sdf.format(this)
     } catch (e: Exception) {
-        Log.e("DateExt.kt", "时间转换异常", e)
+        logE("DateExt.kt", "时间转换异常", e)
     }
     return dateStr
 }

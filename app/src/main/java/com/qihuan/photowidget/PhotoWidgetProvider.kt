@@ -14,6 +14,7 @@ import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.isOpenAppLink
+import com.qihuan.photowidget.ktx.logE
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -141,7 +142,7 @@ internal fun updateAppWidget(
                     views.setOnClickPendingIntent(R.id.area_right, pendingIntent)
                 }
             } catch (e: Exception) {
-                Log.e("PhotoWidgetProvider", e.message, e)
+                logE("PhotoWidgetProvider", e.message, e)
             }
         }
     }

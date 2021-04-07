@@ -8,7 +8,6 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
-import android.util.Log
 import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
 import com.qihuan.photowidget.R
@@ -45,7 +44,7 @@ suspend fun Bitmap.blur(
             doGaussianBlur(renderScript, radius, input, output)
             output.copyTo(scaledBitmap)
         } catch (e: Exception) {
-            Log.e("Blur", "Blur error", e)
+            logE("Blur", "Blur error", e)
         } finally {
             input.destroy()
             output.destroy()
