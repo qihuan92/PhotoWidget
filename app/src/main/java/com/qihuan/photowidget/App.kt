@@ -12,5 +12,6 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         CrashReport.initCrashReport(this)
+        CrashReport.setIsDevelopmentDevice(this, BuildConfig.DEBUG)
     }
 }

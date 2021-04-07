@@ -7,7 +7,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -31,13 +30,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
-import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.bean.CropPictureInfo
+import com.qihuan.photowidget.bean.ScreenSize
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.result.CropPictureContract
-import id.zelory.compressor.Compressor
-import id.zelory.compressor.constraint.default
-import id.zelory.compressor.constraint.destination
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -72,7 +69,7 @@ class ConfigureActivity : AppCompatActivity() {
         ScreenSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
     }
     private val defAnimTime by lazy {
-        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+        resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
     }
     private val intervalItems by lazy {
         listOf(
@@ -86,16 +83,27 @@ class ConfigureActivity : AppCompatActivity() {
     private var tempOutFile: File? = null
 
     private val selectPicForResult =
-        registerForActivityResult(ActivityResultContracts.GetContent()) {
-            if (it != null) {
-                val outDir = File(cacheDir, TEMP_DIR_NAME)
-                if (!outDir.exists()) {
-                    outDir.mkdirs()
-                }
+        registerForActivityResult(ActivityResultContracts.GetMultipleContents()) {
+            if (it.isNullOrEmpty()) {
+                return@registerForActivityResult
+            }
 
+            val outDir = File(cacheDir, TEMP_DIR_NAME)
+            if (!outDir.exists()) {
+                outDir.mkdirs()
+            }
 
+            if (it.size == 1) {
                 tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
-                cropPicForResult.launch(CropPictureInfo(it, Uri.fromFile(tempOutFile)))
+                cropPicForResult.launch(CropPictureInfo(it[0], Uri.fromFile(tempOutFile)))
+            } else {
+                lifecycleScope.launch {
+                    for (uri in it) {
+                        val tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
+                        copyFile(uri, tempOutFile.toUri())
+                        viewModel.addImage(compressImageFile(tempOutFile).toUri())
+                    }
+                }
             }
         }
 
@@ -103,11 +111,7 @@ class ConfigureActivity : AppCompatActivity() {
         registerForActivityResult(CropPictureContract()) {
             if (it != null) {
                 lifecycleScope.launch {
-                    val compressFile = Compressor.compress(this@ConfigureActivity, it.toFile()) {
-                        default()
-                        destination(it.toFile())
-                    }
-                    viewModel.addImage(compressFile.toUri())
+                    viewModel.addImage(compressImageFile(it.toFile()).toUri())
                 }
             } else {
                 tempOutFile?.delete()
@@ -199,6 +203,10 @@ class ConfigureActivity : AppCompatActivity() {
             binding.layoutPhotoWidgetPreview.radius = it.dp.toFloat() * 2
         }
 
+        viewModel.widgetTransparency.observe {
+            binding.layoutPhotoWidgetContainer.alpha = 1f - it / 100f
+        }
+
         viewModel.autoPlayInterval.observe(this) {
             val vfPicture = binding.layoutPhotoWidget.vfPicture
             if (it == null) {
@@ -287,7 +295,7 @@ class ConfigureActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.scrollViewInfo) { view, insets ->
             val barInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
             view.post {
-                view.updatePadding(bottom = barInsets.bottom + binding.btnConfirm.height)
+                view.updatePadding(bottom = barInsets.bottom)
             }
             insets
         }
@@ -321,37 +329,37 @@ class ConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private fun rootAnimIn(wallpaperDrawable: Bitmap) {
-        val alphaAnimator = ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0.0f, 1.0f)
-        alphaAnimator.addListener(
-            onStart = {
-                setBackground(wallpaperDrawable)
-            }
-        )
-        alphaAnimator.duration = defAnimTime
-        alphaAnimator.interpolator = AccelerateInterpolator()
-        alphaAnimator.start()
-    }
+    private fun rootAnimIn(wallpaper: Bitmap) {
+        ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0.0f, 1.0f).apply {
+            addListener(
+                onStart = {
+                    // 设置壁纸背景
+                    binding.ivWallpaper.setImageBitmap(wallpaper)
+                    // 状态栏文字颜色适配
+                    adaptStatusBarTextColor(wallpaper)
+                    // 设置区域模糊处理
+                    binding.blurLayout.startBlur()
+                },
+                onEnd = {
+                    binding.blurLayout.lockView()
+                    binding.btnConfirm.show()
 
-    private fun setBackground(wallpaper: Bitmap) {
-        // 设置壁纸背景
-        binding.root.background = BitmapDrawable(resources, wallpaper)
-        // 状态栏文字颜色适配
-        adaptStatusBarTextColor(wallpaper)
-        // 设置设置区域背景
-        binding.scrollViewInfo.apply {
-            post {
-                val translateY = wallpaper.height - height
-                lifecycleScope.launch {
-                    val blurBitmap = wallpaper.blur(
-                        this@apply.context,
-                        width = width,
-                        height = height,
-                        translateY = translateY
-                    )
-                    background = BitmapDrawable(resources, blurBitmap)
+                    // 微件预览
+                    binding.layoutPhotoWidgetContainer.isVisible = true
+
+                    // 设置项
+                    binding.blurLayout.isVisible = true
+                    ObjectAnimator.ofFloat(binding.blurLayout, View.ALPHA, 0.0f, 1.0f).apply {
+                        duration = defAnimTime
+                        interpolator = AccelerateInterpolator()
+                        start()
+                    }
                 }
-            }
+            )
+
+            duration = defAnimTime
+            interpolator = AccelerateInterpolator()
+            start()
         }
     }
 

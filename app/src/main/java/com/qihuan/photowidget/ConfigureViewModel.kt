@@ -38,6 +38,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     val widgetRadius by lazy { ObservableFloat(0f) }
     val verticalPadding by lazy { ObservableFloat(0f) }
     val horizontalPadding by lazy { ObservableFloat(0f) }
+    val widgetTransparency by lazy { ObservableFloat(0f) }
     val autoPlayInterval by lazy { MutableLiveData<Int?>() }
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
     val isLoading by lazy { SingleLiveEvent<Boolean?>(null) }
@@ -109,6 +110,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 verticalPadding.set(widgetInfo.verticalPadding)
                 horizontalPadding.set(widgetInfo.horizontalPadding)
                 widgetRadius.set(widgetInfo.widgetRadius)
+                widgetTransparency.set(widgetInfo.widgetTransparency)
 
                 widgetInfo.openUrl?.let {
                     linkInfo.set(it.parseLink())
@@ -133,6 +135,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 verticalPadding.get(),
                 horizontalPadding.get(),
                 widgetRadius.get(),
+                widgetTransparency.get(),
                 autoPlayInterval.value,
                 linkInfo.get()?.link
             )
