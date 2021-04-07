@@ -69,7 +69,7 @@ class ConfigureActivity : AppCompatActivity() {
         ScreenSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
     }
     private val defAnimTime by lazy {
-        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+        resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
     }
     private val intervalItems by lazy {
         listOf(
@@ -340,6 +340,7 @@ class ConfigureActivity : AppCompatActivity() {
                 binding.blurLayout.lockView()
                 binding.btnConfirm.show()
                 binding.blurLayout.isVisible = true
+                binding.layoutPhotoWidgetContainer.isVisible = true
             }
         )
         alphaAnimator.duration = defAnimTime
