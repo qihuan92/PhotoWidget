@@ -63,7 +63,7 @@
                 </com.google.android.material.card.MaterialCardView>
             </FrameLayout>
 
-            <io.alterac.blurkit.BlurLayout
+            <com.qihuan.photowidget.common.blur.BlurLayout
                 android:id="@+id/blur_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -80,7 +80,6 @@
                     android:id="@+id/scroll_view_info"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/blur_mask"
                     android:clipToPadding="false">
 
                     <LinearLayout
@@ -304,7 +303,7 @@
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>
-            </io.alterac.blurkit.BlurLayout>
+            </com.qihuan.photowidget.common.blur.BlurLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ProgressBar
