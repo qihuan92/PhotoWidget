@@ -36,7 +36,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_widget_picture"
-            tools:text="组件ID: 86" />
+            tools:text="微件ID: 86" />
 
         <TextView
             android:id="@+id/tv_sub_title"

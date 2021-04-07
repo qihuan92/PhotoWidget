@@ -18,6 +18,7 @@ data class WidgetInfo(
     val verticalPadding: Float,
     val horizontalPadding: Float,
     val widgetRadius: Float,
+    val widgetTransparency: Float = 0f,
     val autoPlayInterval: Int?,
     val openUrl: String?,
     val createTime: Long? = System.currentTimeMillis(),

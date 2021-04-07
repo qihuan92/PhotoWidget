@@ -7,10 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.bean.WidgetInfo
-import com.qihuan.photowidget.db.migration.MigrationFor1To2
-import com.qihuan.photowidget.db.migration.MigrationFor2To3
-import com.qihuan.photowidget.db.migration.MigrationFor3To4
-import com.qihuan.photowidget.db.migration.MigrationFor4To5
+import com.qihuan.photowidget.db.migration.*
 
 /**
  * AppDatabase
@@ -22,7 +19,7 @@ import com.qihuan.photowidget.db.migration.MigrationFor4To5
         WidgetInfo::class,
         WidgetImage::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -51,6 +48,7 @@ abstract class AppDatabase : RoomDatabase() {
                     MigrationFor2To3(context),
                     MigrationFor3To4(),
                     MigrationFor4To5(),
+                    MigrationFor5To6(),
                 ).build()
                 INSTANCE = instance
                 return instance

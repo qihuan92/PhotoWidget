@@ -203,6 +203,10 @@ class ConfigureActivity : AppCompatActivity() {
             binding.layoutPhotoWidgetPreview.radius = it.dp.toFloat() * 2
         }
 
+        viewModel.widgetTransparency.observe {
+            binding.layoutPhotoWidgetContainer.alpha = 1f - it / 100f
+        }
+
         viewModel.autoPlayInterval.observe(this) {
             val vfPicture = binding.layoutPhotoWidget.vfPicture
             if (it == null) {

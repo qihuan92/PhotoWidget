@@ -2,7 +2,7 @@
     <string name="app_name" translatable="false">相片微件</string>
     <string name="vertical_padding" translatable="false">上下边距</string>
     <string name="horizontal_padding" translatable="false">左右边距</string>
-    <string name="widget_radius" translatable="false">组件圆角</string>
+    <string name="widget_radius" translatable="false">微件圆角</string>
     <string name="select_picture" translatable="false">选择图片</string>
     <string name="warning_select_picture" translatable="false">请选择一张照片</string>
     <string name="confirm" translatable="false">确定</string>
@@ -23,7 +23,7 @@
     <string name="retry">重试</string>
     <string name="delete">删除</string>
     <string name="alert_title_default">提示</string>
-    <string name="alert_msg_delete_widget">是否删除该组件？</string>
+    <string name="alert_msg_delete_widget">是否删除该微件？</string>
     <string name="sure">确定</string>
     <string name="cancel">取消</string>
     <string name="tips_widget_empty">请在桌面添加相片微件</string>
@@ -34,6 +34,7 @@
     <string name="delete_photo">删除相片</string>
     <string name="widget_photo">微件相片</string>
     <string name="wallpaper">壁纸</string>
+    <string name="widget_transparency">透明度&#12288;</string>
     <string-array name="open_link_types">
         <item>打开应用</item>
         <item>打开URL</item>

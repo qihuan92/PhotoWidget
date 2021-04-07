@@ -32,6 +32,7 @@ class WidgetPhotoViewFactory(
     private val widgetDao by lazy { AppDatabase.getDatabase(context).widgetDao() }
     private val imageList by lazy { mutableListOf<WidgetImage>() }
     private var radius = 0f
+    private var transparency = 0f
     private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private val appWidgetManager by lazy { AppWidgetManager.getInstance(context) }
 
@@ -50,6 +51,7 @@ class WidgetPhotoViewFactory(
             imageList.addAll(widgetBean.imageList)
             val widgetInfo = widgetBean.widgetInfo
             radius = widgetInfo.widgetRadius
+            transparency = widgetInfo.widgetTransparency
         }
     }
 
@@ -81,10 +83,16 @@ class WidgetPhotoViewFactory(
                 R.id.iv_picture,
                 uri.getRoundedBitmap(context, radius.dp, width.toFloat().dp, height.toFloat().dp)
             )
+            remoteViews.setInt(R.id.iv_picture, "setImageAlpha", calAlpha(transparency))
         } else {
             remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
         }
         return remoteViews
+    }
+
+    private fun calAlpha(transparency: Float): Int {
+        val ratio = 1f - transparency / 100f
+        return (255 * ratio).toInt()
     }
 
     override fun getLoadingView(): RemoteViews {
