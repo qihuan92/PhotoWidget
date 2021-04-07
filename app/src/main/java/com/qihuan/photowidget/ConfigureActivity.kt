@@ -330,26 +330,37 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private fun rootAnimIn(wallpaper: Bitmap) {
-        val alphaAnimator = ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0.0f, 1.0f)
-        alphaAnimator.addListener(
-            onStart = {
-                // 设置壁纸背景
-                binding.ivWallpaper.setImageBitmap(wallpaper)
-                // 状态栏文字颜色适配
-                adaptStatusBarTextColor(wallpaper)
-                // 设置区域模糊处理
-                binding.blurLayout.startBlur()
-            },
-            onEnd = {
-                binding.blurLayout.lockView()
-                binding.btnConfirm.show()
-                binding.blurLayout.isVisible = true
-                binding.layoutPhotoWidgetContainer.isVisible = true
-            }
-        )
-        alphaAnimator.duration = defAnimTime
-        alphaAnimator.interpolator = AccelerateInterpolator()
-        alphaAnimator.start()
+        ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0.0f, 1.0f).apply {
+            addListener(
+                onStart = {
+                    // 设置壁纸背景
+                    binding.ivWallpaper.setImageBitmap(wallpaper)
+                    // 状态栏文字颜色适配
+                    adaptStatusBarTextColor(wallpaper)
+                    // 设置区域模糊处理
+                    binding.blurLayout.startBlur()
+                },
+                onEnd = {
+                    binding.blurLayout.lockView()
+                    binding.btnConfirm.show()
+
+                    // 微件预览
+                    binding.layoutPhotoWidgetContainer.isVisible = true
+
+                    // 设置项
+                    binding.blurLayout.isVisible = true
+                    ObjectAnimator.ofFloat(binding.blurLayout, View.ALPHA, 0.0f, 1.0f).apply {
+                        duration = defAnimTime
+                        interpolator = AccelerateInterpolator()
+                        start()
+                    }
+                }
+            )
+
+            duration = defAnimTime
+            interpolator = AccelerateInterpolator()
+            start()
+        }
     }
 
     private fun changeUIState(uiState: UIState) {
