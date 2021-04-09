@@ -1,6 +1,7 @@
 package com.qihuan.photowidget.ktx
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import com.yalantis.ucrop.util.BitmapLoadUtils
 import id.zelory.compressor.Compressor
@@ -74,17 +75,9 @@ suspend fun Context.copyFile(inputUri: Uri, outputUri: Uri) = withContext(Dispat
     }
 }
 
-suspend fun test() = withContext(Dispatchers.IO) {
-    try {
-        Thread.sleep(1111)
-    } catch (e: Exception) {
-
-    }
-}
-
 suspend fun Context.compressImageFile(imageFile: File, destination: File = imageFile): File {
     return Compressor.compress(this, imageFile) {
-        default()
+        default(format = Bitmap.CompressFormat.PNG)
         destination(destination)
     }
 }
