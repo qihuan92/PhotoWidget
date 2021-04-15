@@ -3,6 +3,7 @@ package com.qihuan.photowidget
 import android.app.Application
 import android.appwidget.AppWidgetManager
 import android.net.Uri
+import android.widget.ImageView
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.databinding.ObservableField
@@ -40,6 +41,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     val horizontalPadding by lazy { ObservableFloat(0f) }
     val widgetTransparency by lazy { ObservableFloat(0f) }
     val autoPlayInterval by lazy { MutableLiveData<Int?>() }
+    val photoScaleType by lazy { MutableLiveData(ImageView.ScaleType.CENTER_CROP) }
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
     val isLoading by lazy { SingleLiveEvent<Boolean?>(null) }
     val isDone by lazy { SingleLiveEvent(false) }
@@ -116,6 +118,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                     linkInfo.set(it.parseLink())
                 }
                 autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
+                photoScaleType.postValue(widgetInfo.photoScaleType)
             }
             isLoading.value = false
         }
@@ -137,7 +140,8 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 widgetRadius.get(),
                 widgetTransparency.get(),
                 autoPlayInterval.value,
-                linkInfo.get()?.link
+                linkInfo.get()?.link,
+                photoScaleType.value ?: ImageView.ScaleType.CENTER_CROP,
             )
 
             val uriList = saveWidgetPhotoFiles(widgetId)

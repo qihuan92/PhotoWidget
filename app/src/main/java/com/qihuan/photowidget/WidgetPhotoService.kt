@@ -3,6 +3,7 @@ package com.qihuan.photowidget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.net.toFile
@@ -34,6 +35,7 @@ class WidgetPhotoViewFactory(
     private var radius = 0f
     private var transparency = 0f
     private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+    private var scaleType: ImageView.ScaleType = ImageView.ScaleType.CENTER_CROP
     private val appWidgetManager by lazy { AppWidgetManager.getInstance(context) }
 
     override fun onCreate() {
@@ -52,6 +54,7 @@ class WidgetPhotoViewFactory(
             val widgetInfo = widgetBean.widgetInfo
             radius = widgetInfo.widgetRadius
             transparency = widgetInfo.widgetTransparency
+            scaleType = widgetInfo.photoScaleType
         }
     }
 
@@ -67,7 +70,11 @@ class WidgetPhotoViewFactory(
         if (imageList.isNullOrEmpty()) {
             return null
         }
-        var remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image_fitxy)
+        var remoteViews = if (scaleType == ImageView.ScaleType.FIT_CENTER) {
+            RemoteViews(context.packageName, R.layout.layout_widget_image)
+        } else {
+            RemoteViews(context.packageName, R.layout.layout_widget_image_fitxy)
+        }
         val uri = imageList[position].imageUri
         if (uri.toFile().exists()) {
             val width = appWidgetManager.getAppWidgetOptions(widgetId)
@@ -81,7 +88,7 @@ class WidgetPhotoViewFactory(
 
             remoteViews.setImageViewBitmap(
                 R.id.iv_picture,
-                uri.getRoundedBitmap(context, radius.dp, width.toFloat().dp, height.toFloat().dp)
+                uri.getRoundedBitmap(context, radius.dp, scaleType, width.toFloat().dp, height.toFloat().dp)
             )
             remoteViews.setInt(R.id.iv_picture, "setImageAlpha", calAlpha(transparency))
         } else {

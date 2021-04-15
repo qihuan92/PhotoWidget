@@ -1,6 +1,7 @@
 package com.qihuan.photowidget.db
 
 import android.net.Uri
+import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.room.TypeConverter
 
@@ -32,5 +33,15 @@ class Converters {
     @TypeConverter
     fun convertUri(value: Uri): String {
         return value.toString()
+    }
+
+    @TypeConverter
+    fun revertScaleType(value: String): ImageView.ScaleType {
+        return enumValueOf(value)
+    }
+
+    @TypeConverter
+    fun convertScaleType(value: ImageView.ScaleType): String {
+        return value.name
     }
 }

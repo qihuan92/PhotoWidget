@@ -45,7 +45,13 @@ fun ImageView.load(uri: Uri) {
         .into(this)
 }
 
-fun Uri.getRoundedBitmap(context: Context, radius: Int, width: Int, height: Int): Bitmap {
+fun Uri.getRoundedBitmap(
+    context: Context,
+    radius: Int,
+    scaleType: ImageView.ScaleType,
+    width: Int,
+    height: Int
+): Bitmap {
     val radiusPx = radius * 2
     var builder = Glide.with(context)
         .asBitmap()
@@ -53,7 +59,9 @@ fun Uri.getRoundedBitmap(context: Context, radius: Int, width: Int, height: Int)
 
     val transformList = mutableListOf<Transformation<Bitmap>>()
     if (width > 0 && height > 0) {
-        transformList.add(CenterCrop())
+        if (scaleType == ImageView.ScaleType.CENTER_CROP) {
+            transformList.add(CenterCrop())
+        }
     }
     if (radiusPx > 0) {
         transformList.add(RoundedCorners(radiusPx))
@@ -63,7 +71,7 @@ fun Uri.getRoundedBitmap(context: Context, radius: Int, width: Int, height: Int)
         builder = builder.transform(*transformList.toTypedArray())
     }
 
-    if (width == 0 || height == 0) {
+    if (scaleType != ImageView.ScaleType.CENTER_CROP || (width == 0 || height == 0)) {
         return builder.submit().get()
     }
     return builder.submit(width, height).get()
