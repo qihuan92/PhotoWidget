@@ -1,5 +1,6 @@
 package com.qihuan.photowidget.bean
 
+import android.widget.ImageView
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -21,5 +22,6 @@ data class WidgetInfo(
     val widgetTransparency: Float = 0f,
     val autoPlayInterval: Int?,
     val openUrl: String?,
+    val photoScaleType: ImageView.ScaleType,
     val createTime: Long? = System.currentTimeMillis(),
 )

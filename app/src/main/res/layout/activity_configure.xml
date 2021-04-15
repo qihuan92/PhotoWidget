@@ -129,6 +129,29 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/layout_photo_scale_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:onClick="@{() -> activity.showScaleTypeSelector()}"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/photo_scale_type"
+                                android:textAppearance="?textAppearanceBody2"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_photo_scale_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?textAppearanceCaption" />
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:id="@+id/layout_open_url"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

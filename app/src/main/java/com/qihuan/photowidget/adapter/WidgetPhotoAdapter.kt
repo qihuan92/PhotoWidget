@@ -19,6 +19,7 @@ class WidgetPhotoAdapter(
 ) : BaseAdapter() {
 
     private val itemList = mutableListOf<Uri>()
+    private var scaleType = ImageView.ScaleType.CENTER_CROP
 
     override fun getCount(): Int {
         return itemList.size
@@ -39,7 +40,7 @@ class WidgetPhotoAdapter(
 
         return ImageView(parent.context).apply {
             layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            scaleType = ImageView.ScaleType.CENTER_CROP
+            scaleType = this@WidgetPhotoAdapter.scaleType
             load(itemList[position])
         }
     }
@@ -47,6 +48,11 @@ class WidgetPhotoAdapter(
     fun setData(itemList: List<Uri>) {
         this.itemList.clear()
         this.itemList.addAll(itemList)
+        notifyDataSetChanged()
+    }
+
+    fun setScaleType(scaleType: ImageView.ScaleType) {
+        this.scaleType = scaleType
         notifyDataSetChanged()
     }
 }

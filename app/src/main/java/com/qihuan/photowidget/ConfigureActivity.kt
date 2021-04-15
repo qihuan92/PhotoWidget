@@ -31,6 +31,7 @@ import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.CropPictureInfo
+import com.qihuan.photowidget.bean.PhotoScaleType
 import com.qihuan.photowidget.bean.ScreenSize
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
@@ -229,6 +230,12 @@ class ConfigureActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.photoScaleType.observe(this) {
+            binding.tvPhotoScaleType.text = PhotoScaleType.getDescription(it)
+            binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
+            widgetAdapter.setScaleType(it)
+        }
+
         viewModel.isLoading.observe(this) {
             if (it != null) {
                 if (it) {
@@ -406,6 +413,19 @@ class ConfigureActivity : AppCompatActivity() {
                         }
                     })
                 }
+                dialog.dismiss()
+            }.show()
+    }
+
+    fun showScaleTypeSelector() {
+        val scaleTypeList = PhotoScaleType.values()
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
+            .setTitle(R.string.alert_title_scale_type)
+            .setSingleChoiceItems(
+                scaleTypeList.map { it.description }.toTypedArray(),
+                scaleTypeList.indexOfFirst { it.scaleType == viewModel.photoScaleType.value }
+            ) { dialog, i ->
+                viewModel.photoScaleType.value = scaleTypeList[i].scaleType
                 dialog.dismiss()
             }.show()
     }
