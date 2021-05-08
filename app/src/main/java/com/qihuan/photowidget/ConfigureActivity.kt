@@ -102,7 +102,11 @@ class ConfigureActivity : AppCompatActivity() {
                     for (uri in it) {
                         val tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
                         copyFile(uri, tempOutFile.toUri())
-                        viewModel.addImage(compressImageFile(tempOutFile).toUri())
+                        try {
+                            viewModel.addImage(compressImageFile(tempOutFile).toUri())
+                        } catch (e: NoSuchFileException) {
+                            logE("ConfigureActivity", e.message, e)
+                        }
                     }
                 }
             }
@@ -112,7 +116,12 @@ class ConfigureActivity : AppCompatActivity() {
         registerForActivityResult(CropPictureContract()) {
             if (it != null) {
                 lifecycleScope.launch {
-                    viewModel.addImage(compressImageFile(it.toFile()).toUri())
+                    try {
+                        viewModel.addImage(compressImageFile(it.toFile()).toUri())
+                    } catch (e: NoSuchFileException) {
+                        logE("ConfigureActivity", e.message, e)
+                        tempOutFile?.delete()
+                    }
                 }
             } else {
                 tempOutFile?.delete()

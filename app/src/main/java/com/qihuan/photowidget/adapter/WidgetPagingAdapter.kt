@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.databinding.ItemWidgetInfoBinding
 import com.qihuan.photowidget.ktx.toDateStr
@@ -44,7 +45,11 @@ class WidgetPagingAdapter :
             if (item != null) {
                 val imageList = item.imageList
                 val widgetInfo = item.widgetInfo
-                binding.ivWidgetPicture.setImageURI(imageList[0].imageUri)
+                if (imageList.isNotEmpty()) {
+                    binding.ivWidgetPicture.setImageURI(imageList[0].imageUri)
+                } else {
+                    binding.ivWidgetPicture.setImageResource(R.drawable.ic_round_broken_image_24)
+                }
                 binding.tvTitle.text = "微件ID: ${widgetInfo.widgetId}"
                 binding.tvSubTitle.text = widgetInfo.createTime.toDateStr()
             }
