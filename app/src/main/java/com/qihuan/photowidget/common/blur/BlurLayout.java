@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import androidx.core.content.ContextCompat;
 
 import com.qihuan.photowidget.R;
+import com.qihuan.photowidget.ktx.LogExtKt;
 
 import java.lang.ref.WeakReference;
 
@@ -188,9 +189,16 @@ public class BlurLayout extends FrameLayout {
     @Override
     public void invalidate() {
         super.invalidate();
-        Bitmap bitmap = blur();
-        if (bitmap != null) {
-            mImageView.setImageBitmap(bitmap);
+        try {
+            Bitmap bitmap = blur();
+            if (bitmap != null) {
+                mImageView.setImageBitmap(bitmap);
+            }
+        } catch (Exception e) {
+            LogExtKt.logE("BlurLayout", "blur error", e);
+            // 设置为遮罩颜色
+            setBackgroundColor(mBlurMaskColor);
+            super.setAlpha(1);
         }
     }
 
