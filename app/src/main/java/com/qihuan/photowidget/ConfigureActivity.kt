@@ -193,30 +193,6 @@ class ConfigureActivity : AppCompatActivity() {
             binding.layoutPhotoWidgetPreview.strokeWidth = if (it.isEmpty()) 2f.dp else 0
         }
 
-        viewModel.horizontalPadding.observe {
-            val horizontalPadding = it.dp
-            binding.layoutPhotoWidgetContainer.updatePadding(
-                left = horizontalPadding,
-                right = horizontalPadding
-            )
-        }
-
-        viewModel.verticalPadding.observe {
-            val verticalPadding = it.dp
-            binding.layoutPhotoWidgetContainer.updatePadding(
-                top = verticalPadding,
-                bottom = verticalPadding
-            )
-        }
-
-        viewModel.widgetRadius.observe {
-            binding.layoutPhotoWidgetPreview.radius = it.dp.toFloat() * 2
-        }
-
-        viewModel.widgetTransparency.observe {
-            binding.layoutPhotoWidgetContainer.alpha = 1f - it / 100f
-        }
-
         viewModel.autoPlayInterval.observe(this) {
             val vfPicture = binding.layoutPhotoWidget.vfPicture
             if (it == null) {
