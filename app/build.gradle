@@ -65,6 +65,14 @@ android {
     }
 }
 
+kapt {
+    arguments {
+        arg("room.schemaLocation", "$projectDir/schemas")
+        arg("room.incremental", "true")
+        arg("room.expandProjection", "true")
+    }
+}
+
 dependencies {
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation "androidx.palette:palette-ktx:1.0.0"
