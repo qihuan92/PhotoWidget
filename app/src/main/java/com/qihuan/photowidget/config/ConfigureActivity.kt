@@ -27,9 +27,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.ConcatAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.qihuan.photowidget.link.InstalledAppActivity
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.link.UrlInputActivity
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
@@ -38,12 +36,14 @@ import com.qihuan.photowidget.bean.PhotoScaleType
 import com.qihuan.photowidget.bean.ScreenSize
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
+import com.qihuan.photowidget.link.InstalledAppActivity
+import com.qihuan.photowidget.link.UrlInputActivity
 import com.qihuan.photowidget.result.CropPictureContract
 import kotlinx.coroutines.launch
 import java.io.File
 
 /**
- * The configuration screen for the [PhotoWidgetProvider] AppWidget.
+ * The configuration screen for the [com.qihuan.photowidget.PhotoWidgetProvider] AppWidget.
  */
 class ConfigureActivity : AppCompatActivity() {
 

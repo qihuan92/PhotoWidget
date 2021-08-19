@@ -15,9 +15,7 @@ import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
 import com.qihuan.photowidget.ktx.adapterBarsColor
 import com.qihuan.photowidget.ktx.parseLink
 import com.qihuan.photowidget.ktx.viewBinding
-import kotlinx.coroutines.FlowPreview
 
-@FlowPreview
 class InstalledAppActivity : AppCompatActivity() {
     enum class UIState {
         LOADING, SHOW_CONTENT
