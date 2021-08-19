@@ -1,4 +1,4 @@
-package com.qihuan.photowidget
+package com.qihuan.photowidget.main
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

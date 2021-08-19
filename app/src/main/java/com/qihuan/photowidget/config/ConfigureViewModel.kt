@@ -1,4 +1,4 @@
-package com.qihuan.photowidget
+package com.qihuan.photowidget.config
 
 import android.app.Application
 import android.appwidget.AppWidgetManager
@@ -11,12 +11,14 @@ import androidx.databinding.ObservableFloat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.SingleLiveEvent
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.copyDir
 import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.ktx.parseLink
+import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

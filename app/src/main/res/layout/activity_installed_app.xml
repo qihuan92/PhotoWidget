@@ -3,11 +3,11 @@
 
     <data>
 
-        <import type="com.qihuan.photowidget.InstalledAppActivity.UIState" />
+        <import type="com.qihuan.photowidget.link.InstalledAppActivity" />
 
         <variable
             name="viewModel"
-            type="com.qihuan.photowidget.InstalledAppViewModel" />
+            type="com.qihuan.photowidget.link.InstalledAppViewModel" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".InstalledAppActivity">
+        tools:context=".link.InstalledAppActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

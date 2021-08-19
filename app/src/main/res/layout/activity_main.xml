@@ -5,11 +5,11 @@
 
         <variable
             name="viewModel"
-            type="com.qihuan.photowidget.MainViewModel" />
+            type="com.qihuan.photowidget.main.MainViewModel" />
 
         <variable
             name="activity"
-            type="com.qihuan.photowidget.MainActivity" />
+            type="com.qihuan.photowidget.main.MainActivity" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".MainActivity">
+        tools:context=".main.MainActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

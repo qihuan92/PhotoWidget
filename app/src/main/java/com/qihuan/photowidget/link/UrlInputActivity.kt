@@ -1,4 +1,4 @@
-package com.qihuan.photowidget
+package com.qihuan.photowidget.link
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.*
+import com.qihuan.photowidget.R
 import com.qihuan.photowidget.databinding.ActivityUrlInputBinding
 import com.qihuan.photowidget.ktx.parseLink
 import com.qihuan.photowidget.ktx.viewBinding

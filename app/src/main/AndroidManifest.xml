@@ -182,7 +182,7 @@
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".main.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -192,7 +192,7 @@
         </activity>
 
         <activity
-            android:name=".ConfigureActivity"
+            android:name=".config.ConfigureActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -208,11 +208,11 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".InstalledAppActivity"
+            android:name=".link.InstalledAppActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".UrlInputActivity"
+            android:name=".link.UrlInputActivity"
             android:screenOrientation="portrait" />
     </application>
 

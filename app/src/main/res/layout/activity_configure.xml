@@ -7,11 +7,11 @@
 
         <variable
             name="viewModel"
-            type="com.qihuan.photowidget.ConfigureViewModel" />
+            type="com.qihuan.photowidget.config.ConfigureViewModel" />
 
         <variable
             name="activity"
-            type="com.qihuan.photowidget.ConfigureActivity" />
+            type="com.qihuan.photowidget.config.ConfigureActivity" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

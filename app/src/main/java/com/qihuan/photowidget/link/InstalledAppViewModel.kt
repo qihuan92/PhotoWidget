@@ -1,4 +1,4 @@
-package com.qihuan.photowidget
+package com.qihuan.photowidget.link
 
 import android.annotation.SuppressLint
 import android.app.Application

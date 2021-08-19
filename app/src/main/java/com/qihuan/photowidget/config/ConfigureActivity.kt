@@ -1,4 +1,4 @@
-package com.qihuan.photowidget
+package com.qihuan.photowidget.config
 
 import android.Manifest
 import android.animation.ObjectAnimator
@@ -27,6 +27,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.ConcatAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.qihuan.photowidget.link.InstalledAppActivity
+import com.qihuan.photowidget.R
+import com.qihuan.photowidget.link.UrlInputActivity
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter

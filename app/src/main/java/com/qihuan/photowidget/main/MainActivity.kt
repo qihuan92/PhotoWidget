@@ -1,4 +1,4 @@
-package com.qihuan.photowidget
+package com.qihuan.photowidget.main
 
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -13,6 +13,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.paging.LoadState
 import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
 import com.qihuan.photowidget.adapter.WidgetPagingAdapter
+import com.qihuan.photowidget.config.ConfigureActivity
 import com.qihuan.photowidget.databinding.ActivityMainBinding
 import com.qihuan.photowidget.ktx.adapterBarsColor
 import com.qihuan.photowidget.ktx.viewBinding
