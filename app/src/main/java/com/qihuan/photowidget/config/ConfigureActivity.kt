@@ -1,7 +1,6 @@
 package com.qihuan.photowidget.config
 
 import android.Manifest
-import android.animation.ObjectAnimator
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -9,16 +8,12 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.animation.addListener
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toFile
 import androidx.core.net.toUri
@@ -33,7 +28,6 @@ import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.PhotoScaleType
-import com.qihuan.photowidget.bean.ScreenSize
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.link.InstalledAppActivity
@@ -67,14 +61,6 @@ class ConfigureActivity : AppCompatActivity() {
         previewPhotoAddAdapter
     }
     private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
-    private val screenSize by lazy {
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        ScreenSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
-    }
-    private val defAnimTime by lazy {
-        resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-    }
     private val intervalItems by lazy {
         listOf(
             Pair("无", null),
@@ -133,16 +119,13 @@ class ConfigureActivity : AppCompatActivity() {
 
     private val externalStorageResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            val wallpaper = if (it) {
+            if (it) {
                 val wallpaperManager = WallpaperManager.getInstance(this)
-                wallpaperManager.drawable.toBitmap()
-            } else {
-                ContextCompat.getDrawable(this, R.drawable.wallpaper_def)?.toBitmap(
-                    screenSize.width, screenSize.height
-                )
-            }
-            if (wallpaper != null) {
-                rootAnimIn(wallpaper)
+                val wallpaper = wallpaperManager.drawable.toBitmap()
+                // 设置壁纸背景
+                binding.ivWallpaper.setImageBitmap(wallpaper)
+                // 状态栏文字颜色适配
+                adaptStatusBarTextColor(wallpaper)
             }
         }
 
@@ -322,40 +305,6 @@ class ConfigureActivity : AppCompatActivity() {
                     isAppearanceLightStatusBars = !dominantColor.isDark()
                 }
             }
-        }
-    }
-
-    private fun rootAnimIn(wallpaper: Bitmap) {
-        ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0.0f, 1.0f).apply {
-            addListener(
-                onStart = {
-                    // 设置壁纸背景
-                    binding.ivWallpaper.setImageBitmap(wallpaper)
-                    // 状态栏文字颜色适配
-                    adaptStatusBarTextColor(wallpaper)
-                    // 设置区域模糊处理
-                    binding.blurLayout.startBlur()
-                },
-                onEnd = {
-                    binding.blurLayout.lockView()
-                    binding.btnConfirm.show()
-
-                    // 微件预览
-                    binding.layoutPhotoWidgetContainer.isVisible = true
-
-                    // 设置项
-                    binding.blurLayout.isVisible = true
-                    ObjectAnimator.ofFloat(binding.blurLayout, View.ALPHA, 0.0f, 1.0f).apply {
-                        duration = defAnimTime
-                        interpolator = AccelerateInterpolator()
-                        start()
-                    }
-                }
-            )
-
-            duration = defAnimTime
-            interpolator = AccelerateInterpolator()
-            start()
         }
     }
 
