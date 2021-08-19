@@ -162,6 +162,7 @@ class ConfigureActivity : AppCompatActivity() {
         setResult(RESULT_CANCELED)
         setContentView(binding.root)
         binding.viewModel = viewModel
+        binding.lifecycleOwner = this
         binding.activity = this
         bindView()
         handleIntent(intent)
