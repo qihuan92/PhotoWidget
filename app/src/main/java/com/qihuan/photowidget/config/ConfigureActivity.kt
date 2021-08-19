@@ -28,6 +28,7 @@ import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.PhotoScaleType
+import com.qihuan.photowidget.bean.PlayInterval
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.link.InstalledAppActivity
@@ -61,15 +62,6 @@ class ConfigureActivity : AppCompatActivity() {
         previewPhotoAddAdapter
     }
     private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
-    private val intervalItems by lazy {
-        listOf(
-            Pair("无", null),
-            Pair("3秒", 3000),
-            Pair("5秒", 5000),
-            Pair("10秒", 10000),
-            Pair("30秒", 30000),
-        )
-    }
     private var tempOutFile: File? = null
 
     private val selectPicForResult =
@@ -324,15 +316,14 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     fun showIntervalSelector() {
-        val itemNameList = intervalItems.map { it.first }.toTypedArray()
-        val itemValueList = intervalItems.map { it.second }.toTypedArray()
+        val itemList = PlayInterval.values()
         MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
             .setTitle(R.string.alert_title_interval)
             .setSingleChoiceItems(
-                itemNameList,
-                itemValueList.indexOf(viewModel.autoPlayInterval.value)
+                itemList.map { it.description }.toTypedArray(),
+                itemList.indexOfFirst { it.interval == viewModel.autoPlayInterval.value }
             ) { dialog, i ->
-                viewModel.autoPlayInterval.value = intervalItems[i].second
+                viewModel.autoPlayInterval.value = itemList[i].interval
                 dialog.dismiss()
             }.show()
     }
