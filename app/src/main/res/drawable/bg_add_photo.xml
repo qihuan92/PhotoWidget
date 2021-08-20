@@ -4,7 +4,7 @@
 
     <stroke
         android:width="3dp"
-        android:color="@color/colorDivider"
+        android:color="?android:colorControlNormal"
         android:dashWidth="8dp"
         android:dashGap="5dp" />
 

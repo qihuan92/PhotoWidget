@@ -3,12 +3,15 @@ package com.qihuan.photowidget.adapter
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.LinkType
+import com.qihuan.photowidget.ktx.dp
 
 
 /**
@@ -30,6 +33,42 @@ object BindingAdapters {
         view.addOnChangeListener { _, _, _ ->
             attrChange.onChange()
         }
+    }
+
+    @JvmStatic
+    @BindingAdapter("android:paddingLeft")
+    fun setPaddingLeft(view: View, value: Float) {
+        view.updatePadding(left = value.dp)
+    }
+
+    @JvmStatic
+    @BindingAdapter("android:paddingTop")
+    fun setPaddingTop(view: View, value: Float) {
+        view.updatePadding(top = value.dp)
+    }
+
+    @JvmStatic
+    @BindingAdapter("android:paddingRight")
+    fun setPaddingRight(view: View, value: Float) {
+        view.updatePadding(right = value.dp)
+    }
+
+    @JvmStatic
+    @BindingAdapter("android:paddingBottom")
+    fun setPaddingBottom(view: View, value: Float) {
+        view.updatePadding(bottom = value.dp)
+    }
+
+    @JvmStatic
+    @BindingAdapter("android:alpha")
+    fun setAlpha(view: View, value: Float) {
+        view.alpha = value
+    }
+
+    @JvmStatic
+    @BindingAdapter("cardCornerRadius")
+    fun setCardCornerRadius(view: MaterialCardView, value: Float) {
+        view.radius = value.dp.toFloat()
     }
 
     @JvmStatic

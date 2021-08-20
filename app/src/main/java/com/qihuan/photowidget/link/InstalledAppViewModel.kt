@@ -1,4 +1,4 @@
-package com.qihuan.photowidget
+package com.qihuan.photowidget.link
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.bean.InstalledAppInfo
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
@@ -22,7 +21,6 @@ import kotlinx.coroutines.withContext
  * @author qi
  * @since 3/19/21
  */
-@FlowPreview
 class InstalledAppViewModel(application: Application) : AndroidViewModel(application) {
     private val packageManager by lazy { application.packageManager }
     val installedAppList by lazy { MutableLiveData<MutableList<InstalledAppInfo>>(mutableListOf()) }

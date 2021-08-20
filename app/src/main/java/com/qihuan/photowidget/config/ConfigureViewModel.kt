@@ -1,4 +1,4 @@
-package com.qihuan.photowidget
+package com.qihuan.photowidget.config
 
 import android.app.Application
 import android.appwidget.AppWidgetManager
@@ -11,12 +11,15 @@ import androidx.databinding.ObservableFloat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.SingleLiveEvent
+import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.copyDir
 import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.ktx.parseLink
+import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,8 +31,8 @@ import java.io.File
  * @since 12/16/20
  */
 class ConfigureViewModel(application: Application) : AndroidViewModel(application) {
-    companion object {
-        const val TEMP_DIR_NAME = "temp"
+    enum class UIState {
+        LOADING, SHOW_CONTENT
     }
 
     private val context by lazy { getApplication<Application>().applicationContext }
@@ -43,8 +46,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     val autoPlayInterval by lazy { MutableLiveData<Int?>() }
     val photoScaleType by lazy { MutableLiveData(ImageView.ScaleType.CENTER_CROP) }
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
-    val isLoading by lazy { SingleLiveEvent<Boolean?>(null) }
-    val isDone by lazy { SingleLiveEvent(false) }
+    val uiState by lazy { MutableLiveData(UIState.LOADING) }
     val message by lazy { SingleLiveEvent<String>(null) }
     val linkInfo by lazy { ObservableField<LinkInfo>() }
 
@@ -105,7 +107,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun loadWidget(widgetId: Int) {
         viewModelScope.launch {
-            isLoading.value = true
+            uiState.value = UIState.LOADING
             val widgetInfo = widgetInfoDao.selectById(widgetId)
             if (widgetInfo != null) {
                 copyToTempDir(widgetInfo.widgetId)
@@ -120,46 +122,38 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
                 photoScaleType.postValue(widgetInfo.photoScaleType)
             }
-            isLoading.value = false
+            uiState.value = UIState.SHOW_CONTENT
         }
     }
 
-    fun saveWidget(widgetId: Int) {
+    suspend fun saveWidget(widgetId: Int) {
         if (imageUriList.value.isNullOrEmpty()) {
             message.value = context.getString(R.string.warning_select_picture)
             return
         }
-        viewModelScope.launch {
-            isLoading.value = true
-            isDone.value = false
+        val widgetInfo = WidgetInfo(
+            widgetId,
+            verticalPadding.get(),
+            horizontalPadding.get(),
+            widgetRadius.get(),
+            widgetTransparency.get(),
+            autoPlayInterval.value,
+            linkInfo.get()?.link,
+            photoScaleType.value ?: ImageView.ScaleType.CENTER_CROP,
+        )
 
-            val widgetInfo = WidgetInfo(
-                widgetId,
-                verticalPadding.get(),
-                horizontalPadding.get(),
-                widgetRadius.get(),
-                widgetTransparency.get(),
-                autoPlayInterval.value,
-                linkInfo.get()?.link,
-                photoScaleType.value ?: ImageView.ScaleType.CENTER_CROP,
+        val uriList = saveWidgetPhotoFiles(widgetId)
+        val imageList = uriList.map {
+            WidgetImage(
+                widgetId = widgetId,
+                imageUri = it,
+                createTime = System.currentTimeMillis()
             )
-
-            val uriList = saveWidgetPhotoFiles(widgetId)
-            val imageList = uriList.map {
-                WidgetImage(
-                    widgetId = widgetId,
-                    imageUri = it,
-                    createTime = System.currentTimeMillis()
-                )
-            }
-
-            val widgetBean = WidgetBean(widgetInfo, imageList)
-            widgetDao.save(widgetBean)
-            updateAppWidget(context, AppWidgetManager.getInstance(context), widgetBean)
-
-            isLoading.value = false
-            isDone.value = true
         }
+
+        val widgetBean = WidgetBean(widgetInfo, imageList)
+        widgetDao.save(widgetBean)
+        updateAppWidget(context, AppWidgetManager.getInstance(context), widgetBean)
     }
 
     fun deleteLink() {

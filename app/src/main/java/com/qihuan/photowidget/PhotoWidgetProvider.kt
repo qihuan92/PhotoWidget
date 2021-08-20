@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.RemoteViews
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.db.AppDatabase

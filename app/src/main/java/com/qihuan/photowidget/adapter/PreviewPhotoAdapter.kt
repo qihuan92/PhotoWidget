@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.qihuan.photowidget.databinding.ItemPreviewPhotoBinding
 
 /**
@@ -38,7 +39,9 @@ class PreviewPhotoAdapter : ListAdapter<Uri, PreviewPhotoAdapter.ViewHolder>(Dif
 
         fun bind(item: Uri) {
             binding.btnDelete.isEnabled = true
-            binding.ivPicture.setImageURI(item)
+            Glide.with(itemView.context)
+                .load(item)
+                .into(binding.ivPicture)
         }
     }
 

@@ -34,11 +34,15 @@
     <string name="delete_photo">删除相片</string>
     <string name="widget_photo">微件相片</string>
     <string name="wallpaper">壁纸</string>
-    <string name="widget_transparency">透明度&#12288;</string>
+    <string name="widget_transparency">透明度\u3000</string>
     <string name="photo_scale_type">相片位置</string>
     <string name="alert_title_scale_type">请选择相片位置</string>
     <string-array name="open_link_types">
         <item>打开应用</item>
         <item>打开URL</item>
     </string-array>
+    <string name="crop_freestyle_enable">自由裁剪已开启</string>
+    <string name="crop_freestyle_disable">自由裁剪已关闭</string>
+    <string name="processing">处理中…</string>
+    <string name="saving">保存中…</string>
 </resources>

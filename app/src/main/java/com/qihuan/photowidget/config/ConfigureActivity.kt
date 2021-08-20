@@ -1,4 +1,4 @@
-package com.qihuan.photowidget
+package com.qihuan.photowidget.config
 
 import android.Manifest
 import android.animation.ObjectAnimator
@@ -9,16 +9,13 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.animation.addListener
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toFile
 import androidx.core.net.toUri
@@ -27,35 +24,50 @@ import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.ConcatAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
-import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.PhotoScaleType
-import com.qihuan.photowidget.bean.ScreenSize
+import com.qihuan.photowidget.bean.PlayInterval
+import com.qihuan.photowidget.common.TEMP_DIR_NAME
+import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
-import com.qihuan.photowidget.result.CropPictureContract
+import com.qihuan.photowidget.link.InstalledAppActivity
+import com.qihuan.photowidget.link.UrlInputActivity
 import kotlinx.coroutines.launch
 import java.io.File
 
 /**
- * The configuration screen for the [PhotoWidgetProvider] AppWidget.
+ * The configuration screen for the [com.qihuan.photowidget.PhotoWidgetProvider] AppWidget.
  */
 class ConfigureActivity : AppCompatActivity() {
-
-    companion object {
-        const val TEMP_DIR_NAME = "temp"
-    }
-
-    private enum class UIState {
-        LOADING, SHOW_CONTENT
-    }
 
     private val binding by viewBinding(ActivityConfigureBinding::inflate)
     private val viewModel by viewModels<ConfigureViewModel>()
 
     var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+
+    private val processImageDialog by lazy {
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
+            .setTitle(R.string.processing)
+            .setCancelable(false)
+            .setView(ProgressBar(this).apply {
+                updatePadding(top = 10f.dp, bottom = 10f.dp)
+            })
+            .create()
+    }
+
+    private val saveImageDialog by lazy {
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
+            .setTitle(R.string.saving)
+            .setCancelable(false)
+            .setView(ProgressBar(this).apply {
+                updatePadding(top = 10f.dp, bottom = 10f.dp)
+            })
+            .create()
+    }
 
     private val previewAdapter by lazy { PreviewPhotoAdapter() }
     private val previewAddAdapter by lazy {
@@ -64,82 +76,35 @@ class ConfigureActivity : AppCompatActivity() {
         previewPhotoAddAdapter
     }
     private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
-    private val screenSize by lazy {
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        ScreenSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
-    }
-    private val defAnimTime by lazy {
-        resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-    }
-    private val intervalItems by lazy {
-        listOf(
-            Pair("无", null),
-            Pair("3秒", 3000),
-            Pair("5秒", 5000),
-            Pair("10秒", 10000),
-            Pair("30秒", 30000),
-        )
-    }
-    private var tempOutFile: File? = null
 
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetMultipleContents()) {
             if (it.isNullOrEmpty()) {
                 return@registerForActivityResult
             }
-
-            val outDir = File(cacheDir, TEMP_DIR_NAME)
-            if (!outDir.exists()) {
-                outDir.mkdirs()
-            }
-
             if (it.size == 1) {
-                tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
-                cropPicForResult.launch(CropPictureInfo(it[0], Uri.fromFile(tempOutFile)))
+                cropPicForResult.launch(it[0])
             } else {
-                lifecycleScope.launch {
-                    for (uri in it) {
-                        val tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
-                        copyFile(uri, tempOutFile.toUri())
-                        try {
-                            viewModel.addImage(compressImageFile(tempOutFile).toUri())
-                        } catch (e: NoSuchFileException) {
-                            logE("ConfigureActivity", e.message, e)
-                        }
-                    }
-                }
+                addPhoto(*it.toTypedArray())
             }
         }
 
     private val cropPicForResult =
         registerForActivityResult(CropPictureContract()) {
             if (it != null) {
-                lifecycleScope.launch {
-                    try {
-                        viewModel.addImage(compressImageFile(it.toFile()).toUri())
-                    } catch (e: NoSuchFileException) {
-                        logE("ConfigureActivity", e.message, e)
-                        tempOutFile?.delete()
-                    }
-                }
-            } else {
-                tempOutFile?.delete()
+                addPhoto(it)
             }
         }
 
     private val externalStorageResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            val wallpaper = if (it) {
+            if (it) {
                 val wallpaperManager = WallpaperManager.getInstance(this)
-                wallpaperManager.drawable.toBitmap()
-            } else {
-                ContextCompat.getDrawable(this, R.drawable.wallpaper_def)?.toBitmap(
-                    screenSize.width, screenSize.height
-                )
-            }
-            if (wallpaper != null) {
-                rootAnimIn(wallpaper)
+                val wallpaper = wallpaperManager.drawable.toBitmap()
+                // 设置壁纸背景
+                binding.ivWallpaper.setImageBitmap(wallpaper)
+                // 状态栏文字颜色适配
+                adaptStatusBarTextColor(wallpaper)
             }
         }
 
@@ -159,9 +124,18 @@ class ConfigureActivity : AppCompatActivity() {
         setResult(RESULT_CANCELED)
         setContentView(binding.root)
         binding.viewModel = viewModel
+        binding.lifecycleOwner = this
         binding.activity = this
         bindView()
+        initView()
         handleIntent(intent)
+    }
+
+    private fun initView() {
+        // 隐藏操作区
+        binding.scrollViewInfo.post {
+            binding.scrollViewInfo.translationY = binding.scrollViewInfo.height.toFloat()
+        }
     }
 
     private fun bindView() {
@@ -193,30 +167,6 @@ class ConfigureActivity : AppCompatActivity() {
             binding.layoutPhotoWidgetPreview.strokeWidth = if (it.isEmpty()) 2f.dp else 0
         }
 
-        viewModel.horizontalPadding.observe {
-            val horizontalPadding = it.dp
-            binding.layoutPhotoWidgetContainer.updatePadding(
-                left = horizontalPadding,
-                right = horizontalPadding
-            )
-        }
-
-        viewModel.verticalPadding.observe {
-            val verticalPadding = it.dp
-            binding.layoutPhotoWidgetContainer.updatePadding(
-                top = verticalPadding,
-                bottom = verticalPadding
-            )
-        }
-
-        viewModel.widgetRadius.observe {
-            binding.layoutPhotoWidgetPreview.radius = it.dp.toFloat() * 2
-        }
-
-        viewModel.widgetTransparency.observe {
-            binding.layoutPhotoWidgetContainer.alpha = 1f - it / 100f
-        }
-
         viewModel.autoPlayInterval.observe(this) {
             val vfPicture = binding.layoutPhotoWidget.vfPicture
             if (it == null) {
@@ -245,22 +195,14 @@ class ConfigureActivity : AppCompatActivity() {
             widgetAdapter.setScaleType(it)
         }
 
-        viewModel.isLoading.observe(this) {
-            if (it != null) {
-                if (it) {
-                    changeUIState(UIState.LOADING)
-                } else {
-                    changeUIState(UIState.SHOW_CONTENT)
+        viewModel.uiState.observe(this) {
+            if (it == ConfigureViewModel.UIState.SHOW_CONTENT) {
+                ObjectAnimator.ofFloat(binding.scrollViewInfo, "translationY", 0f).apply {
+                    duration =
+                        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+                    interpolator = DecelerateInterpolator()
+                    start()
                 }
-            }
-        }
-
-        viewModel.isDone.observe(this) {
-            if (it != null && it) {
-                setResult(RESULT_OK, Intent().apply {
-                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                })
-                finish()
             }
         }
 
@@ -345,65 +287,56 @@ class ConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private fun rootAnimIn(wallpaper: Bitmap) {
-        ObjectAnimator.ofFloat(binding.root, View.ALPHA, 0.0f, 1.0f).apply {
-            addListener(
-                onStart = {
-                    // 设置壁纸背景
-                    binding.ivWallpaper.setImageBitmap(wallpaper)
-                    // 状态栏文字颜色适配
-                    adaptStatusBarTextColor(wallpaper)
-                    // 设置区域模糊处理
-                    binding.blurLayout.startBlur()
-                },
-                onEnd = {
-                    binding.blurLayout.lockView()
-                    binding.btnConfirm.show()
-
-                    // 微件预览
-                    binding.layoutPhotoWidgetContainer.isVisible = true
-
-                    // 设置项
-                    binding.blurLayout.isVisible = true
-                    ObjectAnimator.ofFloat(binding.blurLayout, View.ALPHA, 0.0f, 1.0f).apply {
-                        duration = defAnimTime
-                        interpolator = AccelerateInterpolator()
-                        start()
+    private fun addPhoto(vararg uris: Uri) {
+        if (uris.isNullOrEmpty()) {
+            return
+        }
+        lifecycleScope.launch {
+            processImageDialog.show()
+            for (uri in uris) {
+                val tempOutFile = if (uris.size == 1) {
+                    uri.toFile()
+                } else {
+                    val outDir = File(cacheDir, TEMP_DIR_NAME)
+                    if (!outDir.exists()) {
+                        outDir.mkdirs()
+                    }
+                    File(outDir, "${System.currentTimeMillis()}.png").also { file ->
+                        copyFile(uri, file.toUri())
                     }
                 }
-            )
-
-            duration = defAnimTime
-            interpolator = AccelerateInterpolator()
-            start()
+                try {
+                    viewModel.addImage(compressImageFile(tempOutFile).toUri())
+                } catch (e: NoSuchFileException) {
+                    logE("ConfigureActivity", e.message, e)
+                }
+            }
+            processImageDialog.dismiss()
         }
     }
 
-    private fun changeUIState(uiState: UIState) {
-        when (uiState) {
-            UIState.LOADING -> {
-                binding.layoutInfo.visibility = View.GONE
-                binding.loadingView.visibility = View.VISIBLE
-            }
-            UIState.SHOW_CONTENT -> {
-                binding.layoutInfo.visibility = View.VISIBLE
-                binding.layoutInfo.scheduleLayoutAnimation()
+    fun saveWidget() {
+        lifecycleScope.launch {
+            saveImageDialog.show()
+            viewModel.saveWidget(appWidgetId)
+            saveImageDialog.dismiss()
 
-                binding.loadingView.visibility = View.GONE
-            }
+            setResult(RESULT_OK, Intent().apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            })
+            finish()
         }
     }
 
     fun showIntervalSelector() {
-        val itemNameList = intervalItems.map { it.first }.toTypedArray()
-        val itemValueList = intervalItems.map { it.second }.toTypedArray()
+        val itemList = PlayInterval.values()
         MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
             .setTitle(R.string.alert_title_interval)
             .setSingleChoiceItems(
-                itemNameList,
-                itemValueList.indexOf(viewModel.autoPlayInterval.value)
+                itemList.map { it.description }.toTypedArray(),
+                itemList.indexOfFirst { it.interval == viewModel.autoPlayInterval.value }
             ) { dialog, i ->
-                viewModel.autoPlayInterval.value = intervalItems[i].second
+                viewModel.autoPlayInterval.value = itemList[i].interval
                 dialog.dismiss()
             }.show()
     }

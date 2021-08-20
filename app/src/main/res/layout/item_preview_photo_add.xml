@@ -15,5 +15,5 @@
         android:contentDescription="@string/delete_photo"
         android:padding="2dp"
         android:src="@drawable/ic_round_add_24"
-        app:tint="@color/colorDivider" />
+        app:tint="?android:colorControlNormal" />
 </FrameLayout>
