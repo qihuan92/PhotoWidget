@@ -27,9 +27,9 @@ import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
-import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.PhotoScaleType
 import com.qihuan.photowidget.bean.PlayInterval
+import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
@@ -43,10 +43,6 @@ import java.io.File
  */
 class ConfigureActivity : AppCompatActivity() {
 
-    companion object {
-        const val TEMP_DIR_NAME = "temp"
-    }
-
     private val binding by viewBinding(ActivityConfigureBinding::inflate)
     private val viewModel by viewModels<ConfigureViewModel>()
 
@@ -59,50 +55,23 @@ class ConfigureActivity : AppCompatActivity() {
         previewPhotoAddAdapter
     }
     private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
-    private var tempOutFile: File? = null
 
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetMultipleContents()) {
             if (it.isNullOrEmpty()) {
                 return@registerForActivityResult
             }
-
-            val outDir = File(cacheDir, TEMP_DIR_NAME)
-            if (!outDir.exists()) {
-                outDir.mkdirs()
-            }
-
             if (it.size == 1) {
-                tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
-                cropPicForResult.launch(CropPictureInfo(it[0], Uri.fromFile(tempOutFile)))
+                cropPicForResult.launch(it[0])
             } else {
-                lifecycleScope.launch {
-                    for (uri in it) {
-                        val tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
-                        copyFile(uri, tempOutFile.toUri())
-                        try {
-                            viewModel.addImage(compressImageFile(tempOutFile).toUri())
-                        } catch (e: NoSuchFileException) {
-                            logE("ConfigureActivity", e.message, e)
-                        }
-                    }
-                }
+                addPhoto(*it.toTypedArray())
             }
         }
 
     private val cropPicForResult =
         registerForActivityResult(CropPictureContract()) {
             if (it != null) {
-                lifecycleScope.launch {
-                    try {
-                        viewModel.addImage(compressImageFile(it.toFile()).toUri())
-                    } catch (e: NoSuchFileException) {
-                        logE("ConfigureActivity", e.message, e)
-                        tempOutFile?.delete()
-                    }
-                }
-            } else {
-                tempOutFile?.delete()
+                addPhoto(it)
             }
         }
 
@@ -208,7 +177,8 @@ class ConfigureActivity : AppCompatActivity() {
         viewModel.uiState.observe(this) {
             if (it == ConfigureViewModel.UIState.SHOW_CONTENT) {
                 ObjectAnimator.ofFloat(binding.scrollViewInfo, "translationY", 0f).apply {
-                    duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+                    duration =
+                        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
                     interpolator = DecelerateInterpolator()
                     start()
                 }
@@ -300,6 +270,32 @@ class ConfigureActivity : AppCompatActivity() {
                 val dominantColor = it.getDominantColor(Color.WHITE)
                 WindowCompat.getInsetsController(window, binding.root)?.apply {
                     isAppearanceLightStatusBars = !dominantColor.isDark()
+                }
+            }
+        }
+    }
+
+    private fun addPhoto(vararg uris: Uri) {
+        if (uris.isNullOrEmpty()) {
+            return
+        }
+        lifecycleScope.launch {
+            for (uri in uris) {
+                val tempOutFile = if (uris.size == 1) {
+                    uri.toFile()
+                } else {
+                    val outDir = File(cacheDir, TEMP_DIR_NAME)
+                    if (!outDir.exists()) {
+                        outDir.mkdirs()
+                    }
+                    File(outDir, "${System.currentTimeMillis()}.png").also { file ->
+                        copyFile(uri, file.toUri())
+                    }
+                }
+                try {
+                    viewModel.addImage(compressImageFile(tempOutFile).toUri())
+                } catch (e: NoSuchFileException) {
+                    logE("ConfigureActivity", e.message, e)
                 }
             }
         }

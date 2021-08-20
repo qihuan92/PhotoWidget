@@ -9,9 +9,10 @@ import android.net.Uri
 import android.util.TypedValue
 import androidx.activity.result.contract.ActivityResultContract
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.bean.CropPictureInfo
+import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCropActivity
+import java.io.File
 
 
 /**
@@ -19,9 +20,18 @@ import com.yalantis.ucrop.UCropActivity
  * @author qi
  * @since 11/20/20
  */
-class CropPictureContract : ActivityResultContract<CropPictureInfo, Uri?>() {
-    override fun createIntent(context: Context, input: CropPictureInfo): Intent {
-        val intent = UCrop.of(input.inUri, input.outUri)
+class CropPictureContract : ActivityResultContract<Uri, Uri?>() {
+    private var tempOutFile: File? = null
+
+    override fun createIntent(context: Context, input: Uri): Intent {
+
+        val outDir = File(context.cacheDir, TEMP_DIR_NAME)
+        if (!outDir.exists()) {
+            outDir.mkdirs()
+        }
+        tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
+
+        val intent = UCrop.of(input, Uri.fromFile(tempOutFile))
             .withOptions(UCrop.Options().apply {
                 val value = TypedValue()
                 context.theme.resolveAttribute(R.attr.colorSecondary, value, true)
@@ -41,9 +51,11 @@ class CropPictureContract : ActivityResultContract<CropPictureInfo, Uri?>() {
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
-        if (resultCode == Activity.RESULT_OK && intent != null) {
-            return UCrop.getOutput(intent)
+        return if (resultCode == Activity.RESULT_OK && intent != null) {
+            UCrop.getOutput(intent)
+        } else {
+            tempOutFile?.delete()
+            null
         }
-        return null
     }
 }

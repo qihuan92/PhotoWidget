@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.SingleLiveEvent
+import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.copyDir
 import com.qihuan.photowidget.ktx.deleteDir
@@ -30,10 +31,6 @@ import java.io.File
  * @since 12/16/20
  */
 class ConfigureViewModel(application: Application) : AndroidViewModel(application) {
-    companion object {
-        const val TEMP_DIR_NAME = "temp"
-    }
-
     enum class UIState {
         LOADING, SHOW_CONTENT
     }
