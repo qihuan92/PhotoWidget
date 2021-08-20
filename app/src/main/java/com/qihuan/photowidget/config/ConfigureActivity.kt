@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -47,6 +48,26 @@ class ConfigureActivity : AppCompatActivity() {
     private val viewModel by viewModels<ConfigureViewModel>()
 
     var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+
+    private val processImageDialog by lazy {
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
+            .setTitle(R.string.processing)
+            .setCancelable(false)
+            .setView(ProgressBar(this).apply {
+                updatePadding(top = 10f.dp, bottom = 10f.dp)
+            })
+            .create()
+    }
+
+    private val saveImageDialog by lazy {
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
+            .setTitle(R.string.saving)
+            .setCancelable(false)
+            .setView(ProgressBar(this).apply {
+                updatePadding(top = 10f.dp, bottom = 10f.dp)
+            })
+            .create()
+    }
 
     private val previewAdapter by lazy { PreviewPhotoAdapter() }
     private val previewAddAdapter by lazy {
@@ -185,15 +206,6 @@ class ConfigureActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.isDone.observe(this) {
-            if (it != null && it) {
-                setResult(RESULT_OK, Intent().apply {
-                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                })
-                finish()
-            }
-        }
-
         viewModel.message.observe(this) {
             if (it != null) {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
@@ -280,6 +292,7 @@ class ConfigureActivity : AppCompatActivity() {
             return
         }
         lifecycleScope.launch {
+            processImageDialog.show()
             for (uri in uris) {
                 val tempOutFile = if (uris.size == 1) {
                     uri.toFile()
@@ -298,6 +311,20 @@ class ConfigureActivity : AppCompatActivity() {
                     logE("ConfigureActivity", e.message, e)
                 }
             }
+            processImageDialog.dismiss()
+        }
+    }
+
+    fun saveWidget() {
+        lifecycleScope.launch {
+            saveImageDialog.show()
+            viewModel.saveWidget(appWidgetId)
+            saveImageDialog.dismiss()
+
+            setResult(RESULT_OK, Intent().apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            })
+            finish()
         }
     }
 

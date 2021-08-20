@@ -366,7 +366,7 @@
             android:layout_margin="15dp"
             android:contentDescription="@string/confirm"
             android:visibility="@{viewModel.imageUriList.size() > 0 ? View.VISIBLE : View.INVISIBLE}"
-            android:onClick="@{() -> viewModel.saveWidget(activity.appWidgetId)}"
+            android:onClick="@{() -> activity.saveWidget()}"
             android:src="@drawable/ic_round_done_24"
             app:borderWidth="0dp"
             app:tint="@android:color/white" />
