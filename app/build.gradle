@@ -98,7 +98,7 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     testImplementation "androidx.room:room-testing:$room_version"
 
-    implementation 'com.github.yalantis:ucrop:2.2.6'
+    implementation 'com.github.yalantis:ucrop:2.2.7'
     implementation 'id.zelory:compressor:3.0.1'
 
     implementation 'com.github.bumptech.glide:glide:4.12.0'

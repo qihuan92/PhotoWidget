@@ -29,11 +29,11 @@ import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.CropPictureInfo
 import com.qihuan.photowidget.bean.PhotoScaleType
 import com.qihuan.photowidget.bean.PlayInterval
+import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.link.InstalledAppActivity
 import com.qihuan.photowidget.link.UrlInputActivity
-import com.qihuan.photowidget.result.CropPictureContract
 import kotlinx.coroutines.launch
 import java.io.File
 

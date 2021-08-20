@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.result
+package com.qihuan.photowidget.crop
 
 import android.app.Activity
 import android.content.Context
@@ -8,8 +8,10 @@ import android.graphics.Color
 import android.net.Uri
 import android.util.TypedValue
 import androidx.activity.result.contract.ActivityResultContract
+import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.CropPictureInfo
 import com.yalantis.ucrop.UCrop
+import com.yalantis.ucrop.UCropActivity
 
 
 /**
@@ -19,10 +21,10 @@ import com.yalantis.ucrop.UCrop
  */
 class CropPictureContract : ActivityResultContract<CropPictureInfo, Uri?>() {
     override fun createIntent(context: Context, input: CropPictureInfo): Intent {
-        return UCrop.of(input.inUri, input.outUri)
+        val intent = UCrop.of(input.inUri, input.outUri)
             .withOptions(UCrop.Options().apply {
                 val value = TypedValue()
-                context.theme.resolveAttribute(android.R.attr.colorPrimary, value, true)
+                context.theme.resolveAttribute(R.attr.colorSecondary, value, true)
                 val mainColor = value.data
 
                 setStatusBarColor(mainColor)
@@ -30,9 +32,11 @@ class CropPictureContract : ActivityResultContract<CropPictureInfo, Uri?>() {
                 setToolbarColor(mainColor)
                 setActiveControlsWidgetColor(mainColor)
                 setCompressionFormat(Bitmap.CompressFormat.PNG)
-                setFreeStyleCropEnabled(true)
+                setAllowedGestures(UCropActivity.SCALE, UCropActivity.ROTATE, UCropActivity.SCALE)
             })
             .getIntent(context)
+        intent.setClass(context, CropActivity::class.java)
+        return intent
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Uri? {

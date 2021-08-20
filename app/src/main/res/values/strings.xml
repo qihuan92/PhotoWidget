@@ -41,4 +41,6 @@
         <item>打开应用</item>
         <item>打开URL</item>
     </string-array>
+    <string name="crop_freestyle_enable">自由裁剪已开启</string>
+    <string name="crop_freestyle_disable">自由裁剪已关闭</string>
 </resources>
