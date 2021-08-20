@@ -34,6 +34,10 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
         const val TEMP_DIR_NAME = "temp"
     }
 
+    enum class UIState {
+        LOADING, SHOW_CONTENT
+    }
+
     private val context by lazy { getApplication<Application>().applicationContext }
     private val widgetInfoDao by lazy { AppDatabase.getDatabase(context).widgetInfoDao() }
     private val widgetDao by lazy { AppDatabase.getDatabase(context).widgetDao() }
@@ -45,7 +49,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     val autoPlayInterval by lazy { MutableLiveData<Int?>() }
     val photoScaleType by lazy { MutableLiveData(ImageView.ScaleType.CENTER_CROP) }
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
-    val isLoading by lazy { SingleLiveEvent<Boolean?>(null) }
+    val uiState by lazy { MutableLiveData(UIState.LOADING) }
     val isDone by lazy { SingleLiveEvent(false) }
     val message by lazy { SingleLiveEvent<String>(null) }
     val linkInfo by lazy { ObservableField<LinkInfo>() }
@@ -107,7 +111,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun loadWidget(widgetId: Int) {
         viewModelScope.launch {
-            isLoading.value = true
+            uiState.value = UIState.LOADING
             val widgetInfo = widgetInfoDao.selectById(widgetId)
             if (widgetInfo != null) {
                 copyToTempDir(widgetInfo.widgetId)
@@ -122,7 +126,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
                 photoScaleType.postValue(widgetInfo.photoScaleType)
             }
-            isLoading.value = false
+            uiState.value = UIState.SHOW_CONTENT
         }
     }
 
@@ -132,7 +136,6 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
             return
         }
         viewModelScope.launch {
-            isLoading.value = true
             isDone.value = false
 
             val widgetInfo = WidgetInfo(
@@ -159,7 +162,6 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
             widgetDao.save(widgetBean)
             updateAppWidget(context, AppWidgetManager.getInstance(context), widgetBean)
 
-            isLoading.value = false
             isDone.value = true
         }
     }

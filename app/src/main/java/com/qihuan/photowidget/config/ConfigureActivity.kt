@@ -1,6 +1,7 @@
 package com.qihuan.photowidget.config
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -8,8 +9,8 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -44,10 +45,6 @@ class ConfigureActivity : AppCompatActivity() {
 
     companion object {
         const val TEMP_DIR_NAME = "temp"
-    }
-
-    private enum class UIState {
-        LOADING, SHOW_CONTENT
     }
 
     private val binding by viewBinding(ActivityConfigureBinding::inflate)
@@ -140,7 +137,15 @@ class ConfigureActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.activity = this
         bindView()
+        initView()
         handleIntent(intent)
+    }
+
+    private fun initView() {
+        // 隐藏操作区
+        binding.scrollViewInfo.post {
+            binding.scrollViewInfo.translationY = binding.scrollViewInfo.height.toFloat()
+        }
     }
 
     private fun bindView() {
@@ -200,12 +205,12 @@ class ConfigureActivity : AppCompatActivity() {
             widgetAdapter.setScaleType(it)
         }
 
-        viewModel.isLoading.observe(this) {
-            if (it != null) {
-                if (it) {
-                    changeUIState(UIState.LOADING)
-                } else {
-                    changeUIState(UIState.SHOW_CONTENT)
+        viewModel.uiState.observe(this) {
+            if (it == ConfigureViewModel.UIState.SHOW_CONTENT) {
+                ObjectAnimator.ofFloat(binding.scrollViewInfo, "translationY", 0f).apply {
+                    duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+                    interpolator = DecelerateInterpolator()
+                    start()
                 }
             }
         }
@@ -296,21 +301,6 @@ class ConfigureActivity : AppCompatActivity() {
                 WindowCompat.getInsetsController(window, binding.root)?.apply {
                     isAppearanceLightStatusBars = !dominantColor.isDark()
                 }
-            }
-        }
-    }
-
-    private fun changeUIState(uiState: UIState) {
-        when (uiState) {
-            UIState.LOADING -> {
-                binding.layoutInfo.visibility = View.GONE
-                binding.loadingView.visibility = View.VISIBLE
-            }
-            UIState.SHOW_CONTENT -> {
-                binding.layoutInfo.visibility = View.VISIBLE
-                binding.layoutInfo.scheduleLayoutAnimation()
-
-                binding.loadingView.visibility = View.GONE
             }
         }
     }

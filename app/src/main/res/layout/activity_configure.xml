@@ -5,6 +5,10 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <import type="com.qihuan.photowidget.config.ConfigureViewModel.UIState" />
+
         <variable
             name="viewModel"
             type="com.qihuan.photowidget.config.ConfigureViewModel" />
@@ -45,6 +49,7 @@
                 android:paddingTop="@{viewModel.verticalPadding}"
                 android:paddingRight="@{viewModel.horizontalPadding}"
                 android:paddingBottom="@{viewModel.verticalPadding}"
+                android:visibility="@{viewModel.uiState == UIState.SHOW_CONTENT ? View.VISIBLE : View.INVISIBLE}"
                 app:layout_constraintDimensionRatio="h,1:1"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -87,9 +92,7 @@
                     android:layout_height="wrap_content"
                     android:animateLayoutChanges="true"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:visibility="gone"
-                    tools:visibility="visible">
+                    android:padding="16dp">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_preview_list"
@@ -352,7 +355,8 @@
             android:id="@+id/loading_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            app:isVisible="@{viewModel.uiState == UIState.LOADING}" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_confirm"
