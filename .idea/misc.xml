@@ -8,6 +8,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../.gradle/caches/transforms-3/f286649c60df4539e12d3c5616becf94/transformed/jetified-ucrop-2.2.6/res/layout/ucrop_activity_photobox.xml" value="0.4244791666666667" />
+        <entry key="../../../.gradle/caches/transforms-3/f286649c60df4539e12d3c5616becf94/transformed/jetified-ucrop-2.2.6/res/layout/ucrop_aspect_ratio.xml" value="0.4244791666666667" />
+        <entry key="../../../.gradle/caches/transforms-3/f286649c60df4539e12d3c5616becf94/transformed/jetified-ucrop-2.2.6/res/layout/ucrop_fragment_photobox.xml" value="0.4244791666666667" />
+        <entry key="../../../.gradle/caches/transforms-3/f286649c60df4539e12d3c5616becf94/transformed/jetified-ucrop-2.2.6/res/layout/ucrop_layout_rotate_wheel.xml" value="0.4244791666666667" />
+        <entry key="../../../.gradle/caches/transforms-3/f286649c60df4539e12d3c5616becf94/transformed/jetified-ucrop-2.2.6/res/layout/ucrop_layout_scale_wheel.xml" value="0.4244791666666667" />
+        <entry key="../../../.gradle/caches/transforms-3/f286649c60df4539e12d3c5616becf94/transformed/jetified-ucrop-2.2.6/res/layout/ucrop_view.xml" value="0.4244791666666667" />
         <entry key="app/src/main/res/drawable/bg_add_link.xml" value="0.16111111111111112" />
         <entry key="app/src/main/res/drawable/ic_round_add_24.xml" value="0.16111111111111112" />
         <entry key="app/src/main/res/drawable/ic_round_apps_24.xml" value="0.16111111111111112" />

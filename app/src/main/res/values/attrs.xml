@@ -1,9 +1,3 @@
 <resources>
-    <declare-styleable name="BlurLayout">
-        <attr name="blur_downscaleFactor" format="float" />
-        <attr name="blur_radius" format="integer" />
-        <attr name="blur_fps" format="integer" />
-        <attr name="blur_alpha" format="float" />
-        <attr name="blur_mask_color" format="color" />
-    </declare-styleable>
+
 </resources>
