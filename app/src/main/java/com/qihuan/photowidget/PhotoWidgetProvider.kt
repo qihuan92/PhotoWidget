@@ -102,7 +102,9 @@ internal fun updateAppWidget(
 ) {
     val widgetInfo = widgetBean.widgetInfo
     val widgetId = widgetInfo.widgetId
+    val linkInfo = widgetInfo.linkInfo
 
+    // 轮播
     val autoPlayInterval = widgetInfo.autoPlayInterval
     val views = createRemoteViews(context, autoPlayInterval.interval)
     views.setRemoteAdapter(R.id.vf_picture, Intent(context, WidgetPhotoService::class.java).apply {
@@ -110,6 +112,7 @@ internal fun updateAppWidget(
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
     })
 
+    // 边距
     val horizontalPadding = widgetInfo.horizontalPadding.dp
     val verticalPadding = widgetInfo.verticalPadding.dp
     views.setViewPadding(
@@ -120,43 +123,47 @@ internal fun updateAppWidget(
         verticalPadding
     )
 
-    if (widgetInfo.linkInfo != null) {
+    // 点击事件
+    var centerPendingIntent: PendingIntent? = null
+    val leftPendingIntent: PendingIntent?
+    val rightPendingIntent: PendingIntent?
+
+    if (linkInfo != null) {
         var intent: Intent? = null
-        if (widgetInfo.linkInfo.type == LinkType.OPEN_APP) {
-            intent = context.packageManager.getLaunchIntentForPackage(widgetInfo.linkInfo.getPackageName())
-        } else if (widgetInfo.linkInfo.type == LinkType.OPEN_URL) {
-            intent = Intent(Intent.ACTION_VIEW, Uri.parse(widgetInfo.linkInfo.link))
+        if (linkInfo.type == LinkType.OPEN_APP) {
+            intent = context.packageManager.getLaunchIntentForPackage(linkInfo.getPackageName())
+        } else if (linkInfo.type == LinkType.OPEN_URL) {
+            intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkInfo.link))
         }
         if (intent != null) {
-            val pendingIntent =
+            centerPendingIntent =
                 PendingIntent.getActivity(
                     context,
                     widgetId,
                     intent,
                     PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                 )
-            try {
-                views.setOnClickPendingIntent(R.id.area_center, pendingIntent)
-                if (widgetBean.imageList.size == 1) {
-                    views.setOnClickPendingIntent(R.id.area_left, pendingIntent)
-                    views.setOnClickPendingIntent(R.id.area_right, pendingIntent)
-                }
-            } catch (e: Exception) {
-                logE("PhotoWidgetProvider", e.message, e)
-            }
         }
     }
 
     if (widgetBean.imageList.size > 1) {
-        views.setOnClickPendingIntent(
-            R.id.area_left,
+        leftPendingIntent =
             getWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_PREV, autoPlayInterval)
-        )
-
-        views.setOnClickPendingIntent(
-            R.id.area_right,
+        rightPendingIntent =
             getWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_NEXT, autoPlayInterval)
-        )
+    } else {
+        leftPendingIntent = centerPendingIntent
+        rightPendingIntent = centerPendingIntent
+    }
+
+    try {
+        views.setOnClickPendingIntent(R.id.area_center, centerPendingIntent)
+        if (widgetBean.imageList.size == 1) {
+            views.setOnClickPendingIntent(R.id.area_left, leftPendingIntent)
+            views.setOnClickPendingIntent(R.id.area_right, rightPendingIntent)
+        }
+    } catch (e: Exception) {
+        logE("PhotoWidgetProvider", e.message, e)
     }
 
     appWidgetManager.updateAppWidget(widgetId, views)
