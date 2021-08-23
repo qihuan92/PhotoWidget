@@ -158,19 +158,13 @@ class ConfigureActivity : AppCompatActivity() {
             widgetAdapter.setData(it)
 
             if (it.size <= 1) {
-                viewModel.autoPlayInterval.value = null
-                binding.layoutAutoPlayInterval.isGone = true
-            } else {
-                binding.layoutAutoPlayInterval.isGone = false
+                viewModel.autoPlayInterval.value = PlayInterval.NONE
             }
 
             binding.layoutPhotoWidgetPreview.strokeWidth = if (it.isEmpty()) 2f.dp else 0
         }
 
         viewModel.autoPlayInterval.observe(this) {
-            if (it == null) {
-                return@observe
-            }
             val vfPicture = binding.layoutPhotoWidget.vfPicture
             val interval = it.interval
             if (interval < 0) {

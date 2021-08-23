@@ -111,7 +111,8 @@
                         android:layout_marginTop="10dp"
                         android:onClick="@{() -> activity.showIntervalSelector()}"
                         android:orientation="vertical"
-                        android:paddingHorizontal="10dp">
+                        android:paddingHorizontal="10dp"
+                        app:isVisible="@{viewModel.imageUriList.size() > 1}">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -124,8 +125,8 @@
                             android:id="@+id/tv_auto_play_interval"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?textAppearanceCaption"
-                            android:text="@{viewModel.autoPlayInterval.description}"/>
+                            android:text="@{viewModel.autoPlayInterval.description}"
+                            android:textAppearance="?textAppearanceCaption" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -366,9 +367,9 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="15dp"
             android:contentDescription="@string/confirm"
-            android:visibility="@{viewModel.imageUriList.size() > 0 ? View.VISIBLE : View.INVISIBLE}"
             android:onClick="@{() -> activity.saveWidget()}"
             android:src="@drawable/ic_round_done_24"
+            android:visibility="@{viewModel.imageUriList.size() > 0 ? View.VISIBLE : View.INVISIBLE}"
             app:borderWidth="0dp"
             app:tint="@android:color/white" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
