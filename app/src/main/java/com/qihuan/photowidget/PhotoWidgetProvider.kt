@@ -158,10 +158,8 @@ internal fun updateAppWidget(
 
     try {
         views.setOnClickPendingIntent(R.id.area_center, centerPendingIntent)
-        if (widgetBean.imageList.size == 1) {
-            views.setOnClickPendingIntent(R.id.area_left, leftPendingIntent)
-            views.setOnClickPendingIntent(R.id.area_right, rightPendingIntent)
-        }
+        views.setOnClickPendingIntent(R.id.area_left, leftPendingIntent)
+        views.setOnClickPendingIntent(R.id.area_right, rightPendingIntent)
     } catch (e: Exception) {
         logE("PhotoWidgetProvider", e.message, e)
     }
