@@ -178,7 +178,6 @@ class ConfigureActivity : AppCompatActivity() {
         }
 
         viewModel.photoScaleType.observe(this) {
-            binding.tvPhotoScaleType.text = it.description
             binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
             widgetAdapter.setScaleType(it.scaleType)
         }
