@@ -47,7 +47,7 @@ class ConfigureActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivityConfigureBinding::inflate)
     private val viewModel by viewModels<ConfigureViewModel>()
 
-    var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+    private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     private val processImageDialog by lazy {
         MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
@@ -168,31 +168,25 @@ class ConfigureActivity : AppCompatActivity() {
         }
 
         viewModel.autoPlayInterval.observe(this) {
-            val vfPicture = binding.layoutPhotoWidget.vfPicture
             if (it == null) {
+                return@observe
+            }
+            val vfPicture = binding.layoutPhotoWidget.vfPicture
+            val interval = it.interval
+            if (interval < 0) {
                 vfPicture.isAutoStart = false
                 vfPicture.stopFlipping()
-
-                binding.tvAutoPlayInterval.text = getString(R.string.auto_play_interval_empty)
             } else {
                 vfPicture.isAutoStart = true
-                vfPicture.flipInterval = it
+                vfPicture.flipInterval = interval
                 vfPicture.startFlipping()
-
-                binding.tvAutoPlayInterval.text =
-                    String.format(
-                        getString(
-                            R.string.auto_play_interval_content,
-                            (it / 1000).toString()
-                        )
-                    )
             }
         }
 
         viewModel.photoScaleType.observe(this) {
-            binding.tvPhotoScaleType.text = PhotoScaleType.getDescription(it)
+            binding.tvPhotoScaleType.text = it.description
             binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
-            widgetAdapter.setScaleType(it)
+            widgetAdapter.setScaleType(it.scaleType)
         }
 
         viewModel.uiState.observe(this) {
@@ -334,9 +328,9 @@ class ConfigureActivity : AppCompatActivity() {
             .setTitle(R.string.alert_title_interval)
             .setSingleChoiceItems(
                 itemList.map { it.description }.toTypedArray(),
-                itemList.indexOfFirst { it.interval == viewModel.autoPlayInterval.value }
+                itemList.indexOfFirst { it == viewModel.autoPlayInterval.value }
             ) { dialog, i ->
-                viewModel.autoPlayInterval.value = itemList[i].interval
+                viewModel.autoPlayInterval.value = itemList[i]
                 dialog.dismiss()
             }.show()
     }
@@ -348,11 +342,7 @@ class ConfigureActivity : AppCompatActivity() {
                 when (i) {
                     0 -> appSelectResult.launch(Intent(this, InstalledAppActivity::class.java))
                     1 -> appSelectResult.launch(Intent(this, UrlInputActivity::class.java).apply {
-                        viewModel.linkInfo.get()?.let {
-                            if (!it.link.isOpenAppLink()) {
-                                putExtra("url", it.link)
-                            }
-                        }
+                        putExtra("linkInfo", viewModel.linkInfo.get())
                     })
                 }
                 dialog.dismiss()
@@ -365,9 +355,9 @@ class ConfigureActivity : AppCompatActivity() {
             .setTitle(R.string.alert_title_scale_type)
             .setSingleChoiceItems(
                 scaleTypeList.map { it.description }.toTypedArray(),
-                scaleTypeList.indexOfFirst { it.scaleType == viewModel.photoScaleType.value }
+                scaleTypeList.indexOfFirst { it == viewModel.photoScaleType.value }
             ) { dialog, i ->
-                viewModel.photoScaleType.value = scaleTypeList[i].scaleType
+                viewModel.photoScaleType.value = scaleTypeList[i]
                 dialog.dismiss()
             }.show()
     }

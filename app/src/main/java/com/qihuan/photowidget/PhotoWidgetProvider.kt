@@ -8,11 +8,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.RemoteViews
+import com.qihuan.photowidget.bean.LinkType
+import com.qihuan.photowidget.bean.PlayInterval
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.isOpenAppLink
 import com.qihuan.photowidget.ktx.logE
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ const val NAV_WIDGET_NEXT = "nav_widget_next"
 
 /**
  * Implementation of App Widget functionality.
- * App Widget Configuration implemented in [ConfigureActivity]
+ * App Widget Configuration implemented in [com.qihuan.photowidget.config.ConfigureActivity]
  */
 open class PhotoWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
@@ -103,7 +104,7 @@ internal fun updateAppWidget(
     val widgetId = widgetInfo.widgetId
 
     val autoPlayInterval = widgetInfo.autoPlayInterval
-    val views = createRemoteViews(context, autoPlayInterval)
+    val views = createRemoteViews(context, autoPlayInterval.interval)
     views.setRemoteAdapter(R.id.vf_picture, Intent(context, WidgetPhotoService::class.java).apply {
         type = Random.nextInt().toString()
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
@@ -119,12 +120,12 @@ internal fun updateAppWidget(
         verticalPadding
     )
 
-    if (!widgetInfo.openUrl.isNullOrBlank()) {
-        val intent = if (widgetInfo.openUrl.isOpenAppLink()) {
-            val info = widgetInfo.openUrl.split("/")
-            context.packageManager.getLaunchIntentForPackage(info[2])
-        } else {
-            Intent(Intent.ACTION_VIEW, Uri.parse(widgetInfo.openUrl))
+    if (widgetInfo.linkInfo != null) {
+        var intent: Intent? = null
+        if (widgetInfo.linkInfo.type == LinkType.OPEN_APP) {
+            intent = context.packageManager.getLaunchIntentForPackage(widgetInfo.linkInfo.getPackageName())
+        } else if (widgetInfo.linkInfo.type == LinkType.OPEN_URL) {
+            intent = Intent(Intent.ACTION_VIEW, Uri.parse(widgetInfo.linkInfo.link))
         }
         if (intent != null) {
             val pendingIntent =
@@ -162,8 +163,8 @@ internal fun updateAppWidget(
     appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.vf_picture)
 }
 
-fun createRemoteViews(context: Context, interval: Int?): RemoteViews {
-    if (interval == null || interval < 0) {
+fun createRemoteViews(context: Context, interval: Int): RemoteViews {
+    if (interval < 0) {
         return RemoteViews(context.packageName, R.layout.photo_widget)
     }
     val layoutId = context.resources.getIdentifier(
@@ -181,12 +182,12 @@ fun getWidgetNavPendingIntent(
     context: Context,
     widgetId: Int,
     navAction: String,
-    interval: Int?
+    playInterval: PlayInterval
 ): PendingIntent {
     return PendingIntent.getBroadcast(
         context,
         Random.nextInt(),
-        getWidgetNavIntent(context, widgetId, navAction, interval),
+        getWidgetNavIntent(context, widgetId, navAction, playInterval.interval),
         PendingIntent.FLAG_UPDATE_CURRENT
     )
 }

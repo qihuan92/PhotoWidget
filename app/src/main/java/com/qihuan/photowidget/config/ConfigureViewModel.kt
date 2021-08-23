@@ -3,7 +3,6 @@ package com.qihuan.photowidget.config
 import android.app.Application
 import android.appwidget.AppWidgetManager
 import android.net.Uri
-import android.widget.ImageView
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.databinding.ObservableField
@@ -18,7 +17,6 @@ import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.copyDir
 import com.qihuan.photowidget.ktx.deleteDir
-import com.qihuan.photowidget.ktx.parseLink
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,12 +41,12 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     val verticalPadding by lazy { ObservableFloat(0f) }
     val horizontalPadding by lazy { ObservableFloat(0f) }
     val widgetTransparency by lazy { ObservableFloat(0f) }
-    val autoPlayInterval by lazy { MutableLiveData<Int?>() }
-    val photoScaleType by lazy { MutableLiveData(ImageView.ScaleType.CENTER_CROP) }
+    val autoPlayInterval by lazy { MutableLiveData(PlayInterval.NONE) }
+    val photoScaleType by lazy { MutableLiveData(PhotoScaleType.CENTER_CROP) }
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
+    val linkInfo by lazy { ObservableField<LinkInfo>() }
     val uiState by lazy { MutableLiveData(UIState.LOADING) }
     val message by lazy { SingleLiveEvent<String>(null) }
-    val linkInfo by lazy { ObservableField<LinkInfo>() }
 
     fun addImage(uri: Uri) {
         val value = imageUriList.value
@@ -115,10 +113,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 horizontalPadding.set(widgetInfo.horizontalPadding)
                 widgetRadius.set(widgetInfo.widgetRadius)
                 widgetTransparency.set(widgetInfo.widgetTransparency)
-
-                widgetInfo.openUrl?.let {
-                    linkInfo.set(it.parseLink())
-                }
+                linkInfo.set(widgetInfo.linkInfo)
                 autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
                 photoScaleType.postValue(widgetInfo.photoScaleType)
             }
@@ -137,9 +132,9 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
             horizontalPadding.get(),
             widgetRadius.get(),
             widgetTransparency.get(),
-            autoPlayInterval.value,
-            linkInfo.get()?.link,
-            photoScaleType.value ?: ImageView.ScaleType.CENTER_CROP,
+            autoPlayInterval.value ?: PlayInterval.NONE,
+            linkInfo.get(),
+            photoScaleType.value ?: PhotoScaleType.CENTER_CROP,
         )
 
         val uriList = saveWidgetPhotoFiles(widgetId)

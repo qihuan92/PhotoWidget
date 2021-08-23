@@ -54,7 +54,7 @@ class WidgetPhotoViewFactory(
             val widgetInfo = widgetBean.widgetInfo
             radius = widgetInfo.widgetRadius
             transparency = widgetInfo.widgetTransparency
-            scaleType = widgetInfo.photoScaleType
+            scaleType = widgetInfo.photoScaleType.scaleType
         }
     }
 

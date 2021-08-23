@@ -8,14 +8,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.*
 import com.qihuan.photowidget.R
+import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.databinding.ActivityUrlInputBinding
-import com.qihuan.photowidget.ktx.parseLink
 import com.qihuan.photowidget.ktx.viewBinding
 
 class UrlInputActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityUrlInputBinding::inflate)
-    private var url: String? = ""
+    private var linkInfo: LinkInfo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,14 +23,14 @@ class UrlInputActivity : AppCompatActivity() {
         setContentView(binding.root)
         adaptBars()
 
-        url = intent.getStringExtra("url")
+        linkInfo = intent.getParcelableExtra("linkInfo")
         bindView()
     }
 
     private fun bindView() {
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
         binding.etOpenUrl.post {
-            binding.etOpenUrl.setText(url)
+            binding.etOpenUrl.setText(linkInfo?.link)
             binding.etOpenUrl.requestFocus()
             WindowCompat.getInsetsController(window, binding.etOpenUrl)
                 ?.show(WindowInsetsCompat.Type.ime())
@@ -41,8 +41,9 @@ class UrlInputActivity : AppCompatActivity() {
                 Toast.makeText(this, R.string.warn_url_empty, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            linkInfo?.link = url
             setResult(RESULT_OK, Intent().apply {
-                putExtra("linkInfo", url.parseLink())
+                putExtra("linkInfo", linkInfo)
             })
             finish()
         }

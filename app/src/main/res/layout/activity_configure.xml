@@ -124,7 +124,8 @@
                             android:id="@+id/tv_auto_play_interval"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textAppearance="?textAppearanceCaption" />
+                            android:textAppearance="?textAppearanceCaption"
+                            android:text="@{viewModel.autoPlayInterval.description}"/>
                     </LinearLayout>
 
                     <LinearLayout

@@ -11,9 +11,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.InstalledAppAdapter
+import com.qihuan.photowidget.bean.LinkInfo
+import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
 import com.qihuan.photowidget.ktx.adapterBarsColor
-import com.qihuan.photowidget.ktx.parseLink
 import com.qihuan.photowidget.ktx.viewBinding
 
 class InstalledAppActivity : AppCompatActivity() {
@@ -86,7 +87,7 @@ class InstalledAppActivity : AppCompatActivity() {
                 val intent = Intent().apply {
                     putExtra(
                         "linkInfo",
-                        "openApp/$appName/$packageName".parseLink()
+                        LinkInfo.of("${LinkType.OPEN_APP.value}/$appName/$packageName")
                     )
                 }
                 setResult(RESULT_OK, intent)
