@@ -112,7 +112,7 @@ class ConfigureActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
                 it.data?.apply {
-                    viewModel.linkInfo.set(getParcelableExtra("linkInfo"))
+                    viewModel.linkInfo.value = getParcelableExtra("linkInfo")
                 }
             }
         }
@@ -335,7 +335,7 @@ class ConfigureActivity : AppCompatActivity() {
                 when (i) {
                     0 -> appSelectResult.launch(Intent(this, InstalledAppActivity::class.java))
                     1 -> appSelectResult.launch(Intent(this, UrlInputActivity::class.java).apply {
-                        putExtra("linkInfo", viewModel.linkInfo.get())
+                        putExtra("linkInfo", viewModel.linkInfo.value)
                     })
                 }
                 dialog.dismiss()

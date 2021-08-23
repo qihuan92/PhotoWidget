@@ -5,8 +5,6 @@ import android.appwidget.AppWidgetManager
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.databinding.ObservableField
-import androidx.databinding.ObservableFloat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -37,14 +35,14 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     private val widgetInfoDao by lazy { AppDatabase.getDatabase(context).widgetInfoDao() }
     private val widgetDao by lazy { AppDatabase.getDatabase(context).widgetDao() }
 
-    val widgetRadius by lazy { ObservableFloat(0f) }
-    val verticalPadding by lazy { ObservableFloat(0f) }
-    val horizontalPadding by lazy { ObservableFloat(0f) }
-    val widgetTransparency by lazy { ObservableFloat(0f) }
+    val widgetRadius by lazy { MutableLiveData(0f) }
+    val verticalPadding by lazy { MutableLiveData(0f) }
+    val horizontalPadding by lazy { MutableLiveData(0f) }
+    val widgetTransparency by lazy { MutableLiveData(0f) }
     val autoPlayInterval by lazy { MutableLiveData(PlayInterval.NONE) }
     val photoScaleType by lazy { MutableLiveData(PhotoScaleType.CENTER_CROP) }
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
-    val linkInfo by lazy { ObservableField<LinkInfo>() }
+    val linkInfo by lazy { MutableLiveData<LinkInfo>() }
     val uiState by lazy { MutableLiveData(UIState.LOADING) }
     val message by lazy { SingleLiveEvent<String>(null) }
 
@@ -109,11 +107,11 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
             val widgetInfo = widgetInfoDao.selectById(widgetId)
             if (widgetInfo != null) {
                 copyToTempDir(widgetInfo.widgetId)
-                verticalPadding.set(widgetInfo.verticalPadding)
-                horizontalPadding.set(widgetInfo.horizontalPadding)
-                widgetRadius.set(widgetInfo.widgetRadius)
-                widgetTransparency.set(widgetInfo.widgetTransparency)
-                linkInfo.set(widgetInfo.linkInfo)
+                verticalPadding.value = widgetInfo.verticalPadding
+                horizontalPadding.value = widgetInfo.horizontalPadding
+                widgetRadius.value = widgetInfo.widgetRadius
+                widgetTransparency.value = widgetInfo.widgetTransparency
+                linkInfo.value = widgetInfo.linkInfo
                 autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
                 photoScaleType.postValue(widgetInfo.photoScaleType)
             }
@@ -128,12 +126,12 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
         }
         val widgetInfo = WidgetInfo(
             widgetId,
-            verticalPadding.get(),
-            horizontalPadding.get(),
-            widgetRadius.get(),
-            widgetTransparency.get(),
+            verticalPadding.value ?: 0f,
+            horizontalPadding.value ?: 0f,
+            widgetRadius.value ?: 0f,
+            widgetTransparency.value ?: 0f,
             autoPlayInterval.value ?: PlayInterval.NONE,
-            linkInfo.get(),
+            linkInfo.value,
             photoScaleType.value ?: PhotoScaleType.CENTER_CROP,
         )
 
@@ -152,7 +150,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun deleteLink() {
-        linkInfo.set(null)
+        linkInfo.value = null
     }
 
     private suspend fun saveWidgetPhotoFiles(widgetId: Int): List<Uri> {
