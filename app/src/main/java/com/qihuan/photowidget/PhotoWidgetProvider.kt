@@ -193,7 +193,7 @@ fun getWidgetNavPendingIntent(
         context,
         Random.nextInt(),
         getWidgetNavIntent(context, widgetId, navAction, playInterval.interval),
-        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        PendingIntent.FLAG_UPDATE_CURRENT
     )
 }
 
