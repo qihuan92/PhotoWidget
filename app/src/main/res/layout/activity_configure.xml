@@ -53,29 +53,38 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/layout_photo_widget_preview"
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="30dp"
-            android:alpha="@{1f - viewModel.widgetTransparency / 100f}"
-            app:cardBackgroundColor="@android:color/transparent"
-            app:cardCornerRadius="@{viewModel.widgetRadius * 2f}"
-            app:cardElevation="0dp"
+            android:paddingLeft="@{viewModel.horizontalPadding}"
+            android:paddingTop="@{viewModel.verticalPadding}"
+            android:paddingRight="@{viewModel.horizontalPadding}"
+            android:paddingBottom="@{viewModel.verticalPadding}"
             app:layout_constraintBottom_toBottomOf="@id/iv_wallpaper"
             app:layout_constraintDimensionRatio="h,1:1"
             app:layout_constraintLeft_toLeftOf="@id/guideline_center_vertical"
             app:layout_constraintRight_toRightOf="@id/guideline_center_vertical"
-            app:layout_constraintTop_toTopOf="@id/iv_wallpaper"
-            app:strokeColor="@color/colorDivider"
-            app:strokeWidth="@{viewModel.imageUriList.empty ? 2f: 0f}">
+            app:layout_constraintTop_toTopOf="@id/iv_wallpaper">
 
-            <include
-                android:id="@+id/layout_photo_widget"
-                layout="@layout/photo_widget"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/layout_photo_widget_preview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </com.google.android.material.card.MaterialCardView>
+                android:layout_height="match_parent"
+                android:alpha="@{1f - viewModel.widgetTransparency / 100f}"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="@{viewModel.widgetRadius * 2f}"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/colorDivider"
+                app:strokeWidth="@{viewModel.imageUriList.empty ? 2f: 0f}">
+
+                <include
+                    android:id="@+id/layout_photo_widget"
+                    layout="@layout/photo_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scroll_view_info"
