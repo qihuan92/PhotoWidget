@@ -54,6 +54,7 @@
             app:layout_constraintGuide_percent="0.5" />
 
         <FrameLayout
+            android:id="@+id/container_photo_widget_preview"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="30dp"

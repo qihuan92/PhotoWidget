@@ -245,6 +245,9 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private fun saveWidget() {
+        if (viewModel.uiState.value == ConfigureViewModel.UIState.LOADING) {
+            return
+        }
         if (viewModel.imageUriList.value.isNullOrEmpty()) {
             Toast.makeText(this, R.string.warning_select_picture, Toast.LENGTH_SHORT).show()
             return
