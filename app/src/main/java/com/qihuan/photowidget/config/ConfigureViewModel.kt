@@ -8,9 +8,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.*
-import com.qihuan.photowidget.common.SingleLiveEvent
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.copyDir
@@ -44,7 +42,6 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
     val linkInfo by lazy { MutableLiveData<LinkInfo>() }
     val uiState by lazy { MutableLiveData(UIState.LOADING) }
-    val message by lazy { SingleLiveEvent<String>(null) }
 
     fun addImage(uri: Uri) {
         val value = imageUriList.value
@@ -120,10 +117,6 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     suspend fun saveWidget(widgetId: Int) {
-        if (imageUriList.value.isNullOrEmpty()) {
-            message.value = context.getString(R.string.warning_select_picture)
-            return
-        }
         val widgetInfo = WidgetInfo(
             widgetId,
             verticalPadding.value ?: 0f,

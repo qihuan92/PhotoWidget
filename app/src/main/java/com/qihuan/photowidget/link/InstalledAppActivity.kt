@@ -5,16 +5,14 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.InstalledAppAdapter
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
-import com.qihuan.photowidget.ktx.adapterBarsColor
+import com.qihuan.photowidget.ktx.paddingNavigationBar
+import com.qihuan.photowidget.ktx.paddingStatusBar
 import com.qihuan.photowidget.ktx.viewBinding
 
 class InstalledAppActivity : AppCompatActivity() {
@@ -32,24 +30,12 @@ class InstalledAppActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(binding.root)
         binding.viewModel = viewModel
-        adaptBars()
+
+        binding.root.paddingStatusBar()
+        binding.rvList.paddingNavigationBar()
 
         bindView()
         bindData()
-    }
-
-    private fun adaptBars() {
-        adapterBarsColor(resources, window, binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-            val barInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            view.updatePadding(top = barInsets.top)
-            insets
-        }
-        ViewCompat.setOnApplyWindowInsetsListener(binding.rvList) { view, insets ->
-            val navigationBarInserts = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            view.updatePadding(bottom = navigationBarInserts.bottom)
-            insets
-        }
     }
 
     private fun bindView() {

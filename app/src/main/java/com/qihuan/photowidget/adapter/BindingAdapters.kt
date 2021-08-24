@@ -89,4 +89,10 @@ object BindingAdapters {
         }
         view.setCompoundDrawablesWithIntrinsicBounds(resId, 0, 0, 0)
     }
+
+    @JvmStatic
+    @BindingAdapter("strokeWidth")
+    fun setStrokeWidth(view: MaterialCardView, value: Float) {
+        view.strokeWidth = value.dp
+    }
 }

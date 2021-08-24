@@ -1,12 +1,11 @@
 package com.qihuan.photowidget.ktx
 
 import android.content.Context
-import android.content.res.Configuration
 import android.content.res.Resources
 import android.util.TypedValue
 import android.view.View
-import android.view.Window
-import androidx.core.view.WindowCompat
+import android.view.ViewGroup
+import androidx.core.view.*
 
 /**
  * UIExt
@@ -24,17 +23,53 @@ fun Int.toDp(context: Context): Float {
     return this / context.resources.displayMetrics.density
 }
 
-fun adapterBarsColor(resources: Resources, window: Window, view: View) {
-    WindowCompat.getInsetsController(window, view)?.apply {
-        when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_NO -> {
-                isAppearanceLightStatusBars = true
-                isAppearanceLightNavigationBars = true
-            }
-            Configuration.UI_MODE_NIGHT_YES -> {
-                isAppearanceLightStatusBars = false
-                isAppearanceLightNavigationBars = false
-            }
+fun View.paddingStatusBar() {
+    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
+        val barInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+        view.updatePadding(top = barInsets.top)
+        insets
+    }
+}
+
+fun View.paddingNavigationBar() {
+    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
+        val barInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+        view.post {
+            view.updatePadding(bottom = barInsets.bottom)
         }
+        insets
+    }
+}
+
+fun View.marginNavigationBar() {
+    val marginBottom = marginBottom
+    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
+        val navigationBarInserts = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+        view.updateLayoutParams {
+            (this as ViewGroup.MarginLayoutParams).setMargins(
+                leftMargin,
+                topMargin,
+                rightMargin,
+                marginBottom + navigationBarInserts.bottom
+            )
+        }
+        insets
+    }
+}
+
+fun View.marginNavigationBarAndIme() {
+    val marginBottom = marginBottom
+    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
+        val navigationBarInserts = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+        val imeInserts = insets.getInsets(WindowInsetsCompat.Type.ime())
+        view.updateLayoutParams {
+            (this as ViewGroup.MarginLayoutParams).setMargins(
+                leftMargin,
+                topMargin,
+                rightMargin,
+                marginBottom + navigationBarInserts.bottom + imeInserts.bottom
+            )
+        }
+        insets
     }
 }

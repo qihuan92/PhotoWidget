@@ -1,16 +1,11 @@
 package com.qihuan.photowidget.config
 
 import android.Manifest
-import android.animation.ObjectAnimator
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,7 +16,6 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
-import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.ConcatAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.R
@@ -103,8 +97,6 @@ class ConfigureActivity : AppCompatActivity() {
                 val wallpaper = wallpaperManager.drawable.toBitmap()
                 // 设置壁纸背景
                 binding.ivWallpaper.setImageBitmap(wallpaper)
-                // 状态栏文字颜色适配
-                adaptStatusBarTextColor(wallpaper)
             }
         }
 
@@ -120,21 +112,28 @@ class ConfigureActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        adaptBars()
         setResult(RESULT_CANCELED)
         setContentView(binding.root)
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.activity = this
+
+        binding.root.paddingStatusBar()
+        binding.scrollViewInfo.paddingNavigationBar()
+
         bindView()
         initView()
         handleIntent(intent)
     }
 
     private fun initView() {
-        // 隐藏操作区
-        binding.scrollViewInfo.post {
-            binding.scrollViewInfo.translationY = binding.scrollViewInfo.height.toFloat()
+        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.confirm -> saveWidget()
+            }
+            true
         }
     }
 
@@ -160,8 +159,6 @@ class ConfigureActivity : AppCompatActivity() {
             if (it.size <= 1) {
                 viewModel.autoPlayInterval.value = PlayInterval.NONE
             }
-
-            binding.layoutPhotoWidgetPreview.strokeWidth = if (it.isEmpty()) 2f.dp else 0
         }
 
         viewModel.autoPlayInterval.observe(this) {
@@ -180,23 +177,6 @@ class ConfigureActivity : AppCompatActivity() {
         viewModel.photoScaleType.observe(this) {
             binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
             widgetAdapter.setScaleType(it.scaleType)
-        }
-
-        viewModel.uiState.observe(this) {
-            if (it == ConfigureViewModel.UIState.SHOW_CONTENT) {
-                ObjectAnimator.ofFloat(binding.scrollViewInfo, "translationY", 0f).apply {
-                    duration =
-                        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
-                    interpolator = DecelerateInterpolator()
-                    start()
-                }
-            }
-        }
-
-        viewModel.message.observe(this) {
-            if (it != null) {
-                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-            }
         }
 
         binding.layoutPhotoWidget.photoWidgetInfo.areaLeft.setOnClickListener {
@@ -236,44 +216,6 @@ class ConfigureActivity : AppCompatActivity() {
         viewModel.loadWidget(appWidgetId)
     }
 
-    private fun adaptBars() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.scrollViewInfo) { view, insets ->
-            val barInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            view.post {
-                view.updatePadding(bottom = barInsets.bottom)
-            }
-            insets
-        }
-
-        val fabTopMarginBottom = binding.btnConfirm.marginBottom
-        ViewCompat.setOnApplyWindowInsetsListener(binding.btnConfirm) { view, insets ->
-            val navigationBarInserts = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            view.updateLayoutParams {
-                (this as ViewGroup.MarginLayoutParams).setMargins(
-                    leftMargin,
-                    topMargin,
-                    rightMargin,
-                    fabTopMarginBottom + navigationBarInserts.bottom
-                )
-            }
-            insets
-        }
-    }
-
-    private fun adaptStatusBarTextColor(wallpaper: Bitmap) {
-        val statusBarSize = 30F.dp
-        val statusBarAreaBitmap =
-            Bitmap.createBitmap(wallpaper, 0, 0, wallpaper.width, statusBarSize)
-        Palette.from(statusBarAreaBitmap).generate {
-            if (it != null) {
-                val dominantColor = it.getDominantColor(Color.WHITE)
-                WindowCompat.getInsetsController(window, binding.root)?.apply {
-                    isAppearanceLightStatusBars = !dominantColor.isDark()
-                }
-            }
-        }
-    }
-
     private fun addPhoto(vararg uris: Uri) {
         if (uris.isNullOrEmpty()) {
             return
@@ -302,7 +244,11 @@ class ConfigureActivity : AppCompatActivity() {
         }
     }
 
-    fun saveWidget() {
+    private fun saveWidget() {
+        if (viewModel.imageUriList.value.isNullOrEmpty()) {
+            Toast.makeText(this, R.string.warning_select_picture, Toast.LENGTH_SHORT).show()
+            return
+        }
         lifecycleScope.launch {
             saveImageDialog.show()
             viewModel.saveWidget(appWidgetId)
