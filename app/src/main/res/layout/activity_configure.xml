@@ -46,6 +46,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:contentDescription="@string/wallpaper"
                 android:scaleType="centerCrop"
+                android:src="@drawable/built_in_wallpaper"
                 app:layout_constraintDimensionRatio="h,3:2"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
