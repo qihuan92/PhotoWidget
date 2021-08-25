@@ -43,9 +43,8 @@ class UrlInputActivity : AppCompatActivity() {
                 Toast.makeText(this, R.string.warn_url_empty, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            linkInfo?.link = url
             setResult(RESULT_OK, Intent().apply {
-                putExtra("linkInfo", linkInfo)
+                putExtra("linkInfo", LinkInfo.of(url))
             })
             finish()
         }
