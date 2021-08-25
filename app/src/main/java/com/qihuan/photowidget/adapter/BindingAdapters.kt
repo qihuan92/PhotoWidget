@@ -3,7 +3,6 @@ package com.qihuan.photowidget.adapter
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.core.view.updatePadding
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
@@ -33,30 +32,6 @@ object BindingAdapters {
         view.addOnChangeListener { _, _, _ ->
             attrChange.onChange()
         }
-    }
-
-    @JvmStatic
-    @BindingAdapter("android:paddingLeft")
-    fun setPaddingLeft(view: View, value: Float) {
-        view.updatePadding(left = value.dp)
-    }
-
-    @JvmStatic
-    @BindingAdapter("android:paddingTop")
-    fun setPaddingTop(view: View, value: Float) {
-        view.updatePadding(top = value.dp)
-    }
-
-    @JvmStatic
-    @BindingAdapter("android:paddingRight")
-    fun setPaddingRight(view: View, value: Float) {
-        view.updatePadding(right = value.dp)
-    }
-
-    @JvmStatic
-    @BindingAdapter("android:paddingBottom")
-    fun setPaddingBottom(view: View, value: Float) {
-        view.updatePadding(bottom = value.dp)
     }
 
     @JvmStatic
