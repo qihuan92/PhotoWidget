@@ -1,11 +1,14 @@
 package com.qihuan.photowidget.ktx
 
+import android.animation.Animator
 import android.content.Context
 import android.content.res.Resources
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewAnimationUtils
 import android.view.ViewGroup
 import androidx.core.view.*
+import kotlin.math.hypot
 
 /**
  * UIExt
@@ -73,3 +76,19 @@ fun View.marginNavigationBarAndIme() {
         insets
     }
 }
+
+fun View.circularRevealAnimator(): Animator {
+    val cx = width / 2
+    val cy = height / 2
+    val finalRadius = hypot(cx.toDouble(), cy.toDouble()).toFloat()
+    return ViewAnimationUtils.createCircularReveal(this, cx, cy, 0f, finalRadius)
+}
+
+val Resources.androidShortAnimTime
+    get() = getInteger(android.R.integer.config_shortAnimTime).toLong()
+
+val Resources.androidMediumAnimTime
+    get() = getInteger(android.R.integer.config_mediumAnimTime).toLong()
+
+val Resources.androidLongAnimTime
+    get() = getInteger(android.R.integer.config_longAnimTime).toLong()
