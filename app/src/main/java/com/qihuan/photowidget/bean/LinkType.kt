@@ -5,6 +5,9 @@ package com.qihuan.photowidget.bean
  * @author qi
  * @since 3/22/21
  */
-enum class LinkType {
-    URL, OPEN_APP
+enum class LinkType(
+    val value: String,
+) {
+    OPEN_URL("openUrl"),
+    OPEN_APP("openApp"),
 }

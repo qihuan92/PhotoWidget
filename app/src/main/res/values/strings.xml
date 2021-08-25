@@ -45,4 +45,6 @@
     <string name="crop_freestyle_disable">自由裁剪已关闭</string>
     <string name="processing">处理中…</string>
     <string name="saving">保存中…</string>
+    <string name="add_widget">添加微件</string>
+    <string name="edit_widget">编辑微件</string>
 </resources>

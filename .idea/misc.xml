@@ -18,10 +18,17 @@
         <entry key="app/src/main/res/drawable/bg_add_link.xml" value="0.16111111111111112" />
         <entry key="app/src/main/res/drawable/bg_options.xml" value="0.3990740740740741" />
         <entry key="app/src/main/res/drawable/bg_prop_item.xml" value="0.3990740740740741" />
+        <entry key="app/src/main/res/drawable/built_in_wallpaper.xml" value="0.4338461538461538" />
+        <entry key="app/src/main/res/drawable/ic_info.xml" value="0.4338461538461538" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.4338461538461538" />
+        <entry key="app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.4338461538461538" />
         <entry key="app/src/main/res/drawable/ic_round_add_24.xml" value="0.16111111111111112" />
         <entry key="app/src/main/res/drawable/ic_round_apps_24.xml" value="0.16111111111111112" />
         <entry key="app/src/main/res/drawable/ic_round_done_24.xml" value="0.16111111111111112" />
-        <entry key="app/src/main/res/layout/activity_configure.xml" value="0.35833333333333334" />
+        <entry key="app/src/main/res/layout/activity_configure.xml" value="0.41794871794871796" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.41794871794871796" />
+        <entry key="app/src/main/res/layout/photo_widget_info.xml" value="0.41794871794871796" />
+        <entry key="app/src/main/res/menu/menu_config.xml" value="0.4244791666666667" />
       </map>
     </option>
   </component>

@@ -18,52 +18,73 @@
             type="com.qihuan.photowidget.config.ConfigureActivity" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="@{viewModel.uiState == UIState.SHOW_CONTENT ? View.VISIBLE : View.INVISIBLE}">
 
-            <ImageView
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:menu="@menu/menu_config"
+                app:navigationIcon="@drawable/ic_round_close_24"
+                app:title="@{viewModel.imageUriList.empty ? @string/add_widget: @string/edit_widget}" />
+
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_wallpaper"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginHorizontal="16dp"
                 android:contentDescription="@string/wallpaper"
                 android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@drawable/built_in_wallpaper"
+                app:layout_constraintDimensionRatio="h,3:2"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/toolbar"
+                app:shapeAppearanceOverlay="@style/ShapeRound.WallpaperBackground" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
 
             <FrameLayout
-                android:id="@+id/layout_photo_widget_container"
+                android:id="@+id/container_photo_widget_preview"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="30dp"
-                android:alpha="@{1f - viewModel.widgetTransparency / 100f}"
+                android:layout_margin="30dp"
                 android:paddingLeft="@{viewModel.horizontalPadding}"
                 android:paddingTop="@{viewModel.verticalPadding}"
                 android:paddingRight="@{viewModel.horizontalPadding}"
                 android:paddingBottom="@{viewModel.verticalPadding}"
-                android:visibility="@{viewModel.uiState == UIState.SHOW_CONTENT ? View.VISIBLE : View.INVISIBLE}"
+                app:layout_constraintBottom_toBottomOf="@id/iv_wallpaper"
                 app:layout_constraintDimensionRatio="h,1:1"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintLeft_toLeftOf="@id/guideline_center_vertical"
+                app:layout_constraintRight_toRightOf="@id/guideline_center_vertical"
+                app:layout_constraintTop_toTopOf="@id/iv_wallpaper">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/layout_photo_widget_preview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:alpha="@{1f - viewModel.widgetTransparency / 100f}"
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="@{viewModel.widgetRadius * 2f}"
                     app:cardElevation="0dp"
                     app:strokeColor="@color/colorDivider"
-                    app:strokeWidth="2dp">
+                    app:strokeWidth="@{viewModel.imageUriList.empty ? 2f: 0f}">
 
                     <include
                         android:id="@+id/layout_photo_widget"
@@ -77,14 +98,12 @@
                 android:id="@+id/scroll_view_info"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/bg_options"
                 android:clipToPadding="false"
                 android:elevation="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_photo_widget_container">
+                app:layout_constraintTop_toBottomOf="@id/iv_wallpaper">
 
                 <LinearLayout
                     android:id="@+id/layout_info"
@@ -100,7 +119,6 @@
                         android:layout_height="60dp"
                         android:clipToPadding="false"
                         android:orientation="horizontal"
-                        android:paddingHorizontal="5dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:listitem="@layout/item_preview_photo" />
 
@@ -111,7 +129,7 @@
                         android:layout_marginTop="10dp"
                         android:onClick="@{() -> activity.showIntervalSelector()}"
                         android:orientation="vertical"
-                        android:paddingHorizontal="10dp">
+                        app:isVisible="@{viewModel.imageUriList.size() > 1}">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -124,6 +142,7 @@
                             android:id="@+id/tv_auto_play_interval"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="@{viewModel.autoPlayInterval.description}"
                             android:textAppearance="?textAppearanceCaption" />
                     </LinearLayout>
 
@@ -133,8 +152,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:onClick="@{() -> activity.showScaleTypeSelector()}"
-                        android:orientation="vertical"
-                        android:paddingHorizontal="10dp">
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -147,6 +165,7 @@
                             android:id="@+id/tv_photo_scale_type"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="@{viewModel.photoScaleType.description}"
                             android:textAppearance="?textAppearanceCaption" />
                     </LinearLayout>
 
@@ -156,8 +175,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:onClick="@{() -> activity.showLinkTypeSelector()}"
-                        android:orientation="vertical"
-                        android:paddingHorizontal="10dp">
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -247,8 +265,6 @@
                             android:id="@+id/tv_vertical_padding"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:padding="5dp"
                             android:text="@string/vertical_padding"
                             android:textAppearance="?textAppearanceBody2"
                             android:textStyle="bold" />
@@ -274,8 +290,6 @@
                             android:id="@+id/tv_horizontal_padding"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:padding="5dp"
                             android:text="@string/horizontal_padding"
                             android:textAppearance="?textAppearanceBody2"
                             android:textStyle="bold" />
@@ -301,8 +315,6 @@
                             android:id="@+id/tv_widget_radius"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:padding="5dp"
                             android:text="@string/widget_radius"
                             android:textAppearance="?textAppearanceBody2"
                             android:textStyle="bold" />
@@ -328,8 +340,6 @@
                             android:id="@+id/tv_widget_transparency"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:padding="5dp"
                             android:text="@string/widget_transparency"
                             android:textAppearance="?textAppearanceBody2"
                             android:textStyle="bold" />
@@ -343,10 +353,6 @@
                             android:valueFrom="0"
                             android:valueTo="100" />
                     </LinearLayout>
-
-                    <Space
-                        android:layout_width="wrap_content"
-                        android:layout_height="56dp" />
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -357,18 +363,5 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             app:isVisible="@{viewModel.uiState == UIState.LOADING}" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btn_confirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="15dp"
-            android:contentDescription="@string/confirm"
-            android:visibility="@{viewModel.imageUriList.size() > 0 ? View.VISIBLE : View.INVISIBLE}"
-            android:onClick="@{() -> activity.saveWidget()}"
-            android:src="@drawable/ic_round_done_24"
-            app:borderWidth="0dp"
-            app:tint="@android:color/white" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </FrameLayout>
 </layout>

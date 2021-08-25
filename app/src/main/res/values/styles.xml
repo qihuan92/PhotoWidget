@@ -3,7 +3,14 @@
 
     <style name="ShapeRound">
         <item name="cornerFamily">rounded</item>
+    </style>
+
+    <style name="ShapeRound.Item">
         <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="ShapeRound.WallpaperBackground">
+        <item name="cornerSize">20dp</item>
     </style>
 
     <style name="ViewFlipperStyle">

@@ -1,9 +1,10 @@
 package com.qihuan.photowidget.db
 
 import android.net.Uri
-import android.widget.ImageView
-import androidx.core.net.toUri
 import androidx.room.TypeConverter
+import com.qihuan.photowidget.bean.LinkInfo
+import com.qihuan.photowidget.bean.PhotoScaleType
+import com.qihuan.photowidget.bean.PlayInterval
 
 /**
  * Converters
@@ -11,20 +12,6 @@ import androidx.room.TypeConverter
  * @since 2020/8/11
  */
 class Converters {
-    @TypeConverter
-    fun revertUriList(value: String): List<Uri> {
-        val list = mutableListOf<Uri>()
-        for (uri in value.split(",")) {
-            list.add(uri.toUri())
-        }
-        return list
-    }
-
-    @TypeConverter
-    fun convertUriList(value: List<Uri>): String {
-        return value.joinToString(",")
-    }
-
     @TypeConverter
     fun revertUri(value: String): Uri? {
         return Uri.parse(value)
@@ -36,12 +23,35 @@ class Converters {
     }
 
     @TypeConverter
-    fun revertScaleType(value: String): ImageView.ScaleType {
+    fun revertScaleType(value: String): PhotoScaleType {
         return enumValueOf(value)
     }
 
     @TypeConverter
-    fun convertScaleType(value: ImageView.ScaleType): String {
+    fun convertScaleType(value: PhotoScaleType): String {
         return value.name
+    }
+
+    @TypeConverter
+    fun convertPlayInterval(value: PlayInterval): Int {
+        return value.interval
+    }
+
+    @TypeConverter
+    fun revertPlayInterval(value: Int): PlayInterval {
+        return PlayInterval.get(value)
+    }
+
+    @TypeConverter
+    fun convertLinkInfo(value: LinkInfo?): String? {
+        if (value == null) {
+            return null
+        }
+        return value.link
+    }
+
+    @TypeConverter
+    fun revertLinkInfo(value: String?): LinkInfo? {
+        return LinkInfo.of(value)
     }
 }

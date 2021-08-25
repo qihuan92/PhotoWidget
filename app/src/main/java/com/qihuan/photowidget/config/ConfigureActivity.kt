@@ -1,16 +1,11 @@
 package com.qihuan.photowidget.config
 
 import android.Manifest
-import android.animation.ObjectAnimator
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,7 +16,6 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
-import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.ConcatAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.R
@@ -47,7 +41,7 @@ class ConfigureActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivityConfigureBinding::inflate)
     private val viewModel by viewModels<ConfigureViewModel>()
 
-    var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+    private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     private val processImageDialog by lazy {
         MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
@@ -103,8 +97,6 @@ class ConfigureActivity : AppCompatActivity() {
                 val wallpaper = wallpaperManager.drawable.toBitmap()
                 // 设置壁纸背景
                 binding.ivWallpaper.setImageBitmap(wallpaper)
-                // 状态栏文字颜色适配
-                adaptStatusBarTextColor(wallpaper)
             }
         }
 
@@ -112,7 +104,7 @@ class ConfigureActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
                 it.data?.apply {
-                    viewModel.linkInfo.set(getParcelableExtra("linkInfo"))
+                    viewModel.linkInfo.value = getParcelableExtra("linkInfo")
                 }
             }
         }
@@ -120,21 +112,28 @@ class ConfigureActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        adaptBars()
         setResult(RESULT_CANCELED)
         setContentView(binding.root)
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.activity = this
+
+        binding.root.paddingStatusBar()
+        binding.scrollViewInfo.paddingNavigationBar()
+
         bindView()
         initView()
         handleIntent(intent)
     }
 
     private fun initView() {
-        // 隐藏操作区
-        binding.scrollViewInfo.post {
-            binding.scrollViewInfo.translationY = binding.scrollViewInfo.height.toFloat()
+        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.confirm -> saveWidget()
+            }
+            true
         }
     }
 
@@ -158,57 +157,33 @@ class ConfigureActivity : AppCompatActivity() {
             widgetAdapter.setData(it)
 
             if (it.size <= 1) {
-                viewModel.autoPlayInterval.value = null
-                binding.layoutAutoPlayInterval.isGone = true
-            } else {
-                binding.layoutAutoPlayInterval.isGone = false
+                viewModel.autoPlayInterval.value = PlayInterval.NONE
             }
-
-            binding.layoutPhotoWidgetPreview.strokeWidth = if (it.isEmpty()) 2f.dp else 0
         }
 
         viewModel.autoPlayInterval.observe(this) {
             val vfPicture = binding.layoutPhotoWidget.vfPicture
-            if (it == null) {
+            val interval = it.interval
+            if (interval < 0) {
                 vfPicture.isAutoStart = false
                 vfPicture.stopFlipping()
-
-                binding.tvAutoPlayInterval.text = getString(R.string.auto_play_interval_empty)
             } else {
                 vfPicture.isAutoStart = true
-                vfPicture.flipInterval = it
+                vfPicture.flipInterval = interval
                 vfPicture.startFlipping()
-
-                binding.tvAutoPlayInterval.text =
-                    String.format(
-                        getString(
-                            R.string.auto_play_interval_content,
-                            (it / 1000).toString()
-                        )
-                    )
             }
         }
 
         viewModel.photoScaleType.observe(this) {
-            binding.tvPhotoScaleType.text = PhotoScaleType.getDescription(it)
             binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
-            widgetAdapter.setScaleType(it)
+            widgetAdapter.setScaleType(it.scaleType)
         }
 
         viewModel.uiState.observe(this) {
             if (it == ConfigureViewModel.UIState.SHOW_CONTENT) {
-                ObjectAnimator.ofFloat(binding.scrollViewInfo, "translationY", 0f).apply {
-                    duration =
-                        resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
-                    interpolator = DecelerateInterpolator()
-                    start()
-                }
-            }
-        }
-
-        viewModel.message.observe(this) {
-            if (it != null) {
-                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                binding.layoutContent.circularRevealAnimator()
+                    .setDuration(resources.androidMediumAnimTime)
+                    .start()
             }
         }
 
@@ -249,44 +224,6 @@ class ConfigureActivity : AppCompatActivity() {
         viewModel.loadWidget(appWidgetId)
     }
 
-    private fun adaptBars() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.scrollViewInfo) { view, insets ->
-            val barInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            view.post {
-                view.updatePadding(bottom = barInsets.bottom)
-            }
-            insets
-        }
-
-        val fabTopMarginBottom = binding.btnConfirm.marginBottom
-        ViewCompat.setOnApplyWindowInsetsListener(binding.btnConfirm) { view, insets ->
-            val navigationBarInserts = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            view.updateLayoutParams {
-                (this as ViewGroup.MarginLayoutParams).setMargins(
-                    leftMargin,
-                    topMargin,
-                    rightMargin,
-                    fabTopMarginBottom + navigationBarInserts.bottom
-                )
-            }
-            insets
-        }
-    }
-
-    private fun adaptStatusBarTextColor(wallpaper: Bitmap) {
-        val statusBarSize = 30F.dp
-        val statusBarAreaBitmap =
-            Bitmap.createBitmap(wallpaper, 0, 0, wallpaper.width, statusBarSize)
-        Palette.from(statusBarAreaBitmap).generate {
-            if (it != null) {
-                val dominantColor = it.getDominantColor(Color.WHITE)
-                WindowCompat.getInsetsController(window, binding.root)?.apply {
-                    isAppearanceLightStatusBars = !dominantColor.isDark()
-                }
-            }
-        }
-    }
-
     private fun addPhoto(vararg uris: Uri) {
         if (uris.isNullOrEmpty()) {
             return
@@ -315,7 +252,14 @@ class ConfigureActivity : AppCompatActivity() {
         }
     }
 
-    fun saveWidget() {
+    private fun saveWidget() {
+        if (viewModel.uiState.value == ConfigureViewModel.UIState.LOADING) {
+            return
+        }
+        if (viewModel.imageUriList.value.isNullOrEmpty()) {
+            Toast.makeText(this, R.string.warning_select_picture, Toast.LENGTH_SHORT).show()
+            return
+        }
         lifecycleScope.launch {
             saveImageDialog.show()
             viewModel.saveWidget(appWidgetId)
@@ -334,9 +278,9 @@ class ConfigureActivity : AppCompatActivity() {
             .setTitle(R.string.alert_title_interval)
             .setSingleChoiceItems(
                 itemList.map { it.description }.toTypedArray(),
-                itemList.indexOfFirst { it.interval == viewModel.autoPlayInterval.value }
+                itemList.indexOfFirst { it == viewModel.autoPlayInterval.value }
             ) { dialog, i ->
-                viewModel.autoPlayInterval.value = itemList[i].interval
+                viewModel.autoPlayInterval.value = itemList[i]
                 dialog.dismiss()
             }.show()
     }
@@ -348,11 +292,7 @@ class ConfigureActivity : AppCompatActivity() {
                 when (i) {
                     0 -> appSelectResult.launch(Intent(this, InstalledAppActivity::class.java))
                     1 -> appSelectResult.launch(Intent(this, UrlInputActivity::class.java).apply {
-                        viewModel.linkInfo.get()?.let {
-                            if (!it.link.isOpenAppLink()) {
-                                putExtra("url", it.link)
-                            }
-                        }
+                        putExtra("linkInfo", viewModel.linkInfo.value)
                     })
                 }
                 dialog.dismiss()
@@ -365,9 +305,9 @@ class ConfigureActivity : AppCompatActivity() {
             .setTitle(R.string.alert_title_scale_type)
             .setSingleChoiceItems(
                 scaleTypeList.map { it.description }.toTypedArray(),
-                scaleTypeList.indexOfFirst { it.scaleType == viewModel.photoScaleType.value }
+                scaleTypeList.indexOfFirst { it == viewModel.photoScaleType.value }
             ) { dialog, i ->
-                viewModel.photoScaleType.value = scaleTypeList[i].scaleType
+                viewModel.photoScaleType.value = scaleTypeList[i]
                 dialog.dismiss()
             }.show()
     }

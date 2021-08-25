@@ -21,7 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.qihuan.photowidget.bean** { *; }
--keep class com.qihuan.photowidget.common.blur** { *; }
+-keep class com.qihuan.photowidget.common** { *; }
 
 -dontwarn com.yalantis.ucrop**
 -keep class com.yalantis.ucrop** { *; }
