@@ -18,350 +18,354 @@
             type="com.qihuan.photowidget.config.ConfigureActivity" />
     </data>
 
-    <FrameLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_content"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="@{viewModel.uiState == UIState.SHOW_CONTENT ? View.VISIBLE : View.INVISIBLE}">
+            android:layout_height="?actionBarSize"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:menu="@menu/menu_config"
+            app:navigationIcon="@drawable/ic_round_close_24"
+            app:title="@{viewModel.imageUriList.empty ? @string/add_widget: @string/edit_widget}" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_wallpaper"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="16dp"
+            android:contentDescription="@string/wallpaper"
+            android:scaleType="centerCrop"
+            android:src="@drawable/built_in_wallpaper"
+            app:layout_constraintDimensionRatio="h,3:2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:shapeAppearanceOverlay="@style/ShapeRound.WallpaperBackground" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <FrameLayout
+            android:id="@+id/container_photo_widget_preview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="30dp"
+            android:paddingLeft="@{viewModel.horizontalPadding}"
+            android:paddingTop="@{viewModel.verticalPadding}"
+            android:paddingRight="@{viewModel.horizontalPadding}"
+            android:paddingBottom="@{viewModel.verticalPadding}"
+            app:layout_constraintBottom_toBottomOf="@id/iv_wallpaper"
+            app:layout_constraintDimensionRatio="h,1:1"
+            app:layout_constraintLeft_toLeftOf="@id/guideline_center_vertical"
+            app:layout_constraintRight_toRightOf="@id/guideline_center_vertical"
+            app:layout_constraintTop_toTopOf="@id/iv_wallpaper">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/layout_photo_widget_preview"
                 android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:menu="@menu/menu_config"
-                app:navigationIcon="@drawable/ic_round_close_24"
-                app:title="@{viewModel.imageUriList.empty ? @string/add_widget: @string/edit_widget}" />
+                android:layout_height="match_parent"
+                android:alpha="@{1f - viewModel.widgetTransparency / 100f}"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="@{viewModel.widgetRadius * 2f}"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/colorDivider"
+                app:strokeWidth="@{viewModel.imageUriList.empty ? 2f: 0f}">
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/iv_wallpaper"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginHorizontal="16dp"
-                android:contentDescription="@string/wallpaper"
-                android:scaleType="centerCrop"
-                android:src="@drawable/built_in_wallpaper"
-                app:layout_constraintDimensionRatio="h,3:2"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/toolbar"
-                app:shapeAppearanceOverlay="@style/ShapeRound.WallpaperBackground" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline_center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.5" />
-
-            <FrameLayout
-                android:id="@+id/container_photo_widget_preview"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="30dp"
-                android:paddingLeft="@{viewModel.horizontalPadding}"
-                android:paddingTop="@{viewModel.verticalPadding}"
-                android:paddingRight="@{viewModel.horizontalPadding}"
-                android:paddingBottom="@{viewModel.verticalPadding}"
-                app:layout_constraintBottom_toBottomOf="@id/iv_wallpaper"
-                app:layout_constraintDimensionRatio="h,1:1"
-                app:layout_constraintLeft_toLeftOf="@id/guideline_center_vertical"
-                app:layout_constraintRight_toRightOf="@id/guideline_center_vertical"
-                app:layout_constraintTop_toTopOf="@id/iv_wallpaper">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/layout_photo_widget_preview"
+                <include
+                    android:id="@+id/layout_photo_widget"
+                    layout="@layout/photo_widget"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:alpha="@{1f - viewModel.widgetTransparency / 100f}"
-                    app:cardBackgroundColor="@android:color/transparent"
-                    app:cardCornerRadius="@{viewModel.widgetRadius * 2f}"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/colorDivider"
-                    app:strokeWidth="@{viewModel.imageUriList.empty ? 2f: 0f}">
+                    android:layout_height="match_parent" />
+            </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
 
-                    <include
-                        android:id="@+id/layout_photo_widget"
-                        layout="@layout/photo_widget"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </com.google.android.material.card.MaterialCardView>
-            </FrameLayout>
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view_info"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_wallpaper">
 
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/scroll_view_info"
+            <LinearLayout
+                android:id="@+id/layout_info"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:clipToPadding="false"
-                android:elevation="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/iv_wallpaper">
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_preview_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_preview_photo" />
 
                 <LinearLayout
-                    android:id="@+id/layout_info"
+                    android:id="@+id/layout_auto_play_interval"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
+                    android:layout_marginTop="10dp"
+                    android:onClick="@{() -> activity.showIntervalSelector()}"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    app:isVisible="@{viewModel.imageUriList.size() > 1}">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_preview_list"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/auto_play_interval"
+                        android:textAppearance="?textAppearanceBody2"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_auto_play_interval"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.autoPlayInterval.description}"
+                        android:textAppearance="?textAppearanceCaption" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_photo_scale_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:onClick="@{() -> activity.showScaleTypeSelector()}"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/photo_scale_type"
+                        android:textAppearance="?textAppearanceBody2"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_photo_scale_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.photoScaleType.description}"
+                        android:textAppearance="?textAppearanceCaption" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_open_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:onClick="@{() -> activity.showLinkTypeSelector()}"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/widget_open_url"
+                        android:textAppearance="?textAppearanceBody2"
+                        android:textStyle="bold" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp" />
+
+                    <FrameLayout
+                        android:id="@+id/layout_add_link"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:clipToPadding="false"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:listitem="@layout/item_preview_photo" />
+                        android:background="@drawable/bg_add_link"
+                        android:foreground="?selectableItemBackground"
+                        app:isVisible="@{viewModel.linkInfo == null}">
 
-                    <LinearLayout
-                        android:id="@+id/layout_auto_play_interval"
+                        <ImageView
+                            android:id="@+id/btn_add_link"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/add_widget_link"
+                            android:padding="2dp"
+                            android:src="@drawable/ic_round_add_24"
+                            app:tint="?android:colorControlNormal" />
+                    </FrameLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:onClick="@{() -> activity.showIntervalSelector()}"
-                        android:orientation="vertical"
-                        app:isVisible="@{viewModel.imageUriList.size() > 1}">
+                        android:background="@drawable/bg_link"
+                        android:foreground="?selectableItemBackground"
+                        android:padding="10dp"
+                        app:isVisible="@{viewModel.linkInfo != null}">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:id="@+id/tv_link_title"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="@string/auto_play_interval"
-                            android:textAppearance="?textAppearanceBody2"
-                            android:textStyle="bold" />
+                            android:drawablePadding="5dp"
+                            android:text="@{viewModel.linkInfo.title}"
+                            android:textAppearance="?textAppearanceBody1"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:linkTypeIcon="@{viewModel.linkInfo.type}"
+                            tools:drawableStartCompat="@drawable/ic_round_link_24"
+                            tools:text="打开链接" />
 
                         <TextView
-                            android:id="@+id/tv_auto_play_interval"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/tv_link_description"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="@{viewModel.autoPlayInterval.description}"
-                            android:textAppearance="?textAppearanceCaption" />
-                    </LinearLayout>
+                            android:layout_marginTop="5dp"
+                            android:text="@{viewModel.linkInfo.description}"
+                            android:textAppearance="?textAppearanceCaption"
+                            app:layout_constraintLeft_toLeftOf="@id/tv_link_title"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_link_title"
+                            tools:text="https://github.com/qihuan92" />
 
-                    <LinearLayout
-                        android:id="@+id/layout_photo_scale_type"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:onClick="@{() -> activity.showScaleTypeSelector()}"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/photo_scale_type"
-                            android:textAppearance="?textAppearanceBody2"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tv_photo_scale_type"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@{viewModel.photoScaleType.description}"
-                            android:textAppearance="?textAppearanceCaption" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/layout_open_url"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:onClick="@{() -> activity.showLinkTypeSelector()}"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/widget_open_url"
-                            android:textAppearance="?textAppearanceBody2"
-                            android:textStyle="bold" />
-
-                        <Space
-                            android:layout_width="match_parent"
-                            android:layout_height="5dp" />
-
-                        <FrameLayout
-                            android:id="@+id/layout_add_link"
-                            android:layout_width="match_parent"
-                            android:layout_height="60dp"
-                            android:background="@drawable/bg_add_link"
-                            android:foreground="?selectableItemBackground"
-                            app:isVisible="@{viewModel.linkInfo == null}">
-
-                            <ImageView
-                                android:id="@+id/btn_add_link"
-                                android:layout_width="45dp"
-                                android:layout_height="45dp"
-                                android:layout_gravity="center"
-                                android:contentDescription="@string/add_widget_link"
-                                android:padding="2dp"
-                                android:src="@drawable/ic_round_add_24"
-                                app:tint="?android:colorControlNormal" />
-                        </FrameLayout>
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_link"
-                            android:foreground="?selectableItemBackground"
-                            android:padding="10dp"
-                            app:isVisible="@{viewModel.linkInfo != null}">
-
-                            <TextView
-                                android:id="@+id/tv_link_title"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:drawablePadding="5dp"
-                                android:text="@{viewModel.linkInfo.title}"
-                                android:textAppearance="?textAppearanceBody1"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:linkTypeIcon="@{viewModel.linkInfo.type}"
-                                tools:drawableStartCompat="@drawable/ic_round_link_24"
-                                tools:text="打开链接" />
-
-                            <TextView
-                                android:id="@+id/tv_link_description"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="@{viewModel.linkInfo.description}"
-                                android:textAppearance="?textAppearanceCaption"
-                                app:layout_constraintLeft_toLeftOf="@id/tv_link_title"
-                                app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/tv_link_title"
-                                tools:text="https://github.com/qihuan92" />
-
-                            <ImageView
-                                android:id="@+id/btn_delete_link"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:contentDescription="@string/delete_widget_link"
-                                android:onClick="@{() -> viewModel.deleteLink()}"
-                                android:src="@drawable/ic_round_delete_24"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_vertical_padding"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/vertical_padding"
-                            android:textAppearance="?textAppearanceBody2"
-                            android:textStyle="bold" />
-
-                        <com.google.android.material.slider.Slider
-                            android:id="@+id/slider_vertical_padding"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:stepSize="1"
-                            android:value="@={viewModel.verticalPadding}"
-                            android:valueFrom="0"
-                            android:valueTo="20" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_horizontal_padding"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/horizontal_padding"
-                            android:textAppearance="?textAppearanceBody2"
-                            android:textStyle="bold" />
-
-                        <com.google.android.material.slider.Slider
-                            android:id="@+id/slider_horizontal_padding"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:stepSize="1"
-                            android:value="@={viewModel.horizontalPadding}"
-                            android:valueFrom="0"
-                            android:valueTo="20" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_widget_radius"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/widget_radius"
-                            android:textAppearance="?textAppearanceBody2"
-                            android:textStyle="bold" />
-
-                        <com.google.android.material.slider.Slider
-                            android:id="@+id/slider_widget_radius"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:stepSize="1"
-                            android:value="@={viewModel.widgetRadius}"
-                            android:valueFrom="0"
-                            android:valueTo="50" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_widget_transparency"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/widget_transparency"
-                            android:textAppearance="?textAppearanceBody2"
-                            android:textStyle="bold" />
-
-                        <com.google.android.material.slider.Slider
-                            android:id="@+id/slider_widget_transparency"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:stepSize="1"
-                            android:value="@={viewModel.widgetTransparency}"
-                            android:valueFrom="0"
-                            android:valueTo="100" />
-                    </LinearLayout>
+                        <ImageView
+                            android:id="@+id/btn_delete_link"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:contentDescription="@string/delete_widget_link"
+                            android:onClick="@{() -> viewModel.deleteLink()}"
+                            android:src="@drawable/ic_round_delete_24"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_vertical_padding"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/vertical_padding"
+                        android:textAppearance="?textAppearanceBody2"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/slider_vertical_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:stepSize="1"
+                        android:value="@={viewModel.verticalPadding}"
+                        android:valueFrom="0"
+                        android:valueTo="20" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_horizontal_padding"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/horizontal_padding"
+                        android:textAppearance="?textAppearanceBody2"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/slider_horizontal_padding"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:stepSize="1"
+                        android:value="@={viewModel.horizontalPadding}"
+                        android:valueFrom="0"
+                        android:valueTo="20" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_widget_radius"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/widget_radius"
+                        android:textAppearance="?textAppearanceBody2"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/slider_widget_radius"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:stepSize="1"
+                        android:value="@={viewModel.widgetRadius}"
+                        android:valueFrom="0"
+                        android:valueTo="50" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_widget_transparency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/widget_transparency"
+                        android:textAppearance="?textAppearanceBody2"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/slider_widget_transparency"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:stepSize="1"
+                        android:value="@={viewModel.widgetTransparency}"
+                        android:valueFrom="0"
+                        android:valueTo="100" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <androidx.constraintlayout.widget.Group
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{viewModel.uiState == UIState.SHOW_CONTENT ? View.VISIBLE : View.INVISIBLE}"
+            app:constraint_referenced_ids="iv_wallpaper,container_photo_widget_preview,scroll_view_info" />
 
         <ProgressBar
             android:id="@+id/loading_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:isVisible="@{viewModel.uiState == UIState.LOADING}" />
-    </FrameLayout>
+            app:isVisible="@{viewModel.uiState == UIState.LOADING}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -179,14 +179,6 @@ class ConfigureActivity : AppCompatActivity() {
             widgetAdapter.setScaleType(it.scaleType)
         }
 
-        viewModel.uiState.observe(this) {
-            if (it == ConfigureViewModel.UIState.SHOW_CONTENT) {
-                binding.layoutContent.circularRevealAnimator()
-                    .setDuration(resources.androidMediumAnimTime)
-                    .start()
-            }
-        }
-
         binding.layoutPhotoWidget.photoWidgetInfo.areaLeft.setOnClickListener {
             binding.layoutPhotoWidget.vfPicture.showPrevious()
         }
