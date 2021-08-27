@@ -1,5 +1,5 @@
 # 相片微件
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/qihuan92/PhotoWidget)![Android ROM Version](https://img.shields.io/badge/Android-7.0%2B-green)![GitHub](https://img.shields.io/github/license/qihuan92/PhotoWidget)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/qihuan92/PhotoWidget) ![Android ROM Version](https://img.shields.io/badge/Android-7.0%2B-green) ![GitHub](https://img.shields.io/github/license/qihuan92/PhotoWidget)
 
 一款相片小组件应用，可添加多张相片，可以打开应用、链接，支持图片裁剪、组件圆角以及边距调整。
 
