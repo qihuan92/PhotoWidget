@@ -5,19 +5,22 @@ plugins {
     id 'kotlin-parcelize'
 }
 
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
 android {
     signingConfigs {
         debug {
-            storeFile file('../photo_widget.jks')
-            storePassword '123456'
-            keyAlias 'photo_widget'
-            keyPassword '123456'
+            storeFile file(localProperties['storeFilePath'])
+            storePassword localProperties['storePassword']
+            keyAlias localProperties['keyAlias']
+            keyPassword localProperties['keyPassword']
         }
         release {
-            storeFile file('../photo_widget.jks')
-            storePassword '123456'
-            keyAlias 'photo_widget'
-            keyPassword '123456'
+            storeFile file(localProperties['storeFilePath'])
+            storePassword localProperties['storePassword']
+            keyAlias localProperties['keyAlias']
+            keyPassword localProperties['keyPassword']
         }
     }
 
