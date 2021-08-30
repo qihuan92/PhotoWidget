@@ -41,6 +41,7 @@ class PreviewPhotoAdapter : ListAdapter<Uri, PreviewPhotoAdapter.ViewHolder>(Dif
             binding.btnDelete.isEnabled = true
             Glide.with(itemView.context)
                 .load(item)
+                .thumbnail(0.1f)
                 .into(binding.ivPicture)
         }
     }
