@@ -3,14 +3,11 @@ package com.qihuan.photowidget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import androidx.core.net.toFile
 import com.qihuan.photowidget.bean.WidgetImage
+import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.getRoundedBitmap
 
 /**
  * PhotoImageService
@@ -31,11 +28,9 @@ class WidgetPhotoViewFactory(
 ) : RemoteViewsService.RemoteViewsFactory {
 
     private val widgetDao by lazy { AppDatabase.getDatabase(context).widgetDao() }
+    private var widgetInfo: WidgetInfo? = null
     private val imageList by lazy { mutableListOf<WidgetImage>() }
-    private var radius = 0f
-    private var transparency = 0f
     private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
-    private var scaleType: ImageView.ScaleType = ImageView.ScaleType.CENTER_CROP
     private val appWidgetManager by lazy { AppWidgetManager.getInstance(context) }
 
     override fun onCreate() {
@@ -47,14 +42,10 @@ class WidgetPhotoViewFactory(
 
     override fun onDataSetChanged() {
         imageList.clear()
-        radius = 0f
         val widgetBean = widgetDao.selectByIdSync(widgetId)
         if (widgetBean != null) {
             imageList.addAll(widgetBean.imageList)
-            val widgetInfo = widgetBean.widgetInfo
-            radius = widgetInfo.widgetRadius
-            transparency = widgetInfo.widgetTransparency
-            scaleType = widgetInfo.photoScaleType.scaleType
+            widgetInfo = widgetBean.widgetInfo
         }
     }
 
@@ -67,39 +58,11 @@ class WidgetPhotoViewFactory(
     }
 
     override fun getViewAt(position: Int): RemoteViews? {
+        val widgetInfo = this.widgetInfo ?: return null
         if (imageList.isNullOrEmpty()) {
             return null
         }
-        var remoteViews = if (scaleType == ImageView.ScaleType.FIT_CENTER) {
-            RemoteViews(context.packageName, R.layout.layout_widget_image)
-        } else {
-            RemoteViews(context.packageName, R.layout.layout_widget_image_fitxy)
-        }
-        val uri = imageList[position].imageUri
-        if (uri.toFile().exists()) {
-            val width = appWidgetManager.getAppWidgetOptions(widgetId)
-                .getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
-            val height = appWidgetManager.getAppWidgetOptions(widgetId)
-                .getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
-
-            if (width == 0 || height == 0) {
-                remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image)
-            }
-
-            remoteViews.setImageViewBitmap(
-                R.id.iv_picture,
-                uri.getRoundedBitmap(context, radius.dp, scaleType, width.toFloat().dp, height.toFloat().dp)
-            )
-            remoteViews.setInt(R.id.iv_picture, "setImageAlpha", calAlpha(transparency))
-        } else {
-            remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
-        }
-        return remoteViews
-    }
-
-    private fun calAlpha(transparency: Float): Int {
-        val ratio = 1f - transparency / 100f
-        return (255 * ratio).toInt()
+        return getWidgetImageView(context, appWidgetManager, widgetInfo, imageList[position])
     }
 
     override fun getLoadingView(): RemoteViews {

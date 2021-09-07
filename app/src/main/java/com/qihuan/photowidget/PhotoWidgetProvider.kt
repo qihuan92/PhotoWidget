@@ -7,16 +7,19 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.RemoteViews
-import com.qihuan.photowidget.bean.LinkType
-import com.qihuan.photowidget.bean.PlayInterval
-import com.qihuan.photowidget.bean.WidgetBean
+import androidx.core.net.toFile
+import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.ktx.getRoundedBitmap
 import com.qihuan.photowidget.ktx.logE
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.random.Random
 
@@ -91,39 +94,56 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
         newOptions: Bundle?
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.vf_picture)
+        val widgetDao = AppDatabase.getDatabase(context).widgetDao()
+        GlobalScope.launch {
+            val widgetBean = widgetDao.selectById(appWidgetId)
+            if (widgetBean != null) {
+                if (widgetBean.imageList.size > 1) {
+                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.vf_picture)
+                } else {
+                    updateAppWidget(context, appWidgetManager, widgetBean)
+                }
+            }
+        }
     }
 }
 
-internal fun updateAppWidget(
+suspend fun updateAppWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
     widgetBean: WidgetBean
 ) {
+    val imageList = widgetBean.imageList
     val widgetInfo = widgetBean.widgetInfo
     val widgetId = widgetInfo.widgetId
     val linkInfo = widgetInfo.linkInfo
-
-    // 轮播
     val autoPlayInterval = widgetInfo.autoPlayInterval
-    val views = createRemoteViews(context, autoPlayInterval.interval)
-    views.setRemoteAdapter(R.id.vf_picture, Intent(context, WidgetPhotoService::class.java).apply {
-        type = Random.nextInt().toString()
-        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-    })
-
-    // 边距
     val horizontalPadding = widgetInfo.horizontalPadding.dp
     val verticalPadding = widgetInfo.verticalPadding.dp
+
+    val views = if (imageList.size > 1) {
+        createRemoteViews(context, autoPlayInterval.interval).apply {
+            setRemoteAdapter(
+                R.id.vf_picture,
+                Intent(context, WidgetPhotoService::class.java).apply {
+                    type = Random.nextInt().toString()
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                })
+        }
+    } else {
+        RemoteViews(context.packageName, R.layout.photo_widget_single).apply {
+            removeAllViews(R.id.fl_picture_container)
+            val widgetImageView = withContext(Dispatchers.IO) {
+                getWidgetImageView(context, appWidgetManager, widgetInfo, imageList[0])
+            }
+            addView(R.id.fl_picture_container, widgetImageView)
+        }
+    }
+
     views.setViewPadding(
-        R.id.root,
-        horizontalPadding,
-        verticalPadding,
-        horizontalPadding,
-        verticalPadding
+        R.id.root, horizontalPadding, verticalPadding, horizontalPadding, verticalPadding
     )
 
-    // 点击事件
     var centerPendingIntent: PendingIntent? = null
     val leftPendingIntent: PendingIntent?
     val rightPendingIntent: PendingIntent?
@@ -146,7 +166,7 @@ internal fun updateAppWidget(
         }
     }
 
-    if (widgetBean.imageList.size > 1) {
+    if (imageList.size > 1) {
         leftPendingIntent =
             getWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_PREV, autoPlayInterval)
         rightPendingIntent =
@@ -165,7 +185,9 @@ internal fun updateAppWidget(
     }
 
     appWidgetManager.updateAppWidget(widgetId, views)
-    appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.vf_picture)
+    if (imageList.size > 1) {
+        appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.vf_picture)
+    }
 }
 
 fun createRemoteViews(context: Context, interval: Int): RemoteViews {
@@ -204,4 +226,49 @@ fun getWidgetNavIntent(context: Context, widgetId: Int, navAction: String, inter
         putExtra(EXTRA_NAV, navAction)
         putExtra(EXTRA_INTERVAL, interval)
     }
+}
+
+fun getWidgetImageView(
+    context: Context,
+    appWidgetManager: AppWidgetManager,
+    widgetInfo: WidgetInfo,
+    widgetImage: WidgetImage
+): RemoteViews {
+    val widgetId = widgetInfo.widgetId
+    val scaleType = widgetInfo.photoScaleType.scaleType
+    val radius = widgetInfo.widgetRadius
+    val transparency = widgetInfo.widgetTransparency
+
+    var remoteViews = if (scaleType == ImageView.ScaleType.FIT_CENTER) {
+        RemoteViews(context.packageName, R.layout.layout_widget_image)
+    } else {
+        RemoteViews(context.packageName, R.layout.layout_widget_image_fitxy)
+    }
+    val uri = widgetImage.imageUri
+    if (uri.toFile().exists()) {
+        val width = appWidgetManager.getAppWidgetOptions(widgetId)
+            .getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+        val height = appWidgetManager.getAppWidgetOptions(widgetId)
+            .getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+
+        if (width == 0 || height == 0) {
+            remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image)
+        }
+
+        remoteViews.setImageViewBitmap(
+            R.id.iv_picture,
+            uri.getRoundedBitmap(
+                context,
+                radius.dp,
+                scaleType,
+                width.toFloat().dp,
+                height.toFloat().dp
+            )
+        )
+        val alpha = (255 * (1f - transparency / 100f)).toInt()
+        remoteViews.setInt(R.id.iv_picture, "setImageAlpha", alpha)
+    } else {
+        remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
+    }
+    return remoteViews
 }
