@@ -62,7 +62,20 @@ class WidgetPhotoViewFactory(
         if (imageList.isNullOrEmpty()) {
             return null
         }
-        return getWidgetImageView(context, appWidgetManager, widgetInfo, imageList[position])
+
+        val width = appWidgetManager.getAppWidgetOptions(widgetId)
+            .getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+        val height = appWidgetManager.getAppWidgetOptions(widgetId)
+            .getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+
+        val scaleType = widgetInfo.photoScaleType.scaleType
+        val imageUri = imageList[position].imageUri
+        val radius = widgetInfo.widgetRadius
+        val transparency = widgetInfo.widgetTransparency
+        val remoteViews = context.createImageRemoteViews(scaleType).apply {
+            loadImage(context, imageUri, scaleType, radius, transparency, width, height)
+        }
+        return remoteViews
     }
 
     override fun getLoadingView(): RemoteViews {
