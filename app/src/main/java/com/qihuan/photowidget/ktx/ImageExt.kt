@@ -45,7 +45,7 @@ fun ImageView.load(uri: Uri) {
         .into(this)
 }
 
-fun Uri.getRoundedBitmap(
+fun Uri.toRoundedBitmap(
     context: Context,
     radius: Int,
     scaleType: ImageView.ScaleType,

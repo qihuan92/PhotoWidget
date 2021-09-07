@@ -13,8 +13,8 @@ import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.bean.PlayInterval
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.getRoundedBitmap
 import com.qihuan.photowidget.ktx.logE
+import com.qihuan.photowidget.ktx.toRoundedBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
@@ -182,7 +182,7 @@ fun RemoteViews.loadImage(
         return
     }
 
-    val imageBitmap = uri.getRoundedBitmap(
+    val imageBitmap = uri.toRoundedBitmap(
         context, radius.dp, scaleType, width.toFloat().dp, height.toFloat().dp
     )
 
