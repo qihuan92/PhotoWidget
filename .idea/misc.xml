@@ -25,9 +25,17 @@
         <entry key="app/src/main/res/drawable/ic_round_add_24.xml" value="0.16111111111111112" />
         <entry key="app/src/main/res/drawable/ic_round_apps_24.xml" value="0.16111111111111112" />
         <entry key="app/src/main/res/drawable/ic_round_done_24.xml" value="0.16111111111111112" />
+        <entry key="app/src/main/res/drawable/shape_photo_404.xml" value="0.275" />
         <entry key="app/src/main/res/layout/activity_configure.xml" value="0.41794871794871796" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.41794871794871796" />
+        <entry key="app/src/main/res/layout/layout_view_flipper.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/layout_view_flipper_interval_10000.xml" value="0.4244791666666667" />
+        <entry key="app/src/main/res/layout/layout_view_flipper_interval_3000.xml" value="0.4244791666666667" />
+        <entry key="app/src/main/res/layout/layout_view_flipper_interval_30000.xml" value="0.4244791666666667" />
+        <entry key="app/src/main/res/layout/layout_view_flipper_interval_5000.xml" value="0.4244791666666667" />
+        <entry key="app/src/main/res/layout/layout_widget_image_fitxy.xml" value="0.4244791666666667" />
         <entry key="app/src/main/res/layout/photo_widget_info.xml" value="0.41794871794871796" />
+        <entry key="app/src/main/res/layout/photo_widget_single.xml" value="0.4244791666666667" />
         <entry key="app/src/main/res/menu/menu_config.xml" value="0.4244791666666667" />
       </map>
     </option>
