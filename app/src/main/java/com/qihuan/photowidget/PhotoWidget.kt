@@ -30,6 +30,10 @@ suspend fun updateAppWidget(
     widgetBean: WidgetBean
 ) {
     val imageList = widgetBean.imageList
+    if (imageList.isNullOrEmpty()) {
+        logE("PhotoWidget", "updateAppWidget() -> imageList.isNullOrEmpty")
+        return
+    }
     val isMultiImage = imageList.size > 1
     val widgetInfo = widgetBean.widgetInfo
     val widgetId = widgetInfo.widgetId
