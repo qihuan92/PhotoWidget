@@ -7,6 +7,7 @@ import com.yalantis.ucrop.util.BitmapLoadUtils
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
 import id.zelory.compressor.constraint.destination
+import id.zelory.compressor.constraint.size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -78,6 +79,7 @@ suspend fun Context.copyFile(inputUri: Uri, outputUri: Uri) = withContext(Dispat
 suspend fun Context.compressImageFile(imageFile: File, destination: File = imageFile): File {
     return Compressor.compress(this, imageFile) {
         default(format = Bitmap.CompressFormat.PNG)
+        size(10485760)
         destination(destination)
     }
 }
