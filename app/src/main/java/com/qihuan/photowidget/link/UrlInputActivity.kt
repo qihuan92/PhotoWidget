@@ -4,11 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.*
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.databinding.ActivityUrlInputBinding
-import com.qihuan.photowidget.ktx.marginNavigationBarAndIme
 import com.qihuan.photowidget.ktx.paddingStatusBar
 import com.qihuan.photowidget.ktx.viewBinding
 
@@ -21,9 +21,7 @@ class UrlInputActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(binding.root)
-
         binding.root.paddingStatusBar()
-        binding.btnConfirm.marginNavigationBarAndIme()
 
         linkInfo = intent.getParcelableExtra("linkInfo")
         bindView()
@@ -31,22 +29,29 @@ class UrlInputActivity : AppCompatActivity() {
 
     private fun bindView() {
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.confirm -> confirm()
+            }
+            true
+        }
         binding.etOpenUrl.post {
             binding.etOpenUrl.setText(linkInfo?.link)
             binding.etOpenUrl.requestFocus()
             WindowCompat.getInsetsController(window, binding.etOpenUrl)
                 ?.show(WindowInsetsCompat.Type.ime())
         }
-        binding.btnConfirm.setOnClickListener {
-            val url = binding.etOpenUrl.text.toString().trim()
-            if (url.isBlank()) {
-                Toast.makeText(this, R.string.warn_url_empty, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            setResult(RESULT_OK, Intent().apply {
-                putExtra("linkInfo", LinkInfo.of(url))
-            })
-            finish()
+    }
+
+    private fun confirm() {
+        val url = binding.etOpenUrl.text.toString().trim()
+        if (url.isBlank()) {
+            Toast.makeText(this, R.string.warn_url_empty, Toast.LENGTH_SHORT).show()
+            return
         }
+        setResult(RESULT_OK, Intent().apply {
+            putExtra("linkInfo", LinkInfo.of(url))
+        })
+        finish()
     }
 }
