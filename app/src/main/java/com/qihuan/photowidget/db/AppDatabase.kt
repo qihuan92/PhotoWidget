@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.migration.*
@@ -18,8 +19,9 @@ import com.qihuan.photowidget.db.migration.*
     entities = [
         WidgetInfo::class,
         WidgetImage::class,
+        LinkInfo::class,
     ],
-    version = 8,
+    version = 9,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -28,6 +30,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun widgetInfoDao(): WidgetInfoDao
 
     abstract fun widgetDao(): WidgetDao
+
+    abstract fun linkInfoDao(): LinkInfoDao
 
     companion object {
         @Volatile
@@ -51,6 +55,7 @@ abstract class AppDatabase : RoomDatabase() {
                     MigrationFor5To6(),
                     MigrationFor6To7(),
                     MigrationFor7To8(),
+                    MigrationFor8To9(),
                 ).build()
                 INSTANCE = instance
                 return instance

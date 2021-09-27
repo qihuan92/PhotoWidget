@@ -22,6 +22,7 @@ import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
+import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.bean.PhotoScaleType
 import com.qihuan.photowidget.bean.PlayInterval
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
@@ -282,10 +283,18 @@ class ConfigureActivity : AppCompatActivity() {
             .setTitle(R.string.alert_title_link_type)
             .setItems(R.array.open_link_types) { dialog, i ->
                 when (i) {
-                    0 -> appSelectResult.launch(Intent(this, InstalledAppActivity::class.java))
-                    1 -> appSelectResult.launch(Intent(this, UrlInputActivity::class.java).apply {
-                        putExtra("linkInfo", viewModel.linkInfo.value)
-                    })
+                    0 -> appSelectResult.launch(
+                        Intent(this, InstalledAppActivity::class.java).apply {
+                            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                        })
+                    1 -> appSelectResult.launch(
+                        Intent(this, UrlInputActivity::class.java).apply {
+                            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                            val linkInfo = viewModel.linkInfo.value
+                            if (linkInfo != null && linkInfo.type == LinkType.OPEN_URL) {
+                                putExtra("openUrl", linkInfo.link)
+                            }
+                        })
                 }
                 dialog.dismiss()
             }.show()

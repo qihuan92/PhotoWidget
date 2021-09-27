@@ -2,7 +2,7 @@ package com.qihuan.photowidget.db
 
 import android.net.Uri
 import androidx.room.TypeConverter
-import com.qihuan.photowidget.bean.LinkInfo
+import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.bean.PhotoScaleType
 import com.qihuan.photowidget.bean.PlayInterval
 
@@ -43,15 +43,12 @@ class Converters {
     }
 
     @TypeConverter
-    fun convertLinkInfo(value: LinkInfo?): String? {
-        if (value == null) {
-            return null
-        }
-        return value.link
+    fun convertLinkType(value: LinkType?): String? {
+        return value?.value
     }
 
     @TypeConverter
-    fun revertLinkInfo(value: String?): LinkInfo? {
-        return LinkInfo.of(value)
+    fun revertLinkType(value: String?): LinkType? {
+        return LinkType.get(value)
     }
 }

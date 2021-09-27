@@ -37,7 +37,7 @@ suspend fun updateAppWidget(
     val isMultiImage = imageList.size > 1
     val widgetInfo = widgetBean.widgetInfo
     val widgetId = widgetInfo.widgetId
-    val linkInfo = widgetInfo.linkInfo
+    val linkInfo = widgetBean.linkInfo
     val autoPlayInterval = widgetInfo.autoPlayInterval
     val horizontalPadding = widgetInfo.horizontalPadding.dp
     val verticalPadding = widgetInfo.verticalPadding.dp
@@ -113,7 +113,7 @@ private fun Context.getWidgetOpenPendingIntent(widgetId: Int, linkInfo: LinkInfo
     }
     var intent: Intent? = null
     if (linkInfo.type == LinkType.OPEN_APP) {
-        intent = packageManager.getLaunchIntentForPackage(linkInfo.getPackageName())
+        intent = packageManager.getLaunchIntentForPackage(linkInfo.link)
     } else if (linkInfo.type == LinkType.OPEN_URL) {
         intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkInfo.link))
     }

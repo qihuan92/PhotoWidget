@@ -10,4 +10,11 @@ enum class LinkType(
 ) {
     OPEN_URL("openUrl"),
     OPEN_APP("openApp"),
+    ;
+
+    companion object {
+        fun get(value: String?): LinkType? {
+            return values().firstOrNull { it.value == value }
+        }
+    }
 }

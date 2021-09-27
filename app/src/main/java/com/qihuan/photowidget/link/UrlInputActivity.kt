@@ -1,5 +1,6 @@
 package com.qihuan.photowidget.link
 
+import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.LinkInfo
+import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.databinding.ActivityUrlInputBinding
 import com.qihuan.photowidget.ktx.paddingStatusBar
 import com.qihuan.photowidget.ktx.viewBinding
@@ -15,15 +17,19 @@ import com.qihuan.photowidget.ktx.viewBinding
 class UrlInputActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityUrlInputBinding::inflate)
-    private var linkInfo: LinkInfo? = null
+    private val widgetId by lazy {
+        intent.getIntExtra(
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            AppWidgetManager.INVALID_APPWIDGET_ID
+        )
+    }
+    private val openUrl: String? by lazy { intent.getStringExtra("openUrl") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(binding.root)
         binding.root.paddingStatusBar()
-
-        linkInfo = intent.getParcelableExtra("linkInfo")
         bindView()
     }
 
@@ -36,7 +42,7 @@ class UrlInputActivity : AppCompatActivity() {
             true
         }
         binding.etOpenUrl.post {
-            binding.etOpenUrl.setText(linkInfo?.link)
+            binding.etOpenUrl.setText(openUrl)
             binding.etOpenUrl.requestFocus()
             WindowCompat.getInsetsController(window, binding.etOpenUrl)
                 ?.show(WindowInsetsCompat.Type.ime())
@@ -57,7 +63,7 @@ class UrlInputActivity : AppCompatActivity() {
             return
         }
         setResult(RESULT_OK, Intent().apply {
-            putExtra("linkInfo", LinkInfo.of(url))
+            putExtra("linkInfo", LinkInfo(widgetId, LinkType.OPEN_URL, "打开链接", "地址: $url", url))
         })
         finish()
     }

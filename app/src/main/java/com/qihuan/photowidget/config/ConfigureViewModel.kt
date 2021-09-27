@@ -32,6 +32,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     private val context by lazy { getApplication<Application>().applicationContext }
     private val widgetInfoDao by lazy { AppDatabase.getDatabase(context).widgetInfoDao() }
     private val widgetDao by lazy { AppDatabase.getDatabase(context).widgetDao() }
+    private val linkInfoDao by lazy { AppDatabase.getDatabase(context).linkInfoDao() }
 
     val widgetRadius by lazy { MutableLiveData(0f) }
     val verticalPadding by lazy { MutableLiveData(0f) }
@@ -108,24 +109,26 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 horizontalPadding.value = widgetInfo.horizontalPadding
                 widgetRadius.value = widgetInfo.widgetRadius
                 widgetTransparency.value = widgetInfo.widgetTransparency
-                linkInfo.value = widgetInfo.linkInfo
                 autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
                 photoScaleType.postValue(widgetInfo.photoScaleType)
             }
+
+            val linkInfoFromDb = linkInfoDao.selectById(widgetId)
+            linkInfo.value = linkInfoFromDb
+
             uiState.value = UIState.SHOW_CONTENT
         }
     }
 
     suspend fun saveWidget(widgetId: Int) {
         val widgetInfo = WidgetInfo(
-            widgetId,
-            verticalPadding.value ?: 0f,
-            horizontalPadding.value ?: 0f,
-            widgetRadius.value ?: 0f,
-            widgetTransparency.value ?: 0f,
-            autoPlayInterval.value ?: PlayInterval.NONE,
-            linkInfo.value,
-            photoScaleType.value ?: PhotoScaleType.CENTER_CROP,
+            widgetId = widgetId,
+            verticalPadding = verticalPadding.value ?: 0f,
+            horizontalPadding = horizontalPadding.value ?: 0f,
+            widgetRadius = widgetRadius.value ?: 0f,
+            widgetTransparency = widgetTransparency.value ?: 0f,
+            autoPlayInterval = autoPlayInterval.value ?: PlayInterval.NONE,
+            photoScaleType = photoScaleType.value ?: PhotoScaleType.CENTER_CROP,
         )
 
         val uriList = saveWidgetPhotoFiles(widgetId)
@@ -137,7 +140,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
             )
         }
 
-        val widgetBean = WidgetBean(widgetInfo, imageList)
+        val widgetBean = WidgetBean(widgetInfo, imageList, linkInfo.value)
         widgetDao.save(widgetBean)
         updateAppWidget(context, AppWidgetManager.getInstance(context), widgetBean)
     }

@@ -13,4 +13,6 @@ data class WidgetBean(
     val widgetInfo: WidgetInfo,
     @Relation(parentColumn = "widgetId", entityColumn = "widgetId")
     var imageList: List<WidgetImage>,
+    @Relation(parentColumn = "widgetId", entityColumn = "widgetId")
+    var linkInfo: LinkInfo?,
 )
