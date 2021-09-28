@@ -107,5 +107,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     kapt 'com.github.bumptech.glide:compiler:4.12.0'
 
+    implementation 'com.drakeet.about:about:2.4.1'
+    implementation 'com.drakeet.multitype:multitype:4.3.0'
+
     implementation 'com.tencent.bugly:crashreport:3.4.4'
 }

@@ -219,6 +219,10 @@
         <activity
             android:name=".link.UrlInputActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".about.AboutActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

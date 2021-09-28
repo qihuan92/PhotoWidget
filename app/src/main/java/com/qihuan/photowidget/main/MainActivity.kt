@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.databinding.ObservableBoolean
 import androidx.paging.LoadState
+import com.qihuan.photowidget.R
+import com.qihuan.photowidget.about.AboutActivity
 import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
 import com.qihuan.photowidget.adapter.WidgetPagingAdapter
 import com.qihuan.photowidget.config.ConfigureActivity
@@ -37,6 +39,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindView() {
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.about -> startActivity(Intent(this, AboutActivity::class.java))
+            }
+            true
+        }
         binding.rvList.adapter =
             widgetAdapter.withLoadStateFooter(DefaultLoadStateAdapter(widgetAdapter))
         widgetAdapter.setOnItemClickListener { position, _ ->
