@@ -11,7 +11,6 @@ import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.copyDir
 import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
@@ -79,7 +78,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
 
     private suspend fun copyToTempDir(widgetId: Int) {
         val cacheDir = context.cacheDir
-        val filesDir = context.filesDir
+        val imageList = widgetDao.selectImageList(widgetId)
 
         withContext(Dispatchers.IO) {
             // remove compressor cache
@@ -87,15 +86,20 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
             compressorCacheDir.deleteDir()
 
             val tempDir = File(cacheDir, TEMP_DIR_NAME)
-            val widgetDir = File(filesDir, "widget_${widgetId}")
-            copyDir(widgetDir, tempDir, override = true)
+            if (!tempDir.exists()) {
+                tempDir.mkdirs()
+            }
 
-            if (tempDir.exists()) {
-                val uriList = tempDir.listFiles()?.map { it.toUri() }
-                if (uriList != null) {
-                    replaceImageList(uriList)
+            val uriList = mutableListOf<Uri>()
+            imageList.forEach {
+                val imageFile = it.imageUri.toFile()
+                if (imageFile.exists()) {
+                    val tempFile = File(tempDir, imageFile.name)
+                    imageFile.copyTo(tempFile, true)
+                    uriList.add(tempFile.toUri())
                 }
             }
+            replaceImageList(uriList)
         }
     }
 
@@ -132,11 +136,12 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
         )
 
         val uriList = saveWidgetPhotoFiles(widgetId)
-        val imageList = uriList.map {
+        val imageList = uriList.mapIndexed { index, uri ->
             WidgetImage(
                 widgetId = widgetId,
-                imageUri = it,
-                createTime = System.currentTimeMillis()
+                imageUri = uri,
+                createTime = System.currentTimeMillis(),
+                sort = index
             )
         }
 
@@ -150,18 +155,24 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     private suspend fun saveWidgetPhotoFiles(widgetId: Int): List<Uri> {
-        val cacheDir = context.cacheDir
         val filesDir = context.filesDir
-
         return withContext(Dispatchers.IO) {
-            val tempDir = File(cacheDir, TEMP_DIR_NAME)
             val widgetDir = File(filesDir, "widget_${widgetId}")
-            copyDir(tempDir, widgetDir, override = true)
+            if (widgetDir.exists() && widgetDir.isDirectory) {
+                widgetDir.delete()
+            }
+            if (!widgetDir.exists()) {
+                widgetDir.mkdirs()
+            }
 
+            val tempUriList = imageUriList.value
             val uriList = mutableListOf<Uri>()
-            if (widgetDir.exists()) {
-                widgetDir.listFiles()?.forEach {
-                    uriList.add(it.toUri())
+            tempUriList?.forEach {
+                val tempFile = it.toFile()
+                if (tempFile.exists()) {
+                    val file = File(widgetDir, tempFile.name)
+                    tempFile.copyTo(file, true)
+                    uriList.add(file.toUri())
                 }
             }
             return@withContext uriList

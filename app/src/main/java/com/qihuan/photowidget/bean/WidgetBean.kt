@@ -11,8 +11,12 @@ import androidx.room.Relation
 data class WidgetBean(
     @Embedded
     val widgetInfo: WidgetInfo,
+
     @Relation(parentColumn = "widgetId", entityColumn = "widgetId")
-    var imageList: List<WidgetImage>,
+    var _imageList: List<WidgetImage>,
+
     @Relation(parentColumn = "widgetId", entityColumn = "widgetId")
     var linkInfo: LinkInfo?,
-)
+) {
+    val imageList get() = _imageList.sortedBy { it.sort }
+}

@@ -17,6 +17,8 @@ import androidx.core.net.toUri
 import androidx.core.view.*
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
@@ -33,6 +35,7 @@ import com.qihuan.photowidget.link.InstalledAppActivity
 import com.qihuan.photowidget.link.UrlInputActivity
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.*
 
 /**
  * The configuration screen for the [com.qihuan.photowidget.PhotoWidgetProvider] AppWidget.
@@ -151,6 +154,7 @@ class ConfigureActivity : AppCompatActivity() {
         previewAddAdapter.setOnItemAddListener {
             selectPicForResult.launch("image/*")
         }
+        bindDragHelper()
 
         viewModel.imageUriList.observe(this) {
             previewAdapter.submitList(it.toList())
@@ -186,6 +190,37 @@ class ConfigureActivity : AppCompatActivity() {
         binding.layoutPhotoWidget.photoWidgetInfo.areaRight.setOnClickListener {
             binding.layoutPhotoWidget.vfPicture.showNext()
         }
+    }
+
+    private fun bindDragHelper() {
+        ItemTouchHelper(object : ItemTouchHelper.Callback() {
+            override fun getMovementFlags(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ): Int {
+                if (viewHolder !is PreviewPhotoAdapter.ViewHolder) {
+                    return makeMovementFlags(0, 0)
+                }
+                return makeMovementFlags(ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, 0)
+            }
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val fromPosition = viewHolder.bindingAdapterPosition
+                val toPosition = target.bindingAdapterPosition
+                val list = viewModel.imageUriList.value ?: mutableListOf()
+                Collections.swap(list, fromPosition, toPosition)
+                previewAdapter.submitList(list)
+                viewModel.imageUriList.value = list
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            }
+        }).attachToRecyclerView(binding.rvPreviewList)
     }
 
     override fun finish() {

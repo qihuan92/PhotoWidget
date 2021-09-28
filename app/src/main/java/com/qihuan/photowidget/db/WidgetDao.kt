@@ -29,6 +29,9 @@ abstract class WidgetDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertInfo(widgetInfo: WidgetInfo)
 
+    @Query("select * from widget_image where widgetId = :widgetId order by sort")
+    abstract suspend fun selectImageList(widgetId: Int): List<WidgetImage>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertImage(imageList: List<WidgetImage>)
 
