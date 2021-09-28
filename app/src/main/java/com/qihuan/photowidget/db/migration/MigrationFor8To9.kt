@@ -22,19 +22,24 @@ class MigrationFor8To9 : Migration(8, 9) {
                 val widgetId = it.getInt(cursor.getColumnIndexOrThrow("widgetId"))
                 val linkInfoStr = it.getString(cursor.getColumnIndexOrThrow("linkInfo"))
                 val linkInfo = convertLinkInfo(widgetId, linkInfoStr)
-                val values = contentValuesOf(
-                    "widgetId" to linkInfo.widgetId,
-                    "type" to linkInfo.type.value,
-                    "title" to linkInfo.title,
-                    "description" to linkInfo.description,
-                    "link" to linkInfo.link,
-                )
-                database.insert("link_info", SQLiteDatabase.CONFLICT_REPLACE, values)
+                linkInfo?.apply {
+                    val values = contentValuesOf(
+                        "widgetId" to widgetId,
+                        "type" to type.value,
+                        "title" to title,
+                        "description" to description,
+                        "link" to link,
+                    )
+                    database.insert("link_info", SQLiteDatabase.CONFLICT_REPLACE, values)
+                }
             }
         }
     }
 
-    private fun convertLinkInfo(widgetId: Int, linkInfoStr: String): LinkInfo {
+    private fun convertLinkInfo(widgetId: Int, linkInfoStr: String?): LinkInfo? {
+        if (linkInfoStr.isNullOrEmpty()) {
+            return null
+        }
         val type: LinkType
         val title: String
         val description: String
