@@ -16,4 +16,5 @@ data class WidgetImage(
     val widgetId: Int,
     val imageUri: Uri,
     val createTime: Long,
+    val sort: Int,
 )

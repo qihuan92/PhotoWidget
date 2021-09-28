@@ -13,10 +13,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/menu_url_input"
         app:navigationIcon="@drawable/ic_round_arrow_back_24"
         app:title="输入链接" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_url"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,16 +37,4 @@
             android:layout_height="wrap_content"
             android:inputType="textUri" />
     </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_confirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:contentDescription="@string/confirm"
-        android:src="@drawable/ic_round_done_24"
-        app:borderWidth="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:tint="@android:color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>

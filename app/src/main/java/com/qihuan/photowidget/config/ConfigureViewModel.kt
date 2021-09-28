@@ -11,7 +11,6 @@ import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.copyDir
 import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +31,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     private val context by lazy { getApplication<Application>().applicationContext }
     private val widgetInfoDao by lazy { AppDatabase.getDatabase(context).widgetInfoDao() }
     private val widgetDao by lazy { AppDatabase.getDatabase(context).widgetDao() }
+    private val linkInfoDao by lazy { AppDatabase.getDatabase(context).linkInfoDao() }
 
     val widgetRadius by lazy { MutableLiveData(0f) }
     val verticalPadding by lazy { MutableLiveData(0f) }
@@ -78,7 +78,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
 
     private suspend fun copyToTempDir(widgetId: Int) {
         val cacheDir = context.cacheDir
-        val filesDir = context.filesDir
+        val imageList = widgetDao.selectImageList(widgetId)
 
         withContext(Dispatchers.IO) {
             // remove compressor cache
@@ -86,15 +86,20 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
             compressorCacheDir.deleteDir()
 
             val tempDir = File(cacheDir, TEMP_DIR_NAME)
-            val widgetDir = File(filesDir, "widget_${widgetId}")
-            copyDir(widgetDir, tempDir, override = true)
+            if (!tempDir.exists()) {
+                tempDir.mkdirs()
+            }
 
-            if (tempDir.exists()) {
-                val uriList = tempDir.listFiles()?.map { it.toUri() }
-                if (uriList != null) {
-                    replaceImageList(uriList)
+            val uriList = mutableListOf<Uri>()
+            imageList.forEach {
+                val imageFile = it.imageUri.toFile()
+                if (imageFile.exists()) {
+                    val tempFile = File(tempDir, imageFile.name)
+                    imageFile.copyTo(tempFile, true)
+                    uriList.add(tempFile.toUri())
                 }
             }
+            replaceImageList(uriList)
         }
     }
 
@@ -108,36 +113,39 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 horizontalPadding.value = widgetInfo.horizontalPadding
                 widgetRadius.value = widgetInfo.widgetRadius
                 widgetTransparency.value = widgetInfo.widgetTransparency
-                linkInfo.value = widgetInfo.linkInfo
                 autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
                 photoScaleType.postValue(widgetInfo.photoScaleType)
             }
+
+            val linkInfoFromDb = linkInfoDao.selectById(widgetId)
+            linkInfo.value = linkInfoFromDb
+
             uiState.value = UIState.SHOW_CONTENT
         }
     }
 
     suspend fun saveWidget(widgetId: Int) {
         val widgetInfo = WidgetInfo(
-            widgetId,
-            verticalPadding.value ?: 0f,
-            horizontalPadding.value ?: 0f,
-            widgetRadius.value ?: 0f,
-            widgetTransparency.value ?: 0f,
-            autoPlayInterval.value ?: PlayInterval.NONE,
-            linkInfo.value,
-            photoScaleType.value ?: PhotoScaleType.CENTER_CROP,
+            widgetId = widgetId,
+            verticalPadding = verticalPadding.value ?: 0f,
+            horizontalPadding = horizontalPadding.value ?: 0f,
+            widgetRadius = widgetRadius.value ?: 0f,
+            widgetTransparency = widgetTransparency.value ?: 0f,
+            autoPlayInterval = autoPlayInterval.value ?: PlayInterval.NONE,
+            photoScaleType = photoScaleType.value ?: PhotoScaleType.CENTER_CROP,
         )
 
         val uriList = saveWidgetPhotoFiles(widgetId)
-        val imageList = uriList.map {
+        val imageList = uriList.mapIndexed { index, uri ->
             WidgetImage(
                 widgetId = widgetId,
-                imageUri = it,
-                createTime = System.currentTimeMillis()
+                imageUri = uri,
+                createTime = System.currentTimeMillis(),
+                sort = index
             )
         }
 
-        val widgetBean = WidgetBean(widgetInfo, imageList)
+        val widgetBean = WidgetBean(widgetInfo, imageList, linkInfo.value)
         widgetDao.save(widgetBean)
         updateAppWidget(context, AppWidgetManager.getInstance(context), widgetBean)
     }
@@ -147,18 +155,24 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     private suspend fun saveWidgetPhotoFiles(widgetId: Int): List<Uri> {
-        val cacheDir = context.cacheDir
         val filesDir = context.filesDir
-
         return withContext(Dispatchers.IO) {
-            val tempDir = File(cacheDir, TEMP_DIR_NAME)
             val widgetDir = File(filesDir, "widget_${widgetId}")
-            copyDir(tempDir, widgetDir, override = true)
+            if (widgetDir.exists() && widgetDir.isDirectory) {
+                widgetDir.delete()
+            }
+            if (!widgetDir.exists()) {
+                widgetDir.mkdirs()
+            }
 
+            val tempUriList = imageUriList.value
             val uriList = mutableListOf<Uri>()
-            if (widgetDir.exists()) {
-                widgetDir.listFiles()?.forEach {
-                    uriList.add(it.toUri())
+            tempUriList?.forEach {
+                val tempFile = it.toFile()
+                if (tempFile.exists()) {
+                    val file = File(widgetDir, tempFile.name)
+                    tempFile.copyTo(file, true)
+                    uriList.add(file.toUri())
                 }
             }
             return@withContext uriList

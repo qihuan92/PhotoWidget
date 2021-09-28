@@ -1,5 +1,6 @@
 package com.qihuan.photowidget.link
 
+import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -22,6 +23,12 @@ class InstalledAppActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityInstalledAppBinding::inflate)
     private val viewModel by viewModels<InstalledAppViewModel>()
+    private val widgetId by lazy {
+        intent.getIntExtra(
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            AppWidgetManager.INVALID_APPWIDGET_ID
+        )
+    }
 
     private val installedAppAdapter by lazy { InstalledAppAdapter() }
 
@@ -73,7 +80,13 @@ class InstalledAppActivity : AppCompatActivity() {
                 val intent = Intent().apply {
                     putExtra(
                         "linkInfo",
-                        LinkInfo.of("${LinkType.OPEN_APP.value}/$appName/$packageName")
+                        LinkInfo(
+                            widgetId,
+                            LinkType.OPEN_APP,
+                            "打开应用: [ $appName ]",
+                            "包名: $packageName",
+                            packageName
+                        )
                     )
                 }
                 setResult(RESULT_OK, intent)

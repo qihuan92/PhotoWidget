@@ -2,6 +2,7 @@ package com.qihuan.photowidget.db
 
 import androidx.paging.PagingSource
 import androidx.room.*
+import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.bean.WidgetInfo
@@ -28,6 +29,9 @@ abstract class WidgetDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertInfo(widgetInfo: WidgetInfo)
 
+    @Query("select * from widget_image where widgetId = :widgetId order by sort")
+    abstract suspend fun selectImageList(widgetId: Int): List<WidgetImage>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertImage(imageList: List<WidgetImage>)
 
@@ -40,10 +44,24 @@ abstract class WidgetDao {
     @Query("delete from widget_image where imageId = :id")
     abstract suspend fun deleteImageById(id: Int)
 
-    suspend fun save(widgetBean: WidgetBean) {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertLinkInfo(record: LinkInfo)
+
+    @Query("delete from link_info where widgetId = :id")
+    abstract suspend fun deleteLinkInfo(id: Int)
+
+    @Transaction
+    open suspend fun save(widgetBean: WidgetBean) {
         insertInfo(widgetBean.widgetInfo)
         deleteImageByWidgetId(widgetBean.widgetInfo.widgetId)
         insertImage(widgetBean.imageList)
+
+        val linkInfo = widgetBean.linkInfo
+        if (linkInfo != null) {
+            insertLinkInfo(linkInfo)
+        } else {
+            deleteLinkInfo(widgetBean.widgetInfo.widgetId)
+        }
     }
 
     suspend fun deleteByWidgetId(widgetId: Int) {
