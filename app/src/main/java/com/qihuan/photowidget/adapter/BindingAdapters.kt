@@ -11,6 +11,7 @@ import com.google.android.material.slider.Slider
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.view.TextSelectionView
 
 
 /**
@@ -69,5 +70,11 @@ object BindingAdapters {
     @BindingAdapter("strokeWidth")
     fun setStrokeWidth(view: MaterialCardView, value: Float) {
         view.strokeWidth = value.dp
+    }
+
+    @JvmStatic
+    @BindingAdapter("selectionContent")
+    fun setSelectionContent(view: TextSelectionView, value: String) {
+        view.setContent(value)
     }
 }

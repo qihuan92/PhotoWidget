@@ -1,3 +1,6 @@
 <resources>
-
+    <declare-styleable name="TextSelectionView">
+        <attr name="selectionTitle" format="reference|string" />
+        <attr name="selectionContent" format="reference|string" />
+    </declare-styleable>
 </resources>

@@ -118,52 +118,22 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_preview_photo" />
 
-                <LinearLayout
-                    android:id="@+id/layout_auto_play_interval"
+                <com.qihuan.photowidget.view.TextSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:onClick="@{() -> activity.showIntervalSelector()}"
-                    android:orientation="vertical"
-                    app:isVisible="@{viewModel.imageUriList.size() > 1}">
+                    app:isVisible="@{viewModel.imageUriList.size() > 1}"
+                    app:selectionContent="@{viewModel.autoPlayInterval.description}"
+                    app:selectionTitle="@string/auto_play_interval" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/auto_play_interval"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_auto_play_interval"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.autoPlayInterval.description}"
-                        android:textAppearance="?textAppearanceCaption" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_photo_scale_type"
+                <com.qihuan.photowidget.view.TextSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:onClick="@{() -> activity.showScaleTypeSelector()}"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/photo_scale_type"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_photo_scale_type"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.photoScaleType.description}"
-                        android:textAppearance="?textAppearanceCaption" />
-                </LinearLayout>
+                    app:selectionContent="@{viewModel.photoScaleType.description}"
+                    app:selectionTitle="@string/photo_scale_type" />
 
                 <LinearLayout
                     android:id="@+id/layout_open_url"
