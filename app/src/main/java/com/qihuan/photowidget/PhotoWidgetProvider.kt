@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.deleteDir
+import com.qihuan.photowidget.ktx.logD
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -21,6 +22,7 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
+        logD("PhotoWidgetProvider", "onAppWidgetOptionsChanged() appWidgetIds=$appWidgetIds")
         val widgetDao = AppDatabase.getDatabase(context).widgetDao()
         GlobalScope.launch {
             // 更新微件
@@ -34,6 +36,7 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        logD("PhotoWidgetProvider", "onReceive() intent.action=${intent.action}")
         if (intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
             val navAction = intent.getStringExtra(EXTRA_NAV)
             if (!navAction.isNullOrEmpty()) {
@@ -58,8 +61,8 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
+        logD("PhotoWidgetProvider", "onDeleted() appWidgetIds=$appWidgetIds")
         val widgetDao = AppDatabase.getDatabase(context).widgetDao()
-        // 删除一些缓存数据
         GlobalScope.launch {
             for (appWidgetId in appWidgetIds) {
                 widgetDao.deleteByWidgetId(appWidgetId)
@@ -77,15 +80,12 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
         newOptions: Bundle?
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+        logD("PhotoWidgetProvider", "onAppWidgetOptionsChanged() appWidgetId=$appWidgetId")
         val widgetDao = AppDatabase.getDatabase(context).widgetDao()
         GlobalScope.launch {
             val widgetBean = widgetDao.selectById(appWidgetId)
             if (widgetBean != null) {
-                if (widgetBean.imageList.size > 1) {
-                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.vf_picture)
-                } else {
-                    updateAppWidget(context, appWidgetManager, widgetBean)
-                }
+                updateAppWidget(context, appWidgetManager, widgetBean)
             }
         }
     }
