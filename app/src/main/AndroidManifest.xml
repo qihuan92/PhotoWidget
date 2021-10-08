@@ -41,7 +41,9 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <receiver android:name=".PhotoWidgetProvider">
+        <receiver
+            android:name=".PhotoWidgetProvider"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -53,7 +55,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/photo_widget_info" />
         </receiver>
-        <receiver android:name=".PhotoWidgetProvider22">
+
+        <receiver
+            android:name=".PhotoWidgetProvider22"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -65,7 +70,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/photo_widget_info_22" />
         </receiver>
-        <receiver android:name=".PhotoWidgetProvider23">
+
+        <receiver
+            android:name=".PhotoWidgetProvider23"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -77,7 +85,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/photo_widget_info_23" />
         </receiver>
-        <receiver android:name=".PhotoWidgetProvider24">
+
+        <receiver
+            android:name=".PhotoWidgetProvider24"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -89,7 +100,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/photo_widget_info_24" />
         </receiver>
-        <receiver android:name=".PhotoWidgetProvider32">
+
+        <receiver
+            android:name=".PhotoWidgetProvider32"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -101,7 +115,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/photo_widget_info_32" />
         </receiver>
-        <receiver android:name=".PhotoWidgetProvider33">
+
+        <receiver
+            android:name=".PhotoWidgetProvider33"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -113,7 +130,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/photo_widget_info_33" />
         </receiver>
-        <receiver android:name=".PhotoWidgetProvider34">
+
+        <receiver
+            android:name=".PhotoWidgetProvider34"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -125,7 +145,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/photo_widget_info_34" />
         </receiver>
-        <receiver android:name=".PhotoWidgetProvider42">
+
+        <receiver
+            android:name=".PhotoWidgetProvider42"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -137,7 +160,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/photo_widget_info_42" />
         </receiver>
-        <receiver android:name=".PhotoWidgetProvider43">
+
+        <receiver
+            android:name=".PhotoWidgetProvider43"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -149,7 +175,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/photo_widget_info_43" />
         </receiver>
-        <receiver android:name=".PhotoWidgetProvider44">
+
+        <receiver
+            android:name=".PhotoWidgetProvider44"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -161,8 +190,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/photo_widget_info_44" />
         </receiver>
+
         <receiver
             android:name=".PhotoWidgetProviderNoName"
+            android:exported="true"
             android:label="">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
