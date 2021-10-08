@@ -124,16 +124,16 @@
                     android:layout_marginTop="10dp"
                     android:onClick="@{() -> activity.showIntervalSelector()}"
                     app:isVisible="@{viewModel.imageUriList.size() > 1}"
-                    app:selectionContent="@{viewModel.autoPlayInterval.description}"
-                    app:selectionTitle="@string/auto_play_interval" />
+                    app:textSelectionContent="@{viewModel.autoPlayInterval.description}"
+                    app:textSelectionTitle="@string/auto_play_interval" />
 
                 <com.qihuan.photowidget.view.TextSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:onClick="@{() -> activity.showScaleTypeSelector()}"
-                    app:selectionContent="@{viewModel.photoScaleType.description}"
-                    app:selectionTitle="@string/photo_scale_type" />
+                    app:textSelectionContent="@{viewModel.photoScaleType.description}"
+                    app:textSelectionTitle="@string/photo_scale_type" />
 
                 <LinearLayout
                     android:id="@+id/layout_open_url"
@@ -220,105 +220,41 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
 
-                <LinearLayout
+                <com.qihuan.photowidget.view.SliderSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    app:sliderSelectionTitle="@string/vertical_padding"
+                    app:sliderSelectionValue="@={viewModel.verticalPadding}"
+                    app:sliderSelectionValueFrom="0"
+                    app:sliderSelectionValueTo="20" />
 
-                    <TextView
-                        android:id="@+id/tv_vertical_padding"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/vertical_padding"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/slider_vertical_padding"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:stepSize="1"
-                        android:value="@={viewModel.verticalPadding}"
-                        android:valueFrom="0"
-                        android:valueTo="20" />
-                </LinearLayout>
-
-                <LinearLayout
+                <com.qihuan.photowidget.view.SliderSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    app:sliderSelectionTitle="@string/horizontal_padding"
+                    app:sliderSelectionValue="@={viewModel.horizontalPadding}"
+                    app:sliderSelectionValueFrom="0"
+                    app:sliderSelectionValueTo="20" />
 
-                    <TextView
-                        android:id="@+id/tv_horizontal_padding"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/horizontal_padding"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/slider_horizontal_padding"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:stepSize="1"
-                        android:value="@={viewModel.horizontalPadding}"
-                        android:valueFrom="0"
-                        android:valueTo="20" />
-                </LinearLayout>
-
-                <LinearLayout
+                <com.qihuan.photowidget.view.SliderSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    app:sliderSelectionTitle="@string/widget_radius"
+                    app:sliderSelectionValue="@={viewModel.widgetRadius}"
+                    app:sliderSelectionValueFrom="0"
+                    app:sliderSelectionValueTo="50" />
 
-                    <TextView
-                        android:id="@+id/tv_widget_radius"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/widget_radius"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/slider_widget_radius"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:stepSize="1"
-                        android:value="@={viewModel.widgetRadius}"
-                        android:valueFrom="0"
-                        android:valueTo="50" />
-                </LinearLayout>
-
-                <LinearLayout
+                <com.qihuan.photowidget.view.SliderSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tv_widget_transparency"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/widget_transparency"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/slider_widget_transparency"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:stepSize="1"
-                        android:value="@={viewModel.widgetTransparency}"
-                        android:valueFrom="0"
-                        android:valueTo="100" />
-                </LinearLayout>
+                    app:sliderSelectionTitle="@string/widget_transparency"
+                    app:sliderSelectionValue="@={viewModel.widgetTransparency}"
+                    app:sliderSelectionValueFrom="0"
+                    app:sliderSelectionValueTo="100" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 

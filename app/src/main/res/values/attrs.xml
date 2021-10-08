@@ -1,6 +1,14 @@
 <resources>
     <declare-styleable name="TextSelectionView">
-        <attr name="selectionTitle" format="reference|string" />
-        <attr name="selectionContent" format="reference|string" />
+        <attr name="textSelectionTitle" format="reference|string" />
+        <attr name="textSelectionContent" format="reference|string" />
+    </declare-styleable>
+
+    <declare-styleable name="SliderSelectionView">
+        <attr name="sliderSelectionTitle" format="reference|string" />
+        <attr name="sliderSelectionValue" format="float" />
+        <attr name="sliderSelectionValueFrom" format="float" />
+        <attr name="sliderSelectionValueTo" format="float" />
+        <attr name="sliderSelectionStepSize" format="float" />
     </declare-styleable>
 </resources>

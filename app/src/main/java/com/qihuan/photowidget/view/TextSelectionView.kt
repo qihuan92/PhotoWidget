@@ -40,8 +40,8 @@ class TextSelectionView : LinearLayout {
         defStyleAttr
     ) {
         context.obtainStyledAttributes(attrs, R.styleable.TextSelectionView).apply {
-            title = getString(R.styleable.TextSelectionView_selectionTitle)
-            content = getString(R.styleable.TextSelectionView_selectionContent)
+            title = getString(R.styleable.TextSelectionView_textSelectionTitle)
+            content = getString(R.styleable.TextSelectionView_textSelectionContent)
         }.recycle()
         initView()
     }
@@ -57,8 +57,12 @@ class TextSelectionView : LinearLayout {
         titleView.text = value
     }
 
+    fun getTitle(): CharSequence = titleView.text
+
     fun setContent(value: String) {
         this.content = value
         contentView.text = value
     }
+
+    fun getContent(): CharSequence = contentView.text
 }
