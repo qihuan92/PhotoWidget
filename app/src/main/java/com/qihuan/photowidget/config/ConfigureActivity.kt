@@ -7,7 +7,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +19,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
@@ -322,7 +322,8 @@ class ConfigureActivity : AppCompatActivity() {
             return
         }
         if (viewModel.imageUriList.value.isNullOrEmpty()) {
-            Toast.makeText(this, R.string.warning_select_picture, Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, R.string.warning_select_picture, Snackbar.LENGTH_SHORT)
+                .show()
             return
         }
         lifecycleScope.launch {
