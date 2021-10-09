@@ -1,5 +1,7 @@
 package com.qihuan.photowidget.bean
 
+import com.qihuan.photowidget.view.ItemSelectionDialog
+
 /**
  * LinkType
  * @author qi
@@ -7,10 +9,15 @@ package com.qihuan.photowidget.bean
  */
 enum class LinkType(
     val value: String,
-) {
-    OPEN_URL("openUrl"),
-    OPEN_APP("openApp"),
+    val description: String,
+) : ItemSelectionDialog.Item {
+    OPEN_APP("openApp", "打开应用"),
+    OPEN_URL("openUrl", "打开URL"),
     ;
+
+    override fun getItemText(): String {
+        return description
+    }
 
     companion object {
         fun get(value: String?): LinkType? {

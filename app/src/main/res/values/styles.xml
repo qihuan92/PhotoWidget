@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="ShapeRound">
         <item name="cornerFamily">rounded</item>
@@ -55,17 +55,65 @@
 
     <style name="Theme.Crane.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Widget.Crane.BottomSheet.Modal</item>
+        <item name="android:navigationBarColor">@color/navigation_bar_color_bottom_sheet</item>
     </style>
 
     <style name="Widget.Crane.BottomSheet.Modal" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="shapeAppearance">?attr/shapeAppearanceLargeComponent</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Crane.BottomSheet</item>
-        <item name="backgroundTint">?attr/colorPrimary</item>
     </style>
 
     <style name="ShapeAppearanceOverlay.Crane.BottomSheet" parent="">
         <item name="cornerSizeTopRight">20dp</item>
         <item name="cornerSizeTopLeft">20dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerFamilyTopLeft">rounded</item>
+        <item name="cornerFamilyTopRight">rounded</item>
+    </style>
+
+    <style name="ThemeOverlay.Rounded" parent="">
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Rounded.SmallComponent
+        </item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Rounded.MediumComponent
+        </item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Rounded.LargeComponent
+        </item>
+
+        <item name="bottomSheetDialogTheme">@style/Theme.Rounded.BottomSheetDialog</item>
+    </style>
+
+    <style name="ShapeAppearance.Rounded.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="ShapeAppearance.Rounded.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="ShapeAppearance.Rounded.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
+    <style name="Theme.Rounded.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.Rounded.BottomSheet.Modal</item>
+        <item name="android:navigationBarColor">@color/navigation_bar_color_bottom_sheet</item>
+    </style>
+
+    <style name="Widget.Rounded.BottomSheet.Modal" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="shapeAppearance">?attr/shapeAppearanceLargeComponent</item>
+        <!-- <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Rounded.BottomSheet</item>-->
+    </style>
+
+    <style name="ShapeAppearanceOverlay.Rounded.BottomSheet" parent="">
+        <item name="cornerSizeTopRight">20dp</item>
+        <item name="cornerSizeTopLeft">20dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerFamilyTopLeft">rounded</item>
         <item name="cornerFamilyTopRight">rounded</item>
     </style>

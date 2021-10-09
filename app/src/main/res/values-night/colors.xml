@@ -17,4 +17,5 @@
     <color name="blur_mask">#60000000</color>
     <color name="red">#FF5252</color>
     <color name="navigation_bar_color">#B3000000</color>
+    <color name="navigation_bar_color_bottom_sheet">#000000</color>
 </resources>

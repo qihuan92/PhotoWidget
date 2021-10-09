@@ -33,6 +33,7 @@ import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.link.InstalledAppActivity
 import com.qihuan.photowidget.link.UrlInputActivity
+import com.qihuan.photowidget.view.ItemSelectionDialog
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
@@ -65,6 +66,42 @@ class ConfigureActivity : AppCompatActivity() {
                 updatePadding(top = 10f.dp, bottom = 10f.dp)
             })
             .create()
+    }
+
+    private val scaleTypeDialog by lazy {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_scale_type),
+            PhotoScaleType.values().toList()
+        ) { dialog, item ->
+            viewModel.photoScaleType.value = item
+            dialog.dismiss()
+        }
+    }
+
+    private val linkTypeDialog by lazy {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_link_type),
+            LinkType.values().toList()
+        ) { dialog, item ->
+            when (item) {
+                LinkType.OPEN_APP -> launchOpenAppActivity()
+                LinkType.OPEN_URL -> launchOpenLinkActivity()
+            }
+            dialog.dismiss()
+        }
+    }
+
+    private val intervalDialog by lazy {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_interval),
+            PlayInterval.values().toList()
+        ) { dialog, item ->
+            viewModel.autoPlayInterval.value = item
+            dialog.dismiss()
+        }
     }
 
     private val previewAdapter by lazy { PreviewPhotoAdapter() }
@@ -301,50 +338,32 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     fun showIntervalSelector() {
-        val itemList = PlayInterval.values()
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
-            .setTitle(R.string.alert_title_interval)
-            .setSingleChoiceItems(
-                itemList.map { it.description }.toTypedArray(),
-                itemList.indexOfFirst { it == viewModel.autoPlayInterval.value }
-            ) { dialog, i ->
-                viewModel.autoPlayInterval.value = itemList[i]
-                dialog.dismiss()
-            }.show()
+        intervalDialog.show()
     }
 
     fun showLinkTypeSelector() {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
-            .setTitle(R.string.alert_title_link_type)
-            .setItems(R.array.open_link_types) { dialog, i ->
-                when (i) {
-                    0 -> appSelectResult.launch(
-                        Intent(this, InstalledAppActivity::class.java).apply {
-                            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                        })
-                    1 -> appSelectResult.launch(
-                        Intent(this, UrlInputActivity::class.java).apply {
-                            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                            val linkInfo = viewModel.linkInfo.value
-                            if (linkInfo != null && linkInfo.type == LinkType.OPEN_URL) {
-                                putExtra("openUrl", linkInfo.link)
-                            }
-                        })
-                }
-                dialog.dismiss()
-            }.show()
+        linkTypeDialog.show()
     }
 
     fun showScaleTypeSelector() {
-        val scaleTypeList = PhotoScaleType.values()
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
-            .setTitle(R.string.alert_title_scale_type)
-            .setSingleChoiceItems(
-                scaleTypeList.map { it.description }.toTypedArray(),
-                scaleTypeList.indexOfFirst { it == viewModel.photoScaleType.value }
-            ) { dialog, i ->
-                viewModel.photoScaleType.value = scaleTypeList[i]
-                dialog.dismiss()
-            }.show()
+        scaleTypeDialog.show()
+    }
+
+    private fun launchOpenAppActivity() {
+        appSelectResult.launch(
+            Intent(this, InstalledAppActivity::class.java).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            })
+    }
+
+    private fun launchOpenLinkActivity() {
+        appSelectResult.launch(
+            Intent(this, UrlInputActivity::class.java).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                val linkInfo = viewModel.linkInfo.value
+                if (linkInfo != null && linkInfo.type == LinkType.OPEN_URL) {
+                    putExtra("openUrl", linkInfo.link)
+                }
+            })
     }
 }
