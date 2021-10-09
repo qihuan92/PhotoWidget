@@ -18,60 +18,6 @@
         <item name="android:outAnimation">@animator/anim_view_flipper_out</item>
     </style>
 
-    <style name="ThemeOverlay.Crane" parent="">
-        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Crane.SmallComponent
-        </item>
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Crane.MediumComponent
-        </item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Crane.LargeComponent
-        </item>
-
-        <item name="bottomSheetDialogTheme">@style/Theme.Crane.BottomSheetDialog</item>
-        <item name="chipStyle">@style/Widget.Crane.Chip</item>
-        <item name="textInputStyle">@style/Widget.Crane.TextInputLayout</item>
-    </style>
-
-    <style name="ShapeAppearance.Crane.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">4dp</item>
-    </style>
-
-    <style name="ShapeAppearance.Crane.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">16dp</item>
-    </style>
-
-    <style name="ShapeAppearance.Crane.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">20dp</item>
-    </style>
-
-    <style name="Widget.Crane.Chip" parent="Widget.MaterialComponents.Chip.Choice">
-        <item name="shapeAppearanceOverlay">@null</item>
-        <item name="chipCornerRadius">@null</item>
-    </style>
-
-    <style name="Widget.Crane.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
-
-    <style name="Theme.Crane.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/Widget.Crane.BottomSheet.Modal</item>
-        <item name="android:navigationBarColor">@color/navigation_bar_color_bottom_sheet</item>
-    </style>
-
-    <style name="Widget.Crane.BottomSheet.Modal" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="shapeAppearance">?attr/shapeAppearanceLargeComponent</item>
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Crane.BottomSheet</item>
-    </style>
-
-    <style name="ShapeAppearanceOverlay.Crane.BottomSheet" parent="">
-        <item name="cornerSizeTopRight">20dp</item>
-        <item name="cornerSizeTopLeft">20dp</item>
-        <item name="cornerSizeBottomLeft">0dp</item>
-        <item name="cornerSizeBottomRight">0dp</item>
-        <item name="cornerFamilyTopLeft">rounded</item>
-        <item name="cornerFamilyTopRight">rounded</item>
-    </style>
-
     <style name="ThemeOverlay.Rounded" parent="">
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Rounded.SmallComponent
         </item>

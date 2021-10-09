@@ -49,7 +49,7 @@ class ConfigureActivity : AppCompatActivity() {
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     private val processImageDialog by lazy {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Rounded)
             .setTitle(R.string.processing)
             .setCancelable(false)
             .setView(ProgressBar(this).apply {
@@ -59,12 +59,39 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private val saveImageDialog by lazy {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Rounded)
             .setTitle(R.string.saving)
             .setCancelable(false)
             .setView(ProgressBar(this).apply {
                 updatePadding(top = 10f.dp, bottom = 10f.dp)
             })
+            .create()
+    }
+
+    private val deleteLinkDialog by lazy {
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Rounded)
+            .setTitle(R.string.alert_title_default)
+            .setMessage(R.string.conform_delete_photo_link)
+            .setPositiveButton(R.string.sure) { _, _ ->
+                viewModel.deleteLink()
+            }
+            .setNegativeButton(R.string.cancel) { _, _ -> }
+            .create()
+    }
+
+    private var currentDeletePhotoIndex: Int? = null
+
+    private val deletePhotoDialog by lazy {
+        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Rounded)
+            .setTitle(R.string.alert_title_default)
+            .setMessage(R.string.conform_delete_photo)
+            .setPositiveButton(R.string.sure) { _, _ ->
+                currentDeletePhotoIndex?.let {
+                    viewModel.deleteImage(it)
+                }
+            }
+            .setNegativeButton(R.string.cancel) { _, _ -> }
+            .setOnDismissListener { currentDeletePhotoIndex = null }
             .create()
     }
 
@@ -184,9 +211,8 @@ class ConfigureActivity : AppCompatActivity() {
 
         binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
         binding.rvPreviewList.adapter = ConcatAdapter(previewAddAdapter, previewAdapter)
-        previewAdapter.setOnItemDeleteListener { position, view ->
-            view.isEnabled = false
-            viewModel.deleteImage(position)
+        previewAdapter.setOnItemDeleteListener { position, _ ->
+            showDeletePhotoAlert(position)
         }
         previewAddAdapter.setOnItemAddListener {
             selectPicForResult.launch("image/*")
@@ -348,6 +374,15 @@ class ConfigureActivity : AppCompatActivity() {
 
     fun showScaleTypeSelector() {
         scaleTypeDialog.show()
+    }
+
+    fun showDeleteLinkAlert() {
+        deleteLinkDialog.show()
+    }
+
+    private fun showDeletePhotoAlert(position: Int) {
+        currentDeletePhotoIndex = position
+        deletePhotoDialog.show()
     }
 
     private fun launchOpenAppActivity() {

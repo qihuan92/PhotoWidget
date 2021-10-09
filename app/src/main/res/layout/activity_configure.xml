@@ -213,7 +213,7 @@
                             android:layout_height="30dp"
                             android:background="?selectableItemBackgroundBorderless"
                             android:contentDescription="@string/delete_widget_link"
-                            android:onClick="@{() -> viewModel.deleteLink()}"
+                            android:onClick="@{() -> activity.showDeleteLinkAlert()}"
                             android:src="@drawable/ic_round_delete_24"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintRight_toRightOf="parent"

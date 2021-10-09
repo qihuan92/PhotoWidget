@@ -38,7 +38,6 @@ class PreviewPhotoAdapter : ListAdapter<Uri, PreviewPhotoAdapter.ViewHolder>(Dif
         }
 
         fun bind(item: Uri) {
-            binding.btnDelete.isEnabled = true
             Glide.with(itemView.context)
                 .load(item)
                 .thumbnail(0.1f)
