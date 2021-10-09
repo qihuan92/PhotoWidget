@@ -48,7 +48,7 @@ class ConfigureActivity : AppCompatActivity() {
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
-    private val processImageDialog by lazy {
+    private val processImageDialog by lazy(LazyThreadSafetyMode.NONE) {
         MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Rounded)
             .setTitle(R.string.processing)
             .setCancelable(false)
@@ -58,7 +58,7 @@ class ConfigureActivity : AppCompatActivity() {
             .create()
     }
 
-    private val saveImageDialog by lazy {
+    private val saveImageDialog by lazy(LazyThreadSafetyMode.NONE) {
         MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Rounded)
             .setTitle(R.string.saving)
             .setCancelable(false)
@@ -68,7 +68,7 @@ class ConfigureActivity : AppCompatActivity() {
             .create()
     }
 
-    private val deleteLinkDialog by lazy {
+    private val deleteLinkDialog by lazy(LazyThreadSafetyMode.NONE) {
         MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Rounded)
             .setTitle(R.string.alert_title_default)
             .setMessage(R.string.conform_delete_photo_link)
@@ -81,7 +81,7 @@ class ConfigureActivity : AppCompatActivity() {
 
     private var currentDeletePhotoIndex: Int? = null
 
-    private val deletePhotoDialog by lazy {
+    private val deletePhotoDialog by lazy(LazyThreadSafetyMode.NONE) {
         MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Rounded)
             .setTitle(R.string.alert_title_default)
             .setMessage(R.string.conform_delete_photo)
@@ -95,7 +95,7 @@ class ConfigureActivity : AppCompatActivity() {
             .create()
     }
 
-    private val scaleTypeDialog by lazy {
+    private val scaleTypeDialog by lazy(LazyThreadSafetyMode.NONE) {
         ItemSelectionDialog(
             this,
             getString(R.string.alert_title_scale_type),
@@ -106,7 +106,7 @@ class ConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private val linkTypeDialog by lazy {
+    private val linkTypeDialog by lazy(LazyThreadSafetyMode.NONE) {
         ItemSelectionDialog(
             this,
             getString(R.string.alert_title_link_type),
@@ -120,7 +120,7 @@ class ConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private val intervalDialog by lazy {
+    private val intervalDialog by lazy(LazyThreadSafetyMode.NONE) {
         ItemSelectionDialog(
             this,
             getString(R.string.alert_title_interval),
