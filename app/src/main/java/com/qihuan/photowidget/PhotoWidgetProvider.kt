@@ -7,9 +7,9 @@ import android.content.Intent
 import android.os.Bundle
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.deleteDir
+import com.qihuan.photowidget.ktx.goAsync
 import com.qihuan.photowidget.ktx.logD
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.File
 
 /**
@@ -24,8 +24,7 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
     ) {
         logD("PhotoWidgetProvider", "onAppWidgetOptionsChanged() appWidgetIds=$appWidgetIds")
         val widgetDao = AppDatabase.getDatabase(context).widgetDao()
-        GlobalScope.launch {
-            // 更新微件
+        goAsync(GlobalScope) {
             for (appWidgetId in appWidgetIds) {
                 val widgetBean = widgetDao.selectById(appWidgetId)
                 if (widgetBean != null) {
@@ -63,10 +62,9 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         logD("PhotoWidgetProvider", "onDeleted() appWidgetIds=$appWidgetIds")
         val widgetDao = AppDatabase.getDatabase(context).widgetDao()
-        GlobalScope.launch {
+        goAsync(GlobalScope) {
             for (appWidgetId in appWidgetIds) {
                 widgetDao.deleteByWidgetId(appWidgetId)
-
                 val outFile = File(context.filesDir, "widget_${appWidgetId}")
                 outFile.deleteDir()
             }
@@ -82,7 +80,7 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
         logD("PhotoWidgetProvider", "onAppWidgetOptionsChanged() appWidgetId=$appWidgetId")
         val widgetDao = AppDatabase.getDatabase(context).widgetDao()
-        GlobalScope.launch {
+        goAsync(GlobalScope) {
             val widgetBean = widgetDao.selectById(appWidgetId)
             if (widgetBean != null) {
                 updateAppWidget(context, appWidgetManager, widgetBean)
