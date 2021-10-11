@@ -36,7 +36,7 @@ class WidgetPagingAdapter :
 
         init {
             binding.root.setOnClickListener {
-                onItemClickListener?.invoke(layoutPosition, it)
+                onItemClickListener?.invoke(bindingAdapterPosition, it)
             }
         }
 

@@ -62,4 +62,10 @@
     <string name="conform_delete_photo_link">是否删除相片链接</string>
     <string name="conform_delete_photo">是否删除该图片</string>
     <string name="loading">加载中…</string>
+    <string name="tip_add_widget_title">如何添加相片微件</string>
+    <string name="tip_add_widget_content">1. 触摸并按住主屏幕\n2. 在微件列表中找到相片微件\n3. 将相片微件拖拽到主屏幕上\n4. 添加照片并进行配置，点击右上角确定按钮</string>
+    <string name="tip_ignore_battery_optimizations_title">关闭电池优化</string>
+    <string name="tip_ignore_battery_optimizations_content">相片微件轮播控件使用了后台服务。如果您遇到相片微件不断消失，请考虑关闭电池优化</string>
+    <string name="ignore_battery_optimizations_setting">设置</string>
+    <string name="ignore_tip">不再提示</string>
 </resources>

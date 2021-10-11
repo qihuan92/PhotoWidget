@@ -29,7 +29,6 @@
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refresh_layout"
-            isVisible="@{!activity.isEmpty()}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:visibility="gone">
@@ -39,35 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="2"
                 tools:listitem="@layout/item_widget_info" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-        <LinearLayout
-            android:id="@+id/layout_empty"
-            isVisible="@{activity.isEmpty()}"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:foreground="?selectableItemBackgroundBorderless"
-            android:gravity="center"
-            android:onClick="@{() -> activity.refresh()}"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_empty_msg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tips_widget_empty"
-                android:textAppearance="?textAppearanceHeadline6" />
-
-            <TextView
-                android:id="@+id/btn_refresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/click_to_refresh"
-                android:textAppearance="?textAppearanceBody2" />
-        </LinearLayout>
     </LinearLayout>
 </layout>
