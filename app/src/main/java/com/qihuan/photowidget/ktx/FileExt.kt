@@ -79,7 +79,7 @@ suspend fun Context.copyFile(inputUri: Uri, outputUri: Uri) = withContext(Dispat
 suspend fun Context.compressImageFile(imageFile: File, destination: File = imageFile): File {
     return Compressor.compress(this, imageFile) {
         default(format = Bitmap.CompressFormat.PNG)
-        size(10485760)
+        size(5242880)
         destination(destination)
     }
 }
