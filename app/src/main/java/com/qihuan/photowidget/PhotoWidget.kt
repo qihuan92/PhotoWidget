@@ -77,7 +77,7 @@ suspend fun updateAppWidget(
     }
 
     remoteViews.setViewPadding(
-        R.id.root, horizontalPadding, verticalPadding, horizontalPadding, verticalPadding
+        android.R.id.background, horizontalPadding, verticalPadding, horizontalPadding, verticalPadding
     )
 
     val centerPendingIntent: PendingIntent? = context.getWidgetOpenPendingIntent(widgetId, linkInfo)

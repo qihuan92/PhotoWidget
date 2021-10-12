@@ -1,6 +1,7 @@
 package com.qihuan.photowidget.config
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -158,6 +159,7 @@ class ConfigureActivity : AppCompatActivity() {
             }
         }
 
+    @SuppressLint("MissingPermission")
     private val externalStorageResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
