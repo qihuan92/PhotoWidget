@@ -3,10 +3,7 @@ package com.qihuan.photowidget.main
 import android.annotation.SuppressLint
 import android.appwidget.AppWidgetManager
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -36,8 +33,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val ignoringBatteryOptimizationsLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            viewModel.refreshTipList()
+        registerForActivityResult(IgnoringBatteryOptimizationsContract()) {
+            viewModel.loadTips()
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,17 +72,12 @@ class MainActivity : AppCompatActivity() {
         }
         binding.rvList.layoutManager = gridLayoutManager
         binding.rvList.adapter = adapter
-        tipAdapter.setOnIgnoreTipClickListener {
-
-        }
 
         tipAdapter.setOnPositiveButtonClickListener {
             when (it) {
                 TipsType.IGNORE_BATTERY_OPTIMIZATIONS -> {
                     try {
-                        val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-                        intent.data = Uri.parse("package:$packageName")
-                        ignoringBatteryOptimizationsLauncher.launch(intent)
+                        ignoringBatteryOptimizationsLauncher.launch(packageName)
                     } catch (e: Exception) {
                         logE("MainActivity", "申请关闭电池优化异常", e)
                     }
@@ -126,5 +118,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun refresh() {
         widgetAdapter.refresh()
+        viewModel.loadTips()
     }
 }

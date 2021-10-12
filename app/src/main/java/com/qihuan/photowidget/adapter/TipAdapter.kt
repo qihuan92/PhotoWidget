@@ -37,7 +37,6 @@ class TipAdapter : ListAdapter<TipsType, RecyclerView.ViewHolder>(DiffCallback()
 
     class EmptyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    private var onIgnoreTipClickListener: ((TipsType) -> Unit)? = null
     private var onPositiveButtonClickListener: ((TipsType) -> Unit)? = null
 
     override fun getItemViewType(position: Int): Int {
@@ -50,9 +49,7 @@ class TipAdapter : ListAdapter<TipsType, RecyclerView.ViewHolder>(DiffCallback()
                 val binding = ItemTipIgnoreBatteryOptimizationsBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false
                 )
-                binding.btnIgnoreTip.setOnClickListener {
-                    onIgnoreTipClickListener?.invoke(TipsType.IGNORE_BATTERY_OPTIMIZATIONS)
-                }
+
                 binding.btnIgnoreBatteryOptimizations.setOnClickListener {
                     onPositiveButtonClickListener?.invoke(TipsType.IGNORE_BATTERY_OPTIMIZATIONS)
                 }
@@ -78,10 +75,6 @@ class TipAdapter : ListAdapter<TipsType, RecyclerView.ViewHolder>(DiffCallback()
             TipsType.ADD_WIDGET.code -> {
             }
         }
-    }
-
-    fun setOnIgnoreTipClickListener(listener: (TipsType) -> Unit) {
-        onIgnoreTipClickListener = listener
     }
 
     fun setOnPositiveButtonClickListener(listener: (TipsType) -> Unit) {

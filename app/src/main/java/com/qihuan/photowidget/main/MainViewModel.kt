@@ -28,6 +28,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         loadWidgetList()
+        loadTips()
     }
 
     private fun loadWidgetList() {
@@ -36,7 +37,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 .cachedIn(viewModelScope)
                 .collect {
                     widgetPagingData.value = it
-                    tipList.value = getTipList()
                 }
         }
     }
@@ -46,21 +46,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         pagingSourceFactory = { widgetDao.selectAll() }
     ).flow
 
-    fun refreshTipList() {
+    fun loadTips() {
+        val application = getApplication<App>()
         viewModelScope.launch {
-            tipList.value = getTipList()
-        }
-    }
+            val list = mutableListOf<TipsType>()
+            val isIgnoringBatteryOptimizations = application.isIgnoringBatteryOptimizations()
+            if (!isIgnoringBatteryOptimizations) {
+                list.add(TipsType.IGNORE_BATTERY_OPTIMIZATIONS)
+            }
 
-    private suspend fun getTipList(): MutableList<TipsType> {
-        val widgetCount = widgetDao.selectWidgetCount()
-        val tipList = mutableListOf<TipsType>()
-        if (!getApplication<App>().isIgnoringBatteryOptimizations()) {
-            tipList.add(TipsType.IGNORE_BATTERY_OPTIMIZATIONS)
+            val widgetCount = widgetDao.selectWidgetCount()
+            if (widgetCount == 0) {
+                list.add(TipsType.ADD_WIDGET)
+            }
+
+            tipList.value = list
         }
-        if (widgetCount == 0) {
-            tipList.add(TipsType.ADD_WIDGET)
-        }
-        return tipList
     }
 }
