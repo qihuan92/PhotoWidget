@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.widget.ImageView
 import android.widget.RemoteViews
 import androidx.core.net.toFile
@@ -143,7 +144,7 @@ private fun Context.getWidgetNavPendingIntent(
         this,
         Random.nextInt(),
         navIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
     )
 }
 
