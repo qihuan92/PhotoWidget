@@ -2,4 +2,5 @@
 <resources>
     <dimen name="widget_margin">0dp</dimen>
     <dimen name="card_radius">20dp</dimen>
+    <dimen name="main_padding">16dp</dimen>
 </resources>

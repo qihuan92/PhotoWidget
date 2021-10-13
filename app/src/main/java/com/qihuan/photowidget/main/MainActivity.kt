@@ -15,6 +15,7 @@ import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
 import com.qihuan.photowidget.adapter.TipAdapter
 import com.qihuan.photowidget.adapter.WidgetPagingAdapter
 import com.qihuan.photowidget.bean.TipsType
+import com.qihuan.photowidget.common.MAIN_PAGE_SPAN_COUNT
 import com.qihuan.photowidget.config.ConfigureActivity
 import com.qihuan.photowidget.databinding.ActivityMainBinding
 import com.qihuan.photowidget.ktx.*
@@ -60,12 +61,12 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-        val gridLayoutManager = GridLayoutManager(this, 2)
+        val gridLayoutManager = GridLayoutManager(this, MAIN_PAGE_SPAN_COUNT)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (adapter.getItemViewType(position)) {
-                    TipsType.IGNORE_BATTERY_OPTIMIZATIONS.code -> 2
-                    TipsType.ADD_WIDGET.code -> 2
+                    TipsType.IGNORE_BATTERY_OPTIMIZATIONS.code -> MAIN_PAGE_SPAN_COUNT
+                    TipsType.ADD_WIDGET.code -> MAIN_PAGE_SPAN_COUNT
                     else -> 1
                 }
             }
