@@ -1,6 +1,5 @@
 package com.qihuan.photowidget.main
 
-import android.annotation.SuppressLint
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
@@ -53,7 +52,6 @@ class MainActivity : AppCompatActivity() {
         bindData()
     }
 
-    @SuppressLint("BatteryLife")
     private fun bindView() {
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -61,6 +59,7 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
         val gridLayoutManager = GridLayoutManager(this, MAIN_PAGE_SPAN_COUNT)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -101,6 +100,7 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        binding.refreshLayout.setDefaultColors()
         binding.refreshLayout.setOnRefreshListener {
             refresh()
         }
