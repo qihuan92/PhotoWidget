@@ -63,4 +63,10 @@
         <item name="cornerFamilyTopLeft">rounded</item>
         <item name="cornerFamilyTopRight">rounded</item>
     </style>
+
+    <style name="CardView.WidgetItem">
+        <item name="theme">@style/Widget.Material3.CardView.Filled</item>
+        <item name="cardCornerRadius">@dimen/card_radius</item>
+        <item name="cardElevation">0dp</item>
+    </style>
 </resources>
