@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/menu_config"
             app:navigationIcon="@drawable/ic_round_close_24"
-            app:title="@{viewModel.uiState == UIState.LOADING ? @string/loading : viewModel.imageUriList.empty ? @string/add_widget: @string/edit_widget}" />
+            app:title="@{viewModel.uiState == UIState.LOADING ? @string/loading : viewModel.isEditState() ? @string/edit_widget: @string/add_widget}" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_wallpaper"
