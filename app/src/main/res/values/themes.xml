@@ -20,5 +20,12 @@
         <item name="aboutPageHeaderTextColor">@android:color/primary_text_light</item>
         <item name="aboutPageNavigationIcon">@drawable/ic_round_arrow_back_24</item>
         <!-- Customize your theme here. -->
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+        <item name="android:navigationBarColor">@color/navigation_bar_color_bottom_sheet</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
     </style>
 </resources>
