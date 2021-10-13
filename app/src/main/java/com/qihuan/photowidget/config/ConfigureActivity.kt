@@ -50,7 +50,7 @@ class ConfigureActivity : AppCompatActivity() {
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     private val processImageDialog by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Rounded)
+        MaterialAlertDialogBuilder(this)
             .setTitle(R.string.processing)
             .setCancelable(false)
             .setView(ProgressBar(this).apply {
@@ -60,7 +60,7 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private val saveImageDialog by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Rounded)
+        MaterialAlertDialogBuilder(this)
             .setTitle(R.string.saving)
             .setCancelable(false)
             .setView(ProgressBar(this).apply {
@@ -70,7 +70,7 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private val deleteLinkDialog by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Rounded)
+        MaterialAlertDialogBuilder(this)
             .setTitle(R.string.alert_title_default)
             .setMessage(R.string.conform_delete_photo_link)
             .setPositiveButton(R.string.sure) { _, _ ->
@@ -83,7 +83,7 @@ class ConfigureActivity : AppCompatActivity() {
     private var currentDeletePhotoIndex: Int? = null
 
     private val deletePhotoDialog by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Rounded)
+        MaterialAlertDialogBuilder(this)
             .setTitle(R.string.alert_title_default)
             .setMessage(R.string.conform_delete_photo)
             .setPositiveButton(R.string.sure) { _, _ ->

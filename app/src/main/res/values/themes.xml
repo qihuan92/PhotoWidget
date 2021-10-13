@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.PhotoWidget" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.PhotoWidget" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_700</item>
         <item name="colorPrimaryVariant">@color/purple_200</item>

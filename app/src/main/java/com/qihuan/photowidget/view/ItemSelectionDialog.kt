@@ -4,12 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.view.ContextThemeWrapper
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.qihuan.photowidget.R
 import com.qihuan.photowidget.databinding.DialogItemSelectionBinding
 import com.qihuan.photowidget.databinding.ItemDialogSelectionBinding
 import com.qihuan.photowidget.ktx.viewBinding
@@ -24,7 +22,7 @@ class ItemSelectionDialog<T : ItemSelectionDialog.Item>(
     private val title: String? = null,
     private val itemList: List<T>? = null,
     private val onItemClickListener: ((ItemSelectionDialog<T>, T) -> Unit)? = null
-) : BottomSheetDialog(ContextThemeWrapper(context, R.style.ThemeOverlay_Rounded)) {
+) : BottomSheetDialog(context) {
 
     private val binding by viewBinding(DialogItemSelectionBinding::inflate)
     private val adapter by lazy { Adapter(this, onItemClickListener) }
