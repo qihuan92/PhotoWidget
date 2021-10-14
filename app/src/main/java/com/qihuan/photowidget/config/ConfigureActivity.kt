@@ -189,6 +189,7 @@ class ConfigureActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.activity = this
 
+        binding.root.paddingStatusBar()
         binding.scrollViewInfo.paddingNavigationBar()
 
         bindView()
