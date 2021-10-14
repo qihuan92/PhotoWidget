@@ -13,7 +13,6 @@ import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
 import com.qihuan.photowidget.ktx.paddingNavigationBar
-import com.qihuan.photowidget.ktx.paddingStatusBar
 import com.qihuan.photowidget.ktx.viewBinding
 
 class InstalledAppActivity : AppCompatActivity() {
@@ -38,7 +37,6 @@ class InstalledAppActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.viewModel = viewModel
 
-        binding.root.paddingStatusBar()
         binding.rvList.paddingNavigationBar()
 
         bindView()
