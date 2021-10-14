@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        binding.root.paddingStatusBar()
         binding.rvList.paddingNavigationBar()
 
         bindView()
@@ -99,26 +98,15 @@ class MainActivity : AppCompatActivity() {
                 }
             )
         }
-
-        binding.refreshLayout.setDefaultColors()
-        binding.refreshLayout.setOnRefreshListener {
-            refresh()
-        }
     }
 
     private fun bindData() {
         viewModel.widgetPagingData.observe(this) {
-            binding.refreshLayout.isRefreshing = false
             widgetAdapter.submitData(lifecycle, it)
         }
 
         viewModel.tipList.observe(this) {
             tipAdapter.submitList(it)
         }
-    }
-
-    private fun refresh() {
-        widgetAdapter.refresh()
-        viewModel.loadTips()
     }
 }
