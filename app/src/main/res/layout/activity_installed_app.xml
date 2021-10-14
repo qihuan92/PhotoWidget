@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 app:navigationIcon="@drawable/ic_round_arrow_back_24"
-                app:title="选择应用" />
+                app:title="@string/installed_app_page_title" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

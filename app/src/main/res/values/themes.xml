@@ -14,11 +14,6 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@color/navigation_bar_color</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
-        <!-- About page color. -->
-        <item name="aboutPageHeaderBackground">@android:color/background_light</item>
-        <item name="aboutPageHeaderContentScrim">@android:color/background_light</item>
-        <item name="aboutPageHeaderTextColor">@android:color/primary_text_light</item>
-        <item name="aboutPageNavigationIcon">@drawable/ic_round_arrow_back_24</item>
         <!-- Customize your theme here. -->
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>

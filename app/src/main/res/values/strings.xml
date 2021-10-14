@@ -54,10 +54,17 @@
     <string name="about_developer_name">齐欢</string>
     <string name="about_developer_github">https://github.com/qihuan92</string>
     <string name="about_developer_coolapk_profile_url">http://www.coolapk.com/u/3588942</string>
+    <string name="about_app_coolapk_app_url">https://www.coolapk.com/apk/com.qihuan.photowidget</string>
     <string name="about_title_open_source_licenses">开源协议</string>
     <string name="about">关于</string>
     <string name="about_title_open_source_url">项目地址</string>
     <string name="about_open_source_url">https://github.com/qihuan92/PhotoWidget</string>
+    <string name="about_title_link_coolapk">酷安</string>
+    <string name="about_title_link_github">GitHub</string>
+    <string name="about_title_link_weibo">微博</string>
+    <string name="about_title_link_telegram">Telegram</string>
+    <string name="about_developer_weibo">https://weibo.com/qihuan86</string>
+    <string name="about_developer_telegram">https://t.me/qihuan92</string>
     <string name="item_selection_dialog_title">请选择</string>
     <string name="conform_delete_photo_link">是否删除相片链接</string>
     <string name="conform_delete_photo">是否删除该图片</string>
@@ -68,4 +75,5 @@
     <string name="tip_ignore_battery_optimizations_content">相片微件轮播控件使用了后台服务。如果您遇到相片微件不断消失，请考虑关闭电池优化</string>
     <string name="ignore_battery_optimizations_setting">设置</string>
     <string name="ignore_tip">不再提示</string>
+    <string name="installed_app_page_title">选择应用</string>
 </resources>

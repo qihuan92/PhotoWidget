@@ -19,4 +19,7 @@
     <color name="navigation_bar_color">#B3000000</color>
     <color name="navigation_bar_color_bottom_sheet">#000000</color>
     <color name="card_stroke_color">#1FFFFFFF</color>
+    <color name="about_chip_background">@android:color/background_dark</color>
+
+    <color name="github">#EEEEEE</color>
 </resources>
