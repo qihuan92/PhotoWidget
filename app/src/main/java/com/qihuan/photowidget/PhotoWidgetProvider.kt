@@ -6,11 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.ktx.goAsync
 import com.qihuan.photowidget.ktx.logD
 import kotlinx.coroutines.GlobalScope
-import java.io.File
 
 /**
  * Implementation of App Widget functionality.
@@ -61,13 +59,8 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         logD("PhotoWidgetProvider", "onDeleted() appWidgetIds=$appWidgetIds")
-        val widgetDao = AppDatabase.getDatabase(context).widgetDao()
         goAsync(GlobalScope) {
-            for (appWidgetId in appWidgetIds) {
-                widgetDao.deleteByWidgetId(appWidgetId)
-                val outFile = File(context.filesDir, "widget_${appWidgetId}")
-                outFile.deleteDir()
-            }
+            deleteWidgets(context, appWidgetIds)
         }
     }
 

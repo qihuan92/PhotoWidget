@@ -13,11 +13,14 @@ import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.bean.PlayInterval
 import com.qihuan.photowidget.bean.WidgetBean
+import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.logE
 import com.qihuan.photowidget.ktx.toRoundedBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 import kotlin.random.Random
 
 const val EXTRA_INTERVAL = "interval"
@@ -77,7 +80,11 @@ suspend fun updateAppWidget(
     }
 
     remoteViews.setViewPadding(
-        android.R.id.background, horizontalPadding, verticalPadding, horizontalPadding, verticalPadding
+        android.R.id.background,
+        horizontalPadding,
+        verticalPadding,
+        horizontalPadding,
+        verticalPadding
     )
 
     val centerPendingIntent: PendingIntent? = context.getWidgetOpenPendingIntent(widgetId, linkInfo)
@@ -195,4 +202,20 @@ fun RemoteViews.loadImage(
 
     val alpha = (255 * (1f - transparency / 100f)).toInt()
     setInt(R.id.iv_picture, "setImageAlpha", alpha)
+}
+
+suspend fun deleteWidget(context: Context, widgetId: Int) {
+    val widgetDao = AppDatabase.getDatabase(context).widgetDao()
+    widgetDao.deleteByWidgetId(widgetId)
+    val outFile = File(context.filesDir, "widget_${widgetId}")
+    outFile.deleteDir()
+}
+
+suspend fun deleteWidgets(context: Context, widgetIds: IntArray) {
+    val widgetDao = AppDatabase.getDatabase(context).widgetDao()
+    for (widgetId in widgetIds) {
+        widgetDao.deleteByWidgetId(widgetId)
+        val outFile = File(context.filesDir, "widget_${widgetId}")
+        outFile.deleteDir()
+    }
 }
