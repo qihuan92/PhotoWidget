@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.databinding.ItemWidgetInfoBinding
-import com.qihuan.photowidget.ktx.toDateStr
 
 /**
  * WidgetPagingAdapter
@@ -36,7 +35,7 @@ class WidgetPagingAdapter :
 
         init {
             binding.root.setOnClickListener {
-                onItemClickListener?.invoke(layoutPosition, it)
+                onItemClickListener?.invoke(bindingAdapterPosition, it)
             }
         }
 
@@ -50,8 +49,7 @@ class WidgetPagingAdapter :
                 } else {
                     binding.ivWidgetPicture.setImageResource(R.drawable.ic_round_broken_image_24)
                 }
-                binding.tvTitle.text = "微件ID: ${widgetInfo.widgetId}"
-                binding.tvSubTitle.text = widgetInfo.createTime.toDateStr()
+                binding.tvTitle.text = "ID: ${widgetInfo.widgetId}"
             }
         }
     }

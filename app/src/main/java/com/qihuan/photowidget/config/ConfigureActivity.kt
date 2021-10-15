@@ -1,13 +1,13 @@
 package com.qihuan.photowidget.config
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
@@ -33,6 +34,7 @@ import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.link.InstalledAppActivity
 import com.qihuan.photowidget.link.UrlInputActivity
+import com.qihuan.photowidget.view.ItemSelectionDialog
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
@@ -47,8 +49,8 @@ class ConfigureActivity : AppCompatActivity() {
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
-    private val processImageDialog by lazy {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
+    private val processImageDialog by lazy(LazyThreadSafetyMode.NONE) {
+        MaterialAlertDialogBuilder(this)
             .setTitle(R.string.processing)
             .setCancelable(false)
             .setView(ProgressBar(this).apply {
@@ -57,14 +59,77 @@ class ConfigureActivity : AppCompatActivity() {
             .create()
     }
 
-    private val saveImageDialog by lazy {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
+    private val saveImageDialog by lazy(LazyThreadSafetyMode.NONE) {
+        MaterialAlertDialogBuilder(this)
             .setTitle(R.string.saving)
             .setCancelable(false)
             .setView(ProgressBar(this).apply {
                 updatePadding(top = 10f.dp, bottom = 10f.dp)
             })
             .create()
+    }
+
+    private val deleteLinkDialog by lazy(LazyThreadSafetyMode.NONE) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.alert_title_default)
+            .setMessage(R.string.conform_delete_photo_link)
+            .setPositiveButton(R.string.sure) { _, _ ->
+                viewModel.deleteLink()
+            }
+            .setNegativeButton(R.string.cancel) { _, _ -> }
+            .create()
+    }
+
+    private var currentDeletePhotoIndex: Int? = null
+
+    private val deletePhotoDialog by lazy(LazyThreadSafetyMode.NONE) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.alert_title_default)
+            .setMessage(R.string.conform_delete_photo)
+            .setPositiveButton(R.string.sure) { _, _ ->
+                currentDeletePhotoIndex?.let {
+                    viewModel.deleteImage(it)
+                }
+            }
+            .setNegativeButton(R.string.cancel) { _, _ -> }
+            .setOnDismissListener { currentDeletePhotoIndex = null }
+            .create()
+    }
+
+    private val scaleTypeDialog by lazy(LazyThreadSafetyMode.NONE) {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_scale_type),
+            PhotoScaleType.values().toList()
+        ) { dialog, item ->
+            viewModel.photoScaleType.value = item
+            dialog.dismiss()
+        }
+    }
+
+    private val linkTypeDialog by lazy(LazyThreadSafetyMode.NONE) {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_link_type),
+            LinkType.values().toList()
+        ) { dialog, item ->
+            when (item) {
+                LinkType.OPEN_APP -> launchOpenAppActivity()
+                LinkType.OPEN_URL -> launchOpenLinkActivity()
+            }
+            dialog.dismiss()
+        }
+    }
+
+    private val intervalDialog by lazy(LazyThreadSafetyMode.NONE) {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_interval),
+            PlayInterval.values().toList()
+        ) { dialog, item ->
+            viewModel.autoPlayInterval.value = item
+            dialog.dismiss()
+        }
     }
 
     private val previewAdapter by lazy { PreviewPhotoAdapter() }
@@ -94,6 +159,7 @@ class ConfigureActivity : AppCompatActivity() {
             }
         }
 
+    @SuppressLint("MissingPermission")
     private val externalStorageResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
@@ -147,9 +213,8 @@ class ConfigureActivity : AppCompatActivity() {
 
         binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
         binding.rvPreviewList.adapter = ConcatAdapter(previewAddAdapter, previewAdapter)
-        previewAdapter.setOnItemDeleteListener { position, view ->
-            view.isEnabled = false
-            viewModel.deleteImage(position)
+        previewAdapter.setOnItemDeleteListener { position, _ ->
+            showDeletePhotoAlert(position)
         }
         previewAddAdapter.setOnItemAddListener {
             selectPicForResult.launch("image/*")
@@ -285,7 +350,8 @@ class ConfigureActivity : AppCompatActivity() {
             return
         }
         if (viewModel.imageUriList.value.isNullOrEmpty()) {
-            Toast.makeText(this, R.string.warning_select_picture, Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, R.string.warning_select_picture, Snackbar.LENGTH_SHORT)
+                .show()
             return
         }
         lifecycleScope.launch {
@@ -301,50 +367,41 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     fun showIntervalSelector() {
-        val itemList = PlayInterval.values()
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
-            .setTitle(R.string.alert_title_interval)
-            .setSingleChoiceItems(
-                itemList.map { it.description }.toTypedArray(),
-                itemList.indexOfFirst { it == viewModel.autoPlayInterval.value }
-            ) { dialog, i ->
-                viewModel.autoPlayInterval.value = itemList[i]
-                dialog.dismiss()
-            }.show()
+        intervalDialog.show()
     }
 
     fun showLinkTypeSelector() {
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
-            .setTitle(R.string.alert_title_link_type)
-            .setItems(R.array.open_link_types) { dialog, i ->
-                when (i) {
-                    0 -> appSelectResult.launch(
-                        Intent(this, InstalledAppActivity::class.java).apply {
-                            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                        })
-                    1 -> appSelectResult.launch(
-                        Intent(this, UrlInputActivity::class.java).apply {
-                            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                            val linkInfo = viewModel.linkInfo.value
-                            if (linkInfo != null && linkInfo.type == LinkType.OPEN_URL) {
-                                putExtra("openUrl", linkInfo.link)
-                            }
-                        })
-                }
-                dialog.dismiss()
-            }.show()
+        linkTypeDialog.show()
     }
 
     fun showScaleTypeSelector() {
-        val scaleTypeList = PhotoScaleType.values()
-        MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_Crane)
-            .setTitle(R.string.alert_title_scale_type)
-            .setSingleChoiceItems(
-                scaleTypeList.map { it.description }.toTypedArray(),
-                scaleTypeList.indexOfFirst { it == viewModel.photoScaleType.value }
-            ) { dialog, i ->
-                viewModel.photoScaleType.value = scaleTypeList[i]
-                dialog.dismiss()
-            }.show()
+        scaleTypeDialog.show()
+    }
+
+    fun showDeleteLinkAlert() {
+        deleteLinkDialog.show()
+    }
+
+    private fun showDeletePhotoAlert(position: Int) {
+        currentDeletePhotoIndex = position
+        deletePhotoDialog.show()
+    }
+
+    private fun launchOpenAppActivity() {
+        appSelectResult.launch(
+            Intent(this, InstalledAppActivity::class.java).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            })
+    }
+
+    private fun launchOpenLinkActivity() {
+        appSelectResult.launch(
+            Intent(this, UrlInputActivity::class.java).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                val linkInfo = viewModel.linkInfo.value
+                if (linkInfo != null && linkInfo.type == LinkType.OPEN_URL) {
+                    putExtra("openUrl", linkInfo.link)
+                }
+            })
     }
 }

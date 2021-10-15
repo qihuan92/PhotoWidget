@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:menu="@menu/menu_config"
             app:navigationIcon="@drawable/ic_round_close_24"
-            app:title="@{viewModel.imageUriList.empty ? @string/add_widget: @string/edit_widget}" />
+            app:title="@{viewModel.uiState == UIState.LOADING ? @string/loading : viewModel.isEditState() ? @string/edit_widget: @string/add_widget}" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_wallpaper"
@@ -118,52 +118,22 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_preview_photo" />
 
-                <LinearLayout
-                    android:id="@+id/layout_auto_play_interval"
+                <com.qihuan.photowidget.view.TextSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:onClick="@{() -> activity.showIntervalSelector()}"
-                    android:orientation="vertical"
-                    app:isVisible="@{viewModel.imageUriList.size() > 1}">
+                    app:isVisible="@{viewModel.imageUriList.size() > 1}"
+                    app:textSelectionContent="@{viewModel.autoPlayInterval.description}"
+                    app:textSelectionTitle="@string/auto_play_interval" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/auto_play_interval"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_auto_play_interval"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.autoPlayInterval.description}"
-                        android:textAppearance="?textAppearanceCaption" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_photo_scale_type"
+                <com.qihuan.photowidget.view.TextSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:onClick="@{() -> activity.showScaleTypeSelector()}"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/photo_scale_type"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_photo_scale_type"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.photoScaleType.description}"
-                        android:textAppearance="?textAppearanceCaption" />
-                </LinearLayout>
+                    app:textSelectionContent="@{viewModel.photoScaleType.description}"
+                    app:textSelectionTitle="@string/photo_scale_type" />
 
                 <LinearLayout
                     android:id="@+id/layout_open_url"
@@ -187,7 +157,7 @@
                     <FrameLayout
                         android:id="@+id/layout_add_link"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="65dp"
                         android:background="@drawable/bg_add_link"
                         android:foreground="?selectableItemBackground"
                         app:isVisible="@{viewModel.linkInfo == null}">
@@ -219,7 +189,7 @@
                             android:text="@{viewModel.linkInfo.title}"
                             android:textAppearance="?textAppearanceBody1"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintRight_toLeftOf="@id/btn_delete_link"
                             app:layout_constraintTop_toTopOf="parent"
                             app:linkTypeIcon="@{viewModel.linkInfo.type}"
                             tools:drawableStartCompat="@drawable/ic_round_link_24"
@@ -233,7 +203,7 @@
                             android:text="@{viewModel.linkInfo.description}"
                             android:textAppearance="?textAppearanceCaption"
                             app:layout_constraintLeft_toLeftOf="@id/tv_link_title"
-                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintRight_toLeftOf="@id/btn_delete_link"
                             app:layout_constraintTop_toBottomOf="@id/tv_link_title"
                             tools:text="https://github.com/qihuan92" />
 
@@ -241,8 +211,9 @@
                             android:id="@+id/btn_delete_link"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
+                            android:background="?selectableItemBackgroundBorderless"
                             android:contentDescription="@string/delete_widget_link"
-                            android:onClick="@{() -> viewModel.deleteLink()}"
+                            android:onClick="@{() -> activity.showDeleteLinkAlert()}"
                             android:src="@drawable/ic_round_delete_24"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
@@ -250,105 +221,41 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
 
-                <LinearLayout
+                <com.qihuan.photowidget.view.SliderSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    app:sliderSelectionTitle="@string/vertical_padding"
+                    app:sliderSelectionValue="@={viewModel.verticalPadding}"
+                    app:sliderSelectionValueFrom="0"
+                    app:sliderSelectionValueTo="20" />
 
-                    <TextView
-                        android:id="@+id/tv_vertical_padding"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/vertical_padding"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/slider_vertical_padding"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:stepSize="1"
-                        android:value="@={viewModel.verticalPadding}"
-                        android:valueFrom="0"
-                        android:valueTo="20" />
-                </LinearLayout>
-
-                <LinearLayout
+                <com.qihuan.photowidget.view.SliderSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    app:sliderSelectionTitle="@string/horizontal_padding"
+                    app:sliderSelectionValue="@={viewModel.horizontalPadding}"
+                    app:sliderSelectionValueFrom="0"
+                    app:sliderSelectionValueTo="20" />
 
-                    <TextView
-                        android:id="@+id/tv_horizontal_padding"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/horizontal_padding"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/slider_horizontal_padding"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:stepSize="1"
-                        android:value="@={viewModel.horizontalPadding}"
-                        android:valueFrom="0"
-                        android:valueTo="20" />
-                </LinearLayout>
-
-                <LinearLayout
+                <com.qihuan.photowidget.view.SliderSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    app:sliderSelectionTitle="@string/widget_radius"
+                    app:sliderSelectionValue="@={viewModel.widgetRadius}"
+                    app:sliderSelectionValueFrom="0"
+                    app:sliderSelectionValueTo="50" />
 
-                    <TextView
-                        android:id="@+id/tv_widget_radius"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/widget_radius"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/slider_widget_radius"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:stepSize="1"
-                        android:value="@={viewModel.widgetRadius}"
-                        android:valueFrom="0"
-                        android:valueTo="50" />
-                </LinearLayout>
-
-                <LinearLayout
+                <com.qihuan.photowidget.view.SliderSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tv_widget_transparency"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/widget_transparency"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.slider.Slider
-                        android:id="@+id/slider_widget_transparency"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:stepSize="1"
-                        android:value="@={viewModel.widgetTransparency}"
-                        android:valueFrom="0"
-                        android:valueTo="100" />
-                </LinearLayout>
+                    app:sliderSelectionTitle="@string/widget_transparency"
+                    app:sliderSelectionValue="@={viewModel.widgetTransparency}"
+                    app:sliderSelectionValueFrom="0"
+                    app:sliderSelectionValueTo="100" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 

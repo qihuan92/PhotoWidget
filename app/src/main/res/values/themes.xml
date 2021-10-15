@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.PhotoWidget" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.PhotoWidget" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_700</item>
+        <item name="colorPrimary">@color/purple_7F63C3</item>
         <item name="colorPrimaryVariant">@color/purple_200</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -14,11 +14,13 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@color/navigation_bar_color</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
-        <!-- About page color. -->
-        <item name="aboutPageHeaderBackground">@android:color/background_light</item>
-        <item name="aboutPageHeaderContentScrim">@android:color/background_light</item>
-        <item name="aboutPageHeaderTextColor">@android:color/primary_text_light</item>
-        <item name="aboutPageNavigationIcon">@drawable/ic_round_arrow_back_24</item>
         <!-- Customize your theme here. -->
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+        <item name="android:navigationBarColor">@color/navigation_bar_color_bottom_sheet</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
     </style>
 </resources>

@@ -6,6 +6,8 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.*
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.qihuan.photowidget.R
 
 /**
  * UIExt
@@ -72,6 +74,14 @@ fun View.marginNavigationBarAndIme() {
         }
         insets
     }
+}
+
+fun SwipeRefreshLayout.setDefaultColors() {
+    setColorSchemeResources(
+        R.color.purple_200,
+        R.color.purple_500,
+        R.color.purple_700,
+    )
 }
 
 val Resources.androidShortAnimTime

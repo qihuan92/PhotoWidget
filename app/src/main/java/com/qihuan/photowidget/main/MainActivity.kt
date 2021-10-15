@@ -6,12 +6,15 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import androidx.databinding.ObservableBoolean
-import androidx.paging.LoadState
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.about.AboutActivity
 import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
+import com.qihuan.photowidget.adapter.TipAdapter
 import com.qihuan.photowidget.adapter.WidgetPagingAdapter
+import com.qihuan.photowidget.bean.TipsType
+import com.qihuan.photowidget.common.MAIN_PAGE_SPAN_COUNT
 import com.qihuan.photowidget.config.ConfigureActivity
 import com.qihuan.photowidget.databinding.ActivityMainBinding
 import com.qihuan.photowidget.ktx.*
@@ -21,7 +24,18 @@ class MainActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivityMainBinding::inflate)
     private val viewModel by viewModels<MainViewModel>()
     private val widgetAdapter by lazy { WidgetPagingAdapter() }
-    val isEmpty by lazy { ObservableBoolean(true) }
+    private val tipAdapter by lazy { TipAdapter() }
+    private val adapter by lazy {
+        ConcatAdapter(ConcatAdapter.Config.Builder().setIsolateViewTypes(false).build()).apply {
+            addAdapter(tipAdapter)
+            addAdapter(widgetAdapter.withLoadStateFooter(DefaultLoadStateAdapter(widgetAdapter)))
+        }
+    }
+
+    private val ignoringBatteryOptimizationsLauncher =
+        registerForActivityResult(IgnoringBatteryOptimizationsContract()) {
+            viewModel.loadTips()
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        binding.root.paddingStatusBar()
         binding.rvList.paddingNavigationBar()
 
         bindView()
@@ -45,8 +58,34 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-        binding.rvList.adapter =
-            widgetAdapter.withLoadStateFooter(DefaultLoadStateAdapter(widgetAdapter))
+
+        val gridLayoutManager = GridLayoutManager(this, MAIN_PAGE_SPAN_COUNT)
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when (adapter.getItemViewType(position)) {
+                    TipsType.IGNORE_BATTERY_OPTIMIZATIONS.code -> MAIN_PAGE_SPAN_COUNT
+                    TipsType.ADD_WIDGET.code -> MAIN_PAGE_SPAN_COUNT
+                    else -> 1
+                }
+            }
+        }
+        binding.rvList.layoutManager = gridLayoutManager
+        binding.rvList.adapter = adapter
+
+        tipAdapter.setOnPositiveButtonClickListener {
+            when (it) {
+                TipsType.IGNORE_BATTERY_OPTIMIZATIONS -> {
+                    try {
+                        ignoringBatteryOptimizationsLauncher.launch(packageName)
+                    } catch (e: Exception) {
+                        logE("MainActivity", "申请关闭电池优化异常", e)
+                    }
+                }
+                else -> {
+                }
+            }
+        }
+
         widgetAdapter.setOnItemClickListener { position, _ ->
             val widgetId =
                 widgetAdapter.peek(position)?.widgetInfo?.widgetId ?: return@setOnItemClickListener
@@ -59,27 +98,15 @@ class MainActivity : AppCompatActivity() {
                 }
             )
         }
-        widgetAdapter.addLoadStateListener { loadState ->
-            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && widgetAdapter.itemCount < 1) {
-                isEmpty.set(true)
-            } else {
-                isEmpty.set(false)
-            }
-        }
-
-        binding.refreshLayout.setOnRefreshListener {
-            widgetAdapter.refresh()
-        }
     }
 
     private fun bindData() {
         viewModel.widgetPagingData.observe(this) {
-            binding.refreshLayout.isRefreshing = false
             widgetAdapter.submitData(lifecycle, it)
         }
-    }
 
-    fun refresh() {
-        widgetAdapter.refresh()
+        viewModel.tipList.observe(this) {
+            tipAdapter.submitList(it)
+        }
     }
 }

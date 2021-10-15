@@ -18,6 +18,9 @@ abstract class WidgetDao {
     @Query("select * from widget_info order by createTime desc")
     abstract fun selectAll(): PagingSource<Int, WidgetBean>
 
+    @Query("select count(*) from widget_info")
+    abstract suspend fun selectWidgetCount(): Int
+
     @Transaction
     @Query("select * from widget_info where widgetId = :id")
     abstract suspend fun selectById(id: Int): WidgetBean?

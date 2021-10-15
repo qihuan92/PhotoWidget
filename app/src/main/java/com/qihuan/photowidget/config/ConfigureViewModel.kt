@@ -42,6 +42,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
     val linkInfo by lazy { MutableLiveData<LinkInfo>() }
     val uiState by lazy { MutableLiveData(UIState.LOADING) }
+    val isEditState by lazy { MutableLiveData(false) }
 
     fun addImage(uri: Uri) {
         val value = imageUriList.value
@@ -108,6 +109,7 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
             uiState.value = UIState.LOADING
             val widgetInfo = widgetInfoDao.selectById(widgetId)
             if (widgetInfo != null) {
+                isEditState.value = true
                 copyToTempDir(widgetInfo.widgetId)
                 verticalPadding.value = widgetInfo.verticalPadding
                 horizontalPadding.value = widgetInfo.horizontalPadding
@@ -115,6 +117,8 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 widgetTransparency.value = widgetInfo.widgetTransparency
                 autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
                 photoScaleType.postValue(widgetInfo.photoScaleType)
+            } else {
+                isEditState.value = false
             }
 
             val linkInfoFromDb = linkInfoDao.selectById(widgetId)

@@ -11,6 +11,8 @@ import com.google.android.material.slider.Slider
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.view.SliderSelectionView
+import com.qihuan.photowidget.view.TextSelectionView
 
 
 /**
@@ -69,5 +71,31 @@ object BindingAdapters {
     @BindingAdapter("strokeWidth")
     fun setStrokeWidth(view: MaterialCardView, value: Float) {
         view.strokeWidth = value.dp
+    }
+
+    @JvmStatic
+    @BindingAdapter("textSelectionContent")
+    fun setTextSelectionContent(view: TextSelectionView, value: String) {
+        view.setContent(value)
+    }
+
+    @JvmStatic
+    @InverseBindingAdapter(attribute = "sliderSelectionValue", event = "sliderSelectionAttrChanged")
+    fun getSliderSelectionValue(view: SliderSelectionView): Float {
+        return view.getValue()
+    }
+
+    @JvmStatic
+    @BindingAdapter("sliderSelectionAttrChanged")
+    fun setSliderSelectionListeners(view: SliderSelectionView, attrChange: InverseBindingListener) {
+        view.addOnChangeListener { _, _, _ ->
+            attrChange.onChange()
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("sliderSelectionValue")
+    fun setSliderSelectionValue(view: SliderSelectionView, value: Float) {
+        view.setValue(value)
     }
 }

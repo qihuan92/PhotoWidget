@@ -11,7 +11,6 @@ import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.databinding.ActivityUrlInputBinding
-import com.qihuan.photowidget.ktx.paddingStatusBar
 import com.qihuan.photowidget.ktx.viewBinding
 
 class UrlInputActivity : AppCompatActivity() {
@@ -29,7 +28,6 @@ class UrlInputActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(binding.root)
-        binding.root.paddingStatusBar()
         bindView()
     }
 
