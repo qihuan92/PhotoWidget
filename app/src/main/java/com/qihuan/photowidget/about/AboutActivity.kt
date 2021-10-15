@@ -10,6 +10,7 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.view.WindowCompat
 import com.google.android.material.chip.Chip
 import com.qihuan.photowidget.BuildConfig
 import com.qihuan.photowidget.R
@@ -30,6 +31,7 @@ class AboutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(binding.root)
 
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
