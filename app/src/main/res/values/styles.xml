@@ -19,7 +19,7 @@
     </style>
 
     <style name="ModalBottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
-        <item name="backgroundTint">@android:color/transparent</item>
+        <!--<item name="backgroundTint">@color/bottom_sheet_background</item>-->
         <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
     </style>
 
