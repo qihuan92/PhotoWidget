@@ -32,6 +32,7 @@ class AboutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
         setAppVersion()
         addAppLinks()
         addDeveloperLinks()

@@ -54,8 +54,8 @@
 
                     <ImageView
                         android:id="@+id/iv_app_icon"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:layout_marginTop="10dp"
                         android:contentDescription="@string/app_icon"
                         android:src="@mipmap/ic_launcher"
@@ -138,8 +138,8 @@
 
                     <ImageView
                         android:id="@+id/iv_developer"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:layout_marginTop="10dp"
                         android:contentDescription="@string/about_title_developer"
                         android:src="@drawable/ic_developer_avatar"
@@ -158,6 +158,18 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/iv_developer" />
 
+                    <TextView
+                        android:id="@+id/tv_developer_introduction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:autoLink="web"
+                        android:text="@string/about_developer_introduction"
+                        android:textAppearance="?textAppearanceBodyMedium"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_developer_name" />
+
                     <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -165,7 +177,7 @@
                         android:scrollbars="none"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tv_developer_name">
+                        app:layout_constraintTop_toBottomOf="@id/tv_developer_introduction">
 
                         <com.google.android.material.chip.ChipGroup
                             android:id="@+id/chip_group_developer"

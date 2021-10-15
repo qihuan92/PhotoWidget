@@ -76,4 +76,5 @@
     <string name="ignore_battery_optimizations_setting">设置</string>
     <string name="ignore_tip">不再提示</string>
     <string name="installed_app_page_title">选择应用</string>
+    <string name="about_developer_introduction">https://qihuan92.github.io</string>
 </resources>
