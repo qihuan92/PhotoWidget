@@ -7,7 +7,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ProgressBar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -50,23 +49,11 @@ class ConfigureActivity : AppCompatActivity() {
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     private val processImageDialog by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.processing)
-            .setCancelable(false)
-            .setView(ProgressBar(this).apply {
-                updatePadding(top = 10f.dp, bottom = 10f.dp)
-            })
-            .create()
+        createLoadingDialog(R.string.processing)
     }
 
     private val saveImageDialog by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.saving)
-            .setCancelable(false)
-            .setView(ProgressBar(this).apply {
-                updatePadding(top = 10f.dp, bottom = 10f.dp)
-            })
-            .create()
+        createLoadingDialog(R.string.saving)
     }
 
     private val deleteLinkDialog by lazy(LazyThreadSafetyMode.NONE) {
