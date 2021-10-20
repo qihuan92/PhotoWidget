@@ -8,6 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
+import androidx.work.WorkManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.about.AboutActivity
 import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
@@ -18,6 +22,7 @@ import com.qihuan.photowidget.common.MAIN_PAGE_SPAN_COUNT
 import com.qihuan.photowidget.config.ConfigureActivity
 import com.qihuan.photowidget.databinding.ActivityMainBinding
 import com.qihuan.photowidget.ktx.*
+import com.qihuan.photowidget.worker.ForceUpdateWidgetWorker
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,6 +42,15 @@ class MainActivity : AppCompatActivity() {
             viewModel.loadTips()
         }
 
+    private val forceRefreshWidgetDialog by lazy(LazyThreadSafetyMode.NONE) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.alert_title_force_refresh_widget)
+            .setMessage(R.string.alert_msg_force_refresh_widget)
+            .setNegativeButton(R.string.cancel) { _, _ -> }
+            .setPositiveButton(R.string.alert_positive_btn) { _, _ -> forceRefreshWidget() }
+            .create()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -54,6 +68,7 @@ class MainActivity : AppCompatActivity() {
     private fun bindView() {
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
+                R.id.force_refresh_widget -> forceRefreshWidgetDialog.show()
                 R.id.about -> startActivity(Intent(this, AboutActivity::class.java))
             }
             true
@@ -108,5 +123,13 @@ class MainActivity : AppCompatActivity() {
         viewModel.tipList.observe(this) {
             tipAdapter.submitList(it)
         }
+    }
+
+    private fun forceRefreshWidget() {
+        val workRequest = OneTimeWorkRequestBuilder<ForceUpdateWidgetWorker>()
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .build()
+        WorkManager.getInstance(applicationContext)
+            .enqueue(workRequest)
     }
 }
