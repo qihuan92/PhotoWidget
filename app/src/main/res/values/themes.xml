@@ -18,6 +18,11 @@
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
+    <style name="Theme.Crop" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:navigationBarColor">@color/ucrop_color_widget_background</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+    </style>
+
     <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
         <item name="android:navigationBarColor">@color/navigation_bar_color_bottom_sheet</item>
