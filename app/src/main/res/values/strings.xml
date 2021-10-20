@@ -78,8 +78,8 @@
     <string name="installed_app_page_title">选择应用</string>
     <string name="about_developer_introduction">https://qihuan92.github.io</string>
     <string name="force_refresh_widget">强制刷新</string>
-    <string name="alert_msg_force_refresh_widget">如果您遇到相片微件消失等显示异常的问题，可通过此功能强制刷新所有微件</string>
-    <string name="alert_title_force_refresh_widget">强制刷新微件</string>
+    <string name="alert_msg_force_refresh_widget">如果您遇到相片微件消失等显示异常的问题，可通过此功能刷新所有微件</string>
+    <string name="alert_title_force_refresh_widget">刷新微件</string>
     <string name="alert_positive_btn">刷新</string>
     <string name="background_task_notification_channel_id">background_task</string>
     <string name="background_task_channel_name">后台任务</string>
