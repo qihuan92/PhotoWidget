@@ -34,8 +34,10 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     private val linkInfoDao by lazy { AppDatabase.getDatabase(context).linkInfoDao() }
 
     val widgetRadius by lazy { MutableLiveData(0f) }
-    val verticalPadding by lazy { MutableLiveData(0f) }
-    val horizontalPadding by lazy { MutableLiveData(0f) }
+    val topPadding by lazy { MutableLiveData(0f) }
+    val bottomPadding by lazy { MutableLiveData(0f) }
+    val leftPadding by lazy { MutableLiveData(0f) }
+    val rightPadding by lazy { MutableLiveData(0f) }
     val widgetTransparency by lazy { MutableLiveData(0f) }
     val autoPlayInterval by lazy { MutableLiveData(PlayInterval.NONE) }
     val photoScaleType by lazy { MutableLiveData(PhotoScaleType.CENTER_CROP) }
@@ -111,8 +113,10 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
             if (widgetInfo != null) {
                 isEditState.value = true
                 copyToTempDir(widgetInfo.widgetId)
-                verticalPadding.value = widgetInfo.verticalPadding
-                horizontalPadding.value = widgetInfo.horizontalPadding
+                topPadding.value = widgetInfo.topPadding
+                bottomPadding.value = widgetInfo.bottomPadding
+                leftPadding.value = widgetInfo.leftPadding
+                rightPadding.value = widgetInfo.rightPadding
                 widgetRadius.value = widgetInfo.widgetRadius
                 widgetTransparency.value = widgetInfo.widgetTransparency
                 autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
@@ -131,8 +135,10 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     suspend fun saveWidget(widgetId: Int) {
         val widgetInfo = WidgetInfo(
             widgetId = widgetId,
-            verticalPadding = verticalPadding.value ?: 0f,
-            horizontalPadding = horizontalPadding.value ?: 0f,
+            topPadding = topPadding.value ?: 0f,
+            bottomPadding = bottomPadding.value ?: 0f,
+            leftPadding = leftPadding.value ?: 0f,
+            rightPadding = rightPadding.value ?: 0f,
             widgetRadius = widgetRadius.value ?: 0f,
             widgetTransparency = widgetTransparency.value ?: 0f,
             autoPlayInterval = autoPlayInterval.value ?: PlayInterval.NONE,

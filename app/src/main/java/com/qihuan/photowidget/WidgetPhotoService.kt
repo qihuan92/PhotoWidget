@@ -63,17 +63,15 @@ class WidgetPhotoViewFactory(
             return null
         }
 
-        val width = appWidgetManager.getAppWidgetOptions(widgetId)
-            .getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
-        val height = appWidgetManager.getAppWidgetOptions(widgetId)
-            .getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+        val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo)
+        val imageHeight = appWidgetManager.getWidgetImageHeight(widgetInfo)
 
         val scaleType = widgetInfo.photoScaleType.scaleType
         val imageUri = imageList[position].imageUri
         val radius = widgetInfo.widgetRadius
         val transparency = widgetInfo.widgetTransparency
         val remoteViews = context.createImageRemoteViews(scaleType).apply {
-            loadImage(context, imageUri, scaleType, radius, transparency, width, height)
+            loadImage(context, imageUri, scaleType, radius, transparency, imageWidth, imageHeight)
         }
         return remoteViews
     }

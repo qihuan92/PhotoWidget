@@ -61,10 +61,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="30dp"
-            android:paddingLeft="@{viewModel.horizontalPadding}"
-            android:paddingTop="@{viewModel.verticalPadding}"
-            android:paddingRight="@{viewModel.horizontalPadding}"
-            android:paddingBottom="@{viewModel.verticalPadding}"
+            android:paddingStart="@{viewModel.leftPadding}"
+            android:paddingTop="@{viewModel.topPadding}"
+            android:paddingEnd="@{viewModel.rightPadding}"
+            android:paddingBottom="@{viewModel.bottomPadding}"
             app:layout_constraintBottom_toBottomOf="@id/iv_wallpaper"
             app:layout_constraintDimensionRatio="h,1:1"
             app:layout_constraintLeft_toLeftOf="@id/guideline_center_vertical"
@@ -225,19 +225,37 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    app:sliderSelectionTitle="@string/vertical_padding"
-                    app:sliderSelectionValue="@={viewModel.verticalPadding}"
+                    app:sliderSelectionTitle="@string/top_padding"
+                    app:sliderSelectionValue="@={viewModel.topPadding}"
                     app:sliderSelectionValueFrom="0"
-                    app:sliderSelectionValueTo="20" />
+                    app:sliderSelectionValueTo="60" />
 
                 <com.qihuan.photowidget.view.SliderSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    app:sliderSelectionTitle="@string/horizontal_padding"
-                    app:sliderSelectionValue="@={viewModel.horizontalPadding}"
+                    app:sliderSelectionTitle="@string/bottom_padding"
+                    app:sliderSelectionValue="@={viewModel.bottomPadding}"
                     app:sliderSelectionValueFrom="0"
-                    app:sliderSelectionValueTo="20" />
+                    app:sliderSelectionValueTo="60" />
+
+                <com.qihuan.photowidget.view.SliderSelectionView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:sliderSelectionTitle="@string/left_padding"
+                    app:sliderSelectionValue="@={viewModel.leftPadding}"
+                    app:sliderSelectionValueFrom="0"
+                    app:sliderSelectionValueTo="60" />
+
+                <com.qihuan.photowidget.view.SliderSelectionView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:sliderSelectionTitle="@string/right_padding"
+                    app:sliderSelectionValue="@={viewModel.rightPadding}"
+                    app:sliderSelectionValueFrom="0"
+                    app:sliderSelectionValueTo="60" />
 
                 <com.qihuan.photowidget.view.SliderSelectionView
                     android:layout_width="match_parent"

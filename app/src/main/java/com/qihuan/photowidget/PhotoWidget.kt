@@ -9,10 +9,7 @@ import android.os.Build
 import android.widget.ImageView
 import android.widget.RemoteViews
 import androidx.core.net.toFile
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.LinkType
-import com.qihuan.photowidget.bean.PlayInterval
-import com.qihuan.photowidget.bean.WidgetBean
+import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.ktx.dp
@@ -43,8 +40,10 @@ suspend fun updateAppWidget(
     val widgetId = widgetInfo.widgetId
     val linkInfo = widgetBean.linkInfo
     val autoPlayInterval = widgetInfo.autoPlayInterval
-    val horizontalPadding = widgetInfo.horizontalPadding.dp
-    val verticalPadding = widgetInfo.verticalPadding.dp
+    val topPadding = widgetInfo.topPadding.dp
+    val bottomPadding = widgetInfo.bottomPadding.dp
+    val leftPadding = widgetInfo.leftPadding.dp
+    val rightPadding = widgetInfo.rightPadding.dp
     val scaleType = widgetInfo.photoScaleType.scaleType
     val widgetRadius = widgetInfo.widgetRadius
     val widgetTransparency = widgetInfo.widgetTransparency
@@ -63,28 +62,26 @@ suspend fun updateAppWidget(
         remoteViews.addView(R.id.fl_picture_container, context.createImageRemoteViews(scaleType))
         withContext(Dispatchers.IO) {
             val imageUri = imageList[0].imageUri
-            val width = appWidgetManager.getAppWidgetOptions(widgetId)
-                .getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
-            val height = appWidgetManager.getAppWidgetOptions(widgetId)
-                .getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+            val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo)
+            val imageHeight = appWidgetManager.getWidgetImageHeight(widgetInfo)
             remoteViews.loadImage(
                 context,
                 imageUri,
                 scaleType,
                 widgetRadius,
                 widgetTransparency,
-                width,
-                height
+                imageWidth,
+                imageHeight
             )
         }
     }
 
     remoteViews.setViewPadding(
         android.R.id.background,
-        horizontalPadding,
-        verticalPadding,
-        horizontalPadding,
-        verticalPadding
+        leftPadding,
+        topPadding,
+        rightPadding,
+        bottomPadding
     )
 
     val centerPendingIntent: PendingIntent? = context.getWidgetOpenPendingIntent(widgetId, linkInfo)
@@ -178,6 +175,20 @@ fun Context.createImageRemoteViews(scaleType: ImageView.ScaleType): RemoteViews 
     } else {
         RemoteViews(packageName, R.layout.layout_widget_image_fitxy)
     }
+}
+
+fun AppWidgetManager.getWidgetImageWidth(widgetInfo: WidgetInfo): Int {
+    val width = getAppWidgetOptions(widgetInfo.widgetId)
+        .getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+    val imageWidth = width - widgetInfo.leftPadding - widgetInfo.rightPadding
+    return imageWidth.toInt()
+}
+
+fun AppWidgetManager.getWidgetImageHeight(widgetInfo: WidgetInfo): Int {
+    val height = getAppWidgetOptions(widgetInfo.widgetId)
+        .getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+    val imageHeight = height - widgetInfo.topPadding - widgetInfo.bottomPadding
+    return imageHeight.toInt()
 }
 
 fun RemoteViews.loadImage(

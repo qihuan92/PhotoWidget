@@ -71,7 +71,7 @@ fun Uri.toRoundedBitmap(
         builder = builder.transform(*transformList.toTypedArray())
     }
 
-    if (scaleType != ImageView.ScaleType.CENTER_CROP || (width == 0 || height == 0)) {
+    if (scaleType != ImageView.ScaleType.CENTER_CROP || (width <= 0 || height <= 0)) {
         return builder.submit().get()
     }
     return builder.submit(width, height).get()
