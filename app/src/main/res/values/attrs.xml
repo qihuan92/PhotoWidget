@@ -2,6 +2,7 @@
     <declare-styleable name="TextSelectionView">
         <attr name="textSelectionTitle" format="reference|string" />
         <attr name="textSelectionContent" format="reference|string" />
+        <attr name="textSelectionIcon" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="SliderSelectionView">

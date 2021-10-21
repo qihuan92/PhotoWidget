@@ -118,22 +118,37 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_preview_photo" />
 
-                <com.qihuan.photowidget.view.TextSelectionView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:onClick="@{() -> activity.showIntervalSelector()}"
-                    app:isVisible="@{viewModel.imageUriList.size() > 1}"
-                    app:textSelectionContent="@{viewModel.autoPlayInterval.description}"
-                    app:textSelectionTitle="@string/auto_play_interval" />
+                    android:dividerPadding="5dp"
+                    android:orientation="horizontal">
 
-                <com.qihuan.photowidget.view.TextSelectionView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:onClick="@{() -> activity.showScaleTypeSelector()}"
-                    app:textSelectionContent="@{viewModel.photoScaleType.description}"
-                    app:textSelectionTitle="@string/photo_scale_type" />
+                    <com.qihuan.photowidget.view.TextSelectionView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:onClick="@{() -> activity.showIntervalSelector()}"
+                        app:isVisible="@{viewModel.imageUriList.size() > 1}"
+                        app:textSelectionContent="@{viewModel.autoPlayInterval.simpleDescription}"
+                        app:textSelectionIcon="@drawable/ic_round_timer_24"
+                        app:textSelectionTitle="@string/auto_play_interval" />
+
+                    <Space
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content"
+                        app:isVisible="@{viewModel.imageUriList.size() > 1}" />
+
+                    <com.qihuan.photowidget.view.TextSelectionView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:onClick="@{() -> activity.showScaleTypeSelector()}"
+                        app:textSelectionContent="@{viewModel.photoScaleType.description}"
+                        app:textSelectionIcon="@drawable/ic_round_center_focus_strong_24"
+                        app:textSelectionTitle="@string/photo_scale_type" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/layout_open_url"

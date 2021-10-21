@@ -35,6 +35,7 @@
     <string name="add_widget_link">添加微件链接</string>
     <string name="delete_widget_link">删除微件链接</string>
     <string name="app_icon">应用图标</string>
+    <string name="option_icon">选项图标</string>
     <string name="delete_photo">删除相片</string>
     <string name="widget_photo">微件相片</string>
     <string name="wallpaper">壁纸</string>
