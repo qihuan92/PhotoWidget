@@ -10,7 +10,6 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.*
@@ -44,7 +43,12 @@ import java.util.*
 class ConfigureActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityConfigureBinding::inflate)
-    private val viewModel by viewModels<ConfigureViewModel>()
+    private val viewModel by viewModels<ConfigureViewModel> {
+        ConfigureViewModelFactory(
+            application,
+            appWidgetId
+        )
+    }
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
@@ -151,9 +155,7 @@ class ConfigureActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
                 val wallpaperManager = WallpaperManager.getInstance(this)
-                val wallpaper = wallpaperManager.drawable.toBitmap()
-                // 设置壁纸背景
-                binding.ivWallpaper.setImageBitmap(wallpaper)
+                binding.ivWallpaper.setImageDrawable(wallpaperManager.drawable)
             }
         }
 
@@ -171,6 +173,7 @@ class ConfigureActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setResult(RESULT_CANCELED)
         setContentView(binding.root)
+        handleIntent(intent)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -181,7 +184,6 @@ class ConfigureActivity : AppCompatActivity() {
 
         bindView()
         initView()
-        handleIntent(intent)
     }
 
     private fun initView() {
@@ -281,11 +283,6 @@ class ConfigureActivity : AppCompatActivity() {
         tempDir.deleteDir()
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        handleIntent(intent)
-    }
-
     private fun handleIntent(intent: Intent?) {
         val extras = intent?.extras
         if (extras != null) {
@@ -300,8 +297,6 @@ class ConfigureActivity : AppCompatActivity() {
             finish()
             return
         }
-
-        viewModel.loadWidget(appWidgetId)
     }
 
     private fun addPhoto(vararg uris: Uri) {
@@ -343,7 +338,7 @@ class ConfigureActivity : AppCompatActivity() {
         }
         lifecycleScope.launch {
             saveImageDialog.show()
-            viewModel.saveWidget(appWidgetId)
+            viewModel.saveWidget()
             saveImageDialog.dismiss()
 
             setResult(RESULT_OK, Intent().apply {
