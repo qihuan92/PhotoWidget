@@ -150,51 +150,20 @@
                         app:textSelectionTitle="@string/photo_scale_type" />
                 </LinearLayout>
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/layout_open_url"
+                    style="@style/CardView.WidgetLink"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:onClick="@{() -> activity.showLinkTypeSelector()}"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/widget_open_url"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
-
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="5dp" />
-
-                    <FrameLayout
-                        android:id="@+id/layout_add_link"
-                        android:layout_width="match_parent"
-                        android:layout_height="65dp"
-                        android:background="@drawable/bg_add_link"
-                        android:foreground="?selectableItemBackground"
-                        app:isVisible="@{viewModel.linkInfo == null}">
-
-                        <ImageView
-                            android:id="@+id/btn_add_link"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:layout_gravity="center"
-                            android:contentDescription="@string/add_widget_link"
-                            android:padding="2dp"
-                            android:src="@drawable/ic_round_add_24"
-                            app:tint="?android:colorControlNormal" />
-                    </FrameLayout>
+                    android:onClick="@{() -> activity.showLinkTypeSelector()}">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_link"
                         android:foreground="?selectableItemBackground"
-                        android:padding="10dp"
-                        app:isVisible="@{viewModel.linkInfo != null}">
+                        android:padding="10dp">
 
                         <TextView
                             android:id="@+id/tv_link_title"
@@ -233,13 +202,34 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.constraintlayout.widget.Group
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:constraint_referenced_ids="tv_link_title,tv_link_description,btn_delete_link"
+                            app:isVisible="@{viewModel.linkInfo != null}" />
+
+                        <TextView
+                            android:id="@+id/tv_add_link"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="5dp"
+                            android:text="@string/add_widget_link"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textStyle="bold"
+                            app:drawableLeftCompat="@drawable/ic_round_add_link_24"
+                            app:isVisible="@{viewModel.linkInfo == null}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
-                </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <com.qihuan.photowidget.view.SliderSelectionView
@@ -305,7 +295,7 @@
                 <com.qihuan.photowidget.view.SliderSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     app:sliderSelectionIcon="@drawable/ic_round_rounded_corner_24"
                     app:sliderSelectionTitle="@string/widget_radius"
                     app:sliderSelectionValue="@={viewModel.widgetRadius}"
@@ -316,7 +306,7 @@
                 <com.qihuan.photowidget.view.SliderSelectionView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     app:sliderSelectionIcon="@drawable/ic_round_opacity_24"
                     app:sliderSelectionTitle="@string/widget_transparency"
                     app:sliderSelectionValue="@={viewModel.widgetTransparency}"
