@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import com.google.android.material.card.MaterialCardView
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.databinding.LayoutTextSelectionBinding
 
@@ -14,7 +14,7 @@ import com.qihuan.photowidget.databinding.LayoutTextSelectionBinding
  * @author qi
  * @since 2021/10/8
  */
-class TextSelectionView : LinearLayout {
+class TextSelectionView : MaterialCardView {
 
     private var title: String? = null
     private var content: String? = null

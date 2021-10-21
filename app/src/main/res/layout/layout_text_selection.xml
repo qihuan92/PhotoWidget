@@ -1,48 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/CardView.TextSelection"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="5dp"
+    android:paddingVertical="10dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="4dp"
+        android:contentDescription="@string/option_icon"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_title"
+        tools:src="@drawable/ic_outline_info_24" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingHorizontal="5dp"
-        android:paddingVertical="10dp">
+        android:textAppearance="?textAppearanceTitleMedium"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/iv_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="选项选项选项选项选项选项选项" />
 
-        <ImageView
-            android:id="@+id/iv_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="4dp"
-            android:contentDescription="@string/option_icon"
-            app:layout_constraintBottom_toBottomOf="@id/tv_title"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_title"
-            tools:src="@drawable/ic_outline_info_24" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="5dp"
-            android:textAppearance="?textAppearanceTitleMedium"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@id/iv_icon"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="选项选项选项选项选项选项选项" />
-
-        <TextView
-            android:id="@+id/tv_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:paddingHorizontal="5dp"
-            android:textAppearance="?textAppearanceCaption"
-            app:layout_constraintLeft_toLeftOf="@id/tv_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_title"
-            tools:text="选项选项选项选项选项选项选项" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</com.google.android.material.card.MaterialCardView>
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingHorizontal="5dp"
+        android:textAppearance="?textAppearanceCaption"
+        app:layout_constraintLeft_toLeftOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:text="选项选项选项选项选项选项选项" />
+</androidx.constraintlayout.widget.ConstraintLayout>

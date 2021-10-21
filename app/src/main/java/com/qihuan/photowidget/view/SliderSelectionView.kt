@@ -5,8 +5,8 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.databinding.LayoutSliderSelectionBinding
@@ -17,7 +17,7 @@ import com.qihuan.photowidget.databinding.LayoutSliderSelectionBinding
  * @since 2021/10/8
  */
 @SuppressLint("SetTextI18n")
-class SliderSelectionView : LinearLayout {
+class SliderSelectionView : MaterialCardView {
 
     private var title: String? = null
     private var value: Float = 0f
