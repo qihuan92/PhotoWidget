@@ -23,4 +23,6 @@
     <color name="wallpaper">#424242</color>
 
     <color name="github">#EEEEEE</color>
+
+    <color name="selection_card_background">#20EDE7F6</color>
 </resources>
