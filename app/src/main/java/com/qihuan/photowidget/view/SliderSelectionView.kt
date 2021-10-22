@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import androidx.core.view.isVisible
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
@@ -53,6 +54,7 @@ class SliderSelectionView : MaterialCardView {
     private fun initView() {
         binding.tvTitle.text = title
         binding.slider.apply {
+            id = View.generateViewId()
             value = this@SliderSelectionView.value
             valueFrom = this@SliderSelectionView.valueFrom
             valueTo = this@SliderSelectionView.valueTo
