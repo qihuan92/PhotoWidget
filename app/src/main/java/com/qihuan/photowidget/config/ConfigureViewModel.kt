@@ -56,18 +56,18 @@ class ConfigureViewModel(
     fun addImage(uri: Uri) {
         val value = imageUriList.value
         value?.add(uri)
-        imageUriList.postValue(value)
+        imageUriList.value = value
     }
 
     private fun replaceImageList(uriList: List<Uri>) {
-        imageUriList.postValue(uriList.toMutableList())
+        imageUriList.value = uriList.toMutableList()
     }
 
     fun deleteImage(position: Int) {
         val value = imageUriList.value
         val uri = value?.get(position)
         value?.removeAt(value.indexOf(uri))
-        imageUriList.postValue(value)
+        imageUriList.value = value
 
         viewModelScope.launch {
             deleteFile(uri)
@@ -90,6 +90,7 @@ class ConfigureViewModel(
         val cacheDir = context.cacheDir
         val imageList = widgetDao.selectImageList(appWidgetId)
 
+        val uriList = mutableListOf<Uri>()
         withContext(Dispatchers.IO) {
             // remove compressor cache
             val compressorCacheDir = File(cacheDir, "compressor")
@@ -100,7 +101,6 @@ class ConfigureViewModel(
                 tempDir.mkdirs()
             }
 
-            val uriList = mutableListOf<Uri>()
             imageList.forEach {
                 val imageFile = it.imageUri.toFile()
                 if (imageFile.exists()) {
@@ -109,8 +109,8 @@ class ConfigureViewModel(
                     uriList.add(tempFile.toUri())
                 }
             }
-            replaceImageList(uriList)
         }
+        replaceImageList(uriList)
     }
 
     private fun loadWidget() {
@@ -126,8 +126,8 @@ class ConfigureViewModel(
                 rightPadding.value = widgetInfo.rightPadding
                 widgetRadius.value = widgetInfo.widgetRadius
                 widgetTransparency.value = widgetInfo.widgetTransparency
-                autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
-                photoScaleType.postValue(widgetInfo.photoScaleType)
+                autoPlayInterval.value = widgetInfo.autoPlayInterval
+                photoScaleType.value = widgetInfo.photoScaleType
             } else {
                 isEditState.value = false
             }
