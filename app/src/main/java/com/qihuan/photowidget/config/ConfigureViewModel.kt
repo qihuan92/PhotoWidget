@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.*
 
 /**
  * ConfigureViewModel
@@ -194,5 +195,23 @@ class ConfigureViewModel(
             }
             return@withContext uriList
         }
+    }
+
+    fun updatePhotoScaleType(value: PhotoScaleType) {
+        photoScaleType.value = value
+    }
+
+    fun updateAutoPlayInterval(value: PlayInterval) {
+        autoPlayInterval.value = value
+    }
+
+    fun updateLinkInfo(value: LinkInfo?) {
+        linkInfo.value = value
+    }
+
+    fun swapImageList(fromPosition: Int, toPosition: Int) {
+        val list = imageUriList.value ?: mutableListOf()
+        Collections.swap(list, fromPosition, toPosition)
+        imageUriList.value = list
     }
 }

@@ -23,6 +23,7 @@ import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
+import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.bean.PhotoScaleType
 import com.qihuan.photowidget.bean.PlayInterval
@@ -93,7 +94,7 @@ class ConfigureActivity : AppCompatActivity() {
             getString(R.string.alert_title_scale_type),
             PhotoScaleType.values().toList()
         ) { dialog, item ->
-            viewModel.photoScaleType.value = item
+            viewModel.updatePhotoScaleType(item)
             dialog.dismiss()
         }
     }
@@ -118,7 +119,7 @@ class ConfigureActivity : AppCompatActivity() {
             getString(R.string.alert_title_interval),
             PlayInterval.values().toList()
         ) { dialog, item ->
-            viewModel.autoPlayInterval.value = item
+            viewModel.updateAutoPlayInterval(item)
             dialog.dismiss()
         }
     }
@@ -163,7 +164,8 @@ class ConfigureActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
                 it.data?.apply {
-                    viewModel.linkInfo.value = getParcelableExtra("linkInfo")
+                    val linkInfo = getParcelableExtra<LinkInfo>("linkInfo")
+                    viewModel.updateLinkInfo(linkInfo)
                 }
             }
         }
@@ -216,7 +218,7 @@ class ConfigureActivity : AppCompatActivity() {
             widgetAdapter.setData(it)
 
             if (it.size <= 1) {
-                viewModel.autoPlayInterval.value = PlayInterval.NONE
+                viewModel.updateAutoPlayInterval(PlayInterval.NONE)
             }
         }
 
@@ -265,10 +267,7 @@ class ConfigureActivity : AppCompatActivity() {
             ): Boolean {
                 val fromPosition = viewHolder.bindingAdapterPosition
                 val toPosition = target.bindingAdapterPosition
-                val list = viewModel.imageUriList.value ?: mutableListOf()
-                Collections.swap(list, fromPosition, toPosition)
-                previewAdapter.submitList(list)
-                viewModel.imageUriList.value = list
+                viewModel.swapImageList(fromPosition, toPosition)
                 return true
             }
 
