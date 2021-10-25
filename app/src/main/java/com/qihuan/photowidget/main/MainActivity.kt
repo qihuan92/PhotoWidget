@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.work.OneTimeWorkRequestBuilder
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     private val ignoringBatteryOptimizationsLauncher =
         registerForActivityResult(IgnoringBatteryOptimizationsContract()) {
-            viewModel.loadTips()
+            viewModel.loadIgnoreBatteryOptimizations()
         }
 
     private val forceRefreshWidgetDialog by lazy(LazyThreadSafetyMode.NONE) {
@@ -113,6 +114,14 @@ class MainActivity : AppCompatActivity() {
                 }
             )
         }
+
+        widgetAdapter.addLoadStateListener { loadState ->
+            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && widgetAdapter.itemCount < 1) {
+                viewModel.loadAddWidgetTip(true)
+            } else {
+                viewModel.loadAddWidgetTip(false)
+            }
+        }
     }
 
     private fun bindData() {
@@ -121,7 +130,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.tipList.observe(this) {
-            tipAdapter.submitList(it)
+            tipAdapter.submitList(it.toMutableList())
         }
     }
 
