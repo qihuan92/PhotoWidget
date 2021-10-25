@@ -108,6 +108,7 @@ class ConfigureActivity : AppCompatActivity() {
             when (item) {
                 LinkType.OPEN_APP -> launchOpenAppActivity()
                 LinkType.OPEN_URL -> launchOpenLinkActivity()
+                LinkType.OPEN_ALBUM -> widgetOpenAlbum()
             }
             dialog.dismiss()
         }
@@ -384,5 +385,16 @@ class ConfigureActivity : AppCompatActivity() {
                     putExtra("openUrl", linkInfo.link)
                 }
             })
+    }
+
+    private fun widgetOpenAlbum() {
+        val linkInfo = LinkInfo(
+            appWidgetId,
+            LinkType.OPEN_ALBUM,
+            getString(R.string.widget_link_open_album),
+            getString(R.string.widget_link_open_album_description),
+            ""
+        )
+        viewModel.updateLinkInfo(linkInfo)
     }
 }

@@ -90,4 +90,6 @@
     <string name="background_task_channel_name">后台任务</string>
     <string name="force_refresh_widget_notification_title">强制刷新微件</string>
     <string name="force_refresh_widget_cancel_processing">取消</string>
+    <string name="widget_link_open_album">打开相册</string>
+    <string name="widget_link_open_album_description">在相册中显示当前照片</string>
 </resources>
