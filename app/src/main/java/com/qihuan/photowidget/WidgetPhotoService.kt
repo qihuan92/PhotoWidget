@@ -3,11 +3,17 @@ package com.qihuan.photowidget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.net.toFile
+import com.qihuan.photowidget.bean.LinkInfo
+import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.ktx.toRoundedBitmap
 
 /**
  * PhotoImageService
@@ -29,6 +35,7 @@ class WidgetPhotoViewFactory(
 
     private val widgetDao by lazy { AppDatabase.getDatabase(context).widgetDao() }
     private var widgetInfo: WidgetInfo? = null
+    private var linkInfo: LinkInfo? = null
     private val imageList by lazy { mutableListOf<WidgetImage>() }
     private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private val appWidgetManager by lazy { AppWidgetManager.getInstance(context) }
@@ -46,6 +53,7 @@ class WidgetPhotoViewFactory(
         if (widgetBean != null) {
             imageList.addAll(widgetBean.imageList)
             widgetInfo = widgetBean.widgetInfo
+            linkInfo = widgetBean.linkInfo
         }
     }
 
@@ -63,15 +71,33 @@ class WidgetPhotoViewFactory(
             return null
         }
 
-        val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo)
-        val imageHeight = appWidgetManager.getWidgetImageHeight(widgetInfo)
-
         val scaleType = widgetInfo.photoScaleType.scaleType
         val imageUri = imageList[position].imageUri
-        val radius = widgetInfo.widgetRadius
-        val transparency = widgetInfo.widgetTransparency
-        val remoteViews = context.createImageRemoteViews(scaleType).apply {
-            loadImage(context, imageUri, scaleType, radius, transparency, imageWidth, imageHeight)
+        val radius = widgetInfo.widgetRadius.dp
+        val remoteViews = createImageRemoteViews(context, scaleType)
+        if (imageUri.toFile().exists()) {
+            val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo).toFloat().dp
+            val imageHeight = appWidgetManager.getWidgetImageHeight(widgetInfo).toFloat().dp
+            val imageBitmap =
+                imageUri.toRoundedBitmap(context, radius, scaleType, imageWidth, imageHeight)
+            remoteViews.setImageViewBitmap(R.id.iv_picture, imageBitmap)
+
+            linkInfo?.apply {
+                if (type == LinkType.OPEN_ALBUM) {
+                    // todo
+                    val fillInIntent = Intent().apply {
+                        Bundle().also { extras ->
+                            extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                            extras.putParcelable(EXTRA_IMAGE_URI, imageUri)
+                            extras.putInt("position", position)
+                            putExtras(extras)
+                        }
+                    }
+                    remoteViews.setOnClickFillInIntent(R.id.iv_picture, fillInIntent)
+                }
+            }
+        } else {
+            remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
         }
         return remoteViews
     }

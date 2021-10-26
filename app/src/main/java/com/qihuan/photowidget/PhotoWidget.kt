@@ -9,12 +9,12 @@ import android.os.Build
 import android.widget.ImageView
 import android.widget.RemoteViews
 import androidx.core.net.toFile
-import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.bean.LinkType
+import com.qihuan.photowidget.bean.PlayInterval
+import com.qihuan.photowidget.bean.WidgetBean
+import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.deleteDir
-import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.logE
-import com.qihuan.photowidget.ktx.toRoundedBitmap
+import com.qihuan.photowidget.ktx.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -22,8 +22,10 @@ import kotlin.random.Random
 
 const val EXTRA_INTERVAL = "interval"
 const val EXTRA_NAV = "nav"
+const val EXTRA_IMAGE_URI = "image_uri"
 const val NAV_WIDGET_PREV = "nav_widget_prev"
 const val NAV_WIDGET_NEXT = "nav_widget_next"
+const val ACTION_OPEN_ALBUM = "${BuildConfig.APPLICATION_ID}.OPEN_ALBUM_ACTION"
 
 suspend fun updateAppWidget(
     context: Context,
@@ -45,37 +47,42 @@ suspend fun updateAppWidget(
     val leftPadding = widgetInfo.leftPadding.dp
     val rightPadding = widgetInfo.rightPadding.dp
     val scaleType = widgetInfo.photoScaleType.scaleType
-    val widgetRadius = widgetInfo.widgetRadius
+    val widgetRadius = widgetInfo.widgetRadius.dp
     val widgetTransparency = widgetInfo.widgetTransparency
 
     val remoteViews: RemoteViews
     if (isMultiImage) {
+        // Create flipper remote views
         remoteViews = createFlipperRemoteViews(context, autoPlayInterval.interval)
-        val serviceIntent = Intent(context, WidgetPhotoService::class.java).apply {
-            type = Random.nextInt().toString()
-            putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-        }
+        val serviceIntent = Intent(context, WidgetPhotoService::class.java)
+        serviceIntent.type = Random.nextInt().toString()
+        serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         remoteViews.setRemoteAdapter(R.id.vf_picture, serviceIntent)
     } else {
+        // Create single image remote views
         remoteViews = RemoteViews(context.packageName, R.layout.photo_widget_single)
         remoteViews.removeAllViews(R.id.fl_picture_container)
-        remoteViews.addView(R.id.fl_picture_container, context.createImageRemoteViews(scaleType))
-        withContext(Dispatchers.IO) {
-            val imageUri = imageList[0].imageUri
-            val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo)
-            val imageHeight = appWidgetManager.getWidgetImageHeight(widgetInfo)
-            remoteViews.loadImage(
-                context,
-                imageUri,
-                scaleType,
-                widgetRadius,
-                widgetTransparency,
-                imageWidth,
-                imageHeight
-            )
+        remoteViews.addView(R.id.fl_picture_container, createImageRemoteViews(context, scaleType))
+
+        // Load image
+        val imageUri = imageList.first().imageUri
+        if (imageUri.toFile().exists()) {
+            val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo).toFloat().dp
+            val imageHeight = appWidgetManager.getWidgetImageHeight(widgetInfo).toFloat().dp
+            val imageBitmap = withContext(Dispatchers.IO) {
+                imageUri.toRoundedBitmap(context, widgetRadius, scaleType, imageWidth, imageHeight)
+            }
+            remoteViews.setImageViewBitmap(R.id.iv_picture, imageBitmap)
+        } else {
+            remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
         }
     }
 
+    // Set widget alpha
+    val alpha = (255 * (1f - widgetTransparency / 100f)).toInt()
+    remoteViews.setInt(R.id.iv_picture, "setImageAlpha", alpha)
+
+    // Set widget padding
     remoteViews.setViewPadding(
         android.R.id.background,
         leftPadding,
@@ -84,7 +91,7 @@ suspend fun updateAppWidget(
         bottomPadding
     )
 
-    val centerPendingIntent: PendingIntent? = context.getWidgetOpenPendingIntent(widgetId, linkInfo)
+    val centerPendingIntent: PendingIntent? = createWidgetOpenPendingIntent(context, widgetBean)
     val leftPendingIntent: PendingIntent?
     val rightPendingIntent: PendingIntent?
 
@@ -99,7 +106,12 @@ suspend fun updateAppWidget(
     }
 
     try {
-        remoteViews.setOnClickPendingIntent(R.id.area_center, centerPendingIntent)
+        if (isMultiImage && linkInfo != null && linkInfo.type == LinkType.OPEN_ALBUM) {
+            remoteViews.setOnClickPendingIntent(R.id.area_center, null)
+            remoteViews.setPendingIntentTemplate(R.id.vf_picture, centerPendingIntent)
+        } else {
+            remoteViews.setOnClickPendingIntent(R.id.area_center, centerPendingIntent)
+        }
         remoteViews.setOnClickPendingIntent(R.id.area_left, leftPendingIntent)
         remoteViews.setOnClickPendingIntent(R.id.area_right, rightPendingIntent)
     } catch (e: Exception) {
@@ -112,19 +124,51 @@ suspend fun updateAppWidget(
     }
 }
 
-private fun Context.getWidgetOpenPendingIntent(widgetId: Int, linkInfo: LinkInfo?): PendingIntent? {
-    if (linkInfo == null) {
-        return null
+fun createOpenAlbumIntent(context: Context, imageUri: Uri): Intent =
+    Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(imageUri.providerUri(context), "image/*")
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
+
+private fun createWidgetOpenPendingIntent(
+    context: Context,
+    widgetBean: WidgetBean,
+): PendingIntent? {
+    val widgetId = widgetBean.widgetInfo.widgetId
+    val linkInfo = widgetBean.linkInfo ?: return null
+    val imageList = widgetBean.imageList
+
+    if (imageList.isNotEmpty() && linkInfo.type == LinkType.OPEN_ALBUM) {
+        return if (imageList.size == 1) {
+            PendingIntent.getActivity(
+                context,
+                widgetId,
+                createOpenAlbumIntent(context, imageList.first().imageUri),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        } else {
+            PendingIntent.getBroadcast(
+                context,
+                widgetId + 1,
+                Intent(context, PhotoWidgetProvider::class.java).apply {
+                    action = ACTION_OPEN_ALBUM
+                    data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                },
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+    }
+
     var intent: Intent? = null
     if (linkInfo.type == LinkType.OPEN_APP) {
-        intent = packageManager.getLaunchIntentForPackage(linkInfo.link)
+        intent = context.packageManager.getLaunchIntentForPackage(linkInfo.link)
     } else if (linkInfo.type == LinkType.OPEN_URL) {
         intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkInfo.link))
     }
     if (intent != null) {
         return PendingIntent.getActivity(
-            this,
+            context,
             widgetId,
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
@@ -152,7 +196,6 @@ private fun Context.getWidgetNavPendingIntent(
     )
 }
 
-
 fun createFlipperRemoteViews(context: Context, interval: Int): RemoteViews {
     val defRemoteViews = RemoteViews(context.packageName, R.layout.photo_widget)
     if (interval < 0) {
@@ -169,11 +212,11 @@ fun createFlipperRemoteViews(context: Context, interval: Int): RemoteViews {
     return RemoteViews(context.packageName, layoutId)
 }
 
-fun Context.createImageRemoteViews(scaleType: ImageView.ScaleType): RemoteViews {
+fun createImageRemoteViews(context: Context, scaleType: ImageView.ScaleType): RemoteViews {
     return if (scaleType == ImageView.ScaleType.FIT_CENTER) {
-        RemoteViews(packageName, R.layout.layout_widget_image)
+        RemoteViews(context.packageName, R.layout.layout_widget_image)
     } else {
-        RemoteViews(packageName, R.layout.layout_widget_image_fitxy)
+        RemoteViews(context.packageName, R.layout.layout_widget_image_fitxy)
     }
 }
 
@@ -189,30 +232,6 @@ fun AppWidgetManager.getWidgetImageHeight(widgetInfo: WidgetInfo): Int {
         .getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
     val imageHeight = height - widgetInfo.topPadding - widgetInfo.bottomPadding
     return imageHeight.toInt()
-}
-
-fun RemoteViews.loadImage(
-    context: Context,
-    uri: Uri,
-    scaleType: ImageView.ScaleType,
-    radius: Float,
-    transparency: Float,
-    width: Int,
-    height: Int
-) {
-    if (!uri.toFile().exists()) {
-        setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
-        return
-    }
-
-    val imageBitmap = uri.toRoundedBitmap(
-        context, radius.dp, scaleType, width.toFloat().dp, height.toFloat().dp
-    )
-
-    setImageViewBitmap(R.id.iv_picture, imageBitmap)
-
-    val alpha = (255 * (1f - transparency / 100f)).toInt()
-    setInt(R.id.iv_picture, "setImageAlpha", alpha)
 }
 
 suspend fun deleteWidget(context: Context, widgetId: Int) {
