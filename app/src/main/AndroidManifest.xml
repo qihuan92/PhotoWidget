@@ -255,7 +255,7 @@
         <activity
             android:name=".crop.CropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.Crop" />
 
         <activity
             android:name=".link.InstalledAppActivity"

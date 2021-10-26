@@ -7,11 +7,9 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ProgressBar
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.*
@@ -25,6 +23,7 @@ import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
+import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.bean.PhotoScaleType
 import com.qihuan.photowidget.bean.PlayInterval
@@ -45,28 +44,21 @@ import java.util.*
 class ConfigureActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityConfigureBinding::inflate)
-    private val viewModel by viewModels<ConfigureViewModel>()
+    private val viewModel by viewModels<ConfigureViewModel> {
+        ConfigureViewModelFactory(
+            application,
+            appWidgetId
+        )
+    }
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     private val processImageDialog by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.processing)
-            .setCancelable(false)
-            .setView(ProgressBar(this).apply {
-                updatePadding(top = 10f.dp, bottom = 10f.dp)
-            })
-            .create()
+        createLoadingDialog(R.string.processing)
     }
 
     private val saveImageDialog by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.saving)
-            .setCancelable(false)
-            .setView(ProgressBar(this).apply {
-                updatePadding(top = 10f.dp, bottom = 10f.dp)
-            })
-            .create()
+        createLoadingDialog(R.string.saving)
     }
 
     private val deleteLinkDialog by lazy(LazyThreadSafetyMode.NONE) {
@@ -102,7 +94,7 @@ class ConfigureActivity : AppCompatActivity() {
             getString(R.string.alert_title_scale_type),
             PhotoScaleType.values().toList()
         ) { dialog, item ->
-            viewModel.photoScaleType.value = item
+            viewModel.updatePhotoScaleType(item)
             dialog.dismiss()
         }
     }
@@ -116,6 +108,7 @@ class ConfigureActivity : AppCompatActivity() {
             when (item) {
                 LinkType.OPEN_APP -> launchOpenAppActivity()
                 LinkType.OPEN_URL -> launchOpenLinkActivity()
+                LinkType.OPEN_ALBUM -> widgetOpenAlbum()
             }
             dialog.dismiss()
         }
@@ -127,7 +120,7 @@ class ConfigureActivity : AppCompatActivity() {
             getString(R.string.alert_title_interval),
             PlayInterval.values().toList()
         ) { dialog, item ->
-            viewModel.autoPlayInterval.value = item
+            viewModel.updateAutoPlayInterval(item)
             dialog.dismiss()
         }
     }
@@ -164,9 +157,7 @@ class ConfigureActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
                 val wallpaperManager = WallpaperManager.getInstance(this)
-                val wallpaper = wallpaperManager.drawable.toBitmap()
-                // 设置壁纸背景
-                binding.ivWallpaper.setImageBitmap(wallpaper)
+                binding.ivWallpaper.setImageDrawable(wallpaperManager.drawable)
             }
         }
 
@@ -174,7 +165,8 @@ class ConfigureActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
                 it.data?.apply {
-                    viewModel.linkInfo.value = getParcelableExtra("linkInfo")
+                    val linkInfo = getParcelableExtra<LinkInfo>("linkInfo")
+                    viewModel.updateLinkInfo(linkInfo)
                 }
             }
         }
@@ -184,6 +176,7 @@ class ConfigureActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setResult(RESULT_CANCELED)
         setContentView(binding.root)
+        handleIntent(intent)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -194,7 +187,6 @@ class ConfigureActivity : AppCompatActivity() {
 
         bindView()
         initView()
-        handleIntent(intent)
     }
 
     private fun initView() {
@@ -227,7 +219,7 @@ class ConfigureActivity : AppCompatActivity() {
             widgetAdapter.setData(it)
 
             if (it.size <= 1) {
-                viewModel.autoPlayInterval.value = PlayInterval.NONE
+                viewModel.updateAutoPlayInterval(PlayInterval.NONE)
             }
         }
 
@@ -276,10 +268,7 @@ class ConfigureActivity : AppCompatActivity() {
             ): Boolean {
                 val fromPosition = viewHolder.bindingAdapterPosition
                 val toPosition = target.bindingAdapterPosition
-                val list = viewModel.imageUriList.value ?: mutableListOf()
-                Collections.swap(list, fromPosition, toPosition)
-                previewAdapter.submitList(list)
-                viewModel.imageUriList.value = list
+                viewModel.swapImageList(fromPosition, toPosition)
                 return true
             }
 
@@ -292,11 +281,6 @@ class ConfigureActivity : AppCompatActivity() {
         super.finish()
         val tempDir = File(cacheDir, TEMP_DIR_NAME)
         tempDir.deleteDir()
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        handleIntent(intent)
     }
 
     private fun handleIntent(intent: Intent?) {
@@ -313,8 +297,6 @@ class ConfigureActivity : AppCompatActivity() {
             finish()
             return
         }
-
-        viewModel.loadWidget(appWidgetId)
     }
 
     private fun addPhoto(vararg uris: Uri) {
@@ -356,7 +338,7 @@ class ConfigureActivity : AppCompatActivity() {
         }
         lifecycleScope.launch {
             saveImageDialog.show()
-            viewModel.saveWidget(appWidgetId)
+            viewModel.saveWidget()
             saveImageDialog.dismiss()
 
             setResult(RESULT_OK, Intent().apply {
@@ -403,5 +385,16 @@ class ConfigureActivity : AppCompatActivity() {
                     putExtra("openUrl", linkInfo.link)
                 }
             })
+    }
+
+    private fun widgetOpenAlbum() {
+        val linkInfo = LinkInfo(
+            appWidgetId,
+            LinkType.OPEN_ALBUM,
+            getString(R.string.widget_link_open_album),
+            getString(R.string.widget_link_open_album_description),
+            ""
+        )
+        viewModel.updateLinkInfo(linkInfo)
     }
 }

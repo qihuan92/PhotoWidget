@@ -13,12 +13,13 @@ enum class PlayInterval(
      */
     val interval: Int = -1,
     val description: String,
+    val simpleDescription: String,
 ) : ItemSelectionDialog.Item {
-    NONE(-1, "无（可以点击左右边缘进行切换）"),
-    THREE_SECONDS(3000, "3秒"),
-    FIVE_SECONDS(5000, "5秒"),
-    TEN_SECONDS(10000, "10秒"),
-    THIRTY_SECONDS(30000, "30秒"),
+    NONE(-1, "关闭（可以点击左右边缘进行切换）", "关闭"),
+    THREE_SECONDS(3000, "3秒", "3秒"),
+    FIVE_SECONDS(5000, "5秒", "5秒"),
+    TEN_SECONDS(10000, "10秒", "10秒"),
+    THIRTY_SECONDS(30000, "30秒", "30秒"),
     ;
 
     override fun getItemText(): String {

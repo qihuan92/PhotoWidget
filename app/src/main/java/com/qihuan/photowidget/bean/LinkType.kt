@@ -1,5 +1,7 @@
 package com.qihuan.photowidget.bean
 
+import androidx.annotation.DrawableRes
+import com.qihuan.photowidget.R
 import com.qihuan.photowidget.view.ItemSelectionDialog
 
 /**
@@ -10,9 +12,11 @@ import com.qihuan.photowidget.view.ItemSelectionDialog
 enum class LinkType(
     val value: String,
     val description: String,
+    @DrawableRes val icon: Int,
 ) : ItemSelectionDialog.Item {
-    OPEN_APP("openApp", "打开应用"),
-    OPEN_URL("openUrl", "打开URL"),
+    OPEN_APP("openApp", "打开应用", R.drawable.ic_round_apps_24),
+    OPEN_URL("openUrl", "打开URL", R.drawable.ic_round_link_24),
+    OPEN_ALBUM("openAlbum", "打开相册", R.drawable.ic_round_photo_album_24),
     ;
 
     override fun getItemText(): String {

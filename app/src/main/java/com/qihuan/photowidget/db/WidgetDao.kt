@@ -18,6 +18,10 @@ abstract class WidgetDao {
     @Query("select * from widget_info order by createTime desc")
     abstract fun selectAll(): PagingSource<Int, WidgetBean>
 
+    @Transaction
+    @Query("select * from widget_info order by createTime desc")
+    abstract suspend fun selectList(): Array<WidgetBean>
+
     @Query("select count(*) from widget_info")
     abstract suspend fun selectWidgetCount(): Int
 
@@ -33,7 +37,7 @@ abstract class WidgetDao {
     abstract suspend fun insertInfo(widgetInfo: WidgetInfo)
 
     @Query("select * from widget_image where widgetId = :widgetId order by sort")
-    abstract suspend fun selectImageList(widgetId: Int): List<WidgetImage>
+    abstract suspend fun selectImageList(widgetId: Int): Array<WidgetImage>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertImage(imageList: List<WidgetImage>)

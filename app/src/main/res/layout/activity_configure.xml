@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout>
 
     <data>
 
@@ -19,7 +17,9 @@
     </data>
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/layout_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -42,7 +42,7 @@
             android:layout_marginHorizontal="16dp"
             android:contentDescription="@string/wallpaper"
             android:scaleType="centerCrop"
-            android:src="@drawable/built_in_wallpaper"
+            android:src="@color/wallpaper"
             app:layout_constraintDimensionRatio="h,3:2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -61,10 +61,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="30dp"
-            android:paddingLeft="@{viewModel.horizontalPadding}"
-            android:paddingTop="@{viewModel.verticalPadding}"
-            android:paddingRight="@{viewModel.horizontalPadding}"
-            android:paddingBottom="@{viewModel.verticalPadding}"
+            android:paddingStart="@{viewModel.leftPadding}"
+            android:paddingTop="@{viewModel.topPadding}"
+            android:paddingEnd="@{viewModel.rightPadding}"
+            android:paddingBottom="@{viewModel.bottomPadding}"
             app:layout_constraintBottom_toBottomOf="@id/iv_wallpaper"
             app:layout_constraintDimensionRatio="h,1:1"
             app:layout_constraintLeft_toLeftOf="@id/guideline_center_vertical"
@@ -118,68 +118,52 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_preview_photo" />
 
-                <com.qihuan.photowidget.view.TextSelectionView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:onClick="@{() -> activity.showIntervalSelector()}"
-                    app:isVisible="@{viewModel.imageUriList.size() > 1}"
-                    app:textSelectionContent="@{viewModel.autoPlayInterval.description}"
-                    app:textSelectionTitle="@string/auto_play_interval" />
-
-                <com.qihuan.photowidget.view.TextSelectionView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:onClick="@{() -> activity.showScaleTypeSelector()}"
-                    app:textSelectionContent="@{viewModel.photoScaleType.description}"
-                    app:textSelectionTitle="@string/photo_scale_type" />
-
                 <LinearLayout
-                    android:id="@+id/layout_open_url"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:onClick="@{() -> activity.showLinkTypeSelector()}"
-                    android:orientation="vertical">
+                    android:dividerPadding="5dp"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <com.qihuan.photowidget.view.TextSelectionView
+                        style="@style/CardView.TextSelection"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/widget_open_url"
-                        android:textAppearance="?textAppearanceBody2"
-                        android:textStyle="bold" />
+                        android:layout_weight="1"
+                        android:onClick="@{() -> activity.showIntervalSelector()}"
+                        app:isVisible="@{viewModel.imageUriList.size() > 1}"
+                        app:textSelectionContent="@{viewModel.autoPlayInterval.simpleDescription}"
+                        app:textSelectionIcon="@drawable/ic_round_timer_24"
+                        app:textSelectionTitle="@string/auto_play_interval" />
 
                     <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="5dp" />
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content"
+                        app:isVisible="@{viewModel.imageUriList.size() > 1}" />
 
-                    <FrameLayout
-                        android:id="@+id/layout_add_link"
-                        android:layout_width="match_parent"
-                        android:layout_height="65dp"
-                        android:background="@drawable/bg_add_link"
-                        android:foreground="?selectableItemBackground"
-                        app:isVisible="@{viewModel.linkInfo == null}">
+                    <com.qihuan.photowidget.view.TextSelectionView
+                        style="@style/CardView.TextSelection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:onClick="@{() -> activity.showScaleTypeSelector()}"
+                        app:textSelectionContent="@{viewModel.photoScaleType.description}"
+                        app:textSelectionIcon="@drawable/ic_round_center_focus_strong_24"
+                        app:textSelectionTitle="@string/photo_scale_type" />
+                </LinearLayout>
 
-                        <ImageView
-                            android:id="@+id/btn_add_link"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:layout_gravity="center"
-                            android:contentDescription="@string/add_widget_link"
-                            android:padding="2dp"
-                            android:src="@drawable/ic_round_add_24"
-                            app:tint="?android:colorControlNormal" />
-                    </FrameLayout>
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/layout_open_url"
+                    style="@style/CardView.WidgetLink"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:onClick="@{() -> activity.showLinkTypeSelector()}">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_link"
-                        android:foreground="?selectableItemBackground"
-                        android:padding="10dp"
-                        app:isVisible="@{viewModel.linkInfo != null}">
+                        android:padding="10dp">
 
                         <TextView
                             android:id="@+id/tv_link_title"
@@ -218,44 +202,123 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.constraintlayout.widget.Group
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:constraint_referenced_ids="tv_link_title,tv_link_description,btn_delete_link"
+                            app:isVisible="@{viewModel.linkInfo != null}" />
+
+                        <TextView
+                            android:id="@+id/tv_add_link"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="5dp"
+                            android:text="@string/add_widget_link"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textStyle="bold"
+                            app:drawableLeftCompat="@drawable/ic_round_add_link_24"
+                            app:isVisible="@{viewModel.linkInfo == null}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <com.qihuan.photowidget.view.SliderSelectionView
+                        style="@style/CardView.SliderSelection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:sliderSelectionIcon="@drawable/ic_round_vertical_align_top_24"
+                        app:sliderSelectionTitle="@string/top_padding"
+                        app:sliderSelectionValue="@={viewModel.topPadding}"
+                        app:sliderSelectionValueFrom="0"
+                        app:sliderSelectionValueTo="60"
+                        app:sliderSelectionValueUnit="dp" />
+
+                    <Space
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content" />
+
+                    <com.qihuan.photowidget.view.SliderSelectionView
+                        style="@style/CardView.SliderSelection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:sliderSelectionIcon="@drawable/ic_round_vertical_align_bottom_24"
+                        app:sliderSelectionTitle="@string/bottom_padding"
+                        app:sliderSelectionValue="@={viewModel.bottomPadding}"
+                        app:sliderSelectionValueFrom="0"
+                        app:sliderSelectionValueTo="60"
+                        app:sliderSelectionValueUnit="dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <com.qihuan.photowidget.view.SliderSelectionView
+                        style="@style/CardView.SliderSelection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:sliderSelectionIcon="@drawable/ic_round_vertical_align_left_24"
+                        app:sliderSelectionTitle="@string/left_padding"
+                        app:sliderSelectionValue="@={viewModel.leftPadding}"
+                        app:sliderSelectionValueFrom="0"
+                        app:sliderSelectionValueTo="60"
+                        app:sliderSelectionValueUnit="dp" />
+
+                    <Space
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content" />
+
+                    <com.qihuan.photowidget.view.SliderSelectionView
+                        style="@style/CardView.SliderSelection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:sliderSelectionIcon="@drawable/ic_round_vertical_align_right_24"
+                        app:sliderSelectionTitle="@string/right_padding"
+                        app:sliderSelectionValue="@={viewModel.rightPadding}"
+                        app:sliderSelectionValueFrom="0"
+                        app:sliderSelectionValueTo="60"
+                        app:sliderSelectionValueUnit="dp" />
                 </LinearLayout>
 
                 <com.qihuan.photowidget.view.SliderSelectionView
+                    style="@style/CardView.SliderSelection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    app:sliderSelectionTitle="@string/vertical_padding"
-                    app:sliderSelectionValue="@={viewModel.verticalPadding}"
-                    app:sliderSelectionValueFrom="0"
-                    app:sliderSelectionValueTo="20" />
-
-                <com.qihuan.photowidget.view.SliderSelectionView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    app:sliderSelectionTitle="@string/horizontal_padding"
-                    app:sliderSelectionValue="@={viewModel.horizontalPadding}"
-                    app:sliderSelectionValueFrom="0"
-                    app:sliderSelectionValueTo="20" />
-
-                <com.qihuan.photowidget.view.SliderSelectionView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
+                    app:sliderSelectionIcon="@drawable/ic_round_rounded_corner_24"
                     app:sliderSelectionTitle="@string/widget_radius"
                     app:sliderSelectionValue="@={viewModel.widgetRadius}"
                     app:sliderSelectionValueFrom="0"
-                    app:sliderSelectionValueTo="50" />
+                    app:sliderSelectionValueTo="50"
+                    app:sliderSelectionValueUnit="dp" />
 
                 <com.qihuan.photowidget.view.SliderSelectionView
+                    style="@style/CardView.SliderSelection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
+                    app:sliderSelectionIcon="@drawable/ic_round_opacity_24"
                     app:sliderSelectionTitle="@string/widget_transparency"
                     app:sliderSelectionValue="@={viewModel.widgetTransparency}"
                     app:sliderSelectionValueFrom="0"
-                    app:sliderSelectionValueTo="100" />
+                    app:sliderSelectionValueTo="100"
+                    app:sliderSelectionValueUnit="%" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 

@@ -15,8 +15,10 @@ import androidx.room.PrimaryKey
 data class WidgetInfo(
     @PrimaryKey
     val widgetId: Int,
-    val verticalPadding: Float,
-    val horizontalPadding: Float,
+    val topPadding: Float,
+    val bottomPadding: Float,
+    val leftPadding: Float,
+    val rightPadding: Float,
     val widgetRadius: Float,
     val widgetTransparency: Float = 0f,
     val autoPlayInterval: PlayInterval = PlayInterval.NONE,

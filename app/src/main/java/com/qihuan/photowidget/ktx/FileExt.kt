@@ -3,6 +3,8 @@ package com.qihuan.photowidget.ktx
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.core.content.FileProvider
+import androidx.core.net.toFile
 import com.yalantis.ucrop.util.BitmapLoadUtils
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
@@ -83,3 +85,8 @@ suspend fun Context.compressImageFile(imageFile: File, destination: File = image
         destination(destination)
     }
 }
+
+fun File.providerUri(context: Context): Uri =
+    FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", this)
+
+fun Uri.providerUri(context: Context) = toFile().providerUri(context)

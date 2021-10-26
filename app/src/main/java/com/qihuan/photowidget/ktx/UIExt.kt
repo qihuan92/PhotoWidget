@@ -3,11 +3,16 @@ package com.qihuan.photowidget.ktx
 import android.content.Context
 import android.content.res.Resources
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.*
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.R
+import com.qihuan.photowidget.databinding.DialogLoadingBinding
 
 /**
  * UIExt
@@ -92,3 +97,16 @@ val Resources.androidMediumAnimTime
 
 val Resources.androidLongAnimTime
     get() = getInteger(android.R.integer.config_longAnimTime).toLong()
+
+fun Context.createLoadingDialog(@StringRes message: Int = R.string.loading): AlertDialog {
+    return createLoadingDialog(getString(message))
+}
+
+fun Context.createLoadingDialog(message: String = getString(R.string.loading)): AlertDialog {
+    val binding = DialogLoadingBinding.inflate(LayoutInflater.from(this))
+    binding.tvMessage.text = message
+    return MaterialAlertDialogBuilder(this)
+        .setCancelable(false)
+        .setView(binding.root)
+        .create()
+}

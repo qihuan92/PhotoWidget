@@ -20,9 +20,12 @@
     <color name="navigation_bar_color_bottom_sheet">@android:color/transparent</color>
     <color name="card_stroke_color">#EEEEEE</color>
     <color name="about_chip_background">@android:color/background_light</color>
+    <color name="wallpaper">#EEEEEE</color>
 
     <color name="coolapk">#0f9d58</color>
     <color name="github">#25292E</color>
     <color name="weibo">#C43D35</color>
     <color name="telegram">#3B85D1</color>
+
+    <color name="selection_card_background">#60EDE7F6</color>
 </resources>

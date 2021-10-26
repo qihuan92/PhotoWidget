@@ -3,12 +3,9 @@ package com.qihuan.photowidget.adapter
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.databinding.BindingAdapter
-import androidx.databinding.InverseBindingAdapter
-import androidx.databinding.InverseBindingListener
+import androidx.databinding.*
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
-import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.view.SliderSelectionView
@@ -20,6 +17,13 @@ import com.qihuan.photowidget.view.TextSelectionView
  * @author qi
  * @since 12/16/20
  */
+@BindingMethods(
+    BindingMethod(
+        type = SliderSelectionView::class,
+        attribute = "sliderSelectionValue",
+        method = "setValue"
+    )
+)
 object BindingAdapters {
 
     @JvmStatic
@@ -60,11 +64,7 @@ object BindingAdapters {
         if (type == null) {
             return
         }
-        val resId = when (type) {
-            LinkType.OPEN_URL -> R.drawable.ic_round_link_24
-            LinkType.OPEN_APP -> R.drawable.ic_round_apps_24
-        }
-        view.setCompoundDrawablesWithIntrinsicBounds(resId, 0, 0, 0)
+        view.setCompoundDrawablesWithIntrinsicBounds(type.icon, 0, 0, 0)
     }
 
     @JvmStatic
@@ -91,11 +91,5 @@ object BindingAdapters {
         view.addOnChangeListener { _, _, _ ->
             attrChange.onChange()
         }
-    }
-
-    @JvmStatic
-    @BindingAdapter("sliderSelectionValue")
-    fun setSliderSelectionValue(view: SliderSelectionView, value: Float) {
-        view.setValue(value)
     }
 }

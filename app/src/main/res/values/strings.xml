@@ -2,6 +2,10 @@
     <string name="app_name" translatable="false">相片微件</string>
     <string name="vertical_padding" translatable="false">上下边距</string>
     <string name="horizontal_padding" translatable="false">左右边距</string>
+    <string name="top_padding">上边距\u3000</string>
+    <string name="bottom_padding">下边距\u3000</string>
+    <string name="left_padding">左边距\u3000</string>
+    <string name="right_padding">右边距\u3000</string>
     <string name="widget_radius" translatable="false">微件圆角</string>
     <string name="select_picture" translatable="false">选择图片</string>
     <string name="warning_select_picture" translatable="false">请选择一张照片</string>
@@ -31,6 +35,7 @@
     <string name="add_widget_link">添加微件链接</string>
     <string name="delete_widget_link">删除微件链接</string>
     <string name="app_icon">应用图标</string>
+    <string name="option_icon">选项图标</string>
     <string name="delete_photo">删除相片</string>
     <string name="widget_photo">微件相片</string>
     <string name="wallpaper">壁纸</string>
@@ -77,4 +82,14 @@
     <string name="ignore_tip">不再提示</string>
     <string name="installed_app_page_title">选择应用</string>
     <string name="about_developer_introduction">https://qihuan92.github.io</string>
+    <string name="force_refresh_widget">强制刷新</string>
+    <string name="alert_msg_force_refresh_widget">如果您遇到相片微件消失等显示异常的问题，可通过此功能刷新所有微件</string>
+    <string name="alert_title_force_refresh_widget">刷新微件</string>
+    <string name="alert_positive_btn">刷新</string>
+    <string name="background_task_notification_channel_id">background_task</string>
+    <string name="background_task_channel_name">后台任务</string>
+    <string name="force_refresh_widget_notification_title">强制刷新微件</string>
+    <string name="force_refresh_widget_cancel_processing">取消</string>
+    <string name="widget_link_open_album">打开相册</string>
+    <string name="widget_link_open_album_description">在相册中显示当前照片</string>
 </resources>

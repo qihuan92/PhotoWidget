@@ -1,9 +1,5 @@
 package com.qihuan.photowidget
 
-/**
- * Implementation of App Widget functionality.
- * App Widget Configuration implemented in [ConfigureActivity]
- */
 class PhotoWidgetProvider22 : PhotoWidgetProvider()
 class PhotoWidgetProvider23 : PhotoWidgetProvider()
 class PhotoWidgetProvider24 : PhotoWidgetProvider()

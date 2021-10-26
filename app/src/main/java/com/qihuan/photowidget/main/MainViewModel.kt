@@ -28,7 +28,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         loadWidgetList()
-        loadTips()
+        loadIgnoreBatteryOptimizations()
     }
 
     private fun loadWidgetList() {
@@ -46,20 +46,37 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         pagingSourceFactory = { widgetDao.selectAll() }
     ).flow
 
-    fun loadTips() {
+    fun loadIgnoreBatteryOptimizations() {
         val application = getApplication<App>()
         viewModelScope.launch {
-            val list = mutableListOf<TipsType>()
-            val isIgnoringBatteryOptimizations = application.isIgnoringBatteryOptimizations()
-            if (!isIgnoringBatteryOptimizations) {
-                list.add(TipsType.IGNORE_BATTERY_OPTIMIZATIONS)
+            if (application.isIgnoringBatteryOptimizations()) {
+                removeTip(TipsType.IGNORE_BATTERY_OPTIMIZATIONS)
+            } else {
+                addTip(TipsType.IGNORE_BATTERY_OPTIMIZATIONS)
             }
+        }
+    }
 
-            val widgetCount = widgetDao.selectWidgetCount()
-            if (widgetCount == 0) {
-                list.add(TipsType.ADD_WIDGET)
-            }
+    fun loadAddWidgetTip(isWidgetEmpty: Boolean) {
+        if (isWidgetEmpty) {
+            addTip(TipsType.ADD_WIDGET)
+        } else {
+            removeTip(TipsType.ADD_WIDGET)
+        }
+    }
 
+    private fun addTip(type: TipsType) {
+        val list = tipList.value ?: mutableListOf()
+        if (!list.contains(type)) {
+            list.add(type)
+            tipList.value = list
+        }
+    }
+
+    private fun removeTip(type: TipsType) {
+        val list = tipList.value ?: mutableListOf()
+        if (list.contains(type)) {
+            list.remove(type)
             tipList.value = list
         }
     }

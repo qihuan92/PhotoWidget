@@ -2,8 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/force_refresh_widget"
+        android:icon="@drawable/ic_round_refresh_24"
+        android:title="@string/force_refresh_widget"
+        app:showAsAction="collapseActionView" />
+    <item
         android:id="@+id/about"
-        android:icon="@drawable/ic_info"
+        android:icon="@drawable/ic_outline_info_24"
         android:title="@string/about"
-        app:showAsAction="always" />
+        app:showAsAction="collapseActionView" />
 </menu>

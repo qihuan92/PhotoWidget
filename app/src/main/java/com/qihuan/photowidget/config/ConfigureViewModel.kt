@@ -17,13 +17,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.*
 
 /**
  * ConfigureViewModel
  * @author qi
  * @since 12/16/20
  */
-class ConfigureViewModel(application: Application) : AndroidViewModel(application) {
+class ConfigureViewModel(
+    application: Application,
+    private val appWidgetId: Int
+) : AndroidViewModel(application) {
     enum class UIState {
         LOADING, SHOW_CONTENT
     }
@@ -34,8 +38,10 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     private val linkInfoDao by lazy { AppDatabase.getDatabase(context).linkInfoDao() }
 
     val widgetRadius by lazy { MutableLiveData(0f) }
-    val verticalPadding by lazy { MutableLiveData(0f) }
-    val horizontalPadding by lazy { MutableLiveData(0f) }
+    val topPadding by lazy { MutableLiveData(0f) }
+    val bottomPadding by lazy { MutableLiveData(0f) }
+    val leftPadding by lazy { MutableLiveData(0f) }
+    val rightPadding by lazy { MutableLiveData(0f) }
     val widgetTransparency by lazy { MutableLiveData(0f) }
     val autoPlayInterval by lazy { MutableLiveData(PlayInterval.NONE) }
     val photoScaleType by lazy { MutableLiveData(PhotoScaleType.CENTER_CROP) }
@@ -44,21 +50,25 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
     val uiState by lazy { MutableLiveData(UIState.LOADING) }
     val isEditState by lazy { MutableLiveData(false) }
 
+    init {
+        loadWidget()
+    }
+
     fun addImage(uri: Uri) {
         val value = imageUriList.value
         value?.add(uri)
-        imageUriList.postValue(value)
+        imageUriList.value = value
     }
 
     private fun replaceImageList(uriList: List<Uri>) {
-        imageUriList.postValue(uriList.toMutableList())
+        imageUriList.value = uriList.toMutableList()
     }
 
     fun deleteImage(position: Int) {
         val value = imageUriList.value
         val uri = value?.get(position)
         value?.removeAt(value.indexOf(uri))
-        imageUriList.postValue(value)
+        imageUriList.value = value
 
         viewModelScope.launch {
             deleteFile(uri)
@@ -77,10 +87,11 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    private suspend fun copyToTempDir(widgetId: Int) {
+    private suspend fun copyToTempDir() {
         val cacheDir = context.cacheDir
-        val imageList = widgetDao.selectImageList(widgetId)
+        val imageList = widgetDao.selectImageList(appWidgetId)
 
+        val uriList = mutableListOf<Uri>()
         withContext(Dispatchers.IO) {
             // remove compressor cache
             val compressorCacheDir = File(cacheDir, "compressor")
@@ -91,7 +102,6 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                 tempDir.mkdirs()
             }
 
-            val uriList = mutableListOf<Uri>()
             imageList.forEach {
                 val imageFile = it.imageUri.toFile()
                 if (imageFile.exists()) {
@@ -100,49 +110,53 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
                     uriList.add(tempFile.toUri())
                 }
             }
-            replaceImageList(uriList)
         }
+        replaceImageList(uriList)
     }
 
-    fun loadWidget(widgetId: Int) {
+    private fun loadWidget() {
         viewModelScope.launch {
             uiState.value = UIState.LOADING
-            val widgetInfo = widgetInfoDao.selectById(widgetId)
+            val widgetInfo = widgetInfoDao.selectById(appWidgetId)
             if (widgetInfo != null) {
                 isEditState.value = true
-                copyToTempDir(widgetInfo.widgetId)
-                verticalPadding.value = widgetInfo.verticalPadding
-                horizontalPadding.value = widgetInfo.horizontalPadding
+                copyToTempDir()
+                topPadding.value = widgetInfo.topPadding
+                bottomPadding.value = widgetInfo.bottomPadding
+                leftPadding.value = widgetInfo.leftPadding
+                rightPadding.value = widgetInfo.rightPadding
                 widgetRadius.value = widgetInfo.widgetRadius
                 widgetTransparency.value = widgetInfo.widgetTransparency
-                autoPlayInterval.postValue(widgetInfo.autoPlayInterval)
-                photoScaleType.postValue(widgetInfo.photoScaleType)
+                autoPlayInterval.value = widgetInfo.autoPlayInterval
+                photoScaleType.value = widgetInfo.photoScaleType
             } else {
                 isEditState.value = false
             }
 
-            val linkInfoFromDb = linkInfoDao.selectById(widgetId)
+            val linkInfoFromDb = linkInfoDao.selectById(appWidgetId)
             linkInfo.value = linkInfoFromDb
 
             uiState.value = UIState.SHOW_CONTENT
         }
     }
 
-    suspend fun saveWidget(widgetId: Int) {
+    suspend fun saveWidget() {
         val widgetInfo = WidgetInfo(
-            widgetId = widgetId,
-            verticalPadding = verticalPadding.value ?: 0f,
-            horizontalPadding = horizontalPadding.value ?: 0f,
+            widgetId = appWidgetId,
+            topPadding = topPadding.value ?: 0f,
+            bottomPadding = bottomPadding.value ?: 0f,
+            leftPadding = leftPadding.value ?: 0f,
+            rightPadding = rightPadding.value ?: 0f,
             widgetRadius = widgetRadius.value ?: 0f,
             widgetTransparency = widgetTransparency.value ?: 0f,
             autoPlayInterval = autoPlayInterval.value ?: PlayInterval.NONE,
             photoScaleType = photoScaleType.value ?: PhotoScaleType.CENTER_CROP,
         )
 
-        val uriList = saveWidgetPhotoFiles(widgetId)
+        val uriList = saveWidgetPhotoFiles()
         val imageList = uriList.mapIndexed { index, uri ->
             WidgetImage(
-                widgetId = widgetId,
+                widgetId = appWidgetId,
                 imageUri = uri,
                 createTime = System.currentTimeMillis(),
                 sort = index
@@ -158,10 +172,10 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
         linkInfo.value = null
     }
 
-    private suspend fun saveWidgetPhotoFiles(widgetId: Int): List<Uri> {
+    private suspend fun saveWidgetPhotoFiles(): List<Uri> {
         val filesDir = context.filesDir
         return withContext(Dispatchers.IO) {
-            val widgetDir = File(filesDir, "widget_${widgetId}")
+            val widgetDir = File(filesDir, "widget_${appWidgetId}")
             if (widgetDir.exists() && widgetDir.isDirectory) {
                 widgetDir.delete()
             }
@@ -181,5 +195,23 @@ class ConfigureViewModel(application: Application) : AndroidViewModel(applicatio
             }
             return@withContext uriList
         }
+    }
+
+    fun updatePhotoScaleType(value: PhotoScaleType) {
+        photoScaleType.value = value
+    }
+
+    fun updateAutoPlayInterval(value: PlayInterval) {
+        autoPlayInterval.value = value
+    }
+
+    fun updateLinkInfo(value: LinkInfo?) {
+        linkInfo.value = value
+    }
+
+    fun swapImageList(fromPosition: Int, toPosition: Int) {
+        val list = imageUriList.value ?: mutableListOf()
+        Collections.swap(list, fromPosition, toPosition)
+        imageUriList.value = list
     }
 }
