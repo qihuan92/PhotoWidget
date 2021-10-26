@@ -61,7 +61,9 @@ suspend fun updateAppWidget(
         remoteViews.setRemoteAdapter(R.id.vf_picture, serviceIntent)
 
         // Set widget link
-        val linkPendingIntent = PendingIntent.getActivity(context, widgetId, Intent(), MUTABLE_FLAG)
+        val linkIntent = createLinkIntent(context, linkInfo, null)
+        val linkPendingIntent =
+            PendingIntent.getActivity(context, widgetId, linkIntent, MUTABLE_FLAG)
         remoteViews.setPendingIntentTemplate(R.id.vf_picture, linkPendingIntent)
 
         // Set page actions
@@ -115,7 +117,7 @@ suspend fun updateAppWidget(
     }
 }
 
-fun createLinkIntent(context: Context, linkInfo: LinkInfo?, imageUri: Uri): Intent {
+fun createLinkIntent(context: Context, linkInfo: LinkInfo?, imageUri: Uri?): Intent {
     if (linkInfo == null) {
         return Intent()
     }
@@ -123,9 +125,13 @@ fun createLinkIntent(context: Context, linkInfo: LinkInfo?, imageUri: Uri): Inte
         LinkType.OPEN_APP -> context.packageManager.getLaunchIntentForPackage(linkInfo.link)
             ?: Intent()
         LinkType.OPEN_URL -> Intent(Intent.ACTION_VIEW, Uri.parse(linkInfo.link))
-        LinkType.OPEN_ALBUM -> Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(imageUri.providerUri(context), "image/*")
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        LinkType.OPEN_ALBUM -> if (imageUri != null) {
+            Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(imageUri.providerUri(context), "image/*")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+        } else {
+            Intent()
         }
     }
 }
