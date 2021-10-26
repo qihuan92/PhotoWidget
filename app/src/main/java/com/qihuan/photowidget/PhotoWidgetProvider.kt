@@ -4,12 +4,10 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.goAsync
 import com.qihuan.photowidget.ktx.logD
-import com.qihuan.photowidget.ktx.logE
 import kotlinx.coroutines.GlobalScope
 
 /**
@@ -41,8 +39,6 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
             if (!navAction.isNullOrEmpty()) {
                 navWidget(context, intent, navAction)
             }
-        } else if (intent.action == ACTION_OPEN_ALBUM) {
-            openAlbum(intent)
         }
         super.onReceive(context, intent)
     }
@@ -59,13 +55,6 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
             NAV_WIDGET_PREV -> views.showPrevious(R.id.vf_picture)
         }
         AppWidgetManager.getInstance(context).updateAppWidget(widgetId, views)
-    }
-
-    private fun openAlbum(intent: Intent) {
-        // todo
-        logE("PhotoWidgetProvider", "openAlbum() ${intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1)}")
-        logE("PhotoWidgetProvider", "openAlbum() ${intent.getParcelableExtra<Uri>(EXTRA_IMAGE_URI)}")
-        logE("PhotoWidgetProvider", "openAlbum() ${intent.getIntExtra("position", 0)}")
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {

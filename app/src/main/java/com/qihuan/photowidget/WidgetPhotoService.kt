@@ -3,12 +3,10 @@ package com.qihuan.photowidget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.net.toFile
 import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.AppDatabase
@@ -81,21 +79,14 @@ class WidgetPhotoViewFactory(
             val imageBitmap =
                 imageUri.toRoundedBitmap(context, radius, scaleType, imageWidth, imageHeight)
             remoteViews.setImageViewBitmap(R.id.iv_picture, imageBitmap)
+            remoteViews.setOnClickFillInIntent(
+                R.id.iv_picture,
+                createLinkIntent(context, linkInfo, imageUri)
+            )
 
-            linkInfo?.apply {
-                if (type == LinkType.OPEN_ALBUM) {
-                    // todo
-                    val fillInIntent = Intent().apply {
-                        Bundle().also { extras ->
-                            extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                            extras.putParcelable(EXTRA_IMAGE_URI, imageUri)
-                            extras.putInt("position", position)
-                            putExtras(extras)
-                        }
-                    }
-                    remoteViews.setOnClickFillInIntent(R.id.iv_picture, fillInIntent)
-                }
-            }
+            // Set widget alpha
+            val alpha = (255 * (1f - widgetInfo.widgetTransparency / 100f)).toInt()
+            remoteViews.setInt(R.id.iv_picture, "setImageAlpha", alpha)
         } else {
             remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
         }

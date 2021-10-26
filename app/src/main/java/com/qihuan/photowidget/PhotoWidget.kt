@@ -9,10 +9,7 @@ import android.os.Build
 import android.widget.ImageView
 import android.widget.RemoteViews
 import androidx.core.net.toFile
-import com.qihuan.photowidget.bean.LinkType
-import com.qihuan.photowidget.bean.PlayInterval
-import com.qihuan.photowidget.bean.WidgetBean
-import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.*
 import kotlinx.coroutines.Dispatchers
@@ -22,10 +19,14 @@ import kotlin.random.Random
 
 const val EXTRA_INTERVAL = "interval"
 const val EXTRA_NAV = "nav"
-const val EXTRA_IMAGE_URI = "image_uri"
 const val NAV_WIDGET_PREV = "nav_widget_prev"
 const val NAV_WIDGET_NEXT = "nav_widget_next"
-const val ACTION_OPEN_ALBUM = "${BuildConfig.APPLICATION_ID}.OPEN_ALBUM_ACTION"
+
+val MUTABLE_FLAG = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    PendingIntent.FLAG_MUTABLE
+} else {
+    PendingIntent.FLAG_UPDATE_CURRENT
+}
 
 suspend fun updateAppWidget(
     context: Context,
@@ -58,11 +59,22 @@ suspend fun updateAppWidget(
         serviceIntent.type = Random.nextInt().toString()
         serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         remoteViews.setRemoteAdapter(R.id.vf_picture, serviceIntent)
+
+        // Set widget link
+        val linkPendingIntent = PendingIntent.getActivity(context, widgetId, Intent(), MUTABLE_FLAG)
+        remoteViews.setPendingIntentTemplate(R.id.vf_picture, linkPendingIntent)
+
+        // Set page actions
+        val leftPendingIntent =
+            createWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_PREV, autoPlayInterval)
+        remoteViews.setOnClickPendingIntent(R.id.area_left, leftPendingIntent)
+        val rightPendingIntent =
+            createWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_NEXT, autoPlayInterval)
+        remoteViews.setOnClickPendingIntent(R.id.area_right, rightPendingIntent)
     } else {
         // Create single image remote views
-        remoteViews = RemoteViews(context.packageName, R.layout.photo_widget_single)
-        remoteViews.removeAllViews(R.id.fl_picture_container)
-        remoteViews.addView(R.id.fl_picture_container, createImageRemoteViews(context, scaleType))
+        remoteViews = createImageRemoteViews(context, scaleType)
+        ImageView(context).scaleType
 
         // Load image
         val imageUri = imageList.first().imageUri
@@ -76,11 +88,17 @@ suspend fun updateAppWidget(
         } else {
             remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
         }
-    }
 
-    // Set widget alpha
-    val alpha = (255 * (1f - widgetTransparency / 100f)).toInt()
-    remoteViews.setInt(R.id.iv_picture, "setImageAlpha", alpha)
+        // Set widget alpha
+        val alpha = (255 * (1f - widgetTransparency / 100f)).toInt()
+        remoteViews.setInt(R.id.iv_picture, "setImageAlpha", alpha)
+
+        // Set widget link
+        val linkIntent = createLinkIntent(context, linkInfo, imageUri)
+        val linkPendingIntent =
+            PendingIntent.getActivity(context, widgetId, linkIntent, MUTABLE_FLAG)
+        remoteViews.setOnClickPendingIntent(R.id.iv_picture, linkPendingIntent)
+    }
 
     // Set widget padding
     remoteViews.setViewPadding(
@@ -91,105 +109,41 @@ suspend fun updateAppWidget(
         bottomPadding
     )
 
-    val centerPendingIntent: PendingIntent? = createWidgetOpenPendingIntent(context, widgetBean)
-    val leftPendingIntent: PendingIntent?
-    val rightPendingIntent: PendingIntent?
-
-    if (isMultiImage) {
-        leftPendingIntent =
-            context.getWidgetNavPendingIntent(widgetId, NAV_WIDGET_PREV, autoPlayInterval)
-        rightPendingIntent =
-            context.getWidgetNavPendingIntent(widgetId, NAV_WIDGET_NEXT, autoPlayInterval)
-    } else {
-        leftPendingIntent = centerPendingIntent
-        rightPendingIntent = centerPendingIntent
-    }
-
-    try {
-        if (isMultiImage && linkInfo != null && linkInfo.type == LinkType.OPEN_ALBUM) {
-            remoteViews.setOnClickPendingIntent(R.id.area_center, null)
-            remoteViews.setPendingIntentTemplate(R.id.vf_picture, centerPendingIntent)
-        } else {
-            remoteViews.setOnClickPendingIntent(R.id.area_center, centerPendingIntent)
-        }
-        remoteViews.setOnClickPendingIntent(R.id.area_left, leftPendingIntent)
-        remoteViews.setOnClickPendingIntent(R.id.area_right, rightPendingIntent)
-    } catch (e: Exception) {
-        logE("PhotoWidgetProvider", e.message, e)
-    }
-
     appWidgetManager.updateAppWidget(widgetId, remoteViews)
     if (isMultiImage) {
         appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.vf_picture)
     }
 }
 
-fun createOpenAlbumIntent(context: Context, imageUri: Uri): Intent =
-    Intent(Intent.ACTION_VIEW).apply {
-        setDataAndType(imageUri.providerUri(context), "image/*")
-        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+fun createLinkIntent(context: Context, linkInfo: LinkInfo?, imageUri: Uri): Intent {
+    if (linkInfo == null) {
+        return Intent()
     }
-
-private fun createWidgetOpenPendingIntent(
-    context: Context,
-    widgetBean: WidgetBean,
-): PendingIntent? {
-    val widgetId = widgetBean.widgetInfo.widgetId
-    val linkInfo = widgetBean.linkInfo ?: return null
-    val imageList = widgetBean.imageList
-
-    if (imageList.isNotEmpty() && linkInfo.type == LinkType.OPEN_ALBUM) {
-        return if (imageList.size == 1) {
-            PendingIntent.getActivity(
-                context,
-                widgetId,
-                createOpenAlbumIntent(context, imageList.first().imageUri),
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        } else {
-            PendingIntent.getBroadcast(
-                context,
-                widgetId + 1,
-                Intent(context, PhotoWidgetProvider::class.java).apply {
-                    action = ACTION_OPEN_ALBUM
-                    data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
-                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                },
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
-            )
+    return when (linkInfo.type) {
+        LinkType.OPEN_APP -> context.packageManager.getLaunchIntentForPackage(linkInfo.link)
+            ?: Intent()
+        LinkType.OPEN_URL -> Intent(Intent.ACTION_VIEW, Uri.parse(linkInfo.link))
+        LinkType.OPEN_ALBUM -> Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(imageUri.providerUri(context), "image/*")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }
-
-    var intent: Intent? = null
-    if (linkInfo.type == LinkType.OPEN_APP) {
-        intent = context.packageManager.getLaunchIntentForPackage(linkInfo.link)
-    } else if (linkInfo.type == LinkType.OPEN_URL) {
-        intent = Intent(Intent.ACTION_VIEW, Uri.parse(linkInfo.link))
-    }
-    if (intent != null) {
-        return PendingIntent.getActivity(
-            context,
-            widgetId,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-    }
-    return null
 }
 
-private fun Context.getWidgetNavPendingIntent(
+private fun createWidgetNavPendingIntent(
+    context: Context,
     widgetId: Int,
     navAction: String,
     playInterval: PlayInterval
 ): PendingIntent {
-    val navIntent = Intent(this, PhotoWidgetProvider::class.java).apply {
+    val navIntent = Intent(context, PhotoWidgetProvider::class.java).apply {
         action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         putExtra(EXTRA_NAV, navAction)
         putExtra(EXTRA_INTERVAL, playInterval.interval)
     }
     return PendingIntent.getBroadcast(
-        this,
+        context,
         Random.nextInt(),
         navIntent,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
