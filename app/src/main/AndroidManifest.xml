@@ -219,9 +219,30 @@
                 android:resource="@xml/photo_widget_info" />
         </receiver>
 
+        <receiver
+            android:name=".GifPhotoWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE_OPTIONS" />
+                <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
+                <action android:name="android.appwidget.action.APPWIDGET_DISABLED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/gif_photo_widget_info" />
+        </receiver>
+
         <service
             android:name=".WidgetPhotoService"
-            android:exported="false"
+            android:exported="true"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <service
+            android:name=".GifWidgetPhotoService"
+            android:exported="true"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity
@@ -237,6 +258,18 @@
 
         <activity
             android:name=".config.ConfigureActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".config.GifConfigureActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:launchMode="singleTask"

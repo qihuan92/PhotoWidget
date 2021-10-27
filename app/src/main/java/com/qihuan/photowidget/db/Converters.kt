@@ -5,6 +5,7 @@ import androidx.room.TypeConverter
 import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.bean.PhotoScaleType
 import com.qihuan.photowidget.bean.PlayInterval
+import com.qihuan.photowidget.bean.WidgetType
 
 /**
  * Converters
@@ -50,5 +51,15 @@ class Converters {
     @TypeConverter
     fun revertLinkType(value: String?): LinkType? {
         return LinkType.get(value)
+    }
+
+    @TypeConverter
+    fun convertWidgetType(value: WidgetType): String {
+        return value.code
+    }
+
+    @TypeConverter
+    fun revertWidgetType(value: String): WidgetType {
+        return WidgetType.get(value)
     }
 }

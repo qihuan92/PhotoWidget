@@ -6,12 +6,14 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.gifdecoder.StandardGifDecoder
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.qihuan.photowidget.App
 
 /**
  * ImageExt
@@ -75,4 +77,39 @@ fun Uri.toRoundedBitmap(
         return builder.submit().get()
     }
     return builder.submit(width, height).get()
+}
+
+fun Uri.toBitmapsSync(): List<Bitmap> {
+    val bitmaps = mutableListOf<Bitmap>()
+    val gifDrawable = Glide.with(App.context)
+        .asGif()
+        .load(this)
+        .submit()
+        .get()
+
+    try {
+        val gifState = gifDrawable.constantState
+        val frameLoader = gifState?.javaClass?.getDeclaredField("frameLoader")?.apply {
+            isAccessible = true
+        }
+        val gifFrameLoader = frameLoader?.get(gifState)
+        val gifDecoder = gifFrameLoader?.javaClass?.getDeclaredField("gifDecoder")?.apply {
+            isAccessible = true
+        }
+        val standardGifDecoder = gifDecoder?.get(gifFrameLoader) as StandardGifDecoder
+        for (index in 0..standardGifDecoder.frameCount) {
+            standardGifDecoder.advance()
+            standardGifDecoder.nextFrame?.let {
+                bitmaps.add(it)
+            }
+        }
+    } catch (e: Exception) {
+        logE("ImageExt", "Uri.toBitmaps()", e)
+    }
+
+    if (bitmaps.isEmpty()) {
+        bitmaps.add(gifDrawable.firstFrame)
+    }
+
+    return bitmaps
 }

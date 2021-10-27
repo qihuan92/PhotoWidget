@@ -21,7 +21,7 @@ import com.qihuan.photowidget.db.migration.*
         WidgetImage::class,
         LinkInfo::class,
     ],
-    version = 11,
+    version = 12,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -58,6 +58,7 @@ abstract class AppDatabase : RoomDatabase() {
                     MigrationFor8To9(),
                     MigrationFor9To10(),
                     MigrationFor10To11(),
+                    MigrationFor11To12(),
                 ).build()
                 INSTANCE = instance
                 return instance
