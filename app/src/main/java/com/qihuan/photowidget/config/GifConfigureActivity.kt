@@ -80,7 +80,9 @@ class GifConfigureActivity : AppCompatActivity() {
 
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
-            addPhoto(it)
+            if (it != null) {
+                addPhoto(it)
+            }
         }
 
     @SuppressLint("MissingPermission")
@@ -143,7 +145,7 @@ class GifConfigureActivity : AppCompatActivity() {
     override fun finish() {
         super.finish()
         val tempDir = File(cacheDir, TEMP_DIR_NAME)
-        tempDir.deleteDir()
+        tempDir.deleteRecursively()
     }
 
     private fun handleIntent(intent: Intent?) {
@@ -170,7 +172,7 @@ class GifConfigureActivity : AppCompatActivity() {
             processImageDialog.show()
             for (uri in uris) {
                 val outDir = File(cacheDir, TEMP_DIR_NAME)
-                withContext(Dispatchers.IO) { outDir.deleteDir(true) }
+                withContext(Dispatchers.IO) { outDir.deleteRecursively() }
                 if (!outDir.exists()) {
                     outDir.mkdirs()
                 }

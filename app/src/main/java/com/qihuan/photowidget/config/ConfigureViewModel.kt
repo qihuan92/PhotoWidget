@@ -11,7 +11,6 @@ import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.deleteDir
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -95,7 +94,7 @@ class ConfigureViewModel(
         withContext(Dispatchers.IO) {
             // remove compressor cache
             val compressorCacheDir = File(cacheDir, "compressor")
-            compressorCacheDir.deleteDir()
+            compressorCacheDir.deleteRecursively()
 
             val tempDir = File(cacheDir, TEMP_DIR_NAME)
             if (!tempDir.exists()) {

@@ -280,7 +280,7 @@ class ConfigureActivity : AppCompatActivity() {
     override fun finish() {
         super.finish()
         val tempDir = File(cacheDir, TEMP_DIR_NAME)
-        tempDir.deleteDir()
+        tempDir.deleteRecursively()
     }
 
     private fun handleIntent(intent: Intent?) {

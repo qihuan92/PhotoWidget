@@ -11,7 +11,10 @@ import android.widget.RemoteViews
 import androidx.core.net.toFile
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.*
+import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.ktx.logE
+import com.qihuan.photowidget.ktx.providerUri
+import com.qihuan.photowidget.ktx.toRoundedBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -218,7 +221,7 @@ suspend fun deleteWidget(context: Context, widgetId: Int) {
     val widgetDao = AppDatabase.getDatabase(context).widgetDao()
     widgetDao.deleteByWidgetId(widgetId)
     val outFile = File(context.filesDir, "widget_${widgetId}")
-    outFile.deleteDir()
+    outFile.deleteRecursively()
 }
 
 suspend fun deleteWidgets(context: Context, widgetIds: IntArray) {
@@ -226,6 +229,6 @@ suspend fun deleteWidgets(context: Context, widgetIds: IntArray) {
     for (widgetId in widgetIds) {
         widgetDao.deleteByWidgetId(widgetId)
         val outFile = File(context.filesDir, "widget_${widgetId}")
-        outFile.deleteDir()
+        outFile.deleteRecursively()
     }
 }

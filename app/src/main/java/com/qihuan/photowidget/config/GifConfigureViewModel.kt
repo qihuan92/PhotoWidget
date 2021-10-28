@@ -11,12 +11,12 @@ import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.ktx.saveGifFramesToDir
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.*
 
 /**
  * GifConfigureViewModel
@@ -139,26 +139,27 @@ class GifConfigureViewModel(
 
     private suspend fun saveWidgetPhotoFile(): Uri? {
         val filesDir = context.filesDir
-        return withContext(Dispatchers.IO) {
+        var uri: Uri? = null
+
+        withContext(Dispatchers.IO) {
             val widgetDir = File(filesDir, "widget_${appWidgetId}")
             if (widgetDir.exists() && widgetDir.isDirectory) {
-                widgetDir.delete()
+                widgetDir.deleteRecursively()
             }
             if (!widgetDir.exists()) {
                 widgetDir.mkdirs()
             }
 
             val tempUri = imageUri.value
-            var uri: Uri? = null
             val tempFile = tempUri?.toFile()
             if (tempFile != null && tempFile.exists()) {
                 val file = File(widgetDir, tempFile.name)
                 tempFile.copyTo(file, true)
                 uri = file.toUri()
+                uri?.saveGifFramesToDir(File(widgetDir, file.nameWithoutExtension))
             }
-
-            return@withContext uri
         }
+        return uri
     }
 
     fun updateLinkInfo(value: LinkInfo?) {

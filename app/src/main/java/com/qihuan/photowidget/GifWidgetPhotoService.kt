@@ -3,13 +3,15 @@ package com.qihuan.photowidget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.net.toFile
+import com.bumptech.glide.Glide
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.toBitmapsSync
+import java.io.File
 
 /**
  * GifWidgetPhotoService
@@ -33,7 +35,7 @@ class GifWidgetPhotoViewFactory(
     private var widgetInfo: WidgetInfo? = null
     private var linkInfo: LinkInfo? = null
     private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
-    private val bitmapList by lazy { mutableListOf<Bitmap>() }
+    private val imagePathList = mutableListOf<String>()
 
     override fun onCreate() {
         widgetId = intent?.getIntExtra(
@@ -43,30 +45,50 @@ class GifWidgetPhotoViewFactory(
     }
 
     override fun onDataSetChanged() {
-        bitmapList.clear()
+        imagePathList.clear()
         val widgetBean = widgetDao.selectByIdSync(widgetId)
         if (widgetBean != null) {
-            bitmapList.addAll(widgetBean.imageList.first().imageUri.toBitmapsSync())
+            val gifFile = widgetBean.imageList.first().imageUri.toFile()
+
+            val gifDir = File(gifFile.parent, gifFile.nameWithoutExtension)
+            if (gifDir.exists() && gifDir.isDirectory) {
+                val files = gifDir.listFiles()
+                files?.sortBy { it.nameWithoutExtension.toInt() }
+                files?.forEach {
+                    imagePathList.add(it.path)
+                }
+            }
             widgetInfo = widgetBean.widgetInfo
             linkInfo = widgetBean.linkInfo
         }
     }
 
     override fun onDestroy() {
-        bitmapList.clear()
+        imagePathList.clear()
     }
 
     override fun getCount(): Int {
-        return bitmapList.size
+        return imagePathList.size
     }
 
     override fun getViewAt(position: Int): RemoteViews? {
-        if (bitmapList.isNullOrEmpty()) {
+        if (imagePathList.isNullOrEmpty()) {
             return null
         }
 
+        val path = imagePathList[position]
+
+        // Scale image size
+        val option = BitmapFactory.Options().apply {
+            inJustDecodeBounds = true
+        }
+        BitmapFactory.decodeFile(path, option)
+        val showWidth = option.outWidth shr 1
+        val showHeight = option.outHeight shr 1
+
+        val bitmap = Glide.with(context).asBitmap().load(path).submit(showWidth, showHeight).get()
         val remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image)
-        remoteViews.setImageViewBitmap(R.id.iv_picture, bitmapList[position])
+        remoteViews.setImageViewBitmap(R.id.iv_picture, bitmap)
         return remoteViews
     }
 
