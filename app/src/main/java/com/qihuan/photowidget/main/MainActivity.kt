@@ -19,10 +19,16 @@ import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
 import com.qihuan.photowidget.adapter.TipAdapter
 import com.qihuan.photowidget.adapter.WidgetPagingAdapter
 import com.qihuan.photowidget.bean.TipsType
+import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.bean.WidgetType
 import com.qihuan.photowidget.common.MAIN_PAGE_SPAN_COUNT
 import com.qihuan.photowidget.config.ConfigureActivity
+import com.qihuan.photowidget.config.GifConfigureActivity
 import com.qihuan.photowidget.databinding.ActivityMainBinding
-import com.qihuan.photowidget.ktx.*
+import com.qihuan.photowidget.ktx.IgnoringBatteryOptimizationsContract
+import com.qihuan.photowidget.ktx.logE
+import com.qihuan.photowidget.ktx.paddingNavigationBar
+import com.qihuan.photowidget.ktx.viewBinding
 import com.qihuan.photowidget.worker.ForceUpdateWidgetWorker
 
 class MainActivity : AppCompatActivity() {
@@ -103,16 +109,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         widgetAdapter.setOnItemClickListener { position, _ ->
-            val widgetId =
-                widgetAdapter.peek(position)?.widgetInfo?.widgetId ?: return@setOnItemClickListener
-            startActivity(
-                Intent(this, ConfigureActivity::class.java).apply {
-                    val extras = Bundle().apply {
-                        putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                    }
-                    putExtras(extras)
-                }
-            )
+            val item = widgetAdapter.peek(position)?.widgetInfo
+            launchConfigActivity(item)
         }
 
         widgetAdapter.addLoadStateListener { loadState ->
@@ -120,6 +118,36 @@ class MainActivity : AppCompatActivity() {
                 viewModel.loadAddWidgetTip(true)
             } else {
                 viewModel.loadAddWidgetTip(false)
+            }
+        }
+    }
+
+    private fun launchConfigActivity(item: WidgetInfo?) {
+        if (item == null) {
+            return
+        }
+
+        val widgetId = item.widgetId
+        when (item.widgetType) {
+            WidgetType.NORMAL -> {
+                startActivity(
+                    Intent(this, ConfigureActivity::class.java).apply {
+                        val extras = Bundle().apply {
+                            putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                        }
+                        putExtras(extras)
+                    }
+                )
+            }
+            WidgetType.GIF -> {
+                startActivity(
+                    Intent(this, GifConfigureActivity::class.java).apply {
+                        val extras = Bundle().apply {
+                            putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                        }
+                        putExtras(extras)
+                    }
+                )
             }
         }
     }

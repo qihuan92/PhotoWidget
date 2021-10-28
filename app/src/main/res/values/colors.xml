@@ -28,4 +28,5 @@
     <color name="telegram">#3B85D1</color>
 
     <color name="selection_card_background">#60EDE7F6</color>
+    <color name="translucent">#50000000</color>
 </resources>

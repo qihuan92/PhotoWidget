@@ -4,12 +4,15 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.WidgetBean
+import com.qihuan.photowidget.bean.WidgetType
 import com.qihuan.photowidget.databinding.ItemWidgetInfoBinding
+import com.qihuan.photowidget.ktx.load
 
 /**
  * WidgetPagingAdapter
@@ -45,11 +48,12 @@ class WidgetPagingAdapter :
                 val imageList = item.imageList
                 val widgetInfo = item.widgetInfo
                 if (imageList.isNotEmpty()) {
-                    binding.ivWidgetPicture.setImageURI(imageList[0].imageUri)
+                    binding.ivWidgetPicture.load(imageList.first().imageUri)
                 } else {
                     binding.ivWidgetPicture.setImageResource(R.drawable.ic_round_broken_image_24)
                 }
                 binding.tvTitle.text = "ID: ${widgetInfo.widgetId}"
+                binding.ivGifTag.isVisible = item.widgetInfo.widgetType == WidgetType.GIF
             }
         }
     }

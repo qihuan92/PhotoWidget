@@ -115,6 +115,7 @@ class GifConfigureActivity : AppCompatActivity() {
 
         binding.root.paddingStatusBar()
         binding.scrollViewInfo.paddingNavigationBar()
+        binding.fabAddPhoto.marginNavigationBar()
 
         bindView()
         initView()
