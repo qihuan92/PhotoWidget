@@ -58,6 +58,12 @@ suspend fun updateAppWidget(
         serviceIntent.type = Random.nextInt().toString()
         serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         remoteViews.setRemoteAdapter(R.id.vf_picture, serviceIntent)
+
+        // Set widget link
+        val linkIntent = createLinkIntent(context, linkInfo, imageList.first().imageUri)
+        val linkPendingIntent =
+            PendingIntent.getActivity(context, widgetId, linkIntent, MUTABLE_FLAG)
+        remoteViews.setOnClickPendingIntent(android.R.id.background, linkPendingIntent)
     } else {
         if (isMultiImage) {
             // Create flipper remote views
