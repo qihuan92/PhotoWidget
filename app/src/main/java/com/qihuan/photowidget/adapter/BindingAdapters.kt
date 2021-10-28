@@ -1,6 +1,8 @@
 package com.qihuan.photowidget.adapter
 
+import android.net.Uri
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.databinding.*
@@ -8,6 +10,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
 import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.ktx.load
 import com.qihuan.photowidget.view.SliderSelectionView
 import com.qihuan.photowidget.view.TextSelectionView
 
@@ -91,5 +94,14 @@ object BindingAdapters {
         view.addOnChangeListener { _, _, _ ->
             attrChange.onChange()
         }
+    }
+
+    @JvmStatic
+    @BindingAdapter("imagePath")
+    fun setImagePath(view: ImageView, value: Uri?) {
+        if (value == null) {
+            return
+        }
+        view.load(value)
     }
 }

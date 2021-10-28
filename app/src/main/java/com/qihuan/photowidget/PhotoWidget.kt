@@ -11,7 +11,10 @@ import android.widget.RemoteViews
 import androidx.core.net.toFile
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.*
+import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.ktx.logE
+import com.qihuan.photowidget.ktx.providerUri
+import com.qihuan.photowidget.ktx.toRoundedBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -52,54 +55,74 @@ suspend fun updateAppWidget(
     val widgetTransparency = widgetInfo.widgetTransparency
 
     val remoteViews: RemoteViews
-    if (isMultiImage) {
-        // Create flipper remote views
-        remoteViews = createFlipperRemoteViews(context, autoPlayInterval.interval)
-        val serviceIntent = Intent(context, WidgetPhotoService::class.java)
+    if (widgetInfo.widgetType == WidgetType.GIF) {
+        remoteViews = RemoteViews(context.packageName, R.layout.gif_photo_widget)
+        val serviceIntent = Intent(context, GifWidgetPhotoService::class.java)
         serviceIntent.type = Random.nextInt().toString()
         serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         remoteViews.setRemoteAdapter(R.id.vf_picture, serviceIntent)
 
         // Set widget link
-        val linkIntent = createLinkIntent(context, linkInfo, null)
+        val linkIntent = createLinkIntent(context, linkInfo, imageList.first().imageUri)
         val linkPendingIntent =
             PendingIntent.getActivity(context, widgetId, linkIntent, MUTABLE_FLAG)
-        remoteViews.setPendingIntentTemplate(R.id.vf_picture, linkPendingIntent)
-
-        // Set page actions
-        val leftPendingIntent =
-            createWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_PREV, autoPlayInterval)
-        remoteViews.setOnClickPendingIntent(R.id.area_left, leftPendingIntent)
-        val rightPendingIntent =
-            createWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_NEXT, autoPlayInterval)
-        remoteViews.setOnClickPendingIntent(R.id.area_right, rightPendingIntent)
+        remoteViews.setOnClickPendingIntent(android.R.id.background, linkPendingIntent)
     } else {
-        // Create single image remote views
-        remoteViews = createImageRemoteViews(context, scaleType)
-        ImageView(context).scaleType
+        if (isMultiImage) {
+            // Create flipper remote views
+            remoteViews = createFlipperRemoteViews(context, autoPlayInterval.interval)
+            val serviceIntent = Intent(context, WidgetPhotoService::class.java)
+            serviceIntent.type = Random.nextInt().toString()
+            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+            remoteViews.setRemoteAdapter(R.id.vf_picture, serviceIntent)
 
-        // Load image
-        val imageUri = imageList.first().imageUri
-        if (imageUri.toFile().exists()) {
-            val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo).toFloat().dp
-            val imageHeight = appWidgetManager.getWidgetImageHeight(widgetInfo).toFloat().dp
-            val imageBitmap = withContext(Dispatchers.IO) {
-                imageUri.toRoundedBitmap(context, widgetRadius, scaleType, imageWidth, imageHeight)
-            }
-            remoteViews.setImageViewBitmap(R.id.iv_picture, imageBitmap)
+            // Set widget link
+            val linkIntent = createLinkIntent(context, linkInfo, null)
+            val linkPendingIntent =
+                PendingIntent.getActivity(context, widgetId, linkIntent, MUTABLE_FLAG)
+            remoteViews.setPendingIntentTemplate(R.id.vf_picture, linkPendingIntent)
+
+            // Set page actions
+            val leftPendingIntent =
+                createWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_PREV, autoPlayInterval)
+            remoteViews.setOnClickPendingIntent(R.id.area_left, leftPendingIntent)
+            val rightPendingIntent =
+                createWidgetNavPendingIntent(context, widgetId, NAV_WIDGET_NEXT, autoPlayInterval)
+            remoteViews.setOnClickPendingIntent(R.id.area_right, rightPendingIntent)
         } else {
-            remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
+            // Create single image remote views
+            remoteViews = createImageRemoteViews(context, scaleType)
+            ImageView(context).scaleType
+
+            // Load image
+            val imageUri = imageList.first().imageUri
+            if (imageUri.toFile().exists()) {
+                val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo).toFloat().dp
+                val imageHeight = appWidgetManager.getWidgetImageHeight(widgetInfo).toFloat().dp
+                val imageBitmap = withContext(Dispatchers.IO) {
+                    imageUri.toRoundedBitmap(
+                        context,
+                        widgetRadius,
+                        scaleType,
+                        imageWidth,
+                        imageHeight
+                    )
+                }
+                remoteViews.setImageViewBitmap(R.id.iv_picture, imageBitmap)
+            } else {
+                remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
+            }
+
+            // Set widget alpha
+            val alpha = (255 * (1f - widgetTransparency / 100f)).toInt()
+            remoteViews.setInt(R.id.iv_picture, "setImageAlpha", alpha)
+
+            // Set widget link
+            val linkIntent = createLinkIntent(context, linkInfo, imageUri)
+            val linkPendingIntent =
+                PendingIntent.getActivity(context, widgetId, linkIntent, MUTABLE_FLAG)
+            remoteViews.setOnClickPendingIntent(R.id.iv_picture, linkPendingIntent)
         }
-
-        // Set widget alpha
-        val alpha = (255 * (1f - widgetTransparency / 100f)).toInt()
-        remoteViews.setInt(R.id.iv_picture, "setImageAlpha", alpha)
-
-        // Set widget link
-        val linkIntent = createLinkIntent(context, linkInfo, imageUri)
-        val linkPendingIntent =
-            PendingIntent.getActivity(context, widgetId, linkIntent, MUTABLE_FLAG)
-        remoteViews.setOnClickPendingIntent(R.id.iv_picture, linkPendingIntent)
     }
 
     // Set widget padding
@@ -198,7 +221,7 @@ suspend fun deleteWidget(context: Context, widgetId: Int) {
     val widgetDao = AppDatabase.getDatabase(context).widgetDao()
     widgetDao.deleteByWidgetId(widgetId)
     val outFile = File(context.filesDir, "widget_${widgetId}")
-    outFile.deleteDir()
+    outFile.deleteRecursively()
 }
 
 suspend fun deleteWidgets(context: Context, widgetIds: IntArray) {
@@ -206,6 +229,6 @@ suspend fun deleteWidgets(context: Context, widgetIds: IntArray) {
     for (widgetId in widgetIds) {
         widgetDao.deleteByWidgetId(widgetId)
         val outFile = File(context.filesDir, "widget_${widgetId}")
-        outFile.deleteDir()
+        outFile.deleteRecursively()
     }
 }

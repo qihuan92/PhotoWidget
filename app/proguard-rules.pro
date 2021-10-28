@@ -39,5 +39,9 @@
   *** rewind();
 }
 
+-keep class com.bumptech.glide.load.resource.gif** { *; }
+-keep interface com.bumptech.glide.load.resource.gif** { *; }
+-keep class com.bumptech.glide.gifdecoder** { *; }
+
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.*{*;}

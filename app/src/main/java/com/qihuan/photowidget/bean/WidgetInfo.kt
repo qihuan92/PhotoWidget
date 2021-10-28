@@ -22,6 +22,7 @@ data class WidgetInfo(
     val widgetRadius: Float,
     val widgetTransparency: Float = 0f,
     val autoPlayInterval: PlayInterval = PlayInterval.NONE,
+    val widgetType: WidgetType = WidgetType.NORMAL,
     val linkInfo: String? = null,
     val photoScaleType: PhotoScaleType,
     val createTime: Long? = System.currentTimeMillis(),

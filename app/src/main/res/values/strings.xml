@@ -92,4 +92,8 @@
     <string name="force_refresh_widget_cancel_processing">取消</string>
     <string name="widget_link_open_album">打开相册</string>
     <string name="widget_link_open_album_description">在相册中显示当前照片</string>
+    <string name="add_widget_photo">添加图片</string>
+    <string name="widget_preview">微件预览</string>
+    <string name="widget_item_gif_tag">GIF标签</string>
+    <string name="save_widget_error_gif">保存失败：GIF解析错误</string>
 </resources>

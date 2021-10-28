@@ -39,5 +39,17 @@
             app:layout_constraintLeft_toLeftOf="@id/iv_widget_picture"
             app:layout_constraintRight_toRightOf="@id/iv_widget_picture"
             tools:text="ID: 86" />
+
+        <ImageView
+            android:id="@+id/iv_gif_tag"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_widget_tag"
+            android:contentDescription="@string/widget_item_gif_tag"
+            android:src="@drawable/ic_round_gif_24_white"
+            app:layout_constraintHeight_percent="0.2"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

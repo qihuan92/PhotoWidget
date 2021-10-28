@@ -10,42 +10,33 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.core.view.*
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
-import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
-import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.LinkType
-import com.qihuan.photowidget.bean.PhotoScaleType
-import com.qihuan.photowidget.bean.PlayInterval
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
-import com.qihuan.photowidget.crop.CropPictureContract
-import com.qihuan.photowidget.databinding.ActivityConfigureBinding
+import com.qihuan.photowidget.databinding.ActivityGifConfigureBinding
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.link.InstalledAppActivity
 import com.qihuan.photowidget.link.UrlInputActivity
 import com.qihuan.photowidget.view.ItemSelectionDialog
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.*
 
 /**
- * The configuration screen for the [com.qihuan.photowidget.PhotoWidgetProvider] AppWidget.
+ * The configuration screen for the [com.qihuan.photowidget.GifPhotoWidgetProvider] AppWidget.
  */
-class ConfigureActivity : AppCompatActivity() {
+class GifConfigureActivity : AppCompatActivity() {
 
-    private val binding by viewBinding(ActivityConfigureBinding::inflate)
-    private val viewModel by viewModels<ConfigureViewModel> {
-        ConfigureViewModelFactory(
+    private val binding by viewBinding(ActivityGifConfigureBinding::inflate)
+    private val viewModel by viewModels<GifConfigureViewModel> {
+        GifConfigureViewModelFactory(
             application,
             appWidgetId
         )
@@ -72,33 +63,6 @@ class ConfigureActivity : AppCompatActivity() {
             .create()
     }
 
-    private var currentDeletePhotoIndex: Int? = null
-
-    private val deletePhotoDialog by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.alert_title_default)
-            .setMessage(R.string.conform_delete_photo)
-            .setPositiveButton(R.string.sure) { _, _ ->
-                currentDeletePhotoIndex?.let {
-                    viewModel.deleteImage(it)
-                }
-            }
-            .setNegativeButton(R.string.cancel) { _, _ -> }
-            .setOnDismissListener { currentDeletePhotoIndex = null }
-            .create()
-    }
-
-    private val scaleTypeDialog by lazy(LazyThreadSafetyMode.NONE) {
-        ItemSelectionDialog(
-            this,
-            getString(R.string.alert_title_scale_type),
-            PhotoScaleType.values().toList()
-        ) { dialog, item ->
-            viewModel.updatePhotoScaleType(item)
-            dialog.dismiss()
-        }
-    }
-
     private val linkTypeDialog by lazy(LazyThreadSafetyMode.NONE) {
         ItemSelectionDialog(
             this,
@@ -114,39 +78,8 @@ class ConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private val intervalDialog by lazy(LazyThreadSafetyMode.NONE) {
-        ItemSelectionDialog(
-            this,
-            getString(R.string.alert_title_interval),
-            PlayInterval.values().toList()
-        ) { dialog, item ->
-            viewModel.updateAutoPlayInterval(item)
-            dialog.dismiss()
-        }
-    }
-
-    private val previewAdapter by lazy { PreviewPhotoAdapter() }
-    private val previewAddAdapter by lazy {
-        val previewPhotoAddAdapter = PreviewPhotoAddAdapter()
-        previewPhotoAddAdapter.submitList(listOf(1))
-        previewPhotoAddAdapter
-    }
-    private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
-
     private val selectPicForResult =
-        registerForActivityResult(ActivityResultContracts.GetMultipleContents()) {
-            if (it.isNullOrEmpty()) {
-                return@registerForActivityResult
-            }
-            if (it.size == 1) {
-                cropPicForResult.launch(it[0])
-            } else {
-                addPhoto(*it.toTypedArray())
-            }
-        }
-
-    private val cropPicForResult =
-        registerForActivityResult(CropPictureContract()) {
+        registerForActivityResult(ActivityResultContracts.GetContent()) {
             if (it != null) {
                 addPhoto(it)
             }
@@ -184,6 +117,7 @@ class ConfigureActivity : AppCompatActivity() {
 
         binding.root.paddingStatusBar()
         binding.scrollViewInfo.paddingNavigationBar()
+        binding.fabAddPhoto.marginNavigationBar()
 
         bindView()
         initView()
@@ -203,78 +137,9 @@ class ConfigureActivity : AppCompatActivity() {
         // 获取背景权限
         externalStorageResult.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
 
-        binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
-        binding.rvPreviewList.adapter = ConcatAdapter(previewAddAdapter, previewAdapter)
-        previewAdapter.setOnItemDeleteListener { position, _ ->
-            showDeletePhotoAlert(position)
+        binding.fabAddPhoto.setOnClickListener {
+            selectPicForResult.launch("image/gif")
         }
-        previewAddAdapter.setOnItemAddListener {
-            selectPicForResult.launch("image/*")
-        }
-        bindDragHelper()
-
-        viewModel.imageUriList.observe(this) {
-            previewAdapter.submitList(it.toList())
-            binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
-            widgetAdapter.setData(it)
-
-            if (it.size <= 1) {
-                viewModel.updateAutoPlayInterval(PlayInterval.NONE)
-            }
-        }
-
-        viewModel.autoPlayInterval.observe(this) {
-            val vfPicture = binding.layoutPhotoWidget.vfPicture
-            val interval = it.interval
-            if (interval < 0) {
-                vfPicture.isAutoStart = false
-                vfPicture.stopFlipping()
-            } else {
-                vfPicture.isAutoStart = true
-                vfPicture.flipInterval = interval
-                vfPicture.startFlipping()
-            }
-        }
-
-        viewModel.photoScaleType.observe(this) {
-            binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
-            widgetAdapter.setScaleType(it.scaleType)
-        }
-
-        binding.layoutPhotoWidget.photoWidgetInfo.areaLeft.setOnClickListener {
-            binding.layoutPhotoWidget.vfPicture.showPrevious()
-        }
-        binding.layoutPhotoWidget.photoWidgetInfo.areaRight.setOnClickListener {
-            binding.layoutPhotoWidget.vfPicture.showNext()
-        }
-    }
-
-    private fun bindDragHelper() {
-        ItemTouchHelper(object : ItemTouchHelper.Callback() {
-            override fun getMovementFlags(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder
-            ): Int {
-                if (viewHolder !is PreviewPhotoAdapter.ViewHolder) {
-                    return makeMovementFlags(0, 0)
-                }
-                return makeMovementFlags(ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, 0)
-            }
-
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                val fromPosition = viewHolder.bindingAdapterPosition
-                val toPosition = target.bindingAdapterPosition
-                viewModel.swapImageList(fromPosition, toPosition)
-                return true
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            }
-        }).attachToRecyclerView(binding.rvPreviewList)
     }
 
     override fun finish() {
@@ -306,19 +171,18 @@ class ConfigureActivity : AppCompatActivity() {
         lifecycleScope.launch {
             processImageDialog.show()
             for (uri in uris) {
-                val tempOutFile = if (uris.size == 1) {
-                    uri.toFile()
-                } else {
-                    val outDir = File(cacheDir, TEMP_DIR_NAME)
-                    if (!outDir.exists()) {
-                        outDir.mkdirs()
-                    }
-                    File(outDir, "${System.currentTimeMillis()}.png").also { file ->
-                        copyFile(uri, file.toUri())
-                    }
+                val outDir = File(cacheDir, TEMP_DIR_NAME)
+                withContext(Dispatchers.IO) { outDir.deleteRecursively() }
+                if (!outDir.exists()) {
+                    outDir.mkdirs()
                 }
+
+                val tempOutFile = File(outDir, "${System.currentTimeMillis()}.gif").also { file ->
+                    copyFile(uri, file.toUri())
+                }
+
                 try {
-                    viewModel.addImage(compressImageFile(tempOutFile).toUri())
+                    viewModel.addImage(tempOutFile.toUri())
                 } catch (e: NoSuchFileException) {
                     logE("ConfigureActivity", e.message, e)
                 }
@@ -328,18 +192,26 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private fun saveWidget() {
-        if (viewModel.uiState.value == ConfigureViewModel.UIState.LOADING) {
+        if (viewModel.uiState.value == GifConfigureViewModel.UIState.LOADING) {
             return
         }
-        if (viewModel.imageUriList.value.isNullOrEmpty()) {
+        if (viewModel.imageUri.value == null) {
             Snackbar.make(binding.root, R.string.warning_select_picture, Snackbar.LENGTH_SHORT)
+                .setAnchorView(binding.fabAddPhoto)
                 .show()
             return
         }
         lifecycleScope.launch {
             saveImageDialog.show()
-            viewModel.saveWidget()
+            val result = viewModel.saveWidget()
             saveImageDialog.dismiss()
+
+            if (!result) {
+                Snackbar.make(binding.root, R.string.save_widget_error_gif, Snackbar.LENGTH_SHORT)
+                    .setAnchorView(binding.fabAddPhoto)
+                    .show()
+                return@launch
+            }
 
             setResult(RESULT_OK, Intent().apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
@@ -348,25 +220,12 @@ class ConfigureActivity : AppCompatActivity() {
         }
     }
 
-    fun showIntervalSelector() {
-        intervalDialog.show()
-    }
-
     fun showLinkTypeSelector() {
         linkTypeDialog.show()
     }
 
-    fun showScaleTypeSelector() {
-        scaleTypeDialog.show()
-    }
-
     fun showDeleteLinkAlert() {
         deleteLinkDialog.show()
-    }
-
-    private fun showDeletePhotoAlert(position: Int) {
-        currentDeletePhotoIndex = position
-        deletePhotoDialog.show()
     }
 
     private fun launchOpenAppActivity() {
