@@ -197,13 +197,21 @@ class GifConfigureActivity : AppCompatActivity() {
         }
         if (viewModel.imageUri.value == null) {
             Snackbar.make(binding.root, R.string.warning_select_picture, Snackbar.LENGTH_SHORT)
+                .setAnchorView(binding.fabAddPhoto)
                 .show()
             return
         }
         lifecycleScope.launch {
             saveImageDialog.show()
-            viewModel.saveWidget()
+            val result = viewModel.saveWidget()
             saveImageDialog.dismiss()
+
+            if (!result) {
+                Snackbar.make(binding.root, R.string.save_widget_error_gif, Snackbar.LENGTH_SHORT)
+                    .setAnchorView(binding.fabAddPhoto)
+                    .show()
+                return@launch
+            }
 
             setResult(RESULT_OK, Intent().apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)

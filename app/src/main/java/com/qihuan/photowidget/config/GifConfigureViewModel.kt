@@ -103,8 +103,8 @@ class GifConfigureViewModel(
         }
     }
 
-    suspend fun saveWidget() {
-        val uri = saveWidgetPhotoFile() ?: return
+    suspend fun saveWidget(): Boolean {
+        val uri = saveWidgetPhotoFile() ?: return false
 
         val widgetInfo = WidgetInfo(
             widgetId = appWidgetId,
@@ -131,6 +131,8 @@ class GifConfigureViewModel(
         val widgetBean = WidgetBean(widgetInfo, imageList, linkInfo.value)
         widgetDao.save(widgetBean)
         updateAppWidget(context, AppWidgetManager.getInstance(context), widgetBean)
+
+        return true
     }
 
     fun deleteLink() {
@@ -156,7 +158,11 @@ class GifConfigureViewModel(
                 val file = File(widgetDir, tempFile.name)
                 tempFile.copyTo(file, true)
                 uri = file.toUri()
-                uri?.saveGifFramesToDir(File(widgetDir, file.nameWithoutExtension))
+                try {
+                    uri?.saveGifFramesToDir(File(widgetDir, file.nameWithoutExtension))
+                } catch (e: Exception) {
+                    uri = null
+                }
             }
         }
         return uri
