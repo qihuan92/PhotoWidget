@@ -1,10 +1,13 @@
 package com.qihuan.photowidget.ktx
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
+import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
 import androidx.core.net.toFile
+import com.qihuan.photowidget.common.CompressFormatCompat
+import com.qihuan.photowidget.common.DEFAULT_COMPRESSION_QUALITY
+import com.qihuan.photowidget.common.FileExtension
 import com.yalantis.ucrop.util.BitmapLoadUtils
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
@@ -44,15 +47,42 @@ suspend fun Context.copyFile(inputUri: Uri, outputUri: Uri) = withContext(Dispat
     }
 }
 
-suspend fun Context.compressImageFile(imageFile: File, destination: File = imageFile): File {
-    return Compressor.compress(this, imageFile) {
-        default(format = Bitmap.CompressFormat.PNG)
+suspend fun Context.compressImageFile(imageFile: File): File {
+    val destination = File(
+        imageFile.parentFile,
+        "${imageFile.nameWithoutExtension}.${FileExtension.WEBP}"
+    )
+    val compressedFile = Compressor.compress(this, imageFile) {
+        default(format = CompressFormatCompat.WEBP_LOSSY, quality = DEFAULT_COMPRESSION_QUALITY)
         size(5242880)
         destination(destination)
     }
+    withContext(Dispatchers.IO) {
+        imageFile.delete()
+        File(cacheDir, "compressor").deleteRecursively()
+    }
+    return compressedFile
 }
 
 fun File.providerUri(context: Context): Uri =
     FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", this)
 
 fun Uri.providerUri(context: Context) = toFile().providerUri(context)
+
+fun Uri.getExtension(context: Context): String? {
+    val mimeType = context.contentResolver.getType(this)
+    return MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
+}
+
+fun createFile(parent: File, nameWithoutExtension: String, extension: String? = null): File {
+    if (!parent.exists()) {
+        parent.mkdirs()
+    }
+
+    val fileName = if (extension != null) {
+        "$nameWithoutExtension.$extension"
+    } else {
+        nameWithoutExtension
+    }
+    return File(parent, fileName)
+}

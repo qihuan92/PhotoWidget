@@ -3,13 +3,15 @@ package com.qihuan.photowidget.crop
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.util.TypedValue
+import android.webkit.MimeTypeMap
 import androidx.activity.result.contract.ActivityResultContract
 import com.qihuan.photowidget.R
+import com.qihuan.photowidget.common.MimeType
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
+import com.qihuan.photowidget.ktx.createFile
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCropActivity
 import java.io.File
@@ -24,12 +26,10 @@ class CropPictureContract : ActivityResultContract<Uri, Uri?>() {
     private var tempOutFile: File? = null
 
     override fun createIntent(context: Context, input: Uri): Intent {
-
+        val inputMimeType = context.contentResolver.getType(input)
+        val inputFileExtension = MimeTypeMap.getSingleton().getExtensionFromMimeType(inputMimeType)
         val outDir = File(context.cacheDir, TEMP_DIR_NAME)
-        if (!outDir.exists()) {
-            outDir.mkdirs()
-        }
-        tempOutFile = File(outDir, "${System.currentTimeMillis()}.png")
+        tempOutFile = createFile(outDir, System.currentTimeMillis().toString(), inputFileExtension)
 
         val intent = UCrop.of(input, Uri.fromFile(tempOutFile))
             .withOptions(UCrop.Options().apply {
@@ -41,7 +41,7 @@ class CropPictureContract : ActivityResultContract<Uri, Uri?>() {
                 setToolbarWidgetColor(Color.WHITE)
                 setToolbarColor(mainColor)
                 setActiveControlsWidgetColor(mainColor)
-                setCompressionFormat(Bitmap.CompressFormat.PNG)
+                setCompressionFormat(MimeType.getCompressFormatByMimeType(inputMimeType))
                 setCompressionQuality(100)
                 setAllowedGestures(UCropActivity.SCALE, UCropActivity.ROTATE, UCropActivity.SCALE)
             })

@@ -310,10 +310,11 @@ class ConfigureActivity : AppCompatActivity() {
                     uri.toFile()
                 } else {
                     val outDir = File(cacheDir, TEMP_DIR_NAME)
-                    if (!outDir.exists()) {
-                        outDir.mkdirs()
-                    }
-                    File(outDir, "${System.currentTimeMillis()}.png").also { file ->
+                    createFile(
+                        outDir,
+                        System.currentTimeMillis().toString(),
+                        uri.getExtension(this@ConfigureActivity)
+                    ).also { file ->
                         copyFile(uri, file.toUri())
                     }
                 }
