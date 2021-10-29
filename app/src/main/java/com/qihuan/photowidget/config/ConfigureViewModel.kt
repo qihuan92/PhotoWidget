@@ -92,10 +92,6 @@ class ConfigureViewModel(
 
         val uriList = mutableListOf<Uri>()
         withContext(Dispatchers.IO) {
-            // remove compressor cache
-            val compressorCacheDir = File(cacheDir, "compressor")
-            compressorCacheDir.deleteRecursively()
-
             val tempDir = File(cacheDir, TEMP_DIR_NAME)
             if (!tempDir.exists()) {
                 tempDir.mkdirs()
@@ -172,9 +168,8 @@ class ConfigureViewModel(
     }
 
     private suspend fun saveWidgetPhotoFiles(): List<Uri> {
-        val filesDir = context.filesDir
         return withContext(Dispatchers.IO) {
-            val widgetDir = File(filesDir, "widget_${appWidgetId}")
+            val widgetDir = File(context.filesDir, "widget_${appWidgetId}")
             if (widgetDir.exists() && widgetDir.isDirectory) {
                 widgetDir.delete()
             }
