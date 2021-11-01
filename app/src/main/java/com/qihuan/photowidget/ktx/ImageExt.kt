@@ -2,7 +2,6 @@ package com.qihuan.photowidget.ktx
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.widget.ImageView
@@ -12,8 +11,6 @@ import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.qihuan.photowidget.App
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -24,6 +21,11 @@ import java.io.FileOutputStream
  * @author qi
  * @since 3/30/21
  */
+
+fun ImageView.loadRounded(uri: Uri, radius: Float) {
+    loadRounded(uri, radius.dp)
+}
+
 fun ImageView.loadRounded(uri: Uri, radius: Int) {
     if (radius == 0) {
         load(uri)
@@ -31,18 +33,9 @@ fun ImageView.loadRounded(uri: Uri, radius: Int) {
     }
     val radiusPx = radius * 2
     Glide.with(context)
-        .asBitmap()
         .load(uri)
         .apply(RequestOptions.bitmapTransform(RoundedCorners(radiusPx)))
-        .into(object : CustomTarget<Bitmap>() {
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                setImageBitmap(resource)
-            }
-
-            override fun onLoadCleared(placeholder: Drawable?) {
-
-            }
-        })
+        .into(this)
 }
 
 fun ImageView.load(uri: Uri) {

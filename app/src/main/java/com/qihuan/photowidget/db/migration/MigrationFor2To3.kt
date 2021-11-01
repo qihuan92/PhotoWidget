@@ -19,7 +19,7 @@ class MigrationFor2To3(
         // 迁移图片地址
         database.query("select * from widget_info").use { cursor ->
             while (cursor.moveToNext()) {
-                val widgetId = cursor.getInt(cursor.getColumnIndex("widgetId"))
+                val widgetId = cursor.getInt(cursor.getColumnIndexOrThrow("widgetId"))
                 val sourceFile = File(context.filesDir, "widget_${widgetId}.png")
                 if (sourceFile.exists()) {
                     val targetDir = File(context.filesDir, "widget_${widgetId}")
