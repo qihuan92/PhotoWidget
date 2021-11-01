@@ -5,9 +5,11 @@
 
     <AdapterViewFlipper
         android:id="@+id/vf_picture"
-        style="@style/ViewFlipperStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateFirstView="false"
         android:autoStart="true"
-        android:flipInterval="80" />
+        android:flipInterval="100"
+        android:inAnimation="@animator/anim_gif_view_flipper_in"
+        android:outAnimation="@animator/anim_gif_view_flipper_out" />
 </FrameLayout>
