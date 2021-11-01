@@ -10,7 +10,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
 import com.qihuan.photowidget.bean.LinkType
 import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.load
+import com.qihuan.photowidget.ktx.loadRounded
 import com.qihuan.photowidget.view.SliderSelectionView
 import com.qihuan.photowidget.view.TextSelectionView
 
@@ -97,11 +97,11 @@ object BindingAdapters {
     }
 
     @JvmStatic
-    @BindingAdapter("imagePath")
-    fun setImagePath(view: ImageView, value: Uri?) {
-        if (value == null) {
+    @BindingAdapter("imagePath", "imageRadius", requireAll = false)
+    fun loadImage(view: ImageView, imagePath: Uri?, imageRadius: Float?) {
+        if (imagePath == null) {
             return
         }
-        view.load(value)
+        view.loadRounded(imagePath, imageRadius ?: 0f)
     }
 }

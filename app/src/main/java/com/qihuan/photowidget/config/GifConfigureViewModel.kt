@@ -40,6 +40,7 @@ class GifConfigureViewModel(
     val bottomPadding by lazy { MutableLiveData(0f) }
     val leftPadding by lazy { MutableLiveData(0f) }
     val rightPadding by lazy { MutableLiveData(0f) }
+    val widgetRadius by lazy { MutableLiveData(0f) }
     val imageUri by lazy { MutableLiveData<Uri>() }
     val linkInfo by lazy { MutableLiveData<LinkInfo>() }
     val uiState by lazy { MutableLiveData(UIState.LOADING) }
@@ -92,6 +93,7 @@ class GifConfigureViewModel(
                 bottomPadding.value = widgetInfo.bottomPadding
                 leftPadding.value = widgetInfo.leftPadding
                 rightPadding.value = widgetInfo.rightPadding
+                widgetRadius.value = widgetInfo.widgetRadius
             } else {
                 isEditState.value = false
             }
@@ -112,7 +114,7 @@ class GifConfigureViewModel(
             bottomPadding = bottomPadding.value ?: 0f,
             leftPadding = leftPadding.value ?: 0f,
             rightPadding = rightPadding.value ?: 0f,
-            widgetRadius = 0f,
+            widgetRadius = widgetRadius.value ?: 0f,
             widgetTransparency = 0f,
             photoScaleType = PhotoScaleType.CENTER_CROP,
             widgetType = WidgetType.GIF,

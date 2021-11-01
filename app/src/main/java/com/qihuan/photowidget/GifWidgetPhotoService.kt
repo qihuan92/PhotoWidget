@@ -8,9 +8,11 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.net.toFile
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.ktx.dp
 import java.io.File
 
 /**
@@ -36,6 +38,7 @@ class GifWidgetPhotoViewFactory(
     private var linkInfo: LinkInfo? = null
     private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private val imagePathList = mutableListOf<String>()
+    private var roundedCorners: RoundedCorners? = null
 
     override fun onCreate() {
         widgetId = intent?.getIntExtra(
@@ -60,6 +63,11 @@ class GifWidgetPhotoViewFactory(
             }
             widgetInfo = widgetBean.widgetInfo
             linkInfo = widgetBean.linkInfo
+
+            val widgetRadius = widgetInfo?.widgetRadius ?: 0f;
+            if (widgetRadius > 0) {
+                roundedCorners = RoundedCorners(widgetRadius.dp)
+            }
         }
     }
 
@@ -86,7 +94,11 @@ class GifWidgetPhotoViewFactory(
         val showWidth = option.outWidth shr 1
         val showHeight = option.outHeight shr 1
 
-        val bitmap = Glide.with(context).asBitmap().load(path).submit(showWidth, showHeight).get()
+        var builder = Glide.with(context).asBitmap().load(path)
+        if (roundedCorners != null) {
+            builder = builder.transform(roundedCorners)
+        }
+        val bitmap = builder.submit(showWidth, showHeight).get()
         val remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image)
         remoteViews.setImageViewBitmap(R.id.iv_picture, bitmap)
         return remoteViews
