@@ -9,8 +9,6 @@ import android.widget.RemoteViewsService
 import androidx.core.net.toFile
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
 import java.io.File
@@ -34,8 +32,6 @@ class GifWidgetPhotoViewFactory(
 ) : RemoteViewsService.RemoteViewsFactory {
 
     private val widgetDao by lazy { AppDatabase.getDatabase(context).widgetDao() }
-    private var widgetInfo: WidgetInfo? = null
-    private var linkInfo: LinkInfo? = null
     private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private val imagePathList = mutableListOf<String>()
     private var roundedCorners: RoundedCorners? = null
@@ -52,8 +48,8 @@ class GifWidgetPhotoViewFactory(
         val widgetBean = widgetDao.selectByIdSync(widgetId)
         if (widgetBean != null) {
             val gifFile = widgetBean.imageList.first().imageUri.toFile()
-
             val gifDir = File(gifFile.parent, gifFile.nameWithoutExtension)
+
             if (gifDir.exists() && gifDir.isDirectory) {
                 val files = gifDir.listFiles()
                 files?.sortBy { it.nameWithoutExtension.toInt() }
@@ -61,10 +57,9 @@ class GifWidgetPhotoViewFactory(
                     imagePathList.add(it.path)
                 }
             }
-            widgetInfo = widgetBean.widgetInfo
-            linkInfo = widgetBean.linkInfo
 
-            val widgetRadius = widgetInfo?.widgetRadius ?: 0f;
+            val widgetInfo = widgetBean.widgetInfo
+            val widgetRadius = widgetInfo.widgetRadius
             if (widgetRadius > 0) {
                 roundedCorners = RoundedCorners(widgetRadius.dp)
             }
