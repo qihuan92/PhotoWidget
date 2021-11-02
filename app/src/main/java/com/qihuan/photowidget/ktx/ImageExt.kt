@@ -3,7 +3,6 @@ package com.qihuan.photowidget.ktx
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.gifdecoder.StandardGifDecoder
@@ -12,6 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.qihuan.photowidget.App
+import com.qihuan.photowidget.common.CompressFormatCompat
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -76,7 +76,7 @@ fun Uri.toRoundedBitmap(
     return builder.submit(width, height).get()
 }
 
-fun Uri.saveGifFramesToDir(dir: File) {
+fun Uri.saveGifFramesToDir(dir: File, radius: Int = 0) {
     dir.deleteRecursively()
     if (!dir.exists()) {
         dir.mkdirs()
@@ -105,7 +105,8 @@ fun Uri.saveGifFramesToDir(dir: File) {
         for (index in 0..standardGifDecoder.frameCount) {
             standardGifDecoder.advance()
             val frame = standardGifDecoder.nextFrame
-            frame?.saveFile(dir, index.toString())
+            val roundedFrame = frame?.withRoundedCorner(radius * 2)
+            roundedFrame?.saveFile(dir, index.toString())
         }
     } catch (e: Exception) {
         logE("ImageExt", "saveGifFramesToDir()", e)
@@ -113,19 +114,24 @@ fun Uri.saveGifFramesToDir(dir: File) {
     }
 }
 
-fun Bitmap.saveFile(dir: File, displayName: String) {
-    val compressFormat = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        Bitmap.CompressFormat.WEBP_LOSSY
-    } else {
-        Bitmap.CompressFormat.WEBP
-    }
+fun Bitmap.withRoundedCorner(radius: Int): Bitmap {
+    var builder = Glide.with(App.context)
+        .asBitmap()
+        .load(this)
 
+    if (radius > 0) {
+        builder = builder.transform(RoundedCorners(radius))
+    }
+    return builder.submit().get()
+}
+
+fun Bitmap.saveFile(dir: File, displayName: String) {
     val file = File(dir, "$displayName.webp")
     val fos = FileOutputStream(file)
     val bos = ByteArrayOutputStream()
 
     try {
-        if (compress(compressFormat, 50, bos)) {
+        if (compress(CompressFormatCompat.WEBP_LOSSY, 50, bos)) {
             fos.write(bos.toByteArray())
         }
     } catch (e: Exception) {

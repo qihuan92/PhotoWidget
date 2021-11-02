@@ -3,12 +3,11 @@ package com.qihuan.photowidget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.net.toFile
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
 import java.io.File
@@ -33,7 +32,8 @@ class GifWidgetPhotoViewFactory(
     private val widgetDao by lazy { AppDatabase.getDatabase(context).widgetDao() }
     private var widgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private val imagePathList = mutableListOf<String>()
-    private var roundedCorners: RoundedCorners? = null
+    private var widgetRadius: Int = 0
+    private var widgetCreateTime: Long? = 0L
 
     override fun onCreate() {
         widgetId = intent?.getIntExtra(
@@ -58,10 +58,8 @@ class GifWidgetPhotoViewFactory(
             }
 
             val widgetInfo = widgetBean.widgetInfo
-            val widgetRadius = widgetInfo.widgetRadius
-            if (widgetRadius > 0) {
-                roundedCorners = RoundedCorners(widgetRadius.dp)
-            }
+            widgetRadius = widgetInfo.widgetRadius.dp
+            widgetCreateTime = widgetInfo.createTime
         }
     }
 
@@ -80,19 +78,12 @@ class GifWidgetPhotoViewFactory(
 
         val path = imagePathList[position]
 
-        // Scale image size
-        val option = BitmapFactory.Options().apply {
-            inJustDecodeBounds = true
-        }
-        BitmapFactory.decodeFile(path, option)
-        val showWidth = option.outWidth shr 1
-        val showHeight = option.outHeight shr 1
-
-        var builder = Glide.with(context).asBitmap().load(path)
-        if (roundedCorners != null) {
-            builder = builder.transform(roundedCorners)
-        }
-        val bitmap = builder.submit(showWidth, showHeight).get()
+        val bitmap = Glide.with(context)
+            .asBitmap()
+            .load(path)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .submit()
+            .get()
         val remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image)
         remoteViews.setImageViewBitmap(R.id.iv_picture, bitmap)
         return remoteViews
