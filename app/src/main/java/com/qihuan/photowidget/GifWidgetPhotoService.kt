@@ -105,7 +105,7 @@ class GifWidgetPhotoViewFactory(
     }
 
     override fun getLoadingView(): RemoteViews {
-        return RemoteViews(context.packageName, R.layout.layout_widget_image_loading)
+        return RemoteViews(context.packageName, R.layout.layout_widget_image_loading_empty)
     }
 
     override fun getViewTypeCount(): Int {
