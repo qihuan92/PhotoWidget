@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.saveGifFramesToDir
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
@@ -161,7 +162,7 @@ class GifConfigureViewModel(
                 tempFile.copyTo(file, true)
                 uri = file.toUri()
                 try {
-                    uri?.saveGifFramesToDir(File(widgetDir, file.nameWithoutExtension))
+                    uri?.saveGifFramesToDir(File(widgetDir, file.nameWithoutExtension), widgetRadius.value?.dp ?: 0)
                 } catch (e: Exception) {
                     uri = null
                 }
