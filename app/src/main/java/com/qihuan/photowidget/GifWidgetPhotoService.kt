@@ -18,7 +18,6 @@ import java.io.File
  * @author qi
  * @since 2021-10-27
  */
-
 class GifWidgetPhotoService : RemoteViewsService() {
 
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
