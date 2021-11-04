@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -93,12 +95,20 @@ class ItemSelectionDialog<T : ItemSelectionDialog.Item>(
 
             fun bind(item: T) {
                 currentItem = item
+
+                val icon = item.getIcon()
+                binding.ivIcon.isVisible = icon != null
+                if (icon != null) {
+                    binding.ivIcon.setImageResource(icon)
+                }
                 binding.tvItem.text = item.getItemText()
             }
         }
     }
 
     interface Item {
+        @DrawableRes
+        fun getIcon(): Int?
         fun getItemText(): String
     }
 }

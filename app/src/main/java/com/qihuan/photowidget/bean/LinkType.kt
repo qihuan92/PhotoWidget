@@ -19,6 +19,10 @@ enum class LinkType(
     OPEN_ALBUM("openAlbum", "打开相册", R.drawable.ic_round_photo_album_24),
     ;
 
+    override fun getIcon(): Int? {
+        return icon
+    }
+
     override fun getItemText(): String {
         return description
     }
