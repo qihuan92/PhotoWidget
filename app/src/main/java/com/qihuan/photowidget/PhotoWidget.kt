@@ -51,7 +51,7 @@ suspend fun updateAppWidget(
     val leftPadding = widgetInfo.leftPadding.dp
     val rightPadding = widgetInfo.rightPadding.dp
     val scaleType = widgetInfo.photoScaleType.scaleType
-    val widgetRadius = widgetInfo.widgetRadius.dp
+    val widgetRadius = widgetInfo.widgetRadius
     val widgetTransparency = widgetInfo.widgetTransparency
 
     val remoteViews: RemoteViews

@@ -1,5 +1,6 @@
 package com.qihuan.photowidget.adapter
 
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
@@ -9,6 +10,7 @@ import androidx.databinding.*
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
 import com.qihuan.photowidget.bean.LinkType
+import com.qihuan.photowidget.ktx.calculateRadiusPx
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.loadRounded
 import com.qihuan.photowidget.view.SliderSelectionView
@@ -97,11 +99,21 @@ object BindingAdapters {
     }
 
     @JvmStatic
-    @BindingAdapter("imagePath", "imageRadius", requireAll = false)
-    fun loadImage(view: ImageView, imagePath: Uri?, imageRadius: Float?) {
+    @BindingAdapter("imagePath", "imageRadiusAngle", requireAll = false)
+    fun loadImage(view: ImageView, imagePath: Uri?, imageRadiusAngle: Float) {
         if (imagePath == null) {
             return
         }
-        view.loadRounded(imagePath, imageRadius ?: 0f)
+        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(imagePath.path, options)
+        val radiusPx = calculateRadiusPx(options.outWidth, options.outHeight, imageRadiusAngle)
+        view.loadRounded(imagePath, radiusPx)
+    }
+
+    @JvmStatic
+    @BindingAdapter("cardCornerRadiusAngle")
+    fun setCardCornerRadiusAngle(view: MaterialCardView, radius: Float) {
+        val radiusPx = calculateRadiusPx(view.width, view.height, radius)
+        view.radius = radiusPx.toFloat()
     }
 }

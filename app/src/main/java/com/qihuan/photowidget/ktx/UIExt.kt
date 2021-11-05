@@ -13,6 +13,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.databinding.DialogLoadingBinding
+import kotlin.math.min
 
 /**
  * UIExt
@@ -109,4 +110,8 @@ fun Context.createLoadingDialog(message: String = getString(R.string.loading)): 
         .setCancelable(false)
         .setView(binding.root)
         .create()
+}
+
+fun calculateRadiusPx(width: Int, height: Int, radiusAngle: Float): Int {
+    return ((min(width, height) / 2) * (radiusAngle / 360)).toInt()
 }
