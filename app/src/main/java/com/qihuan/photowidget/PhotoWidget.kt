@@ -156,6 +156,9 @@ fun createLinkIntent(context: Context, linkInfo: LinkInfo?, imageUri: Uri?): Int
         } else {
             Intent()
         }
+        LinkType.OPEN_FILE -> Intent(Intent.ACTION_VIEW, Uri.parse(linkInfo.link)).apply {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
     }
 }
 

@@ -17,6 +17,9 @@ enum class LinkType(
     OPEN_APP("openApp", "打开应用", R.drawable.ic_round_apps_24),
     OPEN_URL("openUrl", "打开URL", R.drawable.ic_round_link_24),
     OPEN_ALBUM("openAlbum", "打开相册", R.drawable.ic_round_photo_album_24),
+    OPEN_FILE("openFile", "打开文件", R.drawable.ic_round_insert_drive_file_24),
+    //OPEN_FOLDER("openFolder", "打开文件夹", R.drawable.ic_round_folder_24),
+    //LOCK_SCREEN("lockScreen", "锁定屏幕", R.drawable.ic_round_screen_lock_portrait_24),
     ;
 
     override fun getIcon(): Int? {

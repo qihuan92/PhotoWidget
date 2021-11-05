@@ -23,10 +23,7 @@ import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.LinkType
-import com.qihuan.photowidget.bean.PhotoScaleType
-import com.qihuan.photowidget.bean.PlayInterval
+import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
@@ -109,6 +106,7 @@ class ConfigureActivity : AppCompatActivity() {
                 LinkType.OPEN_APP -> launchOpenAppActivity()
                 LinkType.OPEN_URL -> launchOpenLinkActivity()
                 LinkType.OPEN_ALBUM -> widgetOpenAlbum()
+                LinkType.OPEN_FILE -> launchOpenFile()
             }
             dialog.dismiss()
         }
@@ -168,6 +166,18 @@ class ConfigureActivity : AppCompatActivity() {
                     val linkInfo = getParcelableExtra<LinkInfo>("linkInfo")
                     viewModel.updateLinkInfo(linkInfo)
                 }
+            }
+        }
+
+    private val getOpenFileLink =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+            if (it != null) {
+                // keep permission
+                contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+                viewModel.updateLinkInfo(createFileLink(appWidgetId, it))
             }
         }
 
@@ -389,13 +399,10 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private fun widgetOpenAlbum() {
-        val linkInfo = LinkInfo(
-            appWidgetId,
-            LinkType.OPEN_ALBUM,
-            getString(R.string.widget_link_open_album),
-            getString(R.string.widget_link_open_album_description),
-            ""
-        )
-        viewModel.updateLinkInfo(linkInfo)
+        viewModel.updateLinkInfo(createAlbumLink(appWidgetId))
+    }
+
+    private fun launchOpenFile() {
+        getOpenFileLink.launch(arrayOf("*/*"))
     }
 }
