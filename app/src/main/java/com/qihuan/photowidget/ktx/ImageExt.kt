@@ -16,7 +16,6 @@ import com.qihuan.photowidget.common.CompressFormatCompat
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import kotlin.math.min
 
 /**
  * ImageExt
@@ -59,15 +58,14 @@ fun Uri.toRoundedBitmap(
     }
     if (radius > 0) {
         // Calculate radiusPx
-        val maxRadiusPx =
+        val radiusPx =
             if (scaleType == ImageView.ScaleType.CENTER_CROP && width > 0 && height > 0) {
-                min(width, height).div(2)
+                calculateRadiusPx(width, height, radius)
             } else {
                 val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
                 BitmapFactory.decodeFile(path, options)
-                min(options.outWidth, options.outHeight).div(2)
+                calculateRadiusPx(options.outWidth, options.outHeight, radius)
             }
-        val radiusPx = (maxRadiusPx * (radius / 360f)).toInt()
         transformList.add(RoundedCorners(radiusPx))
     }
 
