@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.about.AboutActivity
 import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
@@ -49,15 +48,6 @@ class MainActivity : AppCompatActivity() {
             viewModel.loadIgnoreBatteryOptimizations()
         }
 
-    private val forceRefreshWidgetDialog by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.alert_title_force_refresh_widget)
-            .setMessage(R.string.alert_msg_force_refresh_widget)
-            .setNegativeButton(R.string.cancel) { _, _ -> }
-            .setPositiveButton(R.string.alert_positive_btn) { _, _ -> forceRefreshWidget() }
-            .create()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -75,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     private fun bindView() {
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.force_refresh_widget -> forceRefreshWidgetDialog.show()
+                R.id.force_refresh_widget -> forceRefreshWidget()
                 R.id.about -> startActivity(Intent(this, AboutActivity::class.java))
             }
             true
