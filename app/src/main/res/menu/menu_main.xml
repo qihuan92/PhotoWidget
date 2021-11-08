@@ -6,9 +6,10 @@
         android:icon="@drawable/ic_round_refresh_24"
         android:title="@string/force_refresh_widget"
         app:showAsAction="ifRoom" />
+
     <item
-        android:id="@+id/about"
-        android:icon="@drawable/ic_outline_info_24"
-        android:title="@string/about"
-        app:showAsAction="collapseActionView" />
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_round_settings_24"
+        android:title="@string/settings"
+        app:showAsAction="ifRoom" />
 </menu>

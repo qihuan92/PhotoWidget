@@ -100,4 +100,14 @@
     <string name="widget_preview">微件预览</string>
     <string name="widget_item_gif_tag">GIF标签</string>
     <string name="save_widget_error_gif">保存失败：GIF解析错误</string>
+    <string name="settings">设置</string>
+    <string name="auto_refresh_widget">自动刷新微件</string>
+    <string name="auto_refresh_widget_description">可定时刷新所有微件，重启生效</string>
+    <string name="auto_refresh_widget_interval_description">%s刷新一次</string>
+    <string name="settings_general">常规</string>
+    <string name="clean_cache">清除缓存</string>
+    <string name="clean_cache_description">清除图片缓存和临时数据</string>
+    <string name="about_description">应用信息与开发者信息</string>
+    <string name="settings_other">其他</string>
+    <string name="alert_title_auto_refresh_interval">请选择自动刷新间隔（重启生效）</string>
 </resources>

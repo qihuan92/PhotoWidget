@@ -13,7 +13,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.about.AboutActivity
 import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
 import com.qihuan.photowidget.adapter.TipAdapter
 import com.qihuan.photowidget.adapter.WidgetPagingAdapter
@@ -28,6 +27,7 @@ import com.qihuan.photowidget.ktx.IgnoringBatteryOptimizationsContract
 import com.qihuan.photowidget.ktx.logE
 import com.qihuan.photowidget.ktx.paddingNavigationBar
 import com.qihuan.photowidget.ktx.viewBinding
+import com.qihuan.photowidget.settings.SettingsActivity
 import com.qihuan.photowidget.worker.ForceUpdateWidgetWorker
 
 class MainActivity : AppCompatActivity() {
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.force_refresh_widget -> forceRefreshWidget()
-                R.id.about -> startActivity(Intent(this, AboutActivity::class.java))
+                R.id.settings -> startActivity(Intent(this, SettingsActivity::class.java))
             }
             true
         }

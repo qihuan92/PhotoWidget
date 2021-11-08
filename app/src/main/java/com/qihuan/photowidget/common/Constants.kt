@@ -11,6 +11,8 @@ import android.os.Build
 const val TEMP_DIR_NAME = "temp"
 const val MAIN_PAGE_SPAN_COUNT = 2
 const val DEFAULT_COMPRESSION_QUALITY = 75
+const val INVALID_AUTO_REFRESH_INTERVAL = -1L
+const val KEY_AUTO_REFRESH_INTERVAL = "autoRefreshInterval"
 
 object License {
     const val MIT = "MIT License"

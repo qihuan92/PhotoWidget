@@ -297,6 +297,10 @@
         <activity
             android:name=".about.AboutActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
