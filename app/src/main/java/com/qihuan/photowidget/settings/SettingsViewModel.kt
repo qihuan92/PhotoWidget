@@ -19,8 +19,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     private val repository by lazy { SettingsRepository(application) }
     val cacheSize = MutableLiveData("0.00KB")
     val autoRefreshInterval = MutableLiveData(AutoRefreshInterval.NONE)
-    val autoRefreshDescription =
-        MutableLiveData(application.getString(R.string.auto_refresh_widget_description))
 
     init {
         viewModelScope.launch {
