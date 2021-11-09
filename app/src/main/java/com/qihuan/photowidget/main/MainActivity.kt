@@ -9,6 +9,7 @@ import androidx.core.view.WindowCompat
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
@@ -157,6 +158,6 @@ class MainActivity : AppCompatActivity() {
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .build()
         WorkManager.getInstance(applicationContext)
-            .enqueue(workRequest)
+            .enqueueUniqueWork("forceRefreshWidget", ExistingWorkPolicy.KEEP, workRequest)
     }
 }
