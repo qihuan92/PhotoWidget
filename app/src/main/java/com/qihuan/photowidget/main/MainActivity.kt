@@ -21,6 +21,7 @@ import com.qihuan.photowidget.bean.TipsType
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.bean.WidgetType
 import com.qihuan.photowidget.common.MAIN_PAGE_SPAN_COUNT
+import com.qihuan.photowidget.common.WorkTags
 import com.qihuan.photowidget.config.ConfigureActivity
 import com.qihuan.photowidget.config.GifConfigureActivity
 import com.qihuan.photowidget.databinding.ActivityMainBinding
@@ -61,6 +62,11 @@ class MainActivity : AppCompatActivity() {
 
         bindView()
         bindData()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.loadIgnoreBatteryOptimizations()
     }
 
     private fun bindView() {
@@ -158,6 +164,10 @@ class MainActivity : AppCompatActivity() {
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .build()
         WorkManager.getInstance(applicationContext)
-            .enqueueUniqueWork("forceRefreshWidget", ExistingWorkPolicy.KEEP, workRequest)
+            .enqueueUniqueWork(
+                WorkTags.ONE_TIME_REFRESH_WIDGET,
+                ExistingWorkPolicy.KEEP,
+                workRequest
+            )
     }
 }

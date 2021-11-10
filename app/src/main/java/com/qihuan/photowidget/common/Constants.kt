@@ -14,6 +14,11 @@ const val DEFAULT_COMPRESSION_QUALITY = 75
 const val INVALID_AUTO_REFRESH_INTERVAL = -1L
 const val KEY_AUTO_REFRESH_INTERVAL = "autoRefreshInterval"
 
+object WorkTags {
+    const val PERIODIC_REFRESH_WIDGET = "periodic_refresh_widget"
+    const val ONE_TIME_REFRESH_WIDGET = "one_time_refresh_widget"
+}
+
 object License {
     const val MIT = "MIT License"
     const val APACHE_2 = "Apache Software License 2.0"

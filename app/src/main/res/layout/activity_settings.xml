@@ -88,12 +88,13 @@
 
                             <TextView
                                 android:id="@+id/tv_description_auto_refresh_widget"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:text="@{viewModel.autoRefreshInterval == AutoRefreshInterval.NONE ? @string/auto_refresh_widget_description : viewModel.getAutoRefreshIntervalDescription(viewModel.autoRefreshInterval)}"
                                 android:textAppearance="?textAppearanceBodySmall"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintLeft_toLeftOf="@id/tv_title_auto_refresh_widget"
+                                app:layout_constraintRight_toLeftOf="@id/switch_auto_refresh_widget"
                                 app:layout_constraintTop_toBottomOf="@id/tv_title_auto_refresh_widget" />
 
                             <com.google.android.material.switchmaterial.SwitchMaterial
@@ -111,6 +112,56 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:foreground="?selectableItemBackground"
+                            android:onClick="@{(v) -> activity.ignoreBatteryOptimizations(v)}"
+                            android:padding="10dp">
+
+                            <ImageView
+                                android:id="@+id/iv_ignore_battery_optimizations"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="@string/tip_ignore_battery_optimizations_title"
+                                android:src="@drawable/ic_round_battery_alert_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_title_ignore_battery_optimizations"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="@string/tip_ignore_battery_optimizations_title"
+                                android:textAppearance="?textAppearanceSubtitle1"
+                                app:layout_constraintBottom_toTopOf="@id/tv_description_ignore_battery_optimizations"
+                                app:layout_constraintLeft_toRightOf="@id/iv_ignore_battery_optimizations"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_description_ignore_battery_optimizations"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tip_ignore_battery_optimizations_content"
+                                android:textAppearance="?textAppearanceBodySmall"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="@id/tv_title_ignore_battery_optimizations"
+                                app:layout_constraintRight_toLeftOf="@id/switch_ignore_battery_optimizations"
+                                app:layout_constraintTop_toBottomOf="@id/tv_title_ignore_battery_optimizations" />
+
+                            <com.google.android.material.switchmaterial.SwitchMaterial
+                                android:id="@+id/switch_ignore_battery_optimizations"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="@{viewModel.isIgnoreBatteryOptimizations}"
+                                android:clickable="false"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:foreground="?selectableItemBackground"
                             android:onClick="@{() -> viewModel.clearCache()}"
                             android:padding="10dp">
 
@@ -118,7 +169,7 @@
                                 android:id="@+id/iv_clean_cache"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
-                                android:contentDescription="@string/auto_refresh_widget"
+                                android:contentDescription="@string/clean_cache"
                                 android:src="@drawable/ic_round_cleaning_services_24"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintLeft_toLeftOf="parent"
@@ -136,11 +187,12 @@
 
                             <TextView
                                 android:id="@+id/tv_description_clean_cache"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:text="@string/clean_cache_description"
                                 android:textAppearance="?textAppearanceBodySmall"
                                 app:layout_constraintLeft_toLeftOf="@id/tv_title_clean_cache"
+                                app:layout_constraintRight_toLeftOf="@id/tv_cache_size"
                                 app:layout_constraintTop_toBottomOf="@id/tv_title_clean_cache" />
 
                             <TextView
@@ -181,7 +233,7 @@
                                 android:id="@+id/iv_about"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
-                                android:contentDescription="@string/auto_refresh_widget"
+                                android:contentDescription="@string/about"
                                 android:src="@drawable/ic_outline_info_24"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintLeft_toLeftOf="parent"

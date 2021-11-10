@@ -28,7 +28,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         loadWidgetList()
-        loadIgnoreBatteryOptimizations()
     }
 
     private fun loadWidgetList() {

@@ -10,6 +10,8 @@ import com.qihuan.photowidget.R
 import com.qihuan.photowidget.about.AboutActivity
 import com.qihuan.photowidget.bean.AutoRefreshInterval
 import com.qihuan.photowidget.databinding.ActivitySettingsBinding
+import com.qihuan.photowidget.ktx.IgnoringBatteryOptimizationsContract
+import com.qihuan.photowidget.ktx.logE
 import com.qihuan.photowidget.ktx.viewBinding
 import com.qihuan.photowidget.view.ItemSelectionDialog
 
@@ -21,6 +23,11 @@ import com.qihuan.photowidget.view.ItemSelectionDialog
 class SettingsActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivitySettingsBinding::inflate)
     private val viewModel by viewModels<SettingsViewModel>()
+
+    private val ignoringBatteryOptimizationsLauncher =
+        registerForActivityResult(IgnoringBatteryOptimizationsContract()) {
+            viewModel.loadIgnoreBatteryOptimizations()
+        }
 
     private val intervalDialog by lazy(LazyThreadSafetyMode.NONE) {
         ItemSelectionDialog(
@@ -51,5 +58,13 @@ class SettingsActivity : AppCompatActivity() {
 
     fun launchAboutActivity(view: View) {
         startActivity(Intent(this, AboutActivity::class.java))
+    }
+
+    fun ignoreBatteryOptimizations(view: View) {
+        try {
+            ignoringBatteryOptimizationsLauncher.launch(packageName)
+        } catch (e: Exception) {
+            logE("SettingsActivity", "申请关闭电池优化异常", e)
+        }
     }
 }
