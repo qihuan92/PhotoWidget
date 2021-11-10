@@ -41,12 +41,13 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp">
+                    android:paddingVertical="16dp">
 
                     <TextView
                         android:id="@+id/tv_title_introduction"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingHorizontal="@dimen/main_padding"
                         android:text="@string/about_title_introduction"
                         android:textAppearance="?textAppearanceSubtitle1"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -92,6 +93,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:paddingHorizontal="@dimen/main_padding"
                         android:text="@string/about_introduction"
                         android:textAppearance="?textAppearanceBodyMedium"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -102,6 +104,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
+                        android:clipToPadding="false"
+                        android:paddingHorizontal="@dimen/main_padding"
                         android:scrollbars="none"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -125,12 +129,13 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp">
+                    android:paddingVertical="16dp">
 
                     <TextView
                         android:id="@+id/tv_title_developer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingHorizontal="@dimen/main_padding"
                         android:text="@string/about_title_developer"
                         android:textAppearance="?textAppearanceSubtitle1"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -174,6 +179,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
+                        android:clipToPadding="false"
+                        android:paddingHorizontal="@dimen/main_padding"
                         android:scrollbars="none"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -197,7 +204,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="16dp">
+                    android:paddingTop="16dp">
 
                     <TextView
                         android:id="@+id/tv_title_open_source_licenses"
