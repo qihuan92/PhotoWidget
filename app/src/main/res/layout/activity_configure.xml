@@ -305,7 +305,7 @@
                     app:sliderSelectionTitle="@string/widget_radius"
                     app:sliderSelectionValue="@={viewModel.widgetRadius}"
                     app:sliderSelectionValueFrom="0"
-                    app:sliderSelectionValueTo="360"
+                    app:sliderSelectionValueTo="90"
                     app:sliderSelectionValueUnit="°" />
 
                 <com.qihuan.photowidget.view.SliderSelectionView
