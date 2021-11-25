@@ -78,7 +78,7 @@
                 android:background="@{viewModel.imageUri == null ? @drawable/bg_gif_photo : null}"
                 android:contentDescription="@string/widget_preview"
                 app:imagePath="@{viewModel.imageUri}"
-                app:imageRadius="@{viewModel.widgetRadius}" />
+                app:imageRadiusAngle="@{viewModel.widgetRadius}" />
         </FrameLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -253,8 +253,8 @@
                     app:sliderSelectionTitle="@string/widget_radius"
                     app:sliderSelectionValue="@={viewModel.widgetRadius}"
                     app:sliderSelectionValueFrom="0"
-                    app:sliderSelectionValueTo="50"
-                    app:sliderSelectionValueUnit="dp" />
+                    app:sliderSelectionValueTo="90"
+                    app:sliderSelectionValueUnit="°" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 

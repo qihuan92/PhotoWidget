@@ -71,7 +71,7 @@ class WidgetPhotoViewFactory(
 
         val scaleType = widgetInfo.photoScaleType.scaleType
         val imageUri = imageList[position].imageUri
-        val radius = widgetInfo.widgetRadius.dp
+        val radius = widgetInfo.widgetRadius
         val remoteViews = createImageRemoteViews(context, scaleType)
         if (imageUri.toFile().exists()) {
             val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo).toFloat().dp

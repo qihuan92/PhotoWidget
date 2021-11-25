@@ -51,7 +51,7 @@ suspend fun updateAppWidget(
     val leftPadding = widgetInfo.leftPadding.dp
     val rightPadding = widgetInfo.rightPadding.dp
     val scaleType = widgetInfo.photoScaleType.scaleType
-    val widgetRadius = widgetInfo.widgetRadius.dp
+    val widgetRadius = widgetInfo.widgetRadius
     val widgetTransparency = widgetInfo.widgetTransparency
 
     val remoteViews: RemoteViews
@@ -155,6 +155,9 @@ fun createLinkIntent(context: Context, linkInfo: LinkInfo?, imageUri: Uri?): Int
             }
         } else {
             Intent()
+        }
+        LinkType.OPEN_FILE -> Intent(Intent.ACTION_VIEW, Uri.parse(linkInfo.link)).apply {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }
 }

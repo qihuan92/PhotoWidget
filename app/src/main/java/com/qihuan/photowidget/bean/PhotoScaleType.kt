@@ -1,6 +1,8 @@
 package com.qihuan.photowidget.bean
 
 import android.widget.ImageView
+import androidx.annotation.DrawableRes
+import com.qihuan.photowidget.R
 import com.qihuan.photowidget.view.ItemSelectionDialog
 
 /**
@@ -11,11 +13,16 @@ import com.qihuan.photowidget.view.ItemSelectionDialog
 enum class PhotoScaleType(
     val scaleType: ImageView.ScaleType,
     val description: String,
+    @DrawableRes val icon: Int,
 ) : ItemSelectionDialog.Item {
-    CENTER_CROP(ImageView.ScaleType.CENTER_CROP, "中心裁剪"),
-    FIT_CENTER(ImageView.ScaleType.FIT_CENTER, "居中展示"),
+    CENTER_CROP(ImageView.ScaleType.CENTER_CROP, "中心裁剪", R.drawable.ic_round_crop_24),
+    FIT_CENTER(ImageView.ScaleType.FIT_CENTER, "居中展示", R.drawable.ic_outline_image_24),
     //FIT_XY(ImageView.ScaleType.FIT_XY, "拉伸显示"),
     ;
+
+    override fun getIcon(): Int? {
+        return icon
+    }
 
     override fun getItemText(): String {
         return description

@@ -18,6 +18,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.LinkType
+import com.qihuan.photowidget.bean.createAlbumLink
+import com.qihuan.photowidget.bean.createFileLink
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.databinding.ActivityGifConfigureBinding
 import com.qihuan.photowidget.ktx.*
@@ -73,6 +75,7 @@ class GifConfigureActivity : AppCompatActivity() {
                 LinkType.OPEN_APP -> launchOpenAppActivity()
                 LinkType.OPEN_URL -> launchOpenLinkActivity()
                 LinkType.OPEN_ALBUM -> widgetOpenAlbum()
+                LinkType.OPEN_FILE -> launchOpenFile()
             }
             dialog.dismiss()
         }
@@ -101,6 +104,18 @@ class GifConfigureActivity : AppCompatActivity() {
                     val linkInfo = getParcelableExtra<LinkInfo>("linkInfo")
                     viewModel.updateLinkInfo(linkInfo)
                 }
+            }
+        }
+
+    private val getOpenFileLink =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+            if (it != null) {
+                // keep permission
+                contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+                viewModel.updateLinkInfo(createFileLink(appWidgetId, it))
             }
         }
 
@@ -247,13 +262,10 @@ class GifConfigureActivity : AppCompatActivity() {
     }
 
     private fun widgetOpenAlbum() {
-        val linkInfo = LinkInfo(
-            appWidgetId,
-            LinkType.OPEN_ALBUM,
-            getString(R.string.widget_link_open_album),
-            getString(R.string.widget_link_open_album_description),
-            ""
-        )
-        viewModel.updateLinkInfo(linkInfo)
+        viewModel.updateLinkInfo(createAlbumLink(appWidgetId))
+    }
+
+    private fun launchOpenFile() {
+        getOpenFileLink.launch(arrayOf("*/*"))
     }
 }
