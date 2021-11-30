@@ -371,6 +371,10 @@ class ConfigureActivity : AppCompatActivity() {
         scaleTypeDialog.show()
     }
 
+    fun showChangeRadiusUnitSelector() {
+        // todo 选择圆角单位
+    }
+
     fun showDeleteLinkAlert() {
         deleteLinkDialog.show()
     }

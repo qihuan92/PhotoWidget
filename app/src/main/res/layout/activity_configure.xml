@@ -301,6 +301,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:onClick="@{() -> activity.showChangeRadiusUnitSelector()}"
                     app:sliderSelectionIcon="@drawable/ic_round_rounded_corner_24"
                     app:sliderSelectionTitle="@string/widget_radius"
                     app:sliderSelectionValue="@={viewModel.widgetRadius}"
