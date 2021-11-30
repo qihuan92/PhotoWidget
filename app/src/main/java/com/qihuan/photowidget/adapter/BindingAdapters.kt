@@ -9,8 +9,8 @@ import androidx.core.view.isVisible
 import androidx.databinding.*
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
-import com.qihuan.photowidget.bean.LinkType
-import com.qihuan.photowidget.bean.RadiusUnit
+import com.qihuan.photowidget.common.LinkType
+import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.ktx.calculateRadiusPx
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.loadRounded

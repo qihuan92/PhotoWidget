@@ -7,6 +7,7 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.qihuan.photowidget.R
+import com.qihuan.photowidget.common.LinkType
 import kotlinx.parcelize.Parcelize
 
 /**

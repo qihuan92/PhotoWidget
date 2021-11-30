@@ -9,6 +9,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.common.PhotoScaleType
+import com.qihuan.photowidget.common.PlayInterval
+import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.updateAppWidget

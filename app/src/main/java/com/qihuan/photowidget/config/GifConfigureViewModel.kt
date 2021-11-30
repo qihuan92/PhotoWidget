@@ -8,8 +8,14 @@ import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.bean.LinkInfo
+import com.qihuan.photowidget.bean.WidgetBean
+import com.qihuan.photowidget.bean.WidgetImage
+import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.common.PhotoScaleType
+import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
+import com.qihuan.photowidget.common.WidgetType
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.saveGifFramesToDir
 import com.qihuan.photowidget.updateAppWidget

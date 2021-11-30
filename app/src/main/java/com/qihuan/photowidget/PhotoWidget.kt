@@ -9,7 +9,12 @@ import android.os.Build
 import android.widget.ImageView
 import android.widget.RemoteViews
 import androidx.core.net.toFile
-import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.bean.LinkInfo
+import com.qihuan.photowidget.bean.WidgetBean
+import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.common.LinkType
+import com.qihuan.photowidget.common.PlayInterval
+import com.qihuan.photowidget.common.WidgetType
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.logE

@@ -17,10 +17,10 @@ import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
 import com.qihuan.photowidget.adapter.TipAdapter
 import com.qihuan.photowidget.adapter.WidgetPagingAdapter
-import com.qihuan.photowidget.bean.TipsType
 import com.qihuan.photowidget.bean.WidgetInfo
-import com.qihuan.photowidget.bean.WidgetType
 import com.qihuan.photowidget.common.MAIN_PAGE_SPAN_COUNT
+import com.qihuan.photowidget.common.TipsType
+import com.qihuan.photowidget.common.WidgetType
 import com.qihuan.photowidget.common.WorkTags
 import com.qihuan.photowidget.config.ConfigureActivity
 import com.qihuan.photowidget.config.GifConfigureActivity

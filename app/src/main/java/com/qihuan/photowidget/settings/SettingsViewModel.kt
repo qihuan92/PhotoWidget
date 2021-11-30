@@ -10,7 +10,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.qihuan.photowidget.App
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.bean.AutoRefreshInterval
+import com.qihuan.photowidget.common.AutoRefreshInterval
 import com.qihuan.photowidget.common.WorkTags
 import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
 import com.qihuan.photowidget.worker.ForceUpdateWidgetWorker

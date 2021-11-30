@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.about.AboutActivity
-import com.qihuan.photowidget.bean.AutoRefreshInterval
+import com.qihuan.photowidget.common.AutoRefreshInterval
 import com.qihuan.photowidget.databinding.ActivitySettingsBinding
 import com.qihuan.photowidget.ktx.IgnoringBatteryOptimizationsContract
 import com.qihuan.photowidget.ktx.logE

@@ -2,7 +2,7 @@ package com.qihuan.photowidget.db
 
 import android.net.Uri
 import androidx.room.TypeConverter
-import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.common.*
 
 /**
  * Converters

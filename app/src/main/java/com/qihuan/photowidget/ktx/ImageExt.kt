@@ -12,8 +12,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.qihuan.photowidget.App
-import com.qihuan.photowidget.bean.RadiusUnit
 import com.qihuan.photowidget.common.CompressFormatCompat
+import com.qihuan.photowidget.common.RadiusUnit
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
