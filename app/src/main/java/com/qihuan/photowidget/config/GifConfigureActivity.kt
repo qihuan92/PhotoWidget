@@ -217,10 +217,10 @@ class GifConfigureActivity : AppCompatActivity() {
     }
 
     private fun saveWidget() {
-        if (viewModel.uiState.value == GifConfigureViewModel.UIState.LOADING) {
+        if (viewModel.uiState.value == BaseConfigViewModel.UIState.LOADING) {
             return
         }
-        if (viewModel.imageUri.value == null) {
+        if (viewModel.imageUriList.value.isNullOrEmpty()) {
             Snackbar.make(binding.root, R.string.warning_select_picture, Snackbar.LENGTH_SHORT)
                 .setAnchorView(binding.fabAddPhoto)
                 .show()

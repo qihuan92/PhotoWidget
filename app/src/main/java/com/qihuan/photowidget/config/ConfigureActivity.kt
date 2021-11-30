@@ -350,7 +350,7 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private fun saveWidget() {
-        if (viewModel.uiState.value == ConfigureViewModel.UIState.LOADING) {
+        if (viewModel.uiState.value == BaseConfigViewModel.UIState.LOADING) {
             return
         }
         if (viewModel.imageUriList.value.isNullOrEmpty()) {

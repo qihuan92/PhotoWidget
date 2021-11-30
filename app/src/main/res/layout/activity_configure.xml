@@ -5,7 +5,7 @@
 
         <import type="android.view.View" />
 
-        <import type="com.qihuan.photowidget.config.ConfigureViewModel.UIState" />
+        <import type="com.qihuan.photowidget.config.BaseConfigViewModel.UIState" />
 
         <variable
             name="viewModel"
