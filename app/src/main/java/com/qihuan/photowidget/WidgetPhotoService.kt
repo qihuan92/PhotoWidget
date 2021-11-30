@@ -72,12 +72,20 @@ class WidgetPhotoViewFactory(
         val scaleType = widgetInfo.photoScaleType.scaleType
         val imageUri = imageList[position].imageUri
         val radius = widgetInfo.widgetRadius
+        val radiusUnit = widgetInfo.widgetRadiusUnit
         val remoteViews = createImageRemoteViews(context, scaleType)
         if (imageUri.toFile().exists()) {
             val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo).toFloat().dp
             val imageHeight = appWidgetManager.getWidgetImageHeight(widgetInfo).toFloat().dp
             val imageBitmap =
-                imageUri.toRoundedBitmap(context, radius, scaleType, imageWidth, imageHeight)
+                imageUri.toRoundedBitmap(
+                    context,
+                    radius,
+                    radiusUnit,
+                    scaleType,
+                    imageWidth,
+                    imageHeight
+                )
             remoteViews.setImageViewBitmap(R.id.iv_picture, imageBitmap)
             remoteViews.setOnClickFillInIntent(
                 R.id.iv_picture,

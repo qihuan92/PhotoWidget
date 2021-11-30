@@ -37,6 +37,7 @@ class ConfigureViewModel(
     private val linkInfoDao by lazy { AppDatabase.getDatabase(context).linkInfoDao() }
 
     val widgetRadius by lazy { MutableLiveData(0f) }
+    val widgetRadiusUnit by lazy { MutableLiveData(RadiusUnit.ANGLE) }
     val topPadding by lazy { MutableLiveData(0f) }
     val bottomPadding by lazy { MutableLiveData(0f) }
     val leftPadding by lazy { MutableLiveData(0f) }
@@ -121,6 +122,7 @@ class ConfigureViewModel(
                 leftPadding.value = widgetInfo.leftPadding
                 rightPadding.value = widgetInfo.rightPadding
                 widgetRadius.value = widgetInfo.widgetRadius
+                widgetRadiusUnit.value = widgetInfo.widgetRadiusUnit
                 widgetTransparency.value = widgetInfo.widgetTransparency
                 autoPlayInterval.value = widgetInfo.autoPlayInterval
                 photoScaleType.value = widgetInfo.photoScaleType
@@ -143,6 +145,7 @@ class ConfigureViewModel(
             leftPadding = leftPadding.value ?: 0f,
             rightPadding = rightPadding.value ?: 0f,
             widgetRadius = widgetRadius.value ?: 0f,
+            widgetRadiusUnit = widgetRadiusUnit.value ?: RadiusUnit.ANGLE,
             widgetTransparency = widgetTransparency.value ?: 0f,
             autoPlayInterval = autoPlayInterval.value ?: PlayInterval.NONE,
             photoScaleType = photoScaleType.value ?: PhotoScaleType.CENTER_CROP,
@@ -201,6 +204,14 @@ class ConfigureViewModel(
 
     fun updateLinkInfo(value: LinkInfo?) {
         linkInfo.value = value
+    }
+
+    fun updateRadiusUnit(item: RadiusUnit) {
+        if (widgetRadiusUnit.value == item) {
+            return
+        }
+        widgetRadius.value = 0f
+        widgetRadiusUnit.value = item
     }
 
     fun swapImageList(fromPosition: Int, toPosition: Int) {

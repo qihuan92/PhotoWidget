@@ -78,7 +78,8 @@
                 android:background="@{viewModel.imageUri == null ? @drawable/bg_gif_photo : null}"
                 android:contentDescription="@string/widget_preview"
                 app:imagePath="@{viewModel.imageUri}"
-                app:imageRadiusAngle="@{viewModel.widgetRadius}" />
+                app:imageRadius="@{viewModel.widgetRadius}"
+                app:imageRadiusUnit="@{viewModel.widgetRadiusUnit}" />
         </FrameLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -249,12 +250,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:onClick="@{() -> activity.showChangeRadiusUnitSelector()}"
                     app:sliderSelectionIcon="@drawable/ic_round_rounded_corner_24"
                     app:sliderSelectionTitle="@string/widget_radius"
                     app:sliderSelectionValue="@={viewModel.widgetRadius}"
                     app:sliderSelectionValueFrom="0"
-                    app:sliderSelectionValueTo="90"
-                    app:sliderSelectionValueUnit="°" />
+                    app:sliderSelectionValueTo="@{viewModel.widgetRadiusUnit.maxValue}"
+                    app:sliderSelectionValueUnit="@{viewModel.widgetRadiusUnit.unitName}" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 

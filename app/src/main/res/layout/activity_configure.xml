@@ -77,7 +77,8 @@
                 android:layout_height="match_parent"
                 android:alpha="@{1f - viewModel.widgetTransparency / 100f}"
                 app:cardBackgroundColor="@android:color/transparent"
-                app:cardCornerRadiusAngle="@{viewModel.widgetRadius}"
+                app:cardCornerRadius="@{viewModel.widgetRadius}"
+                app:cardCornerRadiusUnit="@{viewModel.widgetRadiusUnit}"
                 app:cardElevation="0dp"
                 app:strokeColor="@color/colorDivider"
                 app:strokeWidth="@{viewModel.imageUriList.empty ? 2f: 0f}">
@@ -306,8 +307,8 @@
                     app:sliderSelectionTitle="@string/widget_radius"
                     app:sliderSelectionValue="@={viewModel.widgetRadius}"
                     app:sliderSelectionValueFrom="0"
-                    app:sliderSelectionValueTo="90"
-                    app:sliderSelectionValueUnit="°" />
+                    app:sliderSelectionValueTo="@{viewModel.widgetRadiusUnit.maxValue}"
+                    app:sliderSelectionValueUnit="@{viewModel.widgetRadiusUnit.unitName}" />
 
                 <com.qihuan.photowidget.view.SliderSelectionView
                     style="@style/CardView.SliderSelection"

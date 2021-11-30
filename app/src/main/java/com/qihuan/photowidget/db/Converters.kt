@@ -2,10 +2,7 @@ package com.qihuan.photowidget.db
 
 import android.net.Uri
 import androidx.room.TypeConverter
-import com.qihuan.photowidget.bean.LinkType
-import com.qihuan.photowidget.bean.PhotoScaleType
-import com.qihuan.photowidget.bean.PlayInterval
-import com.qihuan.photowidget.bean.WidgetType
+import com.qihuan.photowidget.bean.*
 
 /**
  * Converters
@@ -61,5 +58,15 @@ class Converters {
     @TypeConverter
     fun revertWidgetType(value: String): WidgetType {
         return WidgetType.get(value)
+    }
+
+    @TypeConverter
+    fun convertRadiusUnit(value: RadiusUnit): String {
+        return value.value
+    }
+
+    @TypeConverter
+    fun revertRadiusUnit(value: String): RadiusUnit {
+        return RadiusUnit.get(value)
     }
 }

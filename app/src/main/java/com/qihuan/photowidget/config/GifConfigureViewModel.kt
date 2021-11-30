@@ -41,6 +41,7 @@ class GifConfigureViewModel(
     val leftPadding by lazy { MutableLiveData(0f) }
     val rightPadding by lazy { MutableLiveData(0f) }
     val widgetRadius by lazy { MutableLiveData(0f) }
+    val widgetRadiusUnit by lazy { MutableLiveData(RadiusUnit.ANGLE) }
     val imageUri by lazy { MutableLiveData<Uri>() }
     val linkInfo by lazy { MutableLiveData<LinkInfo>() }
     val uiState by lazy { MutableLiveData(UIState.LOADING) }
@@ -94,6 +95,7 @@ class GifConfigureViewModel(
                 leftPadding.value = widgetInfo.leftPadding
                 rightPadding.value = widgetInfo.rightPadding
                 widgetRadius.value = widgetInfo.widgetRadius
+                widgetRadiusUnit.value = widgetInfo.widgetRadiusUnit
             } else {
                 isEditState.value = false
             }
@@ -115,6 +117,7 @@ class GifConfigureViewModel(
             leftPadding = leftPadding.value ?: 0f,
             rightPadding = rightPadding.value ?: 0f,
             widgetRadius = widgetRadius.value ?: 0f,
+            widgetRadiusUnit = widgetRadiusUnit.value ?: RadiusUnit.ANGLE,
             widgetTransparency = 0f,
             photoScaleType = PhotoScaleType.CENTER_CROP,
             widgetType = WidgetType.GIF,
@@ -163,7 +166,8 @@ class GifConfigureViewModel(
                 try {
                     uri?.saveGifFramesToDir(
                         File(widgetDir, file.nameWithoutExtension),
-                        widgetRadius.value ?: 0f
+                        widgetRadius.value ?: 0f,
+                        widgetRadiusUnit.value ?: RadiusUnit.ANGLE
                     )
                 } catch (e: Exception) {
                     uri = null
@@ -175,5 +179,13 @@ class GifConfigureViewModel(
 
     fun updateLinkInfo(value: LinkInfo?) {
         linkInfo.value = value
+    }
+
+    fun updateRadiusUnit(item: RadiusUnit) {
+        if (widgetRadiusUnit.value == item) {
+            return
+        }
+        widgetRadius.value = 0f
+        widgetRadiusUnit.value = item
     }
 }

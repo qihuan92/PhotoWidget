@@ -52,6 +52,7 @@ suspend fun updateAppWidget(
     val rightPadding = widgetInfo.rightPadding.dp
     val scaleType = widgetInfo.photoScaleType.scaleType
     val widgetRadius = widgetInfo.widgetRadius
+    val widgetRadiusUnit = widgetInfo.widgetRadiusUnit
     val widgetTransparency = widgetInfo.widgetTransparency
 
     val remoteViews: RemoteViews
@@ -103,6 +104,7 @@ suspend fun updateAppWidget(
                     imageUri.toRoundedBitmap(
                         context,
                         widgetRadius,
+                        widgetRadiusUnit,
                         scaleType,
                         imageWidth,
                         imageHeight

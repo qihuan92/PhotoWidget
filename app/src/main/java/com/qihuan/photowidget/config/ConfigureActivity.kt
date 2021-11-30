@@ -123,6 +123,17 @@ class ConfigureActivity : AppCompatActivity() {
         }
     }
 
+    private val radiusUnitDialog by lazy(LazyThreadSafetyMode.NONE) {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_radius_unit),
+            RadiusUnit.values().toList()
+        ) { dialog, item ->
+            viewModel.updateRadiusUnit(item)
+            dialog.dismiss()
+        }
+    }
+
     private val previewAdapter by lazy { PreviewPhotoAdapter() }
     private val previewAddAdapter by lazy {
         val previewPhotoAddAdapter = PreviewPhotoAddAdapter()
@@ -372,7 +383,7 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     fun showChangeRadiusUnitSelector() {
-        // todo 选择圆角单位
+        radiusUnitDialog.show()
     }
 
     fun showDeleteLinkAlert() {

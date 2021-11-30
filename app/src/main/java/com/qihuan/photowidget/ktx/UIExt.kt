@@ -12,6 +12,7 @@ import androidx.core.view.*
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.R
+import com.qihuan.photowidget.bean.RadiusUnit
 import com.qihuan.photowidget.databinding.DialogLoadingBinding
 import kotlin.math.min
 import kotlin.math.tan
@@ -113,9 +114,27 @@ fun Context.createLoadingDialog(message: String = getString(R.string.loading)): 
         .create()
 }
 
-fun calculateRadiusPx(width: Int, height: Int, radiusAngle: Float): Int {
-    val degree = (90 - radiusAngle) / 2
-    val radians = Math.toRadians(degree.toDouble())
-    val maxRadius = min(width, height) / 2
-    return maxRadius - (tan(radians) * maxRadius).toInt()
+fun calculateRadiusPx(
+    width: Int,
+    height: Int,
+    value: Float,
+    unit: RadiusUnit = RadiusUnit.ANGLE
+): Int {
+    when (unit) {
+        RadiusUnit.ANGLE -> {
+            if (value == 0f) {
+                return 0
+            }
+            val maxRadius = min(width, height) / 2
+            if (value == 90f) {
+                return maxRadius
+            }
+            val degree = (90 - value) / 2
+            val radians = Math.toRadians(degree.toDouble())
+            return maxRadius - (tan(radians) * maxRadius).toInt()
+        }
+        RadiusUnit.LENGTH -> {
+            return value.dp
+        }
+    }
 }
