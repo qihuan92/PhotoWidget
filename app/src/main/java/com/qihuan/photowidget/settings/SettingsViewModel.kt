@@ -11,6 +11,7 @@ import androidx.work.WorkManager
 import com.qihuan.photowidget.App
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.common.AutoRefreshInterval
+import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.common.WorkTags
 import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
 import com.qihuan.photowidget.worker.ForceUpdateWidgetWorker
@@ -28,12 +29,16 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     val cacheSize = MutableLiveData("0.00KB")
     val autoRefreshInterval = MutableLiveData(AutoRefreshInterval.NONE)
     val isIgnoreBatteryOptimizations = MutableLiveData(false)
+    // todo 考虑用 flow 代替，以便防抖动实时保存
+    val widgetRadius = MutableLiveData(0f)
+    val widgetRadiusUnit = MutableLiveData(RadiusUnit.ANGLE)
 
     init {
         viewModelScope.launch {
             loadIgnoreBatteryOptimizations()
             loadAutoRefreshInterval()
             loadCacheSize()
+            loadWidgetDefaultConfig()
         }
     }
 
@@ -54,6 +59,10 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     private suspend fun loadAutoRefreshInterval() {
         autoRefreshInterval.value = AutoRefreshInterval.get(repository.getAutoRefreshInterval())
+    }
+
+    private suspend fun loadWidgetDefaultConfig() {
+        // todo 加载微件默认配置
     }
 
     fun updateAutoRefreshInterval(item: AutoRefreshInterval) {
@@ -87,5 +96,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 ExistingPeriodicWorkPolicy.REPLACE,
                 workRequest
             )
+    }
+
+    fun updateRadiusUnit(item: RadiusUnit) {
+        if (widgetRadiusUnit.value == item) {
+            return
+        }
+        widgetRadius.value = 0f
+        widgetRadiusUnit.value = item
     }
 }

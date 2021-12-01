@@ -226,6 +226,83 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:foreground="?selectableItemBackground"
+                            android:onClick="@{(v) -> activity.showDefaultRadiusUnitSelector(v)}"
+                            android:padding="10dp">
+
+                            <ImageView
+                                android:id="@+id/iv_default_radius"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="@string/about"
+                                android:src="@drawable/ic_round_rounded_corner_24"
+                                app:layout_constraintBottom_toBottomOf="@id/tv_description_radius_unit"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="@id/tv_title_default_radius" />
+
+                            <TextView
+                                android:id="@+id/tv_title_default_radius"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="@string/default_radius"
+                                android:textAppearance="?textAppearanceSubtitle1"
+                                app:layout_constraintLeft_toRightOf="@id/iv_default_radius"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_description_radius_unit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/radius_unit_description"
+                                android:textAppearance="?textAppearanceBodySmall"
+                                app:layout_constraintLeft_toLeftOf="@id/tv_title_default_radius"
+                                app:layout_constraintTop_toBottomOf="@id/tv_title_default_radius" />
+
+                            <com.google.android.material.slider.Slider
+                                android:id="@+id/slider_default_radius"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:stepSize="1"
+                                android:value="@={viewModel.widgetRadius}"
+                                android:valueFrom="0"
+                                android:valueTo="@{viewModel.widgetRadiusUnit.maxValue}"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tv_description_radius_unit" />
+
+                            <TextView
+                                android:id="@+id/tv_default_radius_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="16dp"
+                                android:text="@{viewModel.widgetRadius + viewModel.widgetRadiusUnit.unitName}"
+                                android:textAppearance="?textAppearanceCaption"
+                                android:textStyle="italic"
+                                app:layout_constraintBottom_toTopOf="@id/slider_default_radius"
+                                app:layout_constraintRight_toRightOf="parent"
+                                tools:text="29dp" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/CardView.WidgetSetting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@drawable/divider_settings"
+                        android:orientation="vertical"
+                        android:showDividers="middle">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:foreground="?selectableItemBackground"
                             android:onClick="@{(v) -> activity.launchAboutActivity(v)}"
                             android:padding="10dp">
 
