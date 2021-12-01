@@ -231,6 +231,20 @@
                 android:resource="@xml/gif_photo_widget_info" />
         </receiver>
 
+        <receiver
+            android:name=".ScreenLockAdminReceiver"
+            android:exported="false"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_lock" />
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".WidgetPhotoService"
             android:exported="true"
