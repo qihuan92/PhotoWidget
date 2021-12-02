@@ -11,6 +11,7 @@ import androidx.work.WorkManager
 import com.qihuan.photowidget.App
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.common.AutoRefreshInterval
+import com.qihuan.photowidget.common.PhotoScaleType
 import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.common.WorkTags
 import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
@@ -35,6 +36,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     val widgetRadius = MutableStateFlow(0f)
     val widgetRadiusUnit = MutableLiveData(RadiusUnit.ANGLE)
+    val widgetScaleType = MutableLiveData(PhotoScaleType.CENTER_CROP)
 
     init {
         viewModelScope.launch {
@@ -73,6 +75,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         val (radius, unit) = repository.getWidgetDefaultRadius()
         widgetRadius.value = radius
         widgetRadiusUnit.value = unit
+
+        val scaleType = repository.getWidgetDefaultScaleType()
+        widgetScaleType.value = scaleType
     }
 
     fun updateAutoRefreshInterval(item: AutoRefreshInterval) {
@@ -114,5 +119,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         }
         widgetRadius.value = 0f
         widgetRadiusUnit.value = item
+    }
+
+    fun updatePhotoScaleType(item: PhotoScaleType) {
+        if (widgetScaleType.value == item) {
+            return
+        }
+        widgetScaleType.value = item
+        repository.saveWidgetDefaultScaleType(item)
     }
 }

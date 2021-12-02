@@ -95,7 +95,8 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintLeft_toLeftOf="@id/tv_title_auto_refresh_widget"
                                 app:layout_constraintRight_toLeftOf="@id/switch_auto_refresh_widget"
-                                app:layout_constraintTop_toBottomOf="@id/tv_title_auto_refresh_widget" />
+                                app:layout_constraintTop_toBottomOf="@id/tv_title_auto_refresh_widget"
+                                tools:text="关闭" />
 
                             <com.google.android.material.switchmaterial.SwitchMaterial
                                 android:id="@+id/switch_auto_refresh_widget"
@@ -226,6 +227,44 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:foreground="?selectableItemBackground"
+                            android:onClick="@{(v) -> activity.showScaleTypeSelector(v)}"
+                            android:padding="10dp">
+
+                            <ImageView
+                                android:id="@+id/iv_default_scale_type"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="@string/default_scale_type"
+                                android:src="@drawable/ic_round_center_focus_strong_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_title_default_scale_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="@string/default_scale_type"
+                                android:textAppearance="?textAppearanceSubtitle1"
+                                app:layout_constraintLeft_toRightOf="@id/iv_default_scale_type"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_description_default_scale_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{viewModel.widgetScaleType.description}"
+                                android:textAppearance="?textAppearanceBodySmall"
+                                app:layout_constraintLeft_toLeftOf="@id/tv_title_default_scale_type"
+                                app:layout_constraintTop_toBottomOf="@id/tv_title_default_scale_type"
+                                tools:text="中心裁剪" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:foreground="?selectableItemBackground"
                             android:onClick="@{(v) -> activity.showDefaultRadiusUnitSelector(v)}"
                             android:padding="10dp">
 
@@ -233,7 +272,7 @@
                                 android:id="@+id/iv_default_radius"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
-                                android:contentDescription="@string/about"
+                                android:contentDescription="@string/default_radius"
                                 android:src="@drawable/ic_round_rounded_corner_24"
                                 app:layout_constraintBottom_toBottomOf="@id/tv_description_radius_unit"
                                 app:layout_constraintLeft_toLeftOf="parent"

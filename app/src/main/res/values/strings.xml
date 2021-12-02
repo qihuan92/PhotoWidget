@@ -114,4 +114,5 @@
     <string name="default_radius_unit">默认圆角单位</string>
     <string name="default_radius">默认圆角</string>
     <string name="radius_unit_description">可点击条目选择圆角单位</string>
+    <string name="default_scale_type">默认相片位置</string>
 </resources>

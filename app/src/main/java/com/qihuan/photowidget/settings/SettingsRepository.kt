@@ -66,4 +66,19 @@ class SettingsRepository(private val application: Application) {
             WidgetRadius(radius, unit)
         }
     }
+
+    suspend fun getWidgetDefaultScaleType(): PhotoScaleType {
+        return withContext(Dispatchers.IO) {
+            val scaleTypeStr =
+                sp.getString(KEY_DEFAULT_WIDGET_SCALE_TYPE, PhotoScaleType.CENTER_CROP.name)
+                    ?: PhotoScaleType.CENTER_CROP.name
+            enumValueOf(scaleTypeStr)
+        }
+    }
+
+    fun saveWidgetDefaultScaleType(item: PhotoScaleType) {
+        sp.edit()
+            .putString(KEY_DEFAULT_WIDGET_SCALE_TYPE, item.name)
+            .apply()
+    }
 }

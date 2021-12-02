@@ -19,6 +19,7 @@ const val INVALID_AUTO_REFRESH_INTERVAL = -1L
 const val KEY_AUTO_REFRESH_INTERVAL = "autoRefreshInterval"
 const val KEY_DEFAULT_WIDGET_RADIUS = "defaultWidgetRadius"
 const val KEY_DEFAULT_WIDGET_RADIUS_UNIT = "defaultWidgetRadiusUnit"
+const val KEY_DEFAULT_WIDGET_SCALE_TYPE = "defaultWidgetScaleType"
 
 object WorkTags {
     const val PERIODIC_REFRESH_WIDGET = "periodic_refresh_widget"
