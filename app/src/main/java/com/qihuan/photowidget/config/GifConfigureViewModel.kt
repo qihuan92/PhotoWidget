@@ -49,7 +49,7 @@ class GifConfigureViewModel(
         )
     }
 
-    override fun onPostSaveFiles(widgetDir: File, uriList: List<Uri>) {
+    override fun afterSaveFiles(widgetDir: File, uriList: List<Uri>) {
         uriList.forEach { uri ->
             uri.saveGifFramesToDir(
                 File(widgetDir, uri.toFile().nameWithoutExtension),

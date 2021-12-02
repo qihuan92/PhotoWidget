@@ -226,11 +226,12 @@ abstract class BaseConfigViewModel(
                 }
             }
 
-            onPostSaveFiles(widgetDir, uriList)
+            afterSaveFiles(widgetDir, uriList)
 
             return@withContext uriList
         }
     }
 
-    protected abstract fun onPostSaveFiles(widgetDir: File, uriList: List<Uri>)
+    protected open fun afterSaveFiles(widgetDir: File, uriList: List<Uri>) {
+    }
 }

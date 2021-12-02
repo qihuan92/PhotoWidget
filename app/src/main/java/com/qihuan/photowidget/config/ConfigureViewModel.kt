@@ -1,13 +1,11 @@
 package com.qihuan.photowidget.config
 
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.common.PhotoScaleType
 import com.qihuan.photowidget.common.PlayInterval
 import com.qihuan.photowidget.common.RadiusUnit
-import java.io.File
 import java.util.*
 
 /**
@@ -49,9 +47,6 @@ class ConfigureViewModel(
             autoPlayInterval = autoPlayInterval.value ?: PlayInterval.NONE,
             photoScaleType = photoScaleType.value ?: PhotoScaleType.CENTER_CROP,
         )
-    }
-
-    override fun onPostSaveFiles(widgetDir: File, uriList: List<Uri>) {
     }
 
     fun updatePhotoScaleType(value: PhotoScaleType) {
