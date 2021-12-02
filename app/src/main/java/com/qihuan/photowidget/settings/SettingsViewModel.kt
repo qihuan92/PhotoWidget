@@ -15,6 +15,9 @@ import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.common.WorkTags
 import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
 import com.qihuan.photowidget.worker.ForceUpdateWidgetWorker
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -29,8 +32,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     val cacheSize = MutableLiveData("0.00KB")
     val autoRefreshInterval = MutableLiveData(AutoRefreshInterval.NONE)
     val isIgnoreBatteryOptimizations = MutableLiveData(false)
-    // todo 考虑用 flow 代替，以便防抖动实时保存
-    val widgetRadius = MutableLiveData(0f)
+
+    val widgetRadius = MutableStateFlow(0f)
     val widgetRadiusUnit = MutableLiveData(RadiusUnit.ANGLE)
 
     init {
@@ -39,6 +42,11 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             loadAutoRefreshInterval()
             loadCacheSize()
             loadWidgetDefaultConfig()
+
+            // Save the widget default radius.
+            widgetRadius.debounce(500).collect {
+                repository.saveWidgetDefaultRadius(it, widgetRadiusUnit.value ?: RadiusUnit.ANGLE)
+            }
         }
     }
 
@@ -62,7 +70,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     private suspend fun loadWidgetDefaultConfig() {
-        // todo 加载微件默认配置
+        val (radius, unit) = repository.getWidgetDefaultRadius()
+        widgetRadius.value = radius
+        widgetRadiusUnit.value = unit
     }
 
     fun updateAutoRefreshInterval(item: AutoRefreshInterval) {
