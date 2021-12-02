@@ -12,9 +12,11 @@ import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.common.PlayInterval
 import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.settings.SettingsRepository
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,6 +40,7 @@ abstract class BaseConfigViewModel(
     private val widgetInfoDao by lazy { AppDatabase.getDatabase(context).widgetInfoDao() }
     private val widgetDao by lazy { AppDatabase.getDatabase(context).widgetDao() }
     private val linkInfoDao by lazy { AppDatabase.getDatabase(context).linkInfoDao() }
+    private val repository by lazy { SettingsRepository(application) }
 
     val topPadding by lazy { MutableLiveData(0f) }
     val bottomPadding by lazy { MutableLiveData(0f) }
@@ -64,6 +67,8 @@ abstract class BaseConfigViewModel(
                 displayWidget(widgetInfo)
             } else {
                 isEditState.value = false
+                val defaultWidgetInfo = getDefaultWidgetInfo()
+                displayWidget(defaultWidgetInfo)
             }
 
             val linkInfoFromDb = linkInfoDao.selectById(appWidgetId)
@@ -71,6 +76,22 @@ abstract class BaseConfigViewModel(
 
             uiState.value = UIState.SHOW_CONTENT
         }
+    }
+
+    private suspend fun getDefaultWidgetInfo(): WidgetInfo {
+        val (defaultRadius, defaultRadiusUnit) = repository.getWidgetDefaultRadius()
+        return WidgetInfo(
+            widgetId = appWidgetId,
+            topPadding = 0f,
+            bottomPadding = 0f,
+            leftPadding = 0f,
+            rightPadding = 0f,
+            widgetRadius = defaultRadius,
+            widgetRadiusUnit = defaultRadiusUnit,
+            widgetTransparency = 0f,
+            autoPlayInterval = PlayInterval.NONE,
+            photoScaleType = repository.getWidgetDefaultScaleType(),
+        )
     }
 
     protected abstract fun displayWidget(widgetInfo: WidgetInfo)
