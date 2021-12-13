@@ -9,7 +9,8 @@ import androidx.core.view.isVisible
 import androidx.databinding.*
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
-import com.qihuan.photowidget.bean.LinkType
+import com.qihuan.photowidget.common.LinkType
+import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.ktx.calculateRadiusPx
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.loadRounded
@@ -27,7 +28,17 @@ import com.qihuan.photowidget.view.TextSelectionView
         type = SliderSelectionView::class,
         attribute = "sliderSelectionValue",
         method = "setValue"
-    )
+    ),
+    BindingMethod(
+        type = SliderSelectionView::class,
+        attribute = "sliderSelectionValueTo",
+        method = "setValueTo"
+    ),
+    BindingMethod(
+        type = SliderSelectionView::class,
+        attribute = "sliderSelectionValueUnit",
+        method = "setValueUnit"
+    ),
 )
 object BindingAdapters {
 
@@ -99,21 +110,27 @@ object BindingAdapters {
     }
 
     @JvmStatic
-    @BindingAdapter("imagePath", "imageRadiusAngle", requireAll = false)
-    fun loadImage(view: ImageView, imagePath: Uri?, imageRadiusAngle: Float) {
+    @BindingAdapter("imagePath", "imageRadius", "imageRadiusUnit", requireAll = false)
+    fun loadImage(
+        view: ImageView,
+        imagePath: Uri?,
+        imageRadius: Float,
+        imageRadiusUnit: RadiusUnit
+    ) {
         if (imagePath == null) {
             return
         }
         val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         BitmapFactory.decodeFile(imagePath.path, options)
-        val radiusPx = calculateRadiusPx(options.outWidth, options.outHeight, imageRadiusAngle)
+        val radiusPx =
+            calculateRadiusPx(options.outWidth, options.outHeight, imageRadius, imageRadiusUnit)
         view.loadRounded(imagePath, radiusPx)
     }
 
     @JvmStatic
-    @BindingAdapter("cardCornerRadiusAngle")
-    fun setCardCornerRadiusAngle(view: MaterialCardView, radius: Float) {
-        val radiusPx = calculateRadiusPx(view.width, view.height, radius)
+    @BindingAdapter("cardCornerRadius", "cardCornerRadiusUnit", requireAll = false)
+    fun setCardCornerRadius(view: MaterialCardView, radius: Float, unit: RadiusUnit) {
+        val radiusPx = calculateRadiusPx(view.width, view.height, radius, unit)
         view.radius = radiusPx.toFloat()
     }
 }

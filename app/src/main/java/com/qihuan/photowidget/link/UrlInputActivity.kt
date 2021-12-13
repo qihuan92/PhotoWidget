@@ -9,7 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.LinkType
+import com.qihuan.photowidget.common.LinkType
 import com.qihuan.photowidget.databinding.ActivityUrlInputBinding
 import com.qihuan.photowidget.ktx.viewBinding
 

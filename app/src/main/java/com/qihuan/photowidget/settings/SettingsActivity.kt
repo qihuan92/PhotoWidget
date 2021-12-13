@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.about.AboutActivity
-import com.qihuan.photowidget.bean.AutoRefreshInterval
+import com.qihuan.photowidget.common.AutoRefreshInterval
+import com.qihuan.photowidget.common.PhotoScaleType
+import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.databinding.ActivitySettingsBinding
 import com.qihuan.photowidget.ktx.IgnoringBatteryOptimizationsContract
 import com.qihuan.photowidget.ktx.logE
@@ -23,6 +25,28 @@ import com.qihuan.photowidget.view.ItemSelectionDialog
 class SettingsActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivitySettingsBinding::inflate)
     private val viewModel by viewModels<SettingsViewModel>()
+
+    private val scaleTypeDialog by lazy(LazyThreadSafetyMode.NONE) {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_scale_type),
+            PhotoScaleType.values().toList()
+        ) { dialog, item ->
+            viewModel.updatePhotoScaleType(item)
+            dialog.dismiss()
+        }
+    }
+
+    private val radiusUnitDialog by lazy(LazyThreadSafetyMode.NONE) {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_radius_unit),
+            RadiusUnit.values().toList()
+        ) { dialog, item ->
+            viewModel.updateRadiusUnit(item)
+            dialog.dismiss()
+        }
+    }
 
     private val ignoringBatteryOptimizationsLauncher =
         registerForActivityResult(IgnoringBatteryOptimizationsContract()) {
@@ -66,5 +90,13 @@ class SettingsActivity : AppCompatActivity() {
         } catch (e: Exception) {
             logE("SettingsActivity", "申请关闭电池优化异常", e)
         }
+    }
+
+    fun showScaleTypeSelector(view: View) {
+        scaleTypeDialog.show()
+    }
+
+    fun showDefaultRadiusUnitSelector(view: View) {
+        radiusUnitDialog.show()
     }
 }

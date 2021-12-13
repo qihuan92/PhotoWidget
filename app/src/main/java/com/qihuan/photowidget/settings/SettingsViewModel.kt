@@ -10,10 +10,15 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.qihuan.photowidget.App
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.bean.AutoRefreshInterval
+import com.qihuan.photowidget.common.AutoRefreshInterval
+import com.qihuan.photowidget.common.PhotoScaleType
+import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.common.WorkTags
 import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
 import com.qihuan.photowidget.worker.ForceUpdateWidgetWorker
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
@@ -29,11 +34,21 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     val autoRefreshInterval = MutableLiveData(AutoRefreshInterval.NONE)
     val isIgnoreBatteryOptimizations = MutableLiveData(false)
 
+    val widgetRadius = MutableStateFlow(0f)
+    val widgetRadiusUnit = MutableLiveData(RadiusUnit.ANGLE)
+    val widgetScaleType = MutableLiveData(PhotoScaleType.CENTER_CROP)
+
     init {
         viewModelScope.launch {
             loadIgnoreBatteryOptimizations()
             loadAutoRefreshInterval()
             loadCacheSize()
+            loadWidgetDefaultConfig()
+
+            // Save the widget default radius.
+            widgetRadius.debounce(500).collect {
+                repository.saveWidgetDefaultRadius(it, widgetRadiusUnit.value ?: RadiusUnit.ANGLE)
+            }
         }
     }
 
@@ -54,6 +69,15 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     private suspend fun loadAutoRefreshInterval() {
         autoRefreshInterval.value = AutoRefreshInterval.get(repository.getAutoRefreshInterval())
+    }
+
+    private suspend fun loadWidgetDefaultConfig() {
+        val (radius, unit) = repository.getWidgetDefaultRadius()
+        widgetRadius.value = radius
+        widgetRadiusUnit.value = unit
+
+        val scaleType = repository.getWidgetDefaultScaleType()
+        widgetScaleType.value = scaleType
     }
 
     fun updateAutoRefreshInterval(item: AutoRefreshInterval) {
@@ -87,5 +111,21 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 ExistingPeriodicWorkPolicy.REPLACE,
                 workRequest
             )
+    }
+
+    fun updateRadiusUnit(item: RadiusUnit) {
+        if (widgetRadiusUnit.value == item) {
+            return
+        }
+        widgetRadius.value = 0f
+        widgetRadiusUnit.value = item
+    }
+
+    fun updatePhotoScaleType(item: PhotoScaleType) {
+        if (widgetScaleType.value == item) {
+            return
+        }
+        widgetScaleType.value = item
+        repository.saveWidgetDefaultScaleType(item)
     }
 }

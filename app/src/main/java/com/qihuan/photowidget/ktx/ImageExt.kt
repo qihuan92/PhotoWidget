@@ -13,6 +13,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.qihuan.photowidget.App
 import com.qihuan.photowidget.common.CompressFormatCompat
+import com.qihuan.photowidget.common.RadiusUnit
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -42,6 +43,7 @@ fun ImageView.load(uri: Uri) {
 fun Uri.toRoundedBitmap(
     context: Context,
     radius: Float,
+    radiusUnit: RadiusUnit,
     scaleType: ImageView.ScaleType,
     width: Int,
     height: Int
@@ -60,11 +62,11 @@ fun Uri.toRoundedBitmap(
         // Calculate radiusPx
         val radiusPx =
             if (scaleType == ImageView.ScaleType.CENTER_CROP && width > 0 && height > 0) {
-                calculateRadiusPx(width, height, radius)
+                calculateRadiusPx(width, height, radius, radiusUnit)
             } else {
                 val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
                 BitmapFactory.decodeFile(path, options)
-                calculateRadiusPx(options.outWidth, options.outHeight, radius)
+                calculateRadiusPx(options.outWidth, options.outHeight, radius, radiusUnit)
             }
         transformList.add(RoundedCorners(radiusPx))
     }
@@ -79,7 +81,7 @@ fun Uri.toRoundedBitmap(
     return builder.submit(width, height).get()
 }
 
-fun Uri.saveGifFramesToDir(dir: File, radius: Float = 0f) {
+fun Uri.saveGifFramesToDir(dir: File, radius: Float = 0f, radiusUnit: RadiusUnit) {
     dir.deleteRecursively()
     if (!dir.exists()) {
         dir.mkdirs()
@@ -108,7 +110,7 @@ fun Uri.saveGifFramesToDir(dir: File, radius: Float = 0f) {
         for (index in 0..standardGifDecoder.frameCount) {
             standardGifDecoder.advance()
             val frame = standardGifDecoder.nextFrame
-            val roundedFrame = frame?.withRoundedCornerAngle(radius)
+            val roundedFrame = frame?.withRoundedCorner(radius, radiusUnit)
             roundedFrame?.saveFile(dir, index.toString())
         }
     } catch (e: Exception) {
@@ -117,13 +119,13 @@ fun Uri.saveGifFramesToDir(dir: File, radius: Float = 0f) {
     }
 }
 
-fun Bitmap.withRoundedCornerAngle(radiusAngle: Float): Bitmap {
+fun Bitmap.withRoundedCorner(radiusAngle: Float, radiusUnit: RadiusUnit): Bitmap {
     var builder = Glide.with(App.context)
         .asBitmap()
         .load(this)
 
     if (radiusAngle > 0) {
-        val radiusPx = calculateRadiusPx(width, height, radiusAngle)
+        val radiusPx = calculateRadiusPx(width, height, radiusAngle, radiusUnit)
         builder = builder.transform(RoundedCorners(radiusPx))
     }
     return builder.submit().get()

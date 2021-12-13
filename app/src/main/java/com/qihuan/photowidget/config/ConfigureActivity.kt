@@ -24,7 +24,7 @@ import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.*
-import com.qihuan.photowidget.common.TEMP_DIR_NAME
+import com.qihuan.photowidget.common.*
 import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
@@ -119,6 +119,17 @@ class ConfigureActivity : AppCompatActivity() {
             PlayInterval.values().toList()
         ) { dialog, item ->
             viewModel.updateAutoPlayInterval(item)
+            dialog.dismiss()
+        }
+    }
+
+    private val radiusUnitDialog by lazy(LazyThreadSafetyMode.NONE) {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_radius_unit),
+            RadiusUnit.values().toList()
+        ) { dialog, item ->
+            viewModel.updateRadiusUnit(item)
             dialog.dismiss()
         }
     }
@@ -339,7 +350,7 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private fun saveWidget() {
-        if (viewModel.uiState.value == ConfigureViewModel.UIState.LOADING) {
+        if (viewModel.uiState.value == BaseConfigViewModel.UIState.LOADING) {
             return
         }
         if (viewModel.imageUriList.value.isNullOrEmpty()) {
@@ -369,6 +380,10 @@ class ConfigureActivity : AppCompatActivity() {
 
     fun showScaleTypeSelector() {
         scaleTypeDialog.show()
+    }
+
+    fun showChangeRadiusUnitSelector() {
+        radiusUnitDialog.show()
     }
 
     fun showDeleteLinkAlert() {

@@ -16,10 +16,9 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.LinkType
-import com.qihuan.photowidget.bean.createAlbumLink
-import com.qihuan.photowidget.bean.createFileLink
+import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.common.LinkType
+import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.databinding.ActivityGifConfigureBinding
 import com.qihuan.photowidget.ktx.*
@@ -77,6 +76,17 @@ class GifConfigureActivity : AppCompatActivity() {
                 LinkType.OPEN_ALBUM -> widgetOpenAlbum()
                 LinkType.OPEN_FILE -> launchOpenFile()
             }
+            dialog.dismiss()
+        }
+    }
+
+    private val radiusUnitDialog by lazy(LazyThreadSafetyMode.NONE) {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_radius_unit),
+            RadiusUnit.values().toList()
+        ) { dialog, item ->
+            viewModel.updateRadiusUnit(item)
             dialog.dismiss()
         }
     }
@@ -207,10 +217,10 @@ class GifConfigureActivity : AppCompatActivity() {
     }
 
     private fun saveWidget() {
-        if (viewModel.uiState.value == GifConfigureViewModel.UIState.LOADING) {
+        if (viewModel.uiState.value == BaseConfigViewModel.UIState.LOADING) {
             return
         }
-        if (viewModel.imageUri.value == null) {
+        if (viewModel.imageUriList.value.isNullOrEmpty()) {
             Snackbar.make(binding.root, R.string.warning_select_picture, Snackbar.LENGTH_SHORT)
                 .setAnchorView(binding.fabAddPhoto)
                 .show()
@@ -241,6 +251,10 @@ class GifConfigureActivity : AppCompatActivity() {
 
     fun showDeleteLinkAlert() {
         deleteLinkDialog.show()
+    }
+
+    fun showChangeRadiusUnitSelector() {
+        radiusUnitDialog.show()
     }
 
     private fun launchOpenAppActivity() {
