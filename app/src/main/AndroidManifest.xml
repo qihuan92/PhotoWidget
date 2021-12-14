@@ -300,6 +300,10 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".about.PrivacyPolicyActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
