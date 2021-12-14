@@ -16,6 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
+            app:menu="@menu/menu_about"
             app:navigationIcon="@drawable/ic_round_arrow_back_24"
             app:title="@string/about" />
     </com.google.android.material.appbar.AppBarLayout>
