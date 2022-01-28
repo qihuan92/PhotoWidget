@@ -50,4 +50,27 @@
         <item name="cardCornerRadius">@dimen/card_radius_small</item>
         <item name="cardElevation">0dp</item>
     </style>
+
+    <style name="Widget.PhotoWidget.Slider" parent="Widget.Material3.Slider">
+        <item name="thumbElevation">1dp</item>
+        <item name="labelStyle">@style/Widget.PhotoWidget.Tooltip</item>
+        <item name="trackColorInactive">@color/selector_slider_inactive_track_color</item>
+        <item name="tickColorActive">?attr/colorSurfaceVariant</item>
+    </style>
+
+    <style name="Widget.PhotoWidget.Tooltip" parent="Widget.Material3.Tooltip">
+        <item name="android:textColor">?attr/colorOnTertiaryContainer</item>
+        <item name="android:textAppearance">@style/TextAppearance.PhotoWidget.Tooltip</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.PhotoWidget.Tooltip</item>
+        <item name="backgroundTint">?attr/colorTertiaryContainer</item>
+    </style>
+
+    <style name="ShapeAppearance.PhotoWidget.Tooltip" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="TextAppearance.PhotoWidget.Tooltip" parent="TextAppearance.MaterialComponents.Tooltip">
+        <item name="android:textColor">?android:attr/colorBackground</item>
+    </style>
 </resources>
