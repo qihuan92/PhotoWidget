@@ -103,7 +103,7 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/layout_open_url"
-                    style="@style/CardView.WidgetLink"
+                    style="@style/Widget.PhotoWidget.CardView.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -182,7 +182,7 @@
                     android:orientation="horizontal">
 
                     <com.qihuan.photowidget.view.SliderSelectionView
-                        style="@style/CardView.SliderSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -198,7 +198,7 @@
                         android:layout_height="wrap_content" />
 
                     <com.qihuan.photowidget.view.SliderSelectionView
-                        style="@style/CardView.SliderSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -217,7 +217,7 @@
                     android:orientation="horizontal">
 
                     <com.qihuan.photowidget.view.SliderSelectionView
-                        style="@style/CardView.SliderSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -233,7 +233,7 @@
                         android:layout_height="wrap_content" />
 
                     <com.qihuan.photowidget.view.SliderSelectionView
-                        style="@style/CardView.SliderSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -246,7 +246,7 @@
                 </LinearLayout>
 
                 <com.qihuan.photowidget.view.SliderSelectionView
-                    style="@style/CardView.SliderSelection"
+                    style="@style/Widget.PhotoWidget.CardView.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
