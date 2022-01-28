@@ -89,4 +89,10 @@
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipCornerRadius">20dp</item>
     </style>
+
+    <style name="Widget.PhotoWidget.Switch" parent="Widget.Material3.CompoundButton.Switch">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+    </style>
 </resources>
