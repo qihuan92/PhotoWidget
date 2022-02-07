@@ -25,7 +25,6 @@
 
     <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
-        <item name="android:navigationBarColor">@color/navigation_bar_color_bottom_sheet</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:navigationBarColor">?android:colorBackground</item>
     </style>
 </resources>

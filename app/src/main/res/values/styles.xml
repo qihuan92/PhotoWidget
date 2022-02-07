@@ -19,13 +19,7 @@
     </style>
 
     <style name="ModalBottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
-        <!--<item name="backgroundTint">@color/bottom_sheet_background</item>-->
-        <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
-    </style>
-
-    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">20dp</item>
+        <item name="backgroundTint">@android:color/transparent</item>
     </style>
 
     <style name="Chip.About" parent="Widget.Material3.Chip.Assist">
