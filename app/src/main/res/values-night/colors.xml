@@ -13,6 +13,7 @@
     <color name="purple_7F63C3">#7F63C3</color>
     <color name="navigation_bar_color">#B3000000</color>
     <color name="wallpaper">#424242</color>
+    <color name="card_background_color">@color/dark_purple_50</color>
 
     <!-- 三方平台配色 -->
     <color name="github">#EEEEEE</color>

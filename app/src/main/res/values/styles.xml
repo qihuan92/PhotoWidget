@@ -38,12 +38,13 @@
     <style name="Widget.PhotoWidget.CardView" parent="@style/Widget.Material3.CardView.Filled">
         <item name="cardCornerRadius">@dimen/card_radius_medium</item>
         <item name="cardElevation">0dp</item>
-        <item name="background">@color/default_color_primary</item>
+        <item name="cardBackgroundColor">@color/card_background_color</item>
     </style>
 
     <style name="Widget.PhotoWidget.CardView.Small" parent="@style/Widget.Material3.CardView.Filled">
         <item name="cardCornerRadius">@dimen/card_radius_small</item>
         <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/card_background_color</item>
     </style>
 
     <style name="Widget.PhotoWidget.Slider" parent="Widget.Material3.Slider">

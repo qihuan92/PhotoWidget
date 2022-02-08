@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="purple_20">#F9F1FA</color>
     <color name="purple_50">#F3E5F5</color>
     <color name="purple_100">#E1BEE7</color>
     <color name="purple_200">#FFBB86FC</color>
@@ -10,6 +11,8 @@
     <color name="deep_purple_700">#512DA8</color>
     <color name="deep_purple_800">#4527A0</color>
     <color name="deep_purple_900">#311B92</color>
+
+    <color name="dark_purple_50">#20F3E5F5</color>
 
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
@@ -43,9 +46,10 @@
     <color name="default_color_on_surface_inverse">@android:color/background_light</color>
 
     <!-- 控件配色 -->
-    <color name="colorDivider">#EEEEEE</color>
+    <color name="colorDivider">#E1E1E1</color>
     <color name="navigation_bar_color">#B3FFFFFF</color>
     <color name="wallpaper">#EEEEEE</color>
+    <color name="card_background_color">@color/purple_20</color>
 
     <!-- 三方平台配色 -->
     <color name="coolapk">#0f9d58</color>
