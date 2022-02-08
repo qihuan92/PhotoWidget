@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.qihuan.photowidget.databinding.DialogItemSelectionBinding
 import com.qihuan.photowidget.databinding.ItemDialogSelectionBinding
+import com.qihuan.photowidget.ktx.performHapticFeedback
 import com.qihuan.photowidget.ktx.viewBinding
 
 /**
@@ -86,8 +87,9 @@ class ItemSelectionDialog<T : ItemSelectionDialog.Item>(
             private var currentItem: T? = null
 
             init {
-                binding.root.setOnClickListener {
+                binding.root.setOnClickListener { view ->
                     currentItem?.let {
+                        view.performHapticFeedback()
                         onItemClickListener?.invoke(dialog, it)
                     }
                 }

@@ -12,7 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.core.view.*
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -23,7 +23,9 @@ import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
-import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.bean.LinkInfo
+import com.qihuan.photowidget.bean.createAlbumLink
+import com.qihuan.photowidget.bean.createFileLink
 import com.qihuan.photowidget.common.*
 import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
@@ -33,7 +35,6 @@ import com.qihuan.photowidget.link.UrlInputActivity
 import com.qihuan.photowidget.view.ItemSelectionDialog
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.*
 
 /**
  * The configuration screen for the [com.qihuan.photowidget.PhotoWidgetProvider] AppWidget.
@@ -214,7 +215,10 @@ class ConfigureActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.confirm -> saveWidget()
+                R.id.confirm -> {
+                    binding.toolbar.performHapticHeavyClick()
+                    saveWidget()
+                }
             }
             true
         }
