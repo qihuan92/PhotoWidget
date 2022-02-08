@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.force_refresh_widget -> {
-                    binding.toolbar.performHapticHeavyClick()
+                    binding.toolbar.performHapticFeedback()
                     forceRefreshWidget()
                 }
                 R.id.settings -> startActivity(Intent(this, SettingsActivity::class.java))
