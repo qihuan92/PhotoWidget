@@ -24,7 +24,7 @@
 
     <style name="Chip.About" parent="Widget.Material3.Chip.Assist">
         <item name="chipStrokeWidth">2dp</item>
-        <item name="chipStrokeColor">@color/purple_7F63C3</item>
+        <item name="chipStrokeColor">@color/default_color_primary</item>
         <item name="chipBackgroundColor">@android:color/transparent</item>
         <item name="chipCornerRadius">20dp</item>
     </style>
@@ -38,6 +38,7 @@
     <style name="Widget.PhotoWidget.CardView" parent="@style/Widget.Material3.CardView.Filled">
         <item name="cardCornerRadius">@dimen/card_radius_medium</item>
         <item name="cardElevation">0dp</item>
+        <item name="background">@color/default_color_primary</item>
     </style>
 
     <style name="Widget.PhotoWidget.CardView.Small" parent="@style/Widget.Material3.CardView.Filled">

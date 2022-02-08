@@ -1,31 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="purple_50">#F3E5F5</color>
+    <color name="purple_100">#E1BEE7</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
+    <color name="purple_7F63C3">#7F63C3</color>
+
+    <color name="deep_purple_700">#512DA8</color>
+    <color name="deep_purple_800">#4527A0</color>
+    <color name="deep_purple_900">#311B92</color>
+
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
     <color name="light_blue_50">#FFE1F5FE</color>
     <color name="light_blue_200">#FF81D4FA</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
 
-    <color name="colorDivider">#EEEEEE</color>
-    <color name="purple_7F63C3">#7F63C3</color>
-    <color name="blur_mask">#60ffffff</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
     <color name="red">#FF5252</color>
+    <color name="translucent">#50000000</color>
+
+    <!-- 默认主题颜色 -->
+    <color name="default_color_primary">@color/purple_7F63C3</color>
+    <color name="default_color_primary_variant">@color/purple_200</color>
+    <color name="default_color_on_primary">@color/white</color>
+    <color name="default_color_secondary">@color/purple_7F63C3</color>
+    <color name="default_color_secondary_variant">@color/purple_200</color>
+    <color name="default_color_on_secondary">@color/white</color>
+
+    <color name="default_color_outline">@color/purple_7F63C3</color>
+    <color name="default_color_background">@android:color/background_light</color>
+    <color name="default_color_on_background">@color/purple_7F63C3</color>
+    <color name="default_color_surface">@android:color/background_light</color>
+    <color name="default_color_on_surface">@color/purple_7F63C3</color>
+    <color name="default_color_surface_variant">@color/purple_50</color>
+    <color name="default_color_on_surface_variant">@color/purple_7F63C3</color>
+    <color name="default_color_surface_inverse">@color/purple_7F63C3</color>
+    <color name="default_color_on_surface_inverse">@android:color/background_light</color>
+
+    <!-- 控件配色 -->
+    <color name="colorDivider">#EEEEEE</color>
     <color name="navigation_bar_color">#B3FFFFFF</color>
-    <color name="card_stroke_color">#EEEEEE</color>
-    <color name="about_chip_background">@android:color/background_light</color>
     <color name="wallpaper">#EEEEEE</color>
 
+    <!-- 三方平台配色 -->
     <color name="coolapk">#0f9d58</color>
     <color name="github">#25292E</color>
     <color name="weibo">#C43D35</color>
     <color name="telegram">#3B85D1</color>
-
-    <color name="selection_card_background">#60EDE7F6</color>
-    <color name="translucent">#50000000</color>
 </resources>
