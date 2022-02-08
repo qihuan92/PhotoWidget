@@ -25,10 +25,7 @@ import com.qihuan.photowidget.common.WorkTags
 import com.qihuan.photowidget.config.ConfigureActivity
 import com.qihuan.photowidget.config.GifConfigureActivity
 import com.qihuan.photowidget.databinding.ActivityMainBinding
-import com.qihuan.photowidget.ktx.IgnoringBatteryOptimizationsContract
-import com.qihuan.photowidget.ktx.logE
-import com.qihuan.photowidget.ktx.paddingNavigationBar
-import com.qihuan.photowidget.ktx.viewBinding
+import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.settings.SettingsActivity
 import com.qihuan.photowidget.worker.ForceUpdateWidgetWorker
 
@@ -72,7 +69,10 @@ class MainActivity : AppCompatActivity() {
     private fun bindView() {
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.force_refresh_widget -> forceRefreshWidget()
+                R.id.force_refresh_widget -> {
+                    binding.toolbar.performHapticHeavyClick()
+                    forceRefreshWidget()
+                }
                 R.id.settings -> startActivity(Intent(this, SettingsActivity::class.java))
             }
             true
