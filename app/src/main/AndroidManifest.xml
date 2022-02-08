@@ -242,8 +242,7 @@
 
         <activity
             android:name=".main.MainActivity"
-            android:exported="true"
-            android:screenOrientation="portrait">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -289,21 +288,13 @@
             android:name=".link.InstalledAppActivity"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".link.UrlInputActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".link.UrlInputActivity" />
 
-        <activity
-            android:name=".about.AboutActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".about.AboutActivity" />
 
-        <activity
-            android:name=".settings.SettingsActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".settings.SettingsActivity" />
 
-        <activity
-            android:name=".about.PrivacyPolicyActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".about.PrivacyPolicyActivity" />
     </application>
 
 </manifest>
