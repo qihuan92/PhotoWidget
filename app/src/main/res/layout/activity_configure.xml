@@ -80,7 +80,7 @@
                 app:cardCornerRadius="@{viewModel.widgetRadius}"
                 app:cardCornerRadiusUnit="@{viewModel.widgetRadiusUnit}"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/colorDivider"
+                app:strokeColor="@color/divider_color"
                 app:strokeWidth="@{viewModel.imageUriList.empty ? 2f: 0f}">
 
                 <include

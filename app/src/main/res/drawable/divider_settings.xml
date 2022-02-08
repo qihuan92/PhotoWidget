@@ -4,7 +4,7 @@
         android:left="39dp"
         android:right="10dp">
         <shape>
-            <solid android:color="@color/colorDivider" />
+            <solid android:color="@color/divider_color" />
             <size android:height="1dp" />
         </shape>
     </item>
