@@ -284,9 +284,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Crop" />
 
-        <activity
-            android:name=".link.InstalledAppActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".link.InstalledAppActivity" />
 
         <activity android:name=".link.UrlInputActivity" />
 
