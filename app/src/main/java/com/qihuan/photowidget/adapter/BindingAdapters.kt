@@ -134,7 +134,9 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("cardCornerRadius", "cardCornerRadiusUnit", requireAll = false)
     fun setCardCornerRadius(view: MaterialCardView, radius: Float, unit: RadiusUnit) {
-        val radiusPx = calculateRadiusPx(view.width, view.height, radius, unit)
-        view.radius = radiusPx.toFloat()
+        view.post {
+            val radiusPx = calculateRadiusPx(view.width, view.height, radius, unit)
+            view.radius = radiusPx.toFloat()
+        }
     }
 }
