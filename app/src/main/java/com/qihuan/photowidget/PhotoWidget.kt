@@ -134,12 +134,16 @@ suspend fun updateAppWidget(
 
     // Set widget padding
     remoteViews.setViewPadding(
-        android.R.id.background,
+        R.id.fl_picture_container,
         leftPadding,
         topPadding,
         rightPadding,
         bottomPadding
     )
+
+    // TODO 处理边框相关逻辑
+//    remoteViews.setImageViewResource(R.id.iv_widget_background, R.drawable.app_widget_background)
+//    remoteViews.setInt(R.id.iv_widget_background, "setColorFilter", ContextCompat.getColor(context, R.color.amber_100))
 
     appWidgetManager.updateAppWidget(widgetId, remoteViews)
     if (isMultiImage) {
@@ -190,12 +194,12 @@ private fun createWidgetNavPendingIntent(
 }
 
 fun createFlipperRemoteViews(context: Context, interval: Int): RemoteViews {
-    val defRemoteViews = RemoteViews(context.packageName, R.layout.photo_widget)
+    val defRemoteViews = RemoteViews(context.packageName, R.layout.widget_photo)
     if (interval < 0) {
         return defRemoteViews
     }
     val layoutId = context.resources.getIdentifier(
-        "photo_widget_interval_${interval}",
+        "widget_photo_interval_${interval}",
         "layout",
         context.packageName
     )
@@ -207,9 +211,9 @@ fun createFlipperRemoteViews(context: Context, interval: Int): RemoteViews {
 
 fun createImageRemoteViews(context: Context, scaleType: ImageView.ScaleType): RemoteViews {
     return if (scaleType == ImageView.ScaleType.FIT_CENTER) {
-        RemoteViews(context.packageName, R.layout.layout_widget_image)
+        RemoteViews(context.packageName, R.layout.widget_photo_single)
     } else {
-        RemoteViews(context.packageName, R.layout.layout_widget_image_fitxy)
+        RemoteViews(context.packageName, R.layout.widget_photo_single_fitxy)
     }
 }
 
