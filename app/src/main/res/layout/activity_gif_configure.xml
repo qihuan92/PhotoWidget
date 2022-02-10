@@ -5,7 +5,7 @@
 
         <import type="android.view.View" />
 
-        <import type="com.qihuan.photowidget.config.GifConfigureViewModel.UIState" />
+        <import type="com.qihuan.photowidget.config.BaseConfigViewModel.UIState" />
 
         <variable
             name="viewModel"
@@ -75,10 +75,11 @@
                 android:id="@+id/iv_picture"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@{viewModel.imageUri == null ? @drawable/bg_gif_photo : null}"
+                android:background="@{viewModel.imageUriList.empty ? @drawable/bg_gif_photo : null}"
                 android:contentDescription="@string/widget_preview"
-                app:imagePath="@{viewModel.imageUri}"
-                app:imageRadius="@{viewModel.widgetRadius}" />
+                app:imagePath="@{viewModel.imageUriList.empty ? null : viewModel.imageUriList.get(0)}"
+                app:imageRadius="@{viewModel.widgetRadius}"
+                app:imageRadiusUnit="@{viewModel.widgetRadiusUnit}" />
         </FrameLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -102,7 +103,7 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/layout_open_url"
-                    style="@style/CardView.WidgetLink"
+                    style="@style/Widget.PhotoWidget.CardView.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -181,7 +182,7 @@
                     android:orientation="horizontal">
 
                     <com.qihuan.photowidget.view.SliderSelectionView
-                        style="@style/CardView.SliderSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -197,7 +198,7 @@
                         android:layout_height="wrap_content" />
 
                     <com.qihuan.photowidget.view.SliderSelectionView
-                        style="@style/CardView.SliderSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -216,7 +217,7 @@
                     android:orientation="horizontal">
 
                     <com.qihuan.photowidget.view.SliderSelectionView
-                        style="@style/CardView.SliderSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -232,7 +233,7 @@
                         android:layout_height="wrap_content" />
 
                     <com.qihuan.photowidget.view.SliderSelectionView
-                        style="@style/CardView.SliderSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -245,16 +246,17 @@
                 </LinearLayout>
 
                 <com.qihuan.photowidget.view.SliderSelectionView
-                    style="@style/CardView.SliderSelection"
+                    style="@style/Widget.PhotoWidget.CardView.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:onClick="@{() -> activity.showChangeRadiusUnitSelector()}"
                     app:sliderSelectionIcon="@drawable/ic_round_rounded_corner_24"
                     app:sliderSelectionTitle="@string/widget_radius"
                     app:sliderSelectionValue="@={viewModel.widgetRadius}"
                     app:sliderSelectionValueFrom="0"
-                    app:sliderSelectionValueTo="50"
-                    app:sliderSelectionValueUnit="dp" />
+                    app:sliderSelectionValueTo="@{viewModel.widgetRadiusUnit.maxValue}"
+                    app:sliderSelectionValueUnit="@{viewModel.widgetRadiusUnit.unitName}" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 

@@ -9,8 +9,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.qihuan.photowidget.App
-import com.qihuan.photowidget.bean.TipsType
 import com.qihuan.photowidget.bean.WidgetBean
+import com.qihuan.photowidget.common.TipsType
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
 import kotlinx.coroutines.flow.collect
@@ -28,7 +28,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         loadWidgetList()
-        loadIgnoreBatteryOptimizations()
     }
 
     private fun loadWidgetList() {

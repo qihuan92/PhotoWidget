@@ -7,14 +7,28 @@
     android:background="?selectableItemBackground"
     android:paddingHorizontal="16dp">
 
-    <TextView
-        android:id="@+id/tv_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="@string/option_icon"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/tv_item"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_round_link_24"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceListItem"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iv_icon"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textAppearance="?textAppearanceListItem"
         tools:text="选项选项选项选项选项选项选项选项选项选项选项选项选项选项选项" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -80,6 +80,19 @@ class SliderSelectionView : MaterialCardView {
 
     fun getValue() = binding.slider.value
 
+    fun setValueTo(valueTo: Float) {
+        this.valueTo = valueTo
+        binding.slider.valueTo = valueTo
+    }
+
+    fun setValueUnit(valueUnit: String) {
+        if (this.unit == valueUnit) {
+            return
+        }
+        this.unit = valueUnit
+        binding.tvValue.text = "${value}${unit}"
+    }
+
     fun addOnChangeListener(listener: Slider.OnChangeListener) {
         binding.slider.addOnChangeListener(listener)
     }

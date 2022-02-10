@@ -3,13 +3,19 @@ package com.qihuan.photowidget.view
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.qihuan.photowidget.R
 import com.qihuan.photowidget.databinding.DialogItemSelectionBinding
 import com.qihuan.photowidget.databinding.ItemDialogSelectionBinding
+import com.qihuan.photowidget.ktx.performHapticFeedback
 import com.qihuan.photowidget.ktx.viewBinding
 
 /**
@@ -45,6 +51,15 @@ class ItemSelectionDialog<T : ItemSelectionDialog.Item>(
 
     fun setItemList(itemList: List<T>) {
         adapter.submitList(itemList)
+    }
+
+    override fun show() {
+        super.show()
+        val view = findViewById<View>(R.id.design_bottom_sheet)
+        view?.post {
+            val behavior = BottomSheetBehavior.from(view)
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED)
+        }
     }
 
     class Adapter<T : Item>(
@@ -84,8 +99,9 @@ class ItemSelectionDialog<T : ItemSelectionDialog.Item>(
             private var currentItem: T? = null
 
             init {
-                binding.root.setOnClickListener {
+                binding.root.setOnClickListener { view ->
                     currentItem?.let {
+                        view.performHapticFeedback()
                         onItemClickListener?.invoke(dialog, it)
                     }
                 }
@@ -93,12 +109,20 @@ class ItemSelectionDialog<T : ItemSelectionDialog.Item>(
 
             fun bind(item: T) {
                 currentItem = item
+
+                val icon = item.getIcon()
+                binding.ivIcon.isVisible = icon != null
+                if (icon != null) {
+                    binding.ivIcon.setImageResource(icon)
+                }
                 binding.tvItem.text = item.getItemText()
             }
         }
     }
 
     interface Item {
+        @DrawableRes
+        fun getIcon(): Int?
         fun getItemText(): String
     }
 }

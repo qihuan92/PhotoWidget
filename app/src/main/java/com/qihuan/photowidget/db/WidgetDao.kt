@@ -74,5 +74,6 @@ abstract class WidgetDao {
     suspend fun deleteByWidgetId(widgetId: Int) {
         deleteInfoById(widgetId)
         deleteImageByWidgetId(widgetId)
+        deleteLinkInfo(widgetId)
     }
 }

@@ -2,6 +2,7 @@ package com.qihuan.photowidget.main
 
 import android.appwidget.AppWidgetManager
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -9,26 +10,23 @@ import androidx.core.view.WindowCompat
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.about.AboutActivity
 import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
 import com.qihuan.photowidget.adapter.TipAdapter
 import com.qihuan.photowidget.adapter.WidgetPagingAdapter
-import com.qihuan.photowidget.bean.TipsType
 import com.qihuan.photowidget.bean.WidgetInfo
-import com.qihuan.photowidget.bean.WidgetType
-import com.qihuan.photowidget.common.MAIN_PAGE_SPAN_COUNT
+import com.qihuan.photowidget.common.TipsType
+import com.qihuan.photowidget.common.WidgetType
+import com.qihuan.photowidget.common.WorkTags
 import com.qihuan.photowidget.config.ConfigureActivity
 import com.qihuan.photowidget.config.GifConfigureActivity
 import com.qihuan.photowidget.databinding.ActivityMainBinding
-import com.qihuan.photowidget.ktx.IgnoringBatteryOptimizationsContract
-import com.qihuan.photowidget.ktx.logE
-import com.qihuan.photowidget.ktx.paddingNavigationBar
-import com.qihuan.photowidget.ktx.viewBinding
+import com.qihuan.photowidget.ktx.*
+import com.qihuan.photowidget.settings.SettingsActivity
 import com.qihuan.photowidget.worker.ForceUpdateWidgetWorker
 
 class MainActivity : AppCompatActivity() {
@@ -49,14 +47,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.loadIgnoreBatteryOptimizations()
         }
 
-    private val forceRefreshWidgetDialog by lazy(LazyThreadSafetyMode.NONE) {
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.alert_title_force_refresh_widget)
-            .setMessage(R.string.alert_msg_force_refresh_widget)
-            .setNegativeButton(R.string.cancel) { _, _ -> }
-            .setPositiveButton(R.string.alert_positive_btn) { _, _ -> forceRefreshWidget() }
-            .create()
-    }
+    private var spanCount: Int = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,25 +59,39 @@ class MainActivity : AppCompatActivity() {
 
         binding.rvList.paddingNavigationBar()
 
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            spanCount = 4
+        } else if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            spanCount = 2
+        }
+
         bindView()
         bindData()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.loadIgnoreBatteryOptimizations()
     }
 
     private fun bindView() {
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.force_refresh_widget -> forceRefreshWidgetDialog.show()
-                R.id.about -> startActivity(Intent(this, AboutActivity::class.java))
+                R.id.force_refresh_widget -> {
+                    binding.toolbar.performHapticFeedback()
+                    forceRefreshWidget()
+                }
+                R.id.settings -> startActivity(Intent(this, SettingsActivity::class.java))
             }
             true
         }
 
-        val gridLayoutManager = GridLayoutManager(this, MAIN_PAGE_SPAN_COUNT)
+        val gridLayoutManager = GridLayoutManager(this, spanCount)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (adapter.getItemViewType(position)) {
-                    TipsType.IGNORE_BATTERY_OPTIMIZATIONS.code -> MAIN_PAGE_SPAN_COUNT
-                    TipsType.ADD_WIDGET.code -> MAIN_PAGE_SPAN_COUNT
+                    TipsType.IGNORE_BATTERY_OPTIMIZATIONS.code -> spanCount
+                    TipsType.ADD_WIDGET.code -> spanCount
                     else -> 1
                 }
             }
@@ -167,6 +172,10 @@ class MainActivity : AppCompatActivity() {
             .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
             .build()
         WorkManager.getInstance(applicationContext)
-            .enqueue(workRequest)
+            .enqueueUniqueWork(
+                WorkTags.ONE_TIME_REFRESH_WIDGET,
+                ExistingWorkPolicy.KEEP,
+                workRequest
+            )
     }
 }

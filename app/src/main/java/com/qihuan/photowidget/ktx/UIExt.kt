@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.*
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.R
+import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.databinding.DialogLoadingBinding
+import kotlin.math.min
+import kotlin.math.tan
 
 /**
  * UIExt
@@ -81,23 +83,6 @@ fun View.marginNavigationBarAndIme() {
     }
 }
 
-fun SwipeRefreshLayout.setDefaultColors() {
-    setColorSchemeResources(
-        R.color.purple_200,
-        R.color.purple_500,
-        R.color.purple_700,
-    )
-}
-
-val Resources.androidShortAnimTime
-    get() = getInteger(android.R.integer.config_shortAnimTime).toLong()
-
-val Resources.androidMediumAnimTime
-    get() = getInteger(android.R.integer.config_mediumAnimTime).toLong()
-
-val Resources.androidLongAnimTime
-    get() = getInteger(android.R.integer.config_longAnimTime).toLong()
-
 fun Context.createLoadingDialog(@StringRes message: Int = R.string.loading): AlertDialog {
     return createLoadingDialog(getString(message))
 }
@@ -109,4 +94,29 @@ fun Context.createLoadingDialog(message: String = getString(R.string.loading)): 
         .setCancelable(false)
         .setView(binding.root)
         .create()
+}
+
+fun calculateRadiusPx(
+    width: Int,
+    height: Int,
+    value: Float,
+    unit: RadiusUnit = RadiusUnit.ANGLE
+): Int {
+    when (unit) {
+        RadiusUnit.ANGLE -> {
+            if (value == 0f) {
+                return 0
+            }
+            val maxRadius = min(width, height) / 2
+            if (value == 90f) {
+                return maxRadius
+            }
+            val degree = (90 - value) / 2
+            val radians = Math.toRadians(degree.toDouble())
+            return maxRadius - (tan(radians) * maxRadius).toInt()
+        }
+        RadiusUnit.LENGTH -> {
+            return value.dp
+        }
+    }
 }

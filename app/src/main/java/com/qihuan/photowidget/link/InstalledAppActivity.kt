@@ -2,15 +2,17 @@ package com.qihuan.photowidget.link
 
 import android.appwidget.AppWidgetManager
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.WindowCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.InstalledAppAdapter
 import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.LinkType
+import com.qihuan.photowidget.common.LinkType
 import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
 import com.qihuan.photowidget.ktx.paddingNavigationBar
 import com.qihuan.photowidget.ktx.viewBinding
@@ -30,6 +32,7 @@ class InstalledAppActivity : AppCompatActivity() {
     }
 
     private val installedAppAdapter by lazy { InstalledAppAdapter() }
+    private var spanCount: Int = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +41,12 @@ class InstalledAppActivity : AppCompatActivity() {
         binding.viewModel = viewModel
 
         binding.rvList.paddingNavigationBar()
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            spanCount = 5
+        } else if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            spanCount = 1
+        }
 
         bindView()
         bindData()
@@ -72,6 +81,7 @@ class InstalledAppActivity : AppCompatActivity() {
             true
         }
 
+        binding.rvList.layoutManager = GridLayoutManager(this, spanCount)
         binding.rvList.adapter = installedAppAdapter
         installedAppAdapter.setOnItemClickListener { position, _ ->
             viewModel.installedAppList.value?.get(position)?.apply {

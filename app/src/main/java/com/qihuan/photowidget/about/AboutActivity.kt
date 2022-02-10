@@ -35,6 +35,18 @@ class AboutActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.privacy_policy -> startActivity(
+                    Intent(
+                        this,
+                        PrivacyPolicyActivity::class.java
+                    )
+                )
+            }
+            true
+        }
+
         setAppVersion()
         addAppLinks()
         addDeveloperLinks()

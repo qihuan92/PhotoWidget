@@ -2,8 +2,8 @@ package com.qihuan.photowidget.ktx
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.gifdecoder.StandardGifDecoder
@@ -12,6 +12,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.qihuan.photowidget.App
+import com.qihuan.photowidget.common.CompressFormatCompat
+import com.qihuan.photowidget.common.RadiusUnit
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -21,20 +23,14 @@ import java.io.FileOutputStream
  * @author qi
  * @since 3/30/21
  */
-
-fun ImageView.loadRounded(uri: Uri, radius: Float) {
-    loadRounded(uri, radius.dp)
-}
-
 fun ImageView.loadRounded(uri: Uri, radius: Int) {
     if (radius == 0) {
         load(uri)
         return
     }
-    val radiusPx = radius * 2
     Glide.with(context)
         .load(uri)
-        .apply(RequestOptions.bitmapTransform(RoundedCorners(radiusPx)))
+        .apply(RequestOptions.bitmapTransform(RoundedCorners(radius)))
         .into(this)
 }
 
@@ -46,12 +42,12 @@ fun ImageView.load(uri: Uri) {
 
 fun Uri.toRoundedBitmap(
     context: Context,
-    radius: Int,
+    radius: Float,
+    radiusUnit: RadiusUnit,
     scaleType: ImageView.ScaleType,
     width: Int,
     height: Int
 ): Bitmap {
-    val radiusPx = radius * 2
     var builder = Glide.with(context)
         .asBitmap()
         .load(this)
@@ -62,7 +58,16 @@ fun Uri.toRoundedBitmap(
             transformList.add(CenterCrop())
         }
     }
-    if (radiusPx > 0) {
+    if (radius > 0) {
+        // Calculate radiusPx
+        val radiusPx =
+            if (scaleType == ImageView.ScaleType.CENTER_CROP && width > 0 && height > 0) {
+                calculateRadiusPx(width, height, radius, radiusUnit)
+            } else {
+                val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                BitmapFactory.decodeFile(path, options)
+                calculateRadiusPx(options.outWidth, options.outHeight, radius, radiusUnit)
+            }
         transformList.add(RoundedCorners(radiusPx))
     }
 
@@ -76,7 +81,7 @@ fun Uri.toRoundedBitmap(
     return builder.submit(width, height).get()
 }
 
-fun Uri.saveGifFramesToDir(dir: File) {
+fun Uri.saveGifFramesToDir(dir: File, radius: Float = 0f, radiusUnit: RadiusUnit) {
     dir.deleteRecursively()
     if (!dir.exists()) {
         dir.mkdirs()
@@ -105,7 +110,8 @@ fun Uri.saveGifFramesToDir(dir: File) {
         for (index in 0..standardGifDecoder.frameCount) {
             standardGifDecoder.advance()
             val frame = standardGifDecoder.nextFrame
-            frame?.saveFile(dir, index.toString())
+            val roundedFrame = frame?.withRoundedCorner(radius, radiusUnit)
+            roundedFrame?.saveFile(dir, index.toString())
         }
     } catch (e: Exception) {
         logE("ImageExt", "saveGifFramesToDir()", e)
@@ -113,19 +119,36 @@ fun Uri.saveGifFramesToDir(dir: File) {
     }
 }
 
-fun Bitmap.saveFile(dir: File, displayName: String) {
-    val compressFormat = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        Bitmap.CompressFormat.WEBP_LOSSY
-    } else {
-        Bitmap.CompressFormat.WEBP
-    }
+fun Bitmap.withRoundedCorner(radiusAngle: Float, radiusUnit: RadiusUnit): Bitmap {
+    var builder = Glide.with(App.context)
+        .asBitmap()
+        .load(this)
 
+    if (radiusAngle > 0) {
+        val radiusPx = calculateRadiusPx(width, height, radiusAngle, radiusUnit)
+        builder = builder.transform(RoundedCorners(radiusPx))
+    }
+    return builder.submit().get()
+}
+
+fun Bitmap.withRoundedCorner(radius: Int): Bitmap {
+    var builder = Glide.with(App.context)
+        .asBitmap()
+        .load(this)
+
+    if (radius > 0) {
+        builder = builder.transform(RoundedCorners(radius))
+    }
+    return builder.submit().get()
+}
+
+fun Bitmap.saveFile(dir: File, displayName: String) {
     val file = File(dir, "$displayName.webp")
     val fos = FileOutputStream(file)
     val bos = ByteArrayOutputStream()
 
     try {
-        if (compress(compressFormat, 50, bos)) {
+        if (compress(CompressFormatCompat.WEBP_LOSSY, 50, bos)) {
             fos.write(bos.toByteArray())
         }
     } catch (e: Exception) {

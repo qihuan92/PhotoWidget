@@ -12,7 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.core.view.*
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -24,10 +24,9 @@ import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.LinkType
-import com.qihuan.photowidget.bean.PhotoScaleType
-import com.qihuan.photowidget.bean.PlayInterval
-import com.qihuan.photowidget.common.TEMP_DIR_NAME
+import com.qihuan.photowidget.bean.createAlbumLink
+import com.qihuan.photowidget.bean.createFileLink
+import com.qihuan.photowidget.common.*
 import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*
@@ -36,7 +35,6 @@ import com.qihuan.photowidget.link.UrlInputActivity
 import com.qihuan.photowidget.view.ItemSelectionDialog
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.*
 
 /**
  * The configuration screen for the [com.qihuan.photowidget.PhotoWidgetProvider] AppWidget.
@@ -109,6 +107,7 @@ class ConfigureActivity : AppCompatActivity() {
                 LinkType.OPEN_APP -> launchOpenAppActivity()
                 LinkType.OPEN_URL -> launchOpenLinkActivity()
                 LinkType.OPEN_ALBUM -> widgetOpenAlbum()
+                LinkType.OPEN_FILE -> launchOpenFile()
             }
             dialog.dismiss()
         }
@@ -121,6 +120,17 @@ class ConfigureActivity : AppCompatActivity() {
             PlayInterval.values().toList()
         ) { dialog, item ->
             viewModel.updateAutoPlayInterval(item)
+            dialog.dismiss()
+        }
+    }
+
+    private val radiusUnitDialog by lazy(LazyThreadSafetyMode.NONE) {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_radius_unit),
+            RadiusUnit.values().toList()
+        ) { dialog, item ->
+            viewModel.updateRadiusUnit(item)
             dialog.dismiss()
         }
     }
@@ -171,6 +181,18 @@ class ConfigureActivity : AppCompatActivity() {
             }
         }
 
+    private val getOpenFileLink =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+            if (it != null) {
+                // keep permission
+                contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+                viewModel.updateLinkInfo(createFileLink(appWidgetId, it))
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -193,7 +215,10 @@ class ConfigureActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.confirm -> saveWidget()
+                R.id.confirm -> {
+                    binding.toolbar.performHapticHeavyClick()
+                    saveWidget()
+                }
             }
             true
         }
@@ -329,7 +354,7 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private fun saveWidget() {
-        if (viewModel.uiState.value == ConfigureViewModel.UIState.LOADING) {
+        if (viewModel.uiState.value == BaseConfigViewModel.UIState.LOADING) {
             return
         }
         if (viewModel.imageUriList.value.isNullOrEmpty()) {
@@ -361,6 +386,10 @@ class ConfigureActivity : AppCompatActivity() {
         scaleTypeDialog.show()
     }
 
+    fun showChangeRadiusUnitSelector() {
+        radiusUnitDialog.show()
+    }
+
     fun showDeleteLinkAlert() {
         deleteLinkDialog.show()
     }
@@ -389,13 +418,10 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private fun widgetOpenAlbum() {
-        val linkInfo = LinkInfo(
-            appWidgetId,
-            LinkType.OPEN_ALBUM,
-            getString(R.string.widget_link_open_album),
-            getString(R.string.widget_link_open_album_description),
-            ""
-        )
-        viewModel.updateLinkInfo(linkInfo)
+        viewModel.updateLinkInfo(createAlbumLink(appWidgetId))
+    }
+
+    private fun launchOpenFile() {
+        getOpenFileLink.launch(arrayOf("*/*"))
     }
 }

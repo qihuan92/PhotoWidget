@@ -29,7 +29,6 @@ import android.widget.Toast;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
-import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,8 +52,6 @@ import com.yalantis.ucrop.view.UCropView;
 import com.yalantis.ucrop.view.widget.AspectRatioTextView;
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -63,7 +60,7 @@ import java.util.Locale;
  * CropActivity
  * 基于 UCrop 修改
  */
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"ConstantConditions", "SameParameterValue"})
 public class CropActivity extends AppCompatActivity {
 
     public static final int DEFAULT_COMPRESS_QUALITY = 90;
@@ -73,12 +70,6 @@ public class CropActivity extends AppCompatActivity {
     public static final int SCALE = 1;
     public static final int ROTATE = 2;
     public static final int ALL = 3;
-
-    @IntDef({NONE, SCALE, ROTATE, ALL})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface GestureTypes {
-
-    }
 
     private static final String TAG = "UCropActivity";
     private static final long CONTROLS_ANIMATION_DURATION = 50;
@@ -109,7 +100,7 @@ public class CropActivity extends AppCompatActivity {
     private OverlayView mOverlayView;
     private ViewGroup mWrapperStateAspectRatio, mWrapperStateRotate, mWrapperStateScale;
     private ViewGroup mLayoutAspectRatio, mLayoutRotate, mLayoutScale;
-    private List<ViewGroup> mCropAspectRatioViews = new ArrayList<>();
+    private final List<ViewGroup> mCropAspectRatioViews = new ArrayList<>();
     private TextView mTextViewRotateAngle, mTextViewScalePercent;
     private View mBlockingView;
 
@@ -384,7 +375,7 @@ public class CropActivity extends AppCompatActivity {
         }
     }
 
-    private TransformImageView.TransformImageListener mImageListener = new TransformImageView.TransformImageListener() {
+    private final TransformImageView.TransformImageListener mImageListener = new TransformImageView.TransformImageListener() {
         @Override
         public void onRotate(float currentAngle) {
             setAngleText(currentAngle);
@@ -432,12 +423,10 @@ public class CropActivity extends AppCompatActivity {
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setStatusBarColor(@ColorInt int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            final Window window = getWindow();
-            if (window != null) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(color);
-            }
+        final Window window = getWindow();
+        if (window != null) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
         }
     }
 
@@ -478,38 +467,32 @@ public class CropActivity extends AppCompatActivity {
         mCropAspectRatioViews.get(aspectRationSelectedByDefault).setSelected(true);
 
         for (ViewGroup cropAspectRatioView : mCropAspectRatioViews) {
-            cropAspectRatioView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mGestureCropImageView.setTargetAspectRatio(
-                            ((AspectRatioTextView) ((ViewGroup) v).getChildAt(0)).getAspectRatio(v.isSelected()));
-                    mGestureCropImageView.setImageToWrapCropBounds();
-                    if (!v.isSelected()) {
-                        for (ViewGroup cropAspectRatioView : mCropAspectRatioViews) {
-                            cropAspectRatioView.setSelected(cropAspectRatioView == v);
-                        }
+            cropAspectRatioView.setOnClickListener(v -> {
+                mGestureCropImageView.setTargetAspectRatio(
+                        ((AspectRatioTextView) ((ViewGroup) v).getChildAt(0)).getAspectRatio(v.isSelected()));
+                mGestureCropImageView.setImageToWrapCropBounds();
+                if (!v.isSelected()) {
+                    for (ViewGroup cropAspectRatioView1 : mCropAspectRatioViews) {
+                        cropAspectRatioView1.setSelected(cropAspectRatioView1 == v);
                     }
                 }
             });
 
-            cropAspectRatioView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (!v.isSelected()) {
-                        return false;
-                    }
-                    if (freestyleMode == OverlayView.FREESTYLE_CROP_MODE_ENABLE) {
-                        freestyleMode = OverlayView.FREESTYLE_CROP_MODE_DISABLE;
-                    } else {
-                        freestyleMode = OverlayView.FREESTYLE_CROP_MODE_ENABLE;
-                    }
-                    mOverlayView.setFreestyleCropMode(freestyleMode);
-                    String message = freestyleMode == OverlayView.FREESTYLE_CROP_MODE_ENABLE
-                            ? getString(R.string.crop_freestyle_enable)
-                            : getString(R.string.crop_freestyle_disable);
-                    Toast.makeText(CropActivity.this, message, Toast.LENGTH_SHORT).show();
-                    return true;
+            cropAspectRatioView.setOnLongClickListener(v -> {
+                if (!v.isSelected()) {
+                    return false;
                 }
+                if (freestyleMode == OverlayView.FREESTYLE_CROP_MODE_ENABLE) {
+                    freestyleMode = OverlayView.FREESTYLE_CROP_MODE_DISABLE;
+                } else {
+                    freestyleMode = OverlayView.FREESTYLE_CROP_MODE_ENABLE;
+                }
+                mOverlayView.setFreestyleCropMode(freestyleMode);
+                String message = freestyleMode == OverlayView.FREESTYLE_CROP_MODE_ENABLE
+                        ? getString(R.string.crop_freestyle_enable)
+                        : getString(R.string.crop_freestyle_disable);
+                Toast.makeText(CropActivity.this, message, Toast.LENGTH_SHORT).show();
+                return true;
             });
         }
     }
@@ -537,18 +520,8 @@ public class CropActivity extends AppCompatActivity {
         ((HorizontalProgressWheelView) findViewById(R.id.rotate_scroll_wheel)).setMiddleLineColor(mActiveControlsWidgetColor);
 
 
-        findViewById(R.id.wrapper_reset_rotate).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetRotation();
-            }
-        });
-        findViewById(R.id.wrapper_rotate_by_angle).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                rotateByAngle(90);
-            }
-        });
+        findViewById(R.id.wrapper_reset_rotate).setOnClickListener(v -> resetRotation());
+        findViewById(R.id.wrapper_rotate_by_angle).setOnClickListener(v -> rotateByAngle(90));
 
         setAngleTextColor(mActiveControlsWidgetColor);
     }
@@ -617,12 +590,9 @@ public class CropActivity extends AppCompatActivity {
         mGestureCropImageView.setImageToWrapCropBounds();
     }
 
-    private final View.OnClickListener mStateClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!v.isSelected()) {
-                setWidgetState(v.getId());
-            }
+    private final View.OnClickListener mStateClickListener = v -> {
+        if (!v.isSelected()) {
+            setWidgetState(v.getId());
         }
     };
 
@@ -661,7 +631,7 @@ public class CropActivity extends AppCompatActivity {
     }
 
     private void changeSelectedTab(int stateViewId) {
-        TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.ucrop_photobox), mControlsTransition);
+        TransitionManager.beginDelayedTransition(findViewById(R.id.ucrop_photobox), mControlsTransition);
 
         mWrapperStateScale.findViewById(R.id.text_view_scale).setVisibility(stateViewId == R.id.state_scale ? View.VISIBLE : View.GONE);
         mWrapperStateAspectRatio.findViewById(R.id.text_view_crop).setVisibility(stateViewId == R.id.state_aspect_ratio ? View.VISIBLE : View.GONE);

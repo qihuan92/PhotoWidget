@@ -1,5 +1,6 @@
 package com.qihuan.photowidget.adapter
 
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
@@ -8,9 +9,12 @@ import androidx.core.view.isVisible
 import androidx.databinding.*
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
-import com.qihuan.photowidget.bean.LinkType
+import com.qihuan.photowidget.common.LinkType
+import com.qihuan.photowidget.common.RadiusUnit
+import com.qihuan.photowidget.ktx.calculateRadiusPx
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.loadRounded
+import com.qihuan.photowidget.ktx.performHapticFeedback
 import com.qihuan.photowidget.view.SliderSelectionView
 import com.qihuan.photowidget.view.TextSelectionView
 
@@ -25,7 +29,17 @@ import com.qihuan.photowidget.view.TextSelectionView
         type = SliderSelectionView::class,
         attribute = "sliderSelectionValue",
         method = "setValue"
-    )
+    ),
+    BindingMethod(
+        type = SliderSelectionView::class,
+        attribute = "sliderSelectionValueTo",
+        method = "setValueTo"
+    ),
+    BindingMethod(
+        type = SliderSelectionView::class,
+        attribute = "sliderSelectionValueUnit",
+        method = "setValueUnit"
+    ),
 )
 object BindingAdapters {
 
@@ -91,17 +105,38 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("sliderSelectionAttrChanged")
     fun setSliderSelectionListeners(view: SliderSelectionView, attrChange: InverseBindingListener) {
-        view.addOnChangeListener { _, _, _ ->
+        view.addOnChangeListener { slider, _, fromUser ->
             attrChange.onChange()
+            if (fromUser) {
+                slider.performHapticFeedback()
+            }
         }
     }
 
     @JvmStatic
-    @BindingAdapter("imagePath", "imageRadius", requireAll = false)
-    fun loadImage(view: ImageView, imagePath: Uri?, imageRadius: Float?) {
+    @BindingAdapter("imagePath", "imageRadius", "imageRadiusUnit", requireAll = false)
+    fun loadImage(
+        view: ImageView,
+        imagePath: Uri?,
+        imageRadius: Float,
+        imageRadiusUnit: RadiusUnit
+    ) {
         if (imagePath == null) {
             return
         }
-        view.loadRounded(imagePath, imageRadius ?: 0f)
+        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(imagePath.path, options)
+        val radiusPx =
+            calculateRadiusPx(options.outWidth, options.outHeight, imageRadius, imageRadiusUnit)
+        view.loadRounded(imagePath, radiusPx)
+    }
+
+    @JvmStatic
+    @BindingAdapter("cardCornerRadius", "cardCornerRadiusUnit", requireAll = false)
+    fun setCardCornerRadius(view: MaterialCardView, radius: Float, unit: RadiusUnit) {
+        view.post {
+            val radiusPx = calculateRadiusPx(view.width, view.height, radius, unit)
+            view.radius = radiusPx.toFloat()
+        }
     }
 }

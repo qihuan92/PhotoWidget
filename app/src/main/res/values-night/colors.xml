@@ -1,28 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="light_blue_50">#FFE1F5FE</color>
-    <color name="light_blue_200">#FF81D4FA</color>
-    <color name="light_blue_600">#FF039BE5</color>
-    <color name="light_blue_900">#FF01579B</color>
+    <!-- 默认主题颜色 -->
+    <color name="default_color_primary">@color/purple_200</color>
+    <color name="default_color_primary_variant">@color/purple_100</color>
+    <color name="default_color_on_primary">@color/white</color>
+    <color name="default_color_secondary">@color/purple_200</color>
+    <color name="default_color_secondary_variant">@color/purple_100</color>
+    <color name="default_color_on_secondary">@color/white</color>
 
-    <color name="colorDivider">#1FFFFFFF</color>
-    <color name="purple_7F63C3">#7F63C3</color>
-    <color name="blur_mask">#60000000</color>
-    <color name="red">#FF5252</color>
+    <!-- 控件配色 -->
+    <color name="divider_color">#1FFFFFFF</color>
     <color name="navigation_bar_color">#B3000000</color>
-    <color name="navigation_bar_color_bottom_sheet">@android:color/transparent</color>
-    <color name="card_stroke_color">#1FFFFFFF</color>
-    <color name="about_chip_background">@android:color/background_dark</color>
     <color name="wallpaper">#424242</color>
+    <color name="card_background_color">@color/dark_purple_50</color>
 
+    <!-- 三方平台配色 -->
     <color name="github">#EEEEEE</color>
-
-    <color name="selection_card_background">#20EDE7F6</color>
 </resources>

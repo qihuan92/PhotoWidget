@@ -43,7 +43,6 @@
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 app:isVisible="@{viewModel.uiState == UIState.SHOW_CONTENT}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

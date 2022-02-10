@@ -19,6 +19,9 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
+import java.text.DecimalFormat
+import kotlin.math.log10
+import kotlin.math.pow
 
 /**
  * FileExt
@@ -85,4 +88,18 @@ fun createFile(parent: File, nameWithoutExtension: String, extension: String? = 
         nameWithoutExtension
     }
     return File(parent, fileName)
+}
+
+fun File.calculateSizeRecursively(): Long {
+    return walkBottomUp().fold(0L, { acc, file -> acc + file.length() })
+}
+
+fun File.calculateFormatSizeRecursively(): String {
+    val size = calculateSizeRecursively()
+    if (size <= 0) {
+        return "0Bytes"
+    }
+    val unitArray = arrayOf("Bytes", "KB", "MB", "GB", "TB")
+    val digitGroups = (log10(size.toDouble()) / log10(1024f)).toInt()
+    return DecimalFormat("#,##0.#").format(size / 1024.0.pow(digitGroups.toDouble())) + unitArray[digitGroups]
 }

@@ -9,7 +9,12 @@ import android.os.Build
 import android.widget.ImageView
 import android.widget.RemoteViews
 import androidx.core.net.toFile
-import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.bean.LinkInfo
+import com.qihuan.photowidget.bean.WidgetBean
+import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.common.LinkType
+import com.qihuan.photowidget.common.PlayInterval
+import com.qihuan.photowidget.common.WidgetType
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.logE
@@ -51,7 +56,8 @@ suspend fun updateAppWidget(
     val leftPadding = widgetInfo.leftPadding.dp
     val rightPadding = widgetInfo.rightPadding.dp
     val scaleType = widgetInfo.photoScaleType.scaleType
-    val widgetRadius = widgetInfo.widgetRadius.dp
+    val widgetRadius = widgetInfo.widgetRadius
+    val widgetRadiusUnit = widgetInfo.widgetRadiusUnit
     val widgetTransparency = widgetInfo.widgetTransparency
 
     val remoteViews: RemoteViews
@@ -103,6 +109,7 @@ suspend fun updateAppWidget(
                     imageUri.toRoundedBitmap(
                         context,
                         widgetRadius,
+                        widgetRadiusUnit,
                         scaleType,
                         imageWidth,
                         imageHeight
@@ -155,6 +162,9 @@ fun createLinkIntent(context: Context, linkInfo: LinkInfo?, imageUri: Uri?): Int
             }
         } else {
             Intent()
+        }
+        LinkType.OPEN_FILE -> Intent(Intent.ACTION_VIEW, Uri.parse(linkInfo.link)).apply {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }
 }

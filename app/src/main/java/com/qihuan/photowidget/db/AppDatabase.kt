@@ -1,10 +1,7 @@
 package com.qihuan.photowidget.db
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.bean.WidgetInfo
@@ -21,8 +18,11 @@ import com.qihuan.photowidget.db.migration.*
         WidgetImage::class,
         LinkInfo::class,
     ],
-    version = 12,
+    version = 13,
     exportSchema = true,
+    autoMigrations = [
+        AutoMigration(from = 12, to = 13),
+    ]
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

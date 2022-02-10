@@ -16,8 +16,9 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.LinkType
+import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.common.LinkType
+import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.databinding.ActivityGifConfigureBinding
 import com.qihuan.photowidget.ktx.*
@@ -73,7 +74,19 @@ class GifConfigureActivity : AppCompatActivity() {
                 LinkType.OPEN_APP -> launchOpenAppActivity()
                 LinkType.OPEN_URL -> launchOpenLinkActivity()
                 LinkType.OPEN_ALBUM -> widgetOpenAlbum()
+                LinkType.OPEN_FILE -> launchOpenFile()
             }
+            dialog.dismiss()
+        }
+    }
+
+    private val radiusUnitDialog by lazy(LazyThreadSafetyMode.NONE) {
+        ItemSelectionDialog(
+            this,
+            getString(R.string.alert_title_radius_unit),
+            RadiusUnit.values().toList()
+        ) { dialog, item ->
+            viewModel.updateRadiusUnit(item)
             dialog.dismiss()
         }
     }
@@ -101,6 +114,18 @@ class GifConfigureActivity : AppCompatActivity() {
                     val linkInfo = getParcelableExtra<LinkInfo>("linkInfo")
                     viewModel.updateLinkInfo(linkInfo)
                 }
+            }
+        }
+
+    private val getOpenFileLink =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+            if (it != null) {
+                // keep permission
+                contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+                viewModel.updateLinkInfo(createFileLink(appWidgetId, it))
             }
         }
 
@@ -192,10 +217,10 @@ class GifConfigureActivity : AppCompatActivity() {
     }
 
     private fun saveWidget() {
-        if (viewModel.uiState.value == GifConfigureViewModel.UIState.LOADING) {
+        if (viewModel.uiState.value == BaseConfigViewModel.UIState.LOADING) {
             return
         }
-        if (viewModel.imageUri.value == null) {
+        if (viewModel.imageUriList.value.isNullOrEmpty()) {
             Snackbar.make(binding.root, R.string.warning_select_picture, Snackbar.LENGTH_SHORT)
                 .setAnchorView(binding.fabAddPhoto)
                 .show()
@@ -228,6 +253,10 @@ class GifConfigureActivity : AppCompatActivity() {
         deleteLinkDialog.show()
     }
 
+    fun showChangeRadiusUnitSelector() {
+        radiusUnitDialog.show()
+    }
+
     private fun launchOpenAppActivity() {
         appSelectResult.launch(
             Intent(this, InstalledAppActivity::class.java).apply {
@@ -247,13 +276,10 @@ class GifConfigureActivity : AppCompatActivity() {
     }
 
     private fun widgetOpenAlbum() {
-        val linkInfo = LinkInfo(
-            appWidgetId,
-            LinkType.OPEN_ALBUM,
-            getString(R.string.widget_link_open_album),
-            getString(R.string.widget_link_open_album_description),
-            ""
-        )
-        viewModel.updateLinkInfo(linkInfo)
+        viewModel.updateLinkInfo(createAlbumLink(appWidgetId))
+    }
+
+    private fun launchOpenFile() {
+        getOpenFileLink.launch(arrayOf("*/*"))
     }
 }

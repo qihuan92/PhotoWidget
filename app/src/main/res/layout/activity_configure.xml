@@ -5,7 +5,7 @@
 
         <import type="android.view.View" />
 
-        <import type="com.qihuan.photowidget.config.ConfigureViewModel.UIState" />
+        <import type="com.qihuan.photowidget.config.BaseConfigViewModel.UIState" />
 
         <variable
             name="viewModel"
@@ -77,9 +77,10 @@
                 android:layout_height="match_parent"
                 android:alpha="@{1f - viewModel.widgetTransparency / 100f}"
                 app:cardBackgroundColor="@android:color/transparent"
-                app:cardCornerRadius="@{viewModel.widgetRadius * 2f}"
+                app:cardCornerRadius="@{viewModel.widgetRadius}"
+                app:cardCornerRadiusUnit="@{viewModel.widgetRadiusUnit}"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/colorDivider"
+                app:strokeColor="@color/divider_color"
                 app:strokeWidth="@{viewModel.imageUriList.empty ? 2f: 0f}">
 
                 <include
@@ -95,7 +96,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:clipToPadding="false"
-            android:elevation="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -126,7 +126,7 @@
                     android:orientation="horizontal">
 
                     <com.qihuan.photowidget.view.TextSelectionView
-                        style="@style/CardView.TextSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -142,7 +142,7 @@
                         app:isVisible="@{viewModel.imageUriList.size() > 1}" />
 
                     <com.qihuan.photowidget.view.TextSelectionView
-                        style="@style/CardView.TextSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -154,7 +154,7 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/layout_open_url"
-                    style="@style/CardView.WidgetLink"
+                    style="@style/Widget.PhotoWidget.CardView.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -233,7 +233,7 @@
                     android:orientation="horizontal">
 
                     <com.qihuan.photowidget.view.SliderSelectionView
-                        style="@style/CardView.SliderSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -249,7 +249,7 @@
                         android:layout_height="wrap_content" />
 
                     <com.qihuan.photowidget.view.SliderSelectionView
-                        style="@style/CardView.SliderSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -268,7 +268,7 @@
                     android:orientation="horizontal">
 
                     <com.qihuan.photowidget.view.SliderSelectionView
-                        style="@style/CardView.SliderSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -284,7 +284,7 @@
                         android:layout_height="wrap_content" />
 
                     <com.qihuan.photowidget.view.SliderSelectionView
-                        style="@style/CardView.SliderSelection"
+                        style="@style/Widget.PhotoWidget.CardView.Small"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -297,19 +297,20 @@
                 </LinearLayout>
 
                 <com.qihuan.photowidget.view.SliderSelectionView
-                    style="@style/CardView.SliderSelection"
+                    style="@style/Widget.PhotoWidget.CardView.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:onClick="@{() -> activity.showChangeRadiusUnitSelector()}"
                     app:sliderSelectionIcon="@drawable/ic_round_rounded_corner_24"
                     app:sliderSelectionTitle="@string/widget_radius"
                     app:sliderSelectionValue="@={viewModel.widgetRadius}"
                     app:sliderSelectionValueFrom="0"
-                    app:sliderSelectionValueTo="50"
-                    app:sliderSelectionValueUnit="dp" />
+                    app:sliderSelectionValueTo="@{viewModel.widgetRadiusUnit.maxValue}"
+                    app:sliderSelectionValueUnit="@{viewModel.widgetRadiusUnit.unitName}" />
 
                 <com.qihuan.photowidget.view.SliderSelectionView
-                    style="@style/CardView.SliderSelection"
+                    style="@style/Widget.PhotoWidget.CardView.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
