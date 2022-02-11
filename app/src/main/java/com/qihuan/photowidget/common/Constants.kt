@@ -282,3 +282,13 @@ enum class AutoRefreshInterval(
         }
     }
 }
+
+/**
+ * 相框类型
+ *
+ * @author qi
+ * @since 2022/02/11
+ */
+enum class WidgetFrameType {
+    THEME_COLOR, COLOR, IMAGE
+}

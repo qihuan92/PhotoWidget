@@ -226,6 +226,104 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/layout_photo_frame"
+                    style="@style/Widget.PhotoWidget.CardView.Small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:onClick="@{() -> activity.showPhotoFrameSelector()}">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/iv_photo_frame"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:contentDescription="@string/preview_widget_photo_frame"
+                            android:foreground="@drawable/fg_photo_frame_preview"
+                            android:scaleType="centerCrop"
+                            app:imagePath="@{viewModel.widgetFrame.frameUri}"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:shapeAppearanceOverlay="@style/ShapeRound.Item" />
+
+                        <TextView
+                            android:id="@+id/tv_photo_frame_title"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:drawablePadding="5dp"
+                            android:text="@{viewModel.widgetFrame.name}"
+                            android:textAppearance="?textAppearanceBody1"
+                            app:layout_constraintLeft_toRightOf="@id/iv_photo_frame"
+                            app:layout_constraintRight_toLeftOf="@id/btn_delete_photo_frame"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="木纹1" />
+
+                        <TextView
+                            android:id="@+id/tv_photo_frame_description"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="@{viewModel.widgetFrame.description}"
+                            android:textAppearance="?textAppearanceCaption"
+                            app:layout_constraintLeft_toLeftOf="@id/tv_photo_frame_title"
+                            app:layout_constraintRight_toLeftOf="@id/btn_delete_photo_frame"
+                            app:layout_constraintTop_toBottomOf="@id/tv_photo_frame_title"
+                            tools:text="木纹1 内置" />
+
+                        <ImageView
+                            android:id="@+id/btn_delete_photo_frame"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/delete_widget_photo_frame"
+                            android:onClick="@{() -> activity.showDeletePhotoFrameAlert()}"
+                            android:src="@drawable/ic_round_delete_24"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.google.android.material.slider.Slider
+                            android:id="@+id/slider_photo_frame_width"
+                            style="@style/Widget.PhotoWidget.Slider"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:stepSize="1"
+                            android:value="@{viewModel.widgetFrame == null ? 1f : viewModel.widgetFrame.width}"
+                            android:valueFrom="1"
+                            android:valueTo="20"
+                            app:layout_constraintLeft_toLeftOf="@id/tv_photo_frame_description"
+                            app:layout_constraintRight_toLeftOf="@id/btn_delete_photo_frame"
+                            app:layout_constraintTop_toBottomOf="@id/tv_photo_frame_description" />
+
+                        <androidx.constraintlayout.widget.Group
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:constraint_referenced_ids="iv_photo_frame,tv_photo_frame_title,tv_photo_frame_description,btn_delete_photo_frame,slider_photo_frame_width"
+                            app:isVisible="@{viewModel.widgetFrame != null}" />
+
+                        <TextView
+                            android:id="@+id/tv_add_photo_frame"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="5dp"
+                            android:text="@string/add_widget_photo_frame"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textStyle="bold"
+                            app:drawableLeftCompat="@drawable/ic_baseline_crop_original_24"
+                            app:isVisible="@{viewModel.widgetFrame == null}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -394,6 +394,14 @@ class ConfigureActivity : AppCompatActivity() {
         deleteLinkDialog.show()
     }
 
+    fun showPhotoFrameSelector() {
+        // todo 打开相框选择页面
+    }
+
+    fun showDeletePhotoFrameAlert() {
+        // todo 删除相框
+    }
+
     private fun showDeletePhotoAlert(position: Int) {
         currentDeletePhotoIndex = position
         deletePhotoDialog.show()

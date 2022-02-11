@@ -8,10 +8,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.WidgetBean
-import com.qihuan.photowidget.bean.WidgetImage
-import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.PlayInterval
 import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
@@ -49,6 +46,7 @@ abstract class BaseConfigViewModel(
     val widgetRadius by lazy { MutableLiveData(0f) }
     val widgetRadiusUnit by lazy { MutableLiveData(RadiusUnit.ANGLE) }
     val linkInfo by lazy { MutableLiveData<LinkInfo>() }
+    val widgetFrame by lazy { MutableLiveData<WidgetFrame>() }
     val uiState by lazy { MutableLiveData(UIState.LOADING) }
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
     val isEditState by lazy { MutableLiveData(false) }
@@ -197,7 +195,7 @@ abstract class BaseConfigViewModel(
             )
         }
 
-        val widgetBean = WidgetBean(widgetInfo, imageList, linkInfo.value)
+        val widgetBean = WidgetBean(widgetInfo, imageList, linkInfo.value, widgetFrame.value)
         widgetDao.save(widgetBean)
         updateAppWidget(context, AppWidgetManager.getInstance(context), widgetBean)
         return true

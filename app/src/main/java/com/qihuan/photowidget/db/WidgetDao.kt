@@ -2,10 +2,7 @@ package com.qihuan.photowidget.db
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.WidgetBean
-import com.qihuan.photowidget.bean.WidgetImage
-import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.bean.*
 
 /**
  * WidgetDao
@@ -57,6 +54,12 @@ abstract class WidgetDao {
     @Query("delete from link_info where widgetId = :id")
     abstract suspend fun deleteLinkInfo(id: Int)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertWidgetFrame(record: WidgetFrame)
+
+    @Query("delete from widget_frame where widgetId = :widgetId")
+    abstract suspend fun deleteWidgetFrameByWidgetId(widgetId: Int)
+
     @Transaction
     open suspend fun save(widgetBean: WidgetBean) {
         insertInfo(widgetBean.widgetInfo)
@@ -68,6 +71,13 @@ abstract class WidgetDao {
             insertLinkInfo(linkInfo)
         } else {
             deleteLinkInfo(widgetBean.widgetInfo.widgetId)
+        }
+
+        val widgetFrame = widgetBean.frame
+        if (widgetFrame != null) {
+            insertWidgetFrame(widgetFrame)
+        } else {
+            deleteWidgetFrameByWidgetId(widgetBean.widgetInfo.widgetId)
         }
     }
 
