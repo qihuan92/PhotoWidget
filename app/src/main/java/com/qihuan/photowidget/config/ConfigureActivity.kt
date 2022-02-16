@@ -157,7 +157,11 @@ class ConfigureActivity : AppCompatActivity() {
                     selectWidgetFrameForResult.launch("image/*")
                 }
                 else -> {
-                    viewModel.setWidgetFrame(it.type, uri = it.frameUri)
+                    lifecycleScope.launch {
+                        processImageDialog.show()
+                        viewModel.setWidgetFrame(it.type, uri = it.frameUri)
+                        processImageDialog.dismiss()
+                    }
                 }
             }
         }
@@ -216,7 +220,11 @@ class ConfigureActivity : AppCompatActivity() {
     private val selectWidgetFrameForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
             if (it != null) {
-                viewModel.setWidgetFrame(WidgetFrameType.IMAGE, uri = it)
+                lifecycleScope.launch {
+                    processImageDialog.show()
+                    viewModel.setWidgetFrame(WidgetFrameType.IMAGE, uri = it)
+                    processImageDialog.dismiss()
+                }
             }
         }
 
@@ -463,10 +471,12 @@ class ConfigureActivity : AppCompatActivity() {
             .setPositiveButton(R.string.sure, object : ColorEnvelopeListener {
                 override fun onColorSelected(envelope: ColorEnvelope?, fromUser: Boolean) {
                     if (envelope != null) {
-                        viewModel.setWidgetFrame(
-                            WidgetFrameType.COLOR,
-                            color = "#${envelope.hexCode}"
-                        )
+                        lifecycleScope.launch {
+                            viewModel.setWidgetFrame(
+                                WidgetFrameType.COLOR,
+                                color = "#${envelope.hexCode}"
+                            )
+                        }
                     }
                 }
             })

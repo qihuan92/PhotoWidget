@@ -16,7 +16,7 @@ class Converters {
     }
 
     @TypeConverter
-    fun convertUri(value: Uri): String {
+    fun convertUri(value: Uri?): String {
         return value.toString()
     }
 

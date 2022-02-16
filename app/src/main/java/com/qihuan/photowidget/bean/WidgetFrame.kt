@@ -12,8 +12,7 @@ import com.qihuan.photowidget.common.WidgetFrameType
  */
 @Entity(tableName = "widget_frame")
 data class WidgetFrame(
-    @PrimaryKey(autoGenerate = true)
-    val frameId: Int? = null,
+    @PrimaryKey
     val widgetId: Int,
     val frameUri: Uri? = null,
     val frameColor: String? = null,

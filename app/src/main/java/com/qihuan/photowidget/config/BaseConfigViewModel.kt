@@ -9,12 +9,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.bean.*
-import com.qihuan.photowidget.common.PlayInterval
-import com.qihuan.photowidget.common.RadiusUnit
-import com.qihuan.photowidget.common.TEMP_DIR_NAME
-import com.qihuan.photowidget.common.WidgetFrameType
+import com.qihuan.photowidget.common.*
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.frame.WidgetFrameRepository
+import com.qihuan.photowidget.ktx.copyAssetsFile
+import com.qihuan.photowidget.ktx.copyFile
+import com.qihuan.photowidget.ktx.getExtension
 import com.qihuan.photowidget.settings.SettingsRepository
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
@@ -88,7 +88,19 @@ abstract class BaseConfigViewModel(
                 widgetFrameType.value = widgetFrameFromDb.type
                 widgetFrameWidth.value = widgetFrameFromDb.width
                 widgetFrameColor.value = widgetFrameFromDb.frameColor
-                widgetFrameUri.value = widgetFrameFromDb.frameUri
+                if (widgetFrameFromDb.type == WidgetFrameType.BUILD_IN || widgetFrameFromDb.type == WidgetFrameType.IMAGE) {
+                    // 复制到临时文件
+                    val frameFile = widgetFrameFromDb.frameUri?.toFile()
+                    if (frameFile != null && frameFile.exists()) {
+                        val tempFrameFolder =
+                            File(context.cacheDir, TEMP_DIR_NAME + File.separator + FRAME_DIR_NAME)
+                        val tempFrameFile = File(tempFrameFolder, frameFile.name)
+                        withContext(Dispatchers.IO) {
+                            frameFile.copyTo(tempFrameFile, overwrite = true)
+                        }
+                        widgetFrameUri.value = tempFrameFile.toUri()
+                    }
+                }
             }
 
             widgetFrameResourceList.value = widgetFrameRepository.getWidgetFrameResourceList()
@@ -197,7 +209,7 @@ abstract class BaseConfigViewModel(
         widgetRadiusUnit.value = item
     }
 
-    fun setWidgetFrame(
+    suspend fun setWidgetFrame(
         type: WidgetFrameType,
         color: String? = null,
         uri: Uri? = null
@@ -209,9 +221,36 @@ abstract class BaseConfigViewModel(
                 widgetFrameWidth.value = 10f
             }
         }
+
+        val tempFrameFolder =
+            File(context.cacheDir, TEMP_DIR_NAME + File.separator + FRAME_DIR_NAME)
+        if (tempFrameFolder.exists()) {
+            tempFrameFolder.deleteRecursively()
+        }
+        tempFrameFolder.mkdirs()
+
+        if (type == WidgetFrameType.BUILD_IN) {
+            val assetName = uri?.path?.substringAfterLast("android_asset/")
+            if (assetName != null) {
+                val fileName = assetName.substringAfterLast("frame/")
+                val file = File(tempFrameFolder, fileName)
+                context.copyAssetsFile(assetName, file)
+                widgetFrameUri.value = file.toUri()
+            }
+        } else if (type == WidgetFrameType.IMAGE) {
+            if (uri != null) {
+                val fileExt = uri.getExtension(context)
+                val fileName = if (fileExt != null) "custom_frame.${fileExt}" else "custom_frame"
+                val file = File(tempFrameFolder, fileName)
+                context.copyFile(uri, file)
+                widgetFrameUri.value = file.toUri()
+            }
+        } else {
+            widgetFrameUri.value = uri
+        }
+
         widgetFrameType.value = type
         widgetFrameColor.value = color
-        widgetFrameUri.value = uri
     }
 
     suspend fun saveWidget(): Boolean {
@@ -233,24 +272,31 @@ abstract class BaseConfigViewModel(
             )
         }
 
+        var frameFileUri: Uri? = null
         val widgetFrame = if (widgetFrameType.value == WidgetFrameType.NONE) {
             null
         } else {
-            // todo 保存相框图片到对应微件目录中
-            when (widgetFrameType.value) {
-                WidgetFrameType.IMAGE -> {
-                    // todo 保存选择的图片
-                }
-                WidgetFrameType.BUILD_IN -> {
-                    // todo 保存资产图片
-                }
-                else -> {
+            // 相框文件目录
+            val frameFolder =
+                File(context.filesDir, "widget_${appWidgetId}" + File.separator + FRAME_DIR_NAME)
+            // 删除原来相框文件
+            if (frameFolder.exists()) {
+                withContext(Dispatchers.IO) { frameFolder.deleteRecursively() }
+            }
 
+            // 保存相框文件
+            if (widgetFrameType.value == WidgetFrameType.BUILD_IN || widgetFrameType.value == WidgetFrameType.IMAGE) {
+                val tempFrameFile = widgetFrameUri.value?.toFile()
+                val frameFile = tempFrameFile?.let { File(frameFolder, it.name) }
+                if (tempFrameFile != null && frameFile != null) {
+                    tempFrameFile.copyTo(frameFile, overwrite = true)
+                    frameFileUri = frameFile.toUri()
                 }
             }
+
             WidgetFrame(
                 widgetId = appWidgetId,
-                frameUri = widgetFrameUri.value,
+                frameUri = frameFileUri,
                 frameColor = widgetFrameColor.value,
                 width = widgetFrameWidth.value ?: 0f,
                 type = widgetFrameType.value ?: WidgetFrameType.NONE
