@@ -17,7 +17,6 @@
 package com.qihuan.photowidget.view;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
@@ -34,7 +33,6 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.qihuan.photowidget.R;
 import com.qihuan.photowidget.ktx.UIExtKt;
-import com.skydoves.colorpickerview.ColorEnvelope;
 import com.skydoves.colorpickerview.ColorPickerView;
 import com.skydoves.colorpickerview.databinding.DialogColorpickerColorpickerviewSkydovesBinding;
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
@@ -84,13 +82,9 @@ public class MaterialColorPickerDialog extends AlertDialog {
             this.colorPickerView = dialogBinding.colorPickerView;
             this.colorPickerView.attachAlphaSlider(dialogBinding.alphaSlideBar);
             this.colorPickerView.attachBrightnessSlider(dialogBinding.brightnessSlideBar);
-            this.colorPickerView.setColorListener(
-                    new ColorEnvelopeListener() {
-                        @Override
-                        public void onColorSelected(ColorEnvelope envelope, boolean fromUser) {
-                            // no stubs
-                        }
-                    });
+            this.colorPickerView.setColorListener((ColorEnvelopeListener) (envelope, fromUser) -> {
+                // no stubs
+            });
 
             int colorPickerViewSize = UIExtKt.getDp(250f);
             int colorPickerMarginVertical = UIExtKt.getDp(10f);
@@ -200,12 +194,14 @@ public class MaterialColorPickerDialog extends AlertDialog {
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setNegativeButton(int textId, OnClickListener listener) {
             super.setNegativeButton(textId, listener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setNegativeButton(CharSequence text, OnClickListener listener) {
             super.setNegativeButton(text, listener);
@@ -213,19 +209,16 @@ public class MaterialColorPickerDialog extends AlertDialog {
         }
 
         private OnClickListener getOnClickListener(final ColorPickerViewListener colorListener) {
-            return new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    if (colorListener instanceof ColorListener) {
-                        ((ColorListener) colorListener).onColorSelected(getColorPickerView().getColor(), true);
-                    } else if (colorListener instanceof ColorEnvelopeListener) {
-                        ((ColorEnvelopeListener) colorListener)
-                                .onColorSelected(getColorPickerView().getColorEnvelope(), true);
-                    }
-                    if (getColorPickerView() != null) {
-                        ColorPickerPreferenceManager.getInstance(getContext())
-                                .saveColorPickerData(getColorPickerView());
-                    }
+            return (dialogInterface, i) -> {
+                if (colorListener instanceof ColorListener) {
+                    ((ColorListener) colorListener).onColorSelected(getColorPickerView().getColor(), true);
+                } else if (colorListener instanceof ColorEnvelopeListener) {
+                    ((ColorEnvelopeListener) colorListener)
+                            .onColorSelected(getColorPickerView().getColorEnvelope(), true);
+                }
+                if (getColorPickerView() != null) {
+                    ColorPickerPreferenceManager.getInstance(getContext())
+                            .saveColorPickerData(getColorPickerView());
                 }
             };
         }
@@ -272,126 +265,147 @@ public class MaterialColorPickerDialog extends AlertDialog {
             return super.create();
         }
 
+        @NonNull
         @Override
         public Builder setTitle(int titleId) {
             super.setTitle(titleId);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setTitle(CharSequence title) {
             super.setTitle(title);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setCustomTitle(View customTitleView) {
             super.setCustomTitle(customTitleView);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setMessage(int messageId) {
             super.setMessage(getContext().getString(messageId));
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setMessage(CharSequence message) {
             super.setMessage(message);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setIcon(int iconId) {
             super.setIcon(iconId);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setIcon(Drawable icon) {
             super.setIcon(icon);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setIconAttribute(int attrId) {
             super.setIconAttribute(attrId);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setCancelable(boolean cancelable) {
             super.setCancelable(cancelable);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setOnCancelListener(OnCancelListener onCancelListener) {
             super.setOnCancelListener(onCancelListener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setOnDismissListener(OnDismissListener onDismissListener) {
             super.setOnDismissListener(onDismissListener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setOnKeyListener(OnKeyListener onKeyListener) {
             super.setOnKeyListener(onKeyListener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setPositiveButton(int textId, OnClickListener listener) {
             super.setPositiveButton(textId, listener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setPositiveButton(CharSequence text, OnClickListener listener) {
             super.setPositiveButton(text, listener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setNeutralButton(int textId, OnClickListener listener) {
             super.setNeutralButton(textId, listener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setNeutralButton(CharSequence text, OnClickListener listener) {
             super.setNeutralButton(text, listener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setItems(int itemsId, OnClickListener listener) {
             super.setItems(itemsId, listener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setItems(CharSequence[] items, OnClickListener listener) {
             super.setItems(items, listener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setAdapter(ListAdapter adapter, OnClickListener listener) {
             super.setAdapter(adapter, listener);
             return this;
         }
 
+        @NonNull
         @Override
-        public Builder setCursor(Cursor cursor, OnClickListener listener, String labelColumn) {
+        public Builder setCursor(Cursor cursor, OnClickListener listener, @NonNull String labelColumn) {
             super.setCursor(cursor, listener, labelColumn);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setMultiChoiceItems(
                 int itemsId, boolean[] checkedItems, OnMultiChoiceClickListener listener) {
@@ -399,6 +413,7 @@ public class MaterialColorPickerDialog extends AlertDialog {
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setMultiChoiceItems(
                 CharSequence[] items, boolean[] checkedItems, OnMultiChoiceClickListener listener) {
@@ -406,29 +421,33 @@ public class MaterialColorPickerDialog extends AlertDialog {
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setMultiChoiceItems(
                 Cursor cursor,
-                String isCheckedColumn,
-                String labelColumn,
+                @NonNull String isCheckedColumn,
+                @NonNull String labelColumn,
                 OnMultiChoiceClickListener listener) {
             super.setMultiChoiceItems(cursor, isCheckedColumn, labelColumn, listener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setSingleChoiceItems(int itemsId, int checkedItem, OnClickListener listener) {
             super.setSingleChoiceItems(itemsId, checkedItem, listener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setSingleChoiceItems(
-                Cursor cursor, int checkedItem, String labelColumn, OnClickListener listener) {
+                Cursor cursor, int checkedItem, @NonNull String labelColumn, OnClickListener listener) {
             super.setSingleChoiceItems(cursor, checkedItem, labelColumn, listener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setSingleChoiceItems(
                 CharSequence[] items, int checkedItem, OnClickListener listener) {
@@ -436,6 +455,7 @@ public class MaterialColorPickerDialog extends AlertDialog {
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setSingleChoiceItems(
                 ListAdapter adapter, int checkedItem, OnClickListener listener) {
@@ -443,18 +463,21 @@ public class MaterialColorPickerDialog extends AlertDialog {
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setOnItemSelectedListener(AdapterView.OnItemSelectedListener listener) {
             super.setOnItemSelectedListener(listener);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setView(int layoutResId) {
             super.setView(layoutResId);
             return this;
         }
 
+        @NonNull
         @Override
         public Builder setView(View view) {
             super.setView(view);
