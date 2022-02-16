@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
+import com.qihuan.photowidget.adapter.WidgetFrameResourceAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.createAlbumLink
@@ -33,6 +35,9 @@ import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.link.InstalledAppActivity
 import com.qihuan.photowidget.link.UrlInputActivity
 import com.qihuan.photowidget.view.ItemSelectionDialog
+import com.qihuan.photowidget.view.MaterialColorPickerDialog
+import com.skydoves.colorpickerview.ColorEnvelope
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -142,6 +147,21 @@ class ConfigureActivity : AppCompatActivity() {
         previewPhotoAddAdapter
     }
     private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
+    private val widgetFrameResourceAdapter by lazy {
+        WidgetFrameResourceAdapter {
+            when (it.type) {
+                WidgetFrameType.COLOR -> {
+                    showWidgetFrameColorSelector()
+                }
+                WidgetFrameType.IMAGE -> {
+                    selectWidgetFrameForResult.launch("image/*")
+                }
+                else -> {
+                    viewModel.setWidgetFrame(it.type, uri = it.frameUri)
+                }
+            }
+        }
+    }
 
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetMultipleContents()) {
@@ -193,6 +213,13 @@ class ConfigureActivity : AppCompatActivity() {
             }
         }
 
+    private val selectWidgetFrameForResult =
+        registerForActivityResult(ActivityResultContracts.GetContent()) {
+            if (it != null) {
+                viewModel.setWidgetFrame(WidgetFrameType.IMAGE, uri = it)
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -230,6 +257,7 @@ class ConfigureActivity : AppCompatActivity() {
 
         binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
         binding.rvPreviewList.adapter = ConcatAdapter(previewAddAdapter, previewAdapter)
+        binding.rvPreviewWidgetFrame?.adapter = widgetFrameResourceAdapter
         previewAdapter.setOnItemDeleteListener { position, _ ->
             showDeletePhotoAlert(position)
         }
@@ -245,6 +273,16 @@ class ConfigureActivity : AppCompatActivity() {
 
             if (it.size <= 1) {
                 viewModel.updateAutoPlayInterval(PlayInterval.NONE)
+            }
+        }
+
+        viewModel.widgetFrameResourceList.observe(this) {
+            widgetFrameResourceAdapter.submitList(it)
+        }
+
+        binding.sliderWidgetFrameWidth?.addOnChangeListener { slider, _, fromUser ->
+            if (fromUser) {
+                slider.performHapticFeedback()
             }
         }
 
@@ -271,6 +309,28 @@ class ConfigureActivity : AppCompatActivity() {
         }
         binding.layoutPhotoWidget.photoWidgetInfo.areaRight.setOnClickListener {
             binding.layoutPhotoWidget.vfPicture.showNext()
+        }
+
+        viewModel.widgetFrameType.observe(this) {
+            when (it) {
+                WidgetFrameType.NONE -> {
+                    binding.containerPhotoWidgetPreview.setBackgroundResource(android.R.color.transparent)
+                }
+                else -> {
+                }
+            }
+        }
+
+        viewModel.widgetFrameColor.observe(this) {
+            if (!it.isNullOrEmpty()) {
+                binding.containerPhotoWidgetPreview.setBackgroundColor(Color.parseColor(it))
+            }
+        }
+
+        viewModel.widgetFrameUri.observe(this) {
+            if (it != null) {
+                binding.containerPhotoWidgetPreview.loadToBackground(it)
+            }
         }
     }
 
@@ -394,12 +454,23 @@ class ConfigureActivity : AppCompatActivity() {
         deleteLinkDialog.show()
     }
 
-    fun showPhotoFrameSelector() {
-        // todo 打开相框选择页面
-    }
-
-    fun showDeletePhotoFrameAlert() {
-        // todo 删除相框
+    private fun showWidgetFrameColorSelector() {
+        MaterialColorPickerDialog.Builder(this)
+            .setTitle(R.string.widget_frame_color_dialog_title)
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton(R.string.sure, object : ColorEnvelopeListener {
+                override fun onColorSelected(envelope: ColorEnvelope?, fromUser: Boolean) {
+                    if (envelope != null) {
+                        viewModel.setWidgetFrame(
+                            WidgetFrameType.COLOR,
+                            color = "#${envelope.hexCode}"
+                        )
+                    }
+                }
+            })
+            .show()
     }
 
     private fun showDeletePhotoAlert(position: Int) {

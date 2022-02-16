@@ -117,7 +117,9 @@
     <string name="default_scale_type">默认相片位置</string>
     <string name="privacy_policy">隐私政策</string>
     <string name="widget_background">微件背景</string>
-    <string name="add_widget_photo_frame">添加微件相框</string>
-    <string name="delete_widget_photo_frame">删除微件相框</string>
-    <string name="preview_widget_photo_frame">相框预览</string>
+    <string name="add_widget_frame">添加微件相框</string>
+    <string name="delete_widget_frame">删除微件相框</string>
+    <string name="preview_widget_frame">相框预览</string>
+    <string name="widget_frame">相框</string>
+    <string name="widget_frame_color_dialog_title">请选择颜色</string>
 </resources>

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 14,
-    "identityHash": "eeadd2c349c56bb0e983ecf5b251aee8",
+    "identityHash": "073d1b8dc5cdebd124ec93c5dcbd9f12",
     "entities": [
       {
         "tableName": "widget_info",
@@ -187,7 +187,7 @@
       },
       {
         "tableName": "widget_frame",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`frameId` INTEGER PRIMARY KEY AUTOINCREMENT, `widgetId` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `frameUri` TEXT, `frameColor` TEXT, `width` REAL NOT NULL, `type` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`frameId` INTEGER PRIMARY KEY AUTOINCREMENT, `widgetId` INTEGER NOT NULL, `frameUri` TEXT, `frameColor` TEXT, `width` REAL NOT NULL, `type` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "frameId",
@@ -199,18 +199,6 @@
             "fieldPath": "widgetId",
             "columnName": "widgetId",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "description",
-            "columnName": "description",
-            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -307,7 +295,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'eeadd2c349c56bb0e983ecf5b251aee8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '073d1b8dc5cdebd124ec93c5dcbd9f12')"
     ]
   }
 }

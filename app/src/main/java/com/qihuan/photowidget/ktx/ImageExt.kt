@@ -3,7 +3,9 @@ package com.qihuan.photowidget.ktx
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.gifdecoder.StandardGifDecoder
@@ -11,6 +13,8 @@ import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.qihuan.photowidget.App
 import com.qihuan.photowidget.common.CompressFormatCompat
 import com.qihuan.photowidget.common.RadiusUnit
@@ -38,6 +42,20 @@ fun ImageView.load(uri: Uri) {
     Glide.with(context)
         .load(uri)
         .into(this)
+}
+
+fun View.loadToBackground(uri: Uri) {
+    Glide.with(context)
+        .load(uri)
+        .into(object : CustomTarget<Drawable>() {
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                background = resource
+            }
+
+            override fun onLoadCleared(placeholder: Drawable?) {
+                background = placeholder
+            }
+        })
 }
 
 fun Uri.toRoundedBitmap(

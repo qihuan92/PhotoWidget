@@ -290,5 +290,5 @@ enum class AutoRefreshInterval(
  * @since 2022/02/11
  */
 enum class WidgetFrameType {
-    THEME_COLOR, COLOR, IMAGE
+    NONE, THEME_COLOR, COLOR, IMAGE, BUILD_IN
 }

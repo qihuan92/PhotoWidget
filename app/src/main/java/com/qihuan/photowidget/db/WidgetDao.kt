@@ -54,6 +54,9 @@ abstract class WidgetDao {
     @Query("delete from link_info where widgetId = :id")
     abstract suspend fun deleteLinkInfo(id: Int)
 
+    @Query("select * from widget_frame where widgetId = :widgetId")
+    abstract suspend fun selectWidgetFrameByWidgetId(widgetId: Int): WidgetFrame?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertWidgetFrame(record: WidgetFrame)
 

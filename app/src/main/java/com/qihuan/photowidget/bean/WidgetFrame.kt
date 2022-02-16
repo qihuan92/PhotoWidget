@@ -15,8 +15,6 @@ data class WidgetFrame(
     @PrimaryKey(autoGenerate = true)
     val frameId: Int? = null,
     val widgetId: Int,
-    val name: String,
-    val description: String,
     val frameUri: Uri? = null,
     val frameColor: String? = null,
     val width: Float,
