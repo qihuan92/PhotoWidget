@@ -53,10 +53,7 @@ class ConfigureActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityConfigureBinding::inflate)
     private val viewModel by viewModels<ConfigureViewModel> {
-        ConfigureViewModelFactory(
-            application,
-            appWidgetId
-        )
+        ConfigureViewModelFactory(application, appWidgetId)
     }
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID

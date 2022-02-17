@@ -8,8 +8,8 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_frame"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:contentDescription="@string/preview_widget_frame"
         android:foreground="@drawable/fg_photo_frame_preview"
         app:layout_constraintBottom_toBottomOf="parent"

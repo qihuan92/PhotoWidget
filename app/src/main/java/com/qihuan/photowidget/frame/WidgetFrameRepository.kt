@@ -19,8 +19,8 @@ class WidgetFrameRepository(private val context: Application) {
         val list = mutableListOf<WidgetFrameResource>()
         withContext(Dispatchers.IO) {
             list.add(WidgetFrameResource(1, "无", "无相框", WidgetFrameType.NONE, null, null))
-            list.add(WidgetFrameResource(2, "选择颜色", "自定义颜色", WidgetFrameType.COLOR, null, null))
-            list.add(WidgetFrameResource(3, "选择图片", "自定义图片", WidgetFrameType.IMAGE, null, null))
+            list.add(WidgetFrameResource(2, "选择图片", "自定义图片", WidgetFrameType.IMAGE, null, null))
+            list.add(WidgetFrameResource(3, "选择颜色", "自定义颜色", WidgetFrameType.COLOR, null, null))
 
             val headSize = list.size
             val frameAssetList = context.assets.list("frame")

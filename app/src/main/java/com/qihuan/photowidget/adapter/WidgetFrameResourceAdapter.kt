@@ -59,11 +59,11 @@ class WidgetFrameResourceAdapter(private val onItemClickListener: ((WidgetFrameR
             binding.ivIcon.isVisible = item.type != WidgetFrameType.BUILD_IN
             when (item.type) {
                 WidgetFrameType.NONE -> {
-                    binding.ivFrame.setImageResource(R.color.default_color_primary)
+                    binding.ivFrame.setImageResource(R.color.divider_color)
                     binding.ivIcon.setImageResource(R.drawable.ic_round_block_24)
                 }
                 WidgetFrameType.IMAGE -> {
-                    binding.ivFrame.setImageResource(R.color.default_color_primary)
+                    binding.ivFrame.setImageResource(R.color.default_color_outline)
                     binding.ivIcon.setImageResource(R.drawable.ic_outline_image_24)
                 }
                 WidgetFrameType.COLOR -> {
