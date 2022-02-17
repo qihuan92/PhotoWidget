@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
+import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -162,9 +163,7 @@ class ConfigureActivity : AppCompatActivity() {
                 }
                 else -> {
                     lifecycleScope.launch {
-                        processImageDialog.show()
                         viewModel.setWidgetFrame(it.type, uri = it.frameUri)
-                        processImageDialog.dismiss()
                     }
                 }
             }
@@ -225,9 +224,7 @@ class ConfigureActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.GetContent()) {
             if (it != null) {
                 lifecycleScope.launch {
-                    processImageDialog.show()
                     viewModel.setWidgetFrame(WidgetFrameType.IMAGE, uri = it)
-                    processImageDialog.dismiss()
                 }
             }
         }
@@ -362,6 +359,21 @@ class ConfigureActivity : AppCompatActivity() {
                 binding.containerPhotoWidgetPreview.loadToBackground(it)
             }
         }
+
+        viewModel.isFrameLoading.observe(this) {
+            if (it) {
+                binding.containerPhotoWidgetPreview.startScaleAnimation(1.1f, 1f)
+            }
+        }
+    }
+
+    private fun View.startScaleAnimation(startValue: Float, finalValue: Float) {
+        SpringAnimation(this, SpringAnimation.SCALE_X, finalValue)
+            .setStartValue(startValue)
+            .start()
+        SpringAnimation(this, SpringAnimation.SCALE_Y, finalValue)
+            .setStartValue(startValue)
+            .start()
     }
 
     private fun bindDragHelper() {
@@ -444,6 +456,9 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private fun saveWidget() {
+        if (viewModel.isFrameLoading.value == true) {
+            return
+        }
         if (viewModel.uiState.value == BaseConfigViewModel.UIState.LOADING) {
             return
         }

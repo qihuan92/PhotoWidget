@@ -62,6 +62,8 @@ abstract class BaseConfigViewModel(
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
     val isEditState by lazy { MutableLiveData(false) }
 
+    val isFrameLoading = MutableLiveData(false)
+
     init {
         loadWidget()
     }
@@ -214,6 +216,11 @@ abstract class BaseConfigViewModel(
         color: String? = null,
         uri: Uri? = null
     ) {
+        if (isFrameLoading.value == true) {
+            return
+        }
+
+        isFrameLoading.value = true
         if (type == WidgetFrameType.NONE) {
             widgetFrameWidth.value = 0f
         } else {
@@ -251,6 +258,8 @@ abstract class BaseConfigViewModel(
 
         widgetFrameType.value = type
         widgetFrameColor.value = color
+
+        isFrameLoading.value = false
     }
 
     suspend fun saveWidget(): Boolean {
