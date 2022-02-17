@@ -5,14 +5,20 @@ import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Outline
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.ViewOutlineProvider
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
+import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -22,6 +28,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
+import com.qihuan.photowidget.adapter.WidgetFrameResourceAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.createAlbumLink
@@ -33,6 +40,9 @@ import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.link.InstalledAppActivity
 import com.qihuan.photowidget.link.UrlInputActivity
 import com.qihuan.photowidget.view.ItemSelectionDialog
+import com.qihuan.photowidget.view.MaterialColorPickerDialog
+import com.skydoves.colorpickerview.ColorEnvelope
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -43,10 +53,7 @@ class ConfigureActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityConfigureBinding::inflate)
     private val viewModel by viewModels<ConfigureViewModel> {
-        ConfigureViewModelFactory(
-            application,
-            appWidgetId
-        )
+        ConfigureViewModelFactory(application, appWidgetId)
     }
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
@@ -142,6 +149,23 @@ class ConfigureActivity : AppCompatActivity() {
         previewPhotoAddAdapter
     }
     private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
+    private val widgetFrameResourceAdapter by lazy {
+        WidgetFrameResourceAdapter {
+            when (it.type) {
+                WidgetFrameType.COLOR -> {
+                    showWidgetFrameColorSelector()
+                }
+                WidgetFrameType.IMAGE -> {
+                    selectWidgetFrameForResult.launch("image/*")
+                }
+                else -> {
+                    lifecycleScope.launch {
+                        viewModel.setWidgetFrame(it.type, uri = it.frameUri)
+                    }
+                }
+            }
+        }
+    }
 
     private val selectPicForResult =
         registerForActivityResult(ActivityResultContracts.GetMultipleContents()) {
@@ -193,6 +217,15 @@ class ConfigureActivity : AppCompatActivity() {
             }
         }
 
+    private val selectWidgetFrameForResult =
+        registerForActivityResult(ActivityResultContracts.GetContent()) {
+            if (it != null) {
+                lifecycleScope.launch {
+                    viewModel.setWidgetFrame(WidgetFrameType.IMAGE, uri = it)
+                }
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -209,6 +242,24 @@ class ConfigureActivity : AppCompatActivity() {
 
         bindView()
         initView()
+
+        // Android 12 以上版本，微件预览为圆角矩形
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            binding.containerPhotoWidgetPreview.outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View?, outline: Outline?) {
+                    if (view != null && outline != null) {
+                        outline.setRoundRect(
+                            0,
+                            0,
+                            view.width,
+                            view.height,
+                            resources.getDimension(R.dimen.widget_radius)
+                        )
+                    }
+                }
+            }
+            binding.containerPhotoWidgetPreview.clipToOutline = true
+        }
     }
 
     private fun initView() {
@@ -230,6 +281,7 @@ class ConfigureActivity : AppCompatActivity() {
 
         binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
         binding.rvPreviewList.adapter = ConcatAdapter(previewAddAdapter, previewAdapter)
+        binding.rvPreviewWidgetFrame.adapter = widgetFrameResourceAdapter
         previewAdapter.setOnItemDeleteListener { position, _ ->
             showDeletePhotoAlert(position)
         }
@@ -245,6 +297,16 @@ class ConfigureActivity : AppCompatActivity() {
 
             if (it.size <= 1) {
                 viewModel.updateAutoPlayInterval(PlayInterval.NONE)
+            }
+        }
+
+        viewModel.widgetFrameResourceList.observe(this) {
+            widgetFrameResourceAdapter.submitList(it)
+        }
+
+        binding.sliderWidgetFrameWidth.addOnChangeListener { slider, _, fromUser ->
+            if (fromUser) {
+                slider.performHapticFeedback()
             }
         }
 
@@ -272,6 +334,43 @@ class ConfigureActivity : AppCompatActivity() {
         binding.layoutPhotoWidget.photoWidgetInfo.areaRight.setOnClickListener {
             binding.layoutPhotoWidget.vfPicture.showNext()
         }
+
+        viewModel.widgetFrameType.observe(this) {
+            when (it) {
+                WidgetFrameType.NONE -> {
+                    binding.containerPhotoWidgetPreview.setBackgroundResource(android.R.color.transparent)
+                }
+                else -> {
+                }
+            }
+        }
+
+        viewModel.widgetFrameColor.observe(this) {
+            if (!it.isNullOrEmpty()) {
+                binding.containerPhotoWidgetPreview.setBackgroundColor(Color.parseColor(it))
+            }
+        }
+
+        viewModel.widgetFrameUri.observe(this) {
+            if (it != null) {
+                binding.containerPhotoWidgetPreview.loadToBackground(it)
+            }
+        }
+
+        viewModel.isFrameLoading.observe(this) {
+            if (it) {
+                binding.containerPhotoWidgetPreview.startScaleAnimation(1.1f, 1f)
+            }
+        }
+    }
+
+    private fun View.startScaleAnimation(startValue: Float, finalValue: Float) {
+        SpringAnimation(this, SpringAnimation.SCALE_X, finalValue)
+            .setStartValue(startValue)
+            .start()
+        SpringAnimation(this, SpringAnimation.SCALE_Y, finalValue)
+            .setStartValue(startValue)
+            .start()
     }
 
     private fun bindDragHelper() {
@@ -354,6 +453,9 @@ class ConfigureActivity : AppCompatActivity() {
     }
 
     private fun saveWidget() {
+        if (viewModel.isFrameLoading.value == true) {
+            return
+        }
         if (viewModel.uiState.value == BaseConfigViewModel.UIState.LOADING) {
             return
         }
@@ -392,6 +494,28 @@ class ConfigureActivity : AppCompatActivity() {
 
     fun showDeleteLinkAlert() {
         deleteLinkDialog.show()
+    }
+
+    private fun showWidgetFrameColorSelector() {
+        MaterialColorPickerDialog.Builder(this)
+            .setTitle(R.string.widget_frame_color_dialog_title)
+            .attachAlphaSlideBar(false)
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton(R.string.sure, object : ColorEnvelopeListener {
+                override fun onColorSelected(envelope: ColorEnvelope?, fromUser: Boolean) {
+                    if (envelope != null) {
+                        lifecycleScope.launch {
+                            viewModel.setWidgetFrame(
+                                WidgetFrameType.COLOR,
+                                color = "#${envelope.hexCode}"
+                            )
+                        }
+                    }
+                }
+            })
+            .show()
     }
 
     private fun showDeletePhotoAlert(position: Int) {

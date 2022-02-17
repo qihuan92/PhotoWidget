@@ -17,6 +17,9 @@ data class WidgetBean(
 
     @Relation(parentColumn = "widgetId", entityColumn = "widgetId")
     var linkInfo: LinkInfo?,
+
+    @Relation(parentColumn = "widgetId", entityColumn = "widgetId")
+    var frame: WidgetFrame?,
 ) {
     val imageList get() = _imageList.sortedBy { it.sort }
 }

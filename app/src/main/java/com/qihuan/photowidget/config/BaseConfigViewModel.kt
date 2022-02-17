@@ -8,14 +8,13 @@ import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.WidgetBean
-import com.qihuan.photowidget.bean.WidgetImage
-import com.qihuan.photowidget.bean.WidgetInfo
-import com.qihuan.photowidget.common.PlayInterval
-import com.qihuan.photowidget.common.RadiusUnit
-import com.qihuan.photowidget.common.TEMP_DIR_NAME
+import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.common.*
 import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.frame.WidgetFrameRepository
+import com.qihuan.photowidget.ktx.copyAssetsFile
+import com.qihuan.photowidget.ktx.copyFile
+import com.qihuan.photowidget.ktx.getExtension
 import com.qihuan.photowidget.settings.SettingsRepository
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
@@ -40,18 +39,30 @@ abstract class BaseConfigViewModel(
     private val widgetInfoDao by lazy { AppDatabase.getDatabase(context).widgetInfoDao() }
     private val widgetDao by lazy { AppDatabase.getDatabase(context).widgetDao() }
     private val linkInfoDao by lazy { AppDatabase.getDatabase(context).linkInfoDao() }
-    private val repository by lazy { SettingsRepository(application) }
+    private val settingsRepository by lazy { SettingsRepository(application) }
+    private val widgetFrameRepository by lazy { WidgetFrameRepository(application) }
 
     val topPadding by lazy { MutableLiveData(0f) }
     val bottomPadding by lazy { MutableLiveData(0f) }
     val leftPadding by lazy { MutableLiveData(0f) }
     val rightPadding by lazy { MutableLiveData(0f) }
+
     val widgetRadius by lazy { MutableLiveData(0f) }
     val widgetRadiusUnit by lazy { MutableLiveData(RadiusUnit.ANGLE) }
+
     val linkInfo by lazy { MutableLiveData<LinkInfo>() }
+
+    val widgetFrameType by lazy { MutableLiveData(WidgetFrameType.NONE) }
+    val widgetFrameUri by lazy { MutableLiveData<Uri>() }
+    val widgetFrameColor by lazy { MutableLiveData<String>() }
+    val widgetFrameWidth by lazy { MutableLiveData(0f) }
+    val widgetFrameResourceList by lazy { MutableLiveData<List<WidgetFrameResource>>(mutableListOf()) }
+
     val uiState by lazy { MutableLiveData(UIState.LOADING) }
     val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
     val isEditState by lazy { MutableLiveData(false) }
+
+    val isFrameLoading = MutableLiveData(false)
 
     init {
         loadWidget()
@@ -60,6 +71,8 @@ abstract class BaseConfigViewModel(
     private fun loadWidget() {
         viewModelScope.launch {
             uiState.value = UIState.LOADING
+            widgetFrameResourceList.value = widgetFrameRepository.getWidgetFrameResourceList()
+
             val widgetInfo = widgetInfoDao.selectById(appWidgetId)
             if (widgetInfo != null) {
                 isEditState.value = true
@@ -74,12 +87,32 @@ abstract class BaseConfigViewModel(
             val linkInfoFromDb = linkInfoDao.selectById(appWidgetId)
             linkInfo.value = linkInfoFromDb
 
+            val widgetFrameFromDb = widgetDao.selectWidgetFrameByWidgetId(appWidgetId)
+            if (widgetFrameFromDb != null) {
+                widgetFrameType.value = widgetFrameFromDb.type
+                widgetFrameWidth.value = widgetFrameFromDb.width
+                widgetFrameColor.value = widgetFrameFromDb.frameColor
+                if (widgetFrameFromDb.type == WidgetFrameType.BUILD_IN || widgetFrameFromDb.type == WidgetFrameType.IMAGE) {
+                    // 复制到临时文件
+                    val frameFile = widgetFrameFromDb.frameUri?.toFile()
+                    if (frameFile != null && frameFile.exists()) {
+                        val tempFrameFolder =
+                            File(context.cacheDir, TEMP_DIR_NAME + File.separator + FRAME_DIR_NAME)
+                        val tempFrameFile = File(tempFrameFolder, frameFile.name)
+                        withContext(Dispatchers.IO) {
+                            frameFile.copyTo(tempFrameFile, overwrite = true)
+                        }
+                        widgetFrameUri.value = tempFrameFile.toUri()
+                    }
+                }
+            }
+
             uiState.value = UIState.SHOW_CONTENT
         }
     }
 
     private suspend fun getDefaultWidgetInfo(): WidgetInfo {
-        val (defaultRadius, defaultRadiusUnit) = repository.getWidgetDefaultRadius()
+        val (defaultRadius, defaultRadiusUnit) = settingsRepository.getWidgetDefaultRadius()
         return WidgetInfo(
             widgetId = appWidgetId,
             topPadding = 0f,
@@ -90,7 +123,7 @@ abstract class BaseConfigViewModel(
             widgetRadiusUnit = defaultRadiusUnit,
             widgetTransparency = 0f,
             autoPlayInterval = PlayInterval.NONE,
-            photoScaleType = repository.getWidgetDefaultScaleType(),
+            photoScaleType = settingsRepository.getWidgetDefaultScaleType(),
         )
     }
 
@@ -178,6 +211,57 @@ abstract class BaseConfigViewModel(
         widgetRadiusUnit.value = item
     }
 
+    suspend fun setWidgetFrame(
+        type: WidgetFrameType,
+        color: String? = null,
+        uri: Uri? = null
+    ) {
+        if (isFrameLoading.value == true) {
+            return
+        }
+
+        isFrameLoading.value = true
+        if (type == WidgetFrameType.NONE) {
+            widgetFrameWidth.value = 0f
+        } else {
+            if (widgetFrameWidth.value == 0f) {
+                widgetFrameWidth.value = 10f
+            }
+        }
+
+        val tempFrameFolder =
+            File(context.cacheDir, TEMP_DIR_NAME + File.separator + FRAME_DIR_NAME)
+        if (tempFrameFolder.exists()) {
+            tempFrameFolder.deleteRecursively()
+        }
+        tempFrameFolder.mkdirs()
+
+        if (type == WidgetFrameType.BUILD_IN) {
+            val assetName = uri?.path?.substringAfterLast("android_asset/")
+            if (assetName != null) {
+                val fileName = assetName.substringAfterLast("frame/")
+                val file = File(tempFrameFolder, fileName)
+                context.copyAssetsFile(assetName, file)
+                widgetFrameUri.value = file.toUri()
+            }
+        } else if (type == WidgetFrameType.IMAGE) {
+            if (uri != null) {
+                val fileExt = uri.getExtension(context)
+                val fileName = if (fileExt != null) "custom_frame.${fileExt}" else "custom_frame"
+                val file = File(tempFrameFolder, fileName)
+                context.copyFile(uri, file)
+                widgetFrameUri.value = file.toUri()
+            }
+        } else {
+            widgetFrameUri.value = uri
+        }
+
+        widgetFrameType.value = type
+        widgetFrameColor.value = color
+
+        isFrameLoading.value = false
+    }
+
     suspend fun saveWidget(): Boolean {
         val widgetInfo = getCurrentWidgetInfo()
 
@@ -197,7 +281,38 @@ abstract class BaseConfigViewModel(
             )
         }
 
-        val widgetBean = WidgetBean(widgetInfo, imageList, linkInfo.value)
+        var frameFileUri: Uri? = null
+        val widgetFrame = if (widgetFrameType.value == WidgetFrameType.NONE) {
+            null
+        } else {
+            // 相框文件目录
+            val frameFolder =
+                File(context.filesDir, "widget_${appWidgetId}" + File.separator + FRAME_DIR_NAME)
+            // 删除原来相框文件
+            if (frameFolder.exists()) {
+                withContext(Dispatchers.IO) { frameFolder.deleteRecursively() }
+            }
+
+            // 保存相框文件
+            if (widgetFrameType.value == WidgetFrameType.BUILD_IN || widgetFrameType.value == WidgetFrameType.IMAGE) {
+                val tempFrameFile = widgetFrameUri.value?.toFile()
+                val frameFile = tempFrameFile?.let { File(frameFolder, it.name) }
+                if (tempFrameFile != null && frameFile != null) {
+                    tempFrameFile.copyTo(frameFile, overwrite = true)
+                    frameFileUri = frameFile.toUri()
+                }
+            }
+
+            WidgetFrame(
+                widgetId = appWidgetId,
+                frameUri = frameFileUri,
+                frameColor = widgetFrameColor.value,
+                width = widgetFrameWidth.value ?: 0f,
+                type = widgetFrameType.value ?: WidgetFrameType.NONE
+            )
+        }
+
+        val widgetBean = WidgetBean(widgetInfo, imageList, linkInfo.value, widgetFrame)
         widgetDao.save(widgetBean)
         updateAppWidget(context, AppWidgetManager.getInstance(context), widgetBean)
         return true
