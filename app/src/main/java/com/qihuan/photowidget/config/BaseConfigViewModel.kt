@@ -69,6 +69,8 @@ abstract class BaseConfigViewModel(
     private fun loadWidget() {
         viewModelScope.launch {
             uiState.value = UIState.LOADING
+            widgetFrameResourceList.value = widgetFrameRepository.getWidgetFrameResourceList()
+
             val widgetInfo = widgetInfoDao.selectById(appWidgetId)
             if (widgetInfo != null) {
                 isEditState.value = true
@@ -102,8 +104,6 @@ abstract class BaseConfigViewModel(
                     }
                 }
             }
-
-            widgetFrameResourceList.value = widgetFrameRepository.getWidgetFrameResourceList()
 
             uiState.value = UIState.SHOW_CONTENT
         }
