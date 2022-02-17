@@ -1,7 +1,10 @@
 package com.qihuan.photowidget
 
 import android.app.Application
-import com.tencent.bugly.crashreport.CrashReport
+import com.microsoft.appcenter.AppCenter
+import com.microsoft.appcenter.analytics.Analytics
+import com.microsoft.appcenter.crashes.Crashes
+
 
 /**
  * App
@@ -17,7 +20,11 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
-        CrashReport.initCrashReport(this)
-        CrashReport.setIsDevelopmentDevice(this, BuildConfig.DEBUG)
+        AppCenter.start(
+            this,
+            "e6d28220-62c7-4515-a94e-0b8e4bb49a31",
+            Analytics::class.java,
+            Crashes::class.java
+        )
     }
 }

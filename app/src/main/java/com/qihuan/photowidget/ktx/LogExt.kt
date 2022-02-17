@@ -1,8 +1,9 @@
 package com.qihuan.photowidget.ktx
 
 import android.util.Log
-import com.qihuan.photowidget.BuildConfig
-import com.tencent.bugly.crashreport.BuglyLog
+import com.microsoft.appcenter.Flags
+import com.microsoft.appcenter.analytics.Analytics
+import com.microsoft.appcenter.crashes.Crashes
 
 /**
  * LogExt
@@ -10,33 +11,27 @@ import com.tencent.bugly.crashreport.BuglyLog
  * @since 4/7/21
  */
 fun logD(tag: String, msg: String?) {
-    if (BuildConfig.DEBUG) {
-        Log.d(tag, msg.orEmpty())
-    } else {
-        BuglyLog.d(tag, msg)
-    }
+    Log.d(tag, msg.orEmpty())
 }
 
 fun logI(tag: String, msg: String?) {
-    if (BuildConfig.DEBUG) {
-        Log.i(tag, msg.orEmpty())
-    } else {
-        BuglyLog.i(tag, msg)
-    }
+    Log.i(tag, msg.orEmpty())
+    Analytics.trackEvent(
+        "LOG_INFO",
+        mapOf(tag to msg)
+    )
 }
 
 fun logE(tag: String, msg: String?, throwable: Throwable? = null) {
     if (throwable != null) {
-        if (BuildConfig.DEBUG) {
-            Log.e(tag, msg, throwable)
-        } else {
-            BuglyLog.e(tag, msg, throwable)
-        }
+        Log.e(tag, msg, throwable)
+        Crashes.trackError(throwable, mapOf(tag to msg), null)
     } else {
-        if (BuildConfig.DEBUG) {
-            Log.e(tag, msg.orEmpty())
-        } else {
-            BuglyLog.e(tag, msg)
-        }
+        Log.e(tag, msg.orEmpty())
+        Analytics.trackEvent(
+            "LOG_ERROR",
+            mapOf(tag to msg),
+            Flags.CRITICAL
+        )
     }
 }

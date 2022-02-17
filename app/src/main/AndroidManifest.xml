@@ -25,10 +25,6 @@
         android:theme="@style/Theme.PhotoWidget"
         tools:ignore="DataExtractionRules">
 
-        <meta-data
-            android:name="BUGLY_APPID"
-            android:value="61c5645485" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
