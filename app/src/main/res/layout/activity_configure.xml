@@ -7,6 +7,8 @@
 
         <import type="com.qihuan.photowidget.config.BaseConfigViewModel.UIState" />
 
+        <import type="com.qihuan.photowidget.ktx.UIExtKt" />
+
         <import type="com.qihuan.photowidget.common.WidgetFrameType" />
 
         <variable
@@ -63,10 +65,10 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="30dp"
-            android:paddingStart="@{viewModel.widgetFrameWidth + viewModel.leftPadding}"
-            android:paddingTop="@{viewModel.widgetFrameWidth + viewModel.topPadding}"
-            android:paddingEnd="@{viewModel.widgetFrameWidth + viewModel.rightPadding}"
-            android:paddingBottom="@{viewModel.widgetFrameWidth + viewModel.bottomPadding}"
+            android:paddingStart="@{UIExtKt.getDp(viewModel.widgetFrameWidth + viewModel.leftPadding)}"
+            android:paddingTop="@{UIExtKt.getDp(viewModel.widgetFrameWidth + viewModel.topPadding)}"
+            android:paddingEnd="@{UIExtKt.getDp(viewModel.widgetFrameWidth + viewModel.rightPadding)}"
+            android:paddingBottom="@{UIExtKt.getDp(viewModel.widgetFrameWidth + viewModel.bottomPadding)}"
             app:layout_constraintBottom_toBottomOf="@id/iv_wallpaper"
             app:layout_constraintDimensionRatio="h,1:1"
             app:layout_constraintLeft_toLeftOf="@id/guideline_center_vertical"
@@ -159,7 +161,6 @@
                     style="@style/Widget.PhotoWidget.CardView.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
                     android:layout_marginTop="10dp">
 
                     <LinearLayout

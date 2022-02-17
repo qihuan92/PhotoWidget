@@ -265,7 +265,7 @@ class ConfigureActivity : AppCompatActivity() {
 
         binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
         binding.rvPreviewList.adapter = ConcatAdapter(previewAddAdapter, previewAdapter)
-        binding.rvPreviewWidgetFrame?.adapter = widgetFrameResourceAdapter
+        binding.rvPreviewWidgetFrame.adapter = widgetFrameResourceAdapter
         previewAdapter.setOnItemDeleteListener { position, _ ->
             showDeletePhotoAlert(position)
         }
@@ -288,7 +288,7 @@ class ConfigureActivity : AppCompatActivity() {
             widgetFrameResourceAdapter.submitList(it)
         }
 
-        binding.sliderWidgetFrameWidth?.addOnChangeListener { slider, _, fromUser ->
+        binding.sliderWidgetFrameWidth.addOnChangeListener { slider, _, fromUser ->
             if (fromUser) {
                 slider.performHapticFeedback()
             }
@@ -465,6 +465,7 @@ class ConfigureActivity : AppCompatActivity() {
     private fun showWidgetFrameColorSelector() {
         MaterialColorPickerDialog.Builder(this)
             .setTitle(R.string.widget_frame_color_dialog_title)
+            .attachAlphaSlideBar(false)
             .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
