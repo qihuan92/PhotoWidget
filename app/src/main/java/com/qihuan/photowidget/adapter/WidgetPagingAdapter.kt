@@ -1,18 +1,23 @@
 package com.qihuan.photowidget.adapter
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.core.view.setPadding
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.WidgetBean
+import com.qihuan.photowidget.common.WidgetFrameType
 import com.qihuan.photowidget.common.WidgetType
 import com.qihuan.photowidget.databinding.ItemWidgetInfoBinding
+import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.load
+import com.qihuan.photowidget.ktx.loadToBackground
 
 /**
  * WidgetPagingAdapter
@@ -47,6 +52,7 @@ class WidgetPagingAdapter :
             if (item != null) {
                 val imageList = item.imageList
                 val widgetInfo = item.widgetInfo
+                val frame = item.frame
                 if (imageList.isNotEmpty()) {
                     binding.ivWidgetPicture.load(imageList.first().imageUri)
                 } else {
@@ -54,6 +60,30 @@ class WidgetPagingAdapter :
                 }
                 binding.tvTitle.text = "ID: ${widgetInfo.widgetId}"
                 binding.ivGifTag.isVisible = item.widgetInfo.widgetType == WidgetType.GIF
+
+                if (frame != null) {
+                    binding.layoutPhotoContainer.setPadding(10f.dp)
+                    if (frame.type == WidgetFrameType.BUILD_IN || frame.type == WidgetFrameType.IMAGE) {
+                        val frameUri = frame.frameUri
+                        if (frameUri != null) {
+                            binding.layoutPhotoContainer.loadToBackground(frameUri)
+                        } else {
+                            binding.layoutPhotoContainer.setBackgroundResource(R.color.card_background_color)
+                        }
+                    } else if (frame.type == WidgetFrameType.COLOR) {
+                        val frameColor = frame.frameColor
+                        if (frameColor != null) {
+                            val frameColorInt = Color.parseColor(frameColor)
+                            binding.layoutPhotoContainer.setBackgroundColor(frameColorInt)
+                        } else {
+                            binding.layoutPhotoContainer.setBackgroundResource(R.color.card_background_color)
+                        }
+                    } else {
+                        binding.layoutPhotoContainer.setBackgroundResource(R.color.card_background_color)
+                    }
+                } else {
+                    binding.layoutPhotoContainer.setPadding(0)
+                }
             }
         }
     }
