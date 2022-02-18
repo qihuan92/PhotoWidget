@@ -8,6 +8,8 @@ import com.microsoft.appcenter.Flags
 import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
 import com.qihuan.photowidget.ktx.getCurrentTime
+import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
+import com.qihuan.photowidget.ktx.logE
 
 /**
  * EventStatistics
@@ -26,21 +28,26 @@ object EventStatistics {
     const val WIDGET_SAVE = "WIDGET_SAVE"
 
     fun Application.trackLifecycle(lifecycleName: String) {
-        track(
-            lifecycleName, mapOf(
-                "Manufacturer" to Build.MANUFACTURER,
-                "Product" to Build.PRODUCT,
-                "Brand" to Build.BRAND,
-                "Model" to Build.MODEL,
-                "Device" to Build.DEVICE,
-                "Version" to Build.VERSION.RELEASE,
-                "AndroidID" to Settings.System.getString(
-                    contentResolver,
-                    Settings.Secure.ANDROID_ID
-                ),
-                "Date" to getCurrentTime("yyyy-MM-dd"),
+        try {
+            track(
+                lifecycleName, mapOf(
+                    "Manufacturer" to Build.MANUFACTURER,
+                    "Product" to Build.PRODUCT,
+                    "Brand" to Build.BRAND,
+                    "Model" to Build.MODEL,
+                    "Device" to Build.DEVICE,
+                    "Version" to Build.VERSION.RELEASE,
+                    "AndroidID" to Settings.System.getString(
+                        contentResolver,
+                        Settings.Secure.ANDROID_ID
+                    ),
+                    "Date" to getCurrentTime("yyyy-MM-dd"),
+                    "IsIgnoringBatteryOptimizations" to isIgnoringBatteryOptimizations().toString(),
+                )
             )
-        )
+        } catch (e: Exception) {
+            logE("Application::trackLifecycle", "TrackAppLifecycleError:" + e.message, e)
+        }
     }
 
     fun Activity.trackLifecycle(lifecycleName: String) {
