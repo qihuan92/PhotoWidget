@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
+import android.view.View
 import android.widget.ImageView
 import android.widget.RemoteViews
 import androidx.core.net.toFile
@@ -173,6 +174,7 @@ suspend fun updateAppWidget(
     // 处理边框相关逻辑
     remoteViews.setImageViewResource(R.id.iv_widget_background, R.drawable.app_widget_background)
     if (widgetFrame != null && widgetFrame.type != WidgetFrameType.NONE) {
+        remoteViews.setViewVisibility(R.id.iv_widget_background, View.VISIBLE)
         if (widgetFrame.type == WidgetFrameType.BUILD_IN || widgetFrame.type == WidgetFrameType.IMAGE) {
             Glide.with(context)
                 .asBitmap()
@@ -186,6 +188,7 @@ suspend fun updateAppWidget(
             )
         }
     } else {
+        remoteViews.setViewVisibility(R.id.iv_widget_background, View.GONE)
         remoteViews.setInt(R.id.iv_widget_background, "setColorFilter", Color.TRANSPARENT)
     }
 
