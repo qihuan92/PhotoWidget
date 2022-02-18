@@ -11,25 +11,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/preview_widget_frame"
-        android:foreground="@drawable/fg_photo_frame_preview"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:scaleType="centerCrop"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/ShapeRound.Item"
         tools:src="@color/default_color_primary" />
 
     <ImageView
         android:id="@+id/iv_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:background="@drawable/bg_photo_frame_preview_icon"
         android:contentDescription="@string/preview_widget_frame"
-        android:visibility="gone"
+        android:padding="5.5dp"
         app:layout_constraintBottom_toBottomOf="@id/iv_frame"
         app:layout_constraintLeft_toLeftOf="@id/iv_frame"
         app:layout_constraintRight_toRightOf="@id/iv_frame"
         app:layout_constraintTop_toTopOf="@id/iv_frame"
-        tools:src="@drawable/ic_round_block_24"
-        tools:visibility="visible" />
+        tools:src="@drawable/ic_round_block_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>
