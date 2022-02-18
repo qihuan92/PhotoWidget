@@ -43,9 +43,13 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+
+            buildConfigField "String", "APP_CENTER_SECRET", "\"${localProperties['appCenterSecretRelease']}\""
         }
         debug {
             signingConfig signingConfigs.debug
+
+            buildConfigField "String", "APP_CENTER_SECRET", "\"${localProperties['appCenterSecretDebug']}\""
         }
     }
     compileOptions {

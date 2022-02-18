@@ -22,7 +22,7 @@ class App : Application() {
         context = this
         AppCenter.start(
             this,
-            "e6d28220-62c7-4515-a94e-0b8e4bb49a31",
+            BuildConfig.APP_CENTER_SECRET,
             Analytics::class.java,
             Crashes::class.java
         )
