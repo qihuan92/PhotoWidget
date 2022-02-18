@@ -38,7 +38,7 @@ suspend fun Context.copyFile(inputUri: Uri, outputFile: File) = withContext(Disp
     try {
         inputStream = contentResolver.openInputStream(inputUri)
         outputStream = FileOutputStream(outputFile)
-        checkNotNull(inputStream, { "InputStream for given input Uri is null" })
+        checkNotNull(inputStream) { "InputStream for given input Uri is null" }
         val buffer = ByteArray(1024)
         var length: Int
         while (inputStream.read(buffer).also { length = it } > 0) {
@@ -114,7 +114,7 @@ fun createFile(parent: File, nameWithoutExtension: String, extension: String? = 
 }
 
 fun File.calculateSizeRecursively(): Long {
-    return walkBottomUp().fold(0L, { acc, file -> acc + file.length() })
+    return walkBottomUp().fold(0L) { acc, file -> acc + file.length() }
 }
 
 fun File.calculateFormatSizeRecursively(): String {
