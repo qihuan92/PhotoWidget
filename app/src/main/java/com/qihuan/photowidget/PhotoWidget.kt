@@ -12,6 +12,7 @@ import android.widget.RemoteViews
 import androidx.core.net.toFile
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.AppWidgetTarget
+import com.qihuan.photowidget.analysis.EventStatistics
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.bean.WidgetInfo
@@ -45,6 +46,27 @@ suspend fun updateAppWidget(
     appWidgetManager: AppWidgetManager,
     widgetBean: WidgetBean
 ) {
+    try {
+        EventStatistics.track(
+            EventStatistics.WIDGET_SAVE, mapOf(
+                "LinkType" to widgetBean.linkInfo?.type?.value,
+                "LinkUri" to widgetBean.linkInfo?.link,
+                "WidgetPaddingLeft" to widgetBean.widgetInfo.leftPadding.toString(),
+                "WidgetPaddingTop" to widgetBean.widgetInfo.topPadding.toString(),
+                "WidgetPaddingRight" to widgetBean.widgetInfo.rightPadding.toString(),
+                "WidgetPaddingBottom" to widgetBean.widgetInfo.bottomPadding.toString(),
+                "WidgetRadius" to widgetBean.widgetInfo.widgetRadius.toString() + widgetBean.widgetInfo.widgetRadiusUnit.unitName,
+                "WidgetTransparency" to widgetBean.widgetInfo.widgetTransparency.toString(),
+                "WidgetAutoPlayInterval" to widgetBean.widgetInfo.autoPlayInterval.interval.toString(),
+                "WidgetPhotoScaleType" to widgetBean.widgetInfo.photoScaleType.description,
+                "WidgetImageSize" to widgetBean.imageList.size.toString(),
+                "WidgetFrameType" to widgetBean.frame?.type?.name,
+            )
+        )
+    } catch (e: Exception) {
+        logE("PhotoWidget::updateAppWidget", "TrackError:" + e.message, e)
+    }
+
     val imageList = widgetBean.imageList
     if (imageList.isNullOrEmpty()) {
         logE("PhotoWidget", "updateAppWidget() -> imageList.isNullOrEmpty")

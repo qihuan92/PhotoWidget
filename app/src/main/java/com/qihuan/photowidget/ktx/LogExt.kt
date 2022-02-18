@@ -1,9 +1,8 @@
 package com.qihuan.photowidget.ktx
 
 import android.util.Log
-import com.microsoft.appcenter.Flags
-import com.microsoft.appcenter.analytics.Analytics
-import com.microsoft.appcenter.crashes.Crashes
+import com.microsoft.appcenter.BuildConfig
+import com.qihuan.photowidget.analysis.EventStatistics
 
 /**
  * LogExt
@@ -12,26 +11,22 @@ import com.microsoft.appcenter.crashes.Crashes
  */
 fun logD(tag: String, msg: String?) {
     Log.d(tag, msg.orEmpty())
+    if (BuildConfig.DEBUG) {
+        EventStatistics.track(EventStatistics.LOG_DEBUG, mapOf(tag to msg))
+    }
 }
 
 fun logI(tag: String, msg: String?) {
     Log.i(tag, msg.orEmpty())
-    Analytics.trackEvent(
-        "LOG_INFO",
-        mapOf(tag to msg)
-    )
+    EventStatistics.track(EventStatistics.LOG_INFO, mapOf(tag to msg))
 }
 
 fun logE(tag: String, msg: String?, throwable: Throwable? = null) {
     if (throwable != null) {
         Log.e(tag, msg, throwable)
-        Crashes.trackError(throwable, mapOf(tag to msg), null)
+        EventStatistics.trackError(throwable, mapOf(tag to msg))
     } else {
         Log.e(tag, msg.orEmpty())
-        Analytics.trackEvent(
-            "LOG_ERROR",
-            mapOf(tag to msg),
-            Flags.CRITICAL
-        )
+        EventStatistics.trackCritical(EventStatistics.LOG_ERROR, mapOf(tag to msg))
     }
 }

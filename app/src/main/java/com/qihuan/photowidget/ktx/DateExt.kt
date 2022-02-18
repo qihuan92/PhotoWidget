@@ -21,3 +21,15 @@ fun Long?.toDateStr(pattern: String = "yyyy-MM-dd HH:mm:ss"): String {
     }
     return dateStr
 }
+
+fun getCurrentTime(pattern: String = "yyyy-MM-dd HH:mm:ss"): String {
+    var dateStr = ""
+    try {
+        val calendar = Calendar.getInstance()
+        val sdf = SimpleDateFormat(pattern, Locale.getDefault())
+        dateStr = sdf.format(calendar.time)
+    } catch (e: Exception) {
+        logE("DateExt.kt", "时间转换异常", e)
+    }
+    return dateStr
+}
