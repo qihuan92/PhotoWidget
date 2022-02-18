@@ -1,31 +1,38 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.PhotoWidget" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.PhotoWidget" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_7F63C3</item>
-        <item name="colorPrimaryVariant">@color/purple_200</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/default_color_primary</item>
+        <item name="colorPrimaryVariant">@color/default_color_primary_variant</item>
+        <item name="colorOnPrimary">@color/default_color_on_primary</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/purple_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/default_color_secondary</item>
+        <item name="colorSecondaryVariant">@color/default_color_secondary_variant</item>
+        <item name="colorOnSecondary">@color/default_color_on_secondary</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">@bool/window_light_bar</item>
         <item name="android:navigationBarColor">@color/navigation_bar_color</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">
+            @bool/window_light_bar
+        </item>
         <!-- Customize your theme here. -->
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
+    <style name="Theme.PhotoWidget" parent="Base.PhotoWidget" />
+
     <style name="Theme.Crop" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:navigationBarColor">@color/ucrop_color_widget_background</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+        <item name="android:navigationBarColor" tools:ignore="PrivateResource">
+            @color/ucrop_color_widget_background
+        </item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">
+            @bool/window_light_bar
+        </item>
     </style>
 
     <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
-        <item name="android:navigationBarColor">@color/navigation_bar_color_bottom_sheet</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:navigationBarColor">?android:colorBackground</item>
     </style>
 </resources>

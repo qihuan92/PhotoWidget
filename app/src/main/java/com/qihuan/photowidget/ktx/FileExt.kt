@@ -28,15 +28,17 @@ import kotlin.math.pow
  * @author qi
  * @since 12/10/20
  */
+suspend fun Context.copyFile(inputUri: Uri, outputUri: Uri) =
+    copyFile(inputUri, File(checkNotNull(outputUri.path)))
 
 @Suppress("BlockingMethodInNonBlockingContext")
-suspend fun Context.copyFile(inputUri: Uri, outputUri: Uri) = withContext(Dispatchers.IO) {
+suspend fun Context.copyFile(inputUri: Uri, outputFile: File) = withContext(Dispatchers.IO) {
     var inputStream: InputStream? = null
     var outputStream: OutputStream? = null
     try {
         inputStream = contentResolver.openInputStream(inputUri)
-        outputStream = FileOutputStream(File(checkNotNull(outputUri.path)))
-        checkNotNull(inputStream, { "InputStream for given input Uri is null" })
+        outputStream = FileOutputStream(outputFile)
+        checkNotNull(inputStream) { "InputStream for given input Uri is null" }
         val buffer = ByteArray(1024)
         var length: Int
         while (inputStream.read(buffer).also { length = it } > 0) {
@@ -49,6 +51,27 @@ suspend fun Context.copyFile(inputUri: Uri, outputUri: Uri) = withContext(Dispat
         BitmapLoadUtils.close(inputStream)
     }
 }
+
+@Suppress("BlockingMethodInNonBlockingContext")
+suspend fun Context.copyAssetsFile(assetsName: String, outputFile: File) =
+    withContext(Dispatchers.IO) {
+        var inputStream: InputStream? = null
+        var outputStream: OutputStream? = null
+        try {
+            inputStream = assets.open(assetsName)
+            outputStream = FileOutputStream(outputFile)
+            val buffer = ByteArray(1024)
+            var length: Int
+            while (inputStream.read(buffer).also { length = it } > 0) {
+                outputStream.write(buffer, 0, length)
+            }
+        } catch (e: Exception) {
+            logE("FileExt", "copyAssetsFile() Exception", e)
+        } finally {
+            BitmapLoadUtils.close(outputStream)
+            BitmapLoadUtils.close(inputStream)
+        }
+    }
 
 suspend fun Context.compressImageFile(imageFile: File): File {
     val destination = File(
@@ -91,7 +114,7 @@ fun createFile(parent: File, nameWithoutExtension: String, extension: String? = 
 }
 
 fun File.calculateSizeRecursively(): Long {
-    return walkBottomUp().fold(0L, { acc, file -> acc + file.length() })
+    return walkBottomUp().fold(0L) { acc, file -> acc + file.length() }
 }
 
 fun File.calculateFormatSizeRecursively(): String {

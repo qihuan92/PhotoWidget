@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.OutOfQuotaPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.qihuan.photowidget.App
@@ -101,7 +100,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
         val workRequest =
             PeriodicWorkRequestBuilder<ForceUpdateWidgetWorker>(item.value, TimeUnit.MILLISECONDS)
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .addTag(WorkTags.PERIODIC_REFRESH_WIDGET)
                 .build()
 

@@ -14,6 +14,7 @@ import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.databinding.ActivitySettingsBinding
 import com.qihuan.photowidget.ktx.IgnoringBatteryOptimizationsContract
 import com.qihuan.photowidget.ktx.logE
+import com.qihuan.photowidget.ktx.performHapticFeedback
 import com.qihuan.photowidget.ktx.viewBinding
 import com.qihuan.photowidget.view.ItemSelectionDialog
 
@@ -74,6 +75,12 @@ class SettingsActivity : AppCompatActivity() {
         binding.viewModel = viewModel
 
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+
+        binding.sliderDefaultRadius.addOnChangeListener { slider, value, fromUser ->
+            if (fromUser) {
+                slider.performHapticFeedback()
+            }
+        }
     }
 
     fun switchAutoRefresh(view: View) {

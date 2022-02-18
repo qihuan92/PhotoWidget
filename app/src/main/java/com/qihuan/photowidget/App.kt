@@ -1,7 +1,14 @@
 package com.qihuan.photowidget
 
+import android.app.Activity
 import android.app.Application
-import com.tencent.bugly.crashreport.CrashReport
+import android.os.Bundle
+import com.microsoft.appcenter.AppCenter
+import com.microsoft.appcenter.analytics.Analytics
+import com.microsoft.appcenter.crashes.Crashes
+import com.qihuan.photowidget.analysis.EventStatistics
+import com.qihuan.photowidget.analysis.EventStatistics.trackLifecycle
+
 
 /**
  * App
@@ -17,7 +24,39 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         context = this
-        CrashReport.initCrashReport(this)
-        CrashReport.setIsDevelopmentDevice(this, BuildConfig.DEBUG)
+        AppCenter.start(
+            this,
+            BuildConfig.APP_CENTER_SECRET,
+            Analytics::class.java,
+            Crashes::class.java
+        )
+
+        registerActivityLifecycleCallbacks(PhotoWidgetActivityLifecycleCallbacks())
+        trackLifecycle(EventStatistics.APPLICATION_ON_CREATE)
+    }
+}
+
+class PhotoWidgetActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        activity.trackLifecycle(EventStatistics.ACTIVITY_ON_CREATE)
+    }
+
+    override fun onActivityStarted(activity: Activity) {
+    }
+
+    override fun onActivityResumed(activity: Activity) {
+    }
+
+    override fun onActivityPaused(activity: Activity) {
+    }
+
+    override fun onActivityStopped(activity: Activity) {
+    }
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+    }
+
+    override fun onActivityDestroyed(activity: Activity) {
+        activity.trackLifecycle(EventStatistics.ACTIVITY_ON_DESTROY)
     }
 }

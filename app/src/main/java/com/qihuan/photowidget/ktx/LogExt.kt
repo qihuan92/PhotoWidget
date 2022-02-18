@@ -1,8 +1,8 @@
 package com.qihuan.photowidget.ktx
 
 import android.util.Log
-import com.qihuan.photowidget.BuildConfig
-import com.tencent.bugly.crashreport.BuglyLog
+import com.microsoft.appcenter.BuildConfig
+import com.qihuan.photowidget.analysis.EventStatistics
 
 /**
  * LogExt
@@ -10,33 +10,23 @@ import com.tencent.bugly.crashreport.BuglyLog
  * @since 4/7/21
  */
 fun logD(tag: String, msg: String?) {
+    Log.d(tag, msg.orEmpty())
     if (BuildConfig.DEBUG) {
-        Log.d(tag, msg.orEmpty())
-    } else {
-        BuglyLog.d(tag, msg)
+        EventStatistics.track(EventStatistics.LOG_DEBUG, mapOf(tag to msg))
     }
 }
 
 fun logI(tag: String, msg: String?) {
-    if (BuildConfig.DEBUG) {
-        Log.i(tag, msg.orEmpty())
-    } else {
-        BuglyLog.i(tag, msg)
-    }
+    Log.i(tag, msg.orEmpty())
+    EventStatistics.track(EventStatistics.LOG_INFO, mapOf(tag to msg))
 }
 
 fun logE(tag: String, msg: String?, throwable: Throwable? = null) {
     if (throwable != null) {
-        if (BuildConfig.DEBUG) {
-            Log.e(tag, msg, throwable)
-        } else {
-            BuglyLog.e(tag, msg, throwable)
-        }
+        Log.e(tag, msg, throwable)
+        EventStatistics.trackError(throwable, mapOf(tag to msg))
     } else {
-        if (BuildConfig.DEBUG) {
-            Log.e(tag, msg.orEmpty())
-        } else {
-            BuglyLog.e(tag, msg)
-        }
+        Log.e(tag, msg.orEmpty())
+        EventStatistics.trackCritical(EventStatistics.LOG_ERROR, mapOf(tag to msg))
     }
 }

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.*
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.common.RadiusUnit
@@ -83,23 +82,6 @@ fun View.marginNavigationBarAndIme() {
         insets
     }
 }
-
-fun SwipeRefreshLayout.setDefaultColors() {
-    setColorSchemeResources(
-        R.color.purple_200,
-        R.color.purple_500,
-        R.color.purple_700,
-    )
-}
-
-val Resources.androidShortAnimTime
-    get() = getInteger(android.R.integer.config_shortAnimTime).toLong()
-
-val Resources.androidMediumAnimTime
-    get() = getInteger(android.R.integer.config_mediumAnimTime).toLong()
-
-val Resources.androidLongAnimTime
-    get() = getInteger(android.R.integer.config_longAnimTime).toLong()
 
 fun Context.createLoadingDialog(@StringRes message: Int = R.string.loading): AlertDialog {
     return createLoadingDialog(getString(message))

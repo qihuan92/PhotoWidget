@@ -4,16 +4,21 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.widget.ImageView
 import android.widget.RemoteViews
 import androidx.core.net.toFile
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.AppWidgetTarget
+import com.qihuan.photowidget.analysis.EventStatistics
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.common.LinkType
 import com.qihuan.photowidget.common.PlayInterval
+import com.qihuan.photowidget.common.WidgetFrameType
 import com.qihuan.photowidget.common.WidgetType
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
@@ -41,6 +46,28 @@ suspend fun updateAppWidget(
     appWidgetManager: AppWidgetManager,
     widgetBean: WidgetBean
 ) {
+    try {
+        EventStatistics.track(
+            EventStatistics.WIDGET_SAVE, mapOf(
+                "LinkType" to widgetBean.linkInfo?.type?.value,
+                "LinkUri" to widgetBean.linkInfo?.link,
+                "WidgetType" to widgetBean.widgetInfo.widgetType.code,
+                "WidgetPaddingLeft" to widgetBean.widgetInfo.leftPadding.toString(),
+                "WidgetPaddingTop" to widgetBean.widgetInfo.topPadding.toString(),
+                "WidgetPaddingRight" to widgetBean.widgetInfo.rightPadding.toString(),
+                "WidgetPaddingBottom" to widgetBean.widgetInfo.bottomPadding.toString(),
+                "WidgetRadius" to widgetBean.widgetInfo.widgetRadius.toString() + widgetBean.widgetInfo.widgetRadiusUnit.unitName,
+                "WidgetTransparency" to widgetBean.widgetInfo.widgetTransparency.toString(),
+                "WidgetAutoPlayInterval" to widgetBean.widgetInfo.autoPlayInterval.interval.toString(),
+                "WidgetPhotoScaleType" to widgetBean.widgetInfo.photoScaleType.description,
+                "WidgetImageSize" to widgetBean.imageList.size.toString(),
+                "WidgetFrameType" to widgetBean.frame?.type?.name,
+            )
+        )
+    } catch (e: Exception) {
+        logE("PhotoWidget::updateAppWidget", "TrackError:" + e.message, e)
+    }
+
     val imageList = widgetBean.imageList
     if (imageList.isNullOrEmpty()) {
         logE("PhotoWidget", "updateAppWidget() -> imageList.isNullOrEmpty")
@@ -50,11 +77,13 @@ suspend fun updateAppWidget(
     val widgetInfo = widgetBean.widgetInfo
     val widgetId = widgetInfo.widgetId
     val linkInfo = widgetBean.linkInfo
+    val widgetFrame = widgetBean.frame
     val autoPlayInterval = widgetInfo.autoPlayInterval
     val topPadding = widgetInfo.topPadding.dp
     val bottomPadding = widgetInfo.bottomPadding.dp
     val leftPadding = widgetInfo.leftPadding.dp
     val rightPadding = widgetInfo.rightPadding.dp
+    val frameWidth = widgetFrame?.width?.dp ?: 0
     val scaleType = widgetInfo.photoScaleType.scaleType
     val widgetRadius = widgetInfo.widgetRadius
     val widgetRadiusUnit = widgetInfo.widgetRadiusUnit
@@ -134,12 +163,31 @@ suspend fun updateAppWidget(
 
     // Set widget padding
     remoteViews.setViewPadding(
-        android.R.id.background,
-        leftPadding,
-        topPadding,
-        rightPadding,
-        bottomPadding
+        R.id.fl_picture_container,
+        frameWidth + leftPadding,
+        frameWidth + topPadding,
+        frameWidth + rightPadding,
+        frameWidth + bottomPadding
     )
+
+    // 处理边框相关逻辑
+    remoteViews.setImageViewResource(R.id.iv_widget_background, R.drawable.app_widget_background)
+    if (widgetFrame != null && widgetFrame.type != WidgetFrameType.NONE) {
+        if (widgetFrame.type == WidgetFrameType.BUILD_IN || widgetFrame.type == WidgetFrameType.IMAGE) {
+            Glide.with(context)
+                .asBitmap()
+                .load(widgetFrame.frameUri)
+                .into(AppWidgetTarget(context, R.id.iv_widget_background, remoteViews, widgetId))
+        } else if (widgetFrame.type == WidgetFrameType.COLOR) {
+            remoteViews.setInt(
+                R.id.iv_widget_background,
+                "setColorFilter",
+                Color.parseColor(widgetFrame.frameColor)
+            )
+        }
+    } else {
+        remoteViews.setInt(R.id.iv_widget_background, "setColorFilter", Color.TRANSPARENT)
+    }
 
     appWidgetManager.updateAppWidget(widgetId, remoteViews)
     if (isMultiImage) {
@@ -190,12 +238,12 @@ private fun createWidgetNavPendingIntent(
 }
 
 fun createFlipperRemoteViews(context: Context, interval: Int): RemoteViews {
-    val defRemoteViews = RemoteViews(context.packageName, R.layout.photo_widget)
+    val defRemoteViews = RemoteViews(context.packageName, R.layout.widget_photo)
     if (interval < 0) {
         return defRemoteViews
     }
     val layoutId = context.resources.getIdentifier(
-        "photo_widget_interval_${interval}",
+        "widget_photo_interval_${interval}",
         "layout",
         context.packageName
     )
@@ -207,9 +255,9 @@ fun createFlipperRemoteViews(context: Context, interval: Int): RemoteViews {
 
 fun createImageRemoteViews(context: Context, scaleType: ImageView.ScaleType): RemoteViews {
     return if (scaleType == ImageView.ScaleType.FIT_CENTER) {
-        RemoteViews(context.packageName, R.layout.layout_widget_image)
+        RemoteViews(context.packageName, R.layout.widget_photo_single)
     } else {
-        RemoteViews(context.packageName, R.layout.layout_widget_image_fitxy)
+        RemoteViews(context.packageName, R.layout.widget_photo_single_fitxy)
     }
 }
 

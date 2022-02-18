@@ -13,6 +13,7 @@ import com.qihuan.photowidget.view.ItemSelectionDialog
  * @since 2021/8/20
  */
 const val TEMP_DIR_NAME = "temp"
+const val FRAME_DIR_NAME = "frame"
 const val MAIN_PAGE_SPAN_COUNT = 2
 const val DEFAULT_COMPRESSION_QUALITY = 75
 const val INVALID_AUTO_REFRESH_INTERVAL = -1L
@@ -281,4 +282,14 @@ enum class AutoRefreshInterval(
             return values().first { it.value == value }
         }
     }
+}
+
+/**
+ * 相框类型
+ *
+ * @author qi
+ * @since 2022/02/11
+ */
+enum class WidgetFrameType {
+    NONE, THEME_COLOR, COLOR, IMAGE, BUILD_IN
 }

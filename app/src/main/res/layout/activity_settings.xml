@@ -38,6 +38,7 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingHorizontal="@dimen/main_padding"
+            android:paddingVertical="10dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
@@ -46,10 +47,9 @@
                 android:orientation="vertical">
 
                 <com.google.android.material.card.MaterialCardView
-                    style="@style/CardView.WidgetSetting"
+                    style="@style/Widget.PhotoWidget.CardView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -100,11 +100,13 @@
 
                             <com.google.android.material.switchmaterial.SwitchMaterial
                                 android:id="@+id/switch_auto_refresh_widget"
+                                style="@style/Widget.PhotoWidget.Switch"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checked="@{viewModel.autoRefreshInterval != AutoRefreshInterval.NONE}"
                                 android:clickable="false"
                                 app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toRightOf="@id/tv_description_auto_refresh_widget"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -150,11 +152,13 @@
 
                             <com.google.android.material.switchmaterial.SwitchMaterial
                                 android:id="@+id/switch_ignore_battery_optimizations"
+                                style="@style/Widget.PhotoWidget.Switch"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:checked="@{viewModel.isIgnoreBatteryOptimizations}"
                                 android:clickable="false"
                                 app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toRightOf="@id/tv_description_ignore_battery_optimizations"
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -211,7 +215,7 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
-                    style="@style/CardView.WidgetSetting"
+                    style="@style/Widget.PhotoWidget.CardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
@@ -299,6 +303,7 @@
 
                             <com.google.android.material.slider.Slider
                                 android:id="@+id/slider_default_radius"
+                                style="@style/Widget.PhotoWidget.Slider"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="20dp"
@@ -326,7 +331,7 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
-                    style="@style/CardView.WidgetSetting"
+                    style="@style/Widget.PhotoWidget.CardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">

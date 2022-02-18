@@ -152,6 +152,12 @@ class AboutActivity : AppCompatActivity() {
                 License.APACHE_2,
                 "https://github.com/bumptech/glide"
             ),
+            LicenseItem(
+                "ColorPickerView",
+                "skydoves",
+                License.APACHE_2,
+                "https://github.com/skydoves/ColorPickerView"
+            ),
         ).forEach {
             binding.llLicenses.addView(createLicenseView(it))
         }

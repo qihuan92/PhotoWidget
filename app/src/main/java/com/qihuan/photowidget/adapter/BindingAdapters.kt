@@ -14,6 +14,7 @@ import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.ktx.calculateRadiusPx
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.loadRounded
+import com.qihuan.photowidget.ktx.performHapticFeedback
 import com.qihuan.photowidget.view.SliderSelectionView
 import com.qihuan.photowidget.view.TextSelectionView
 
@@ -104,8 +105,11 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("sliderSelectionAttrChanged")
     fun setSliderSelectionListeners(view: SliderSelectionView, attrChange: InverseBindingListener) {
-        view.addOnChangeListener { _, _, _ ->
+        view.addOnChangeListener { slider, _, fromUser ->
             attrChange.onChange()
+            if (fromUser) {
+                slider.performHapticFeedback()
+            }
         }
     }
 
@@ -130,7 +134,9 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("cardCornerRadius", "cardCornerRadiusUnit", requireAll = false)
     fun setCardCornerRadius(view: MaterialCardView, radius: Float, unit: RadiusUnit) {
-        val radiusPx = calculateRadiusPx(view.width, view.height, radius, unit)
-        view.radius = radiusPx.toFloat()
+        view.post {
+            val radiusPx = calculateRadiusPx(view.width, view.height, radius, unit)
+            view.radius = radiusPx.toFloat()
+        }
     }
 }
