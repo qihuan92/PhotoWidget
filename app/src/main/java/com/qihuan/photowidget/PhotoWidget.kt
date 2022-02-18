@@ -51,6 +51,7 @@ suspend fun updateAppWidget(
             EventStatistics.WIDGET_SAVE, mapOf(
                 "LinkType" to widgetBean.linkInfo?.type?.value,
                 "LinkUri" to widgetBean.linkInfo?.link,
+                "WidgetType" to widgetBean.widgetInfo.widgetType.code,
                 "WidgetPaddingLeft" to widgetBean.widgetInfo.leftPadding.toString(),
                 "WidgetPaddingTop" to widgetBean.widgetInfo.topPadding.toString(),
                 "WidgetPaddingRight" to widgetBean.widgetInfo.rightPadding.toString(),
