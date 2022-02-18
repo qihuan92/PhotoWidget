@@ -1,6 +1,7 @@
 package com.qihuan.photowidget.config
 
 import android.Manifest
+import android.animation.LayoutTransition
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
@@ -260,6 +261,8 @@ class ConfigureActivity : AppCompatActivity() {
             }
             binding.containerPhotoWidgetPreview.clipToOutline = true
         }
+
+        binding.layoutInfo.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
     }
 
     private fun initView() {
