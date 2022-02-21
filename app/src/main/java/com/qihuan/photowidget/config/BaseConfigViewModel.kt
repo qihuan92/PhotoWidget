@@ -15,6 +15,7 @@ import com.qihuan.photowidget.frame.WidgetFrameRepository
 import com.qihuan.photowidget.ktx.copyAssetsFile
 import com.qihuan.photowidget.ktx.copyFile
 import com.qihuan.photowidget.ktx.getExtension
+import com.qihuan.photowidget.ktx.logE
 import com.qihuan.photowidget.settings.SettingsRepository
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
@@ -342,6 +343,10 @@ abstract class BaseConfigViewModel(
             }
 
             afterSaveFiles(widgetDir, uriList)
+
+            if (uriList.isEmpty()) {
+                logE("BaseConfigViewModel", "saveWidgetPhotoFiles() - Output uri list is Empty!")
+            }
 
             return@withContext uriList
         }
