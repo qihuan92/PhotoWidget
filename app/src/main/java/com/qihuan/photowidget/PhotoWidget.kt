@@ -63,6 +63,8 @@ suspend fun updateAppWidget(
                 "WidgetPhotoScaleType" to widgetBean.widgetInfo.photoScaleType.description,
                 "WidgetImageSize" to widgetBean.imageList.size.toString(),
                 "WidgetFrameType" to widgetBean.frame?.type?.name,
+                "WidgetFrameUri" to widgetBean.frame?.frameUri?.toString(),
+                "WidgetFrameColor" to widgetBean.frame?.frameColor,
             )
         )
     } catch (e: Exception) {
