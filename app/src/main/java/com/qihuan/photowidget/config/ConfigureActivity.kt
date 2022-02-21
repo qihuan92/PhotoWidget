@@ -469,7 +469,18 @@ class ConfigureActivity : AppCompatActivity() {
         }
         lifecycleScope.launch {
             saveImageDialog.show()
-            viewModel.saveWidget()
+            try {
+                viewModel.saveWidget()
+            } catch (e: SaveWidgetException) {
+                saveImageDialog.dismiss()
+                Snackbar.make(
+                    binding.root,
+                    e.message ?: getString(R.string.save_fail),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+                logE("ConfigureActivity", e.message, e)
+                return@launch
+            }
             saveImageDialog.dismiss()
 
             setResult(RESULT_OK, Intent().apply {
