@@ -16,9 +16,12 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.bean.*
+import com.qihuan.photowidget.bean.LinkInfo
+import com.qihuan.photowidget.bean.createAlbumLink
+import com.qihuan.photowidget.bean.createFileLink
 import com.qihuan.photowidget.common.LinkType
 import com.qihuan.photowidget.common.RadiusUnit
+import com.qihuan.photowidget.common.SaveWidgetException
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
 import com.qihuan.photowidget.databinding.ActivityGifConfigureBinding
 import com.qihuan.photowidget.ktx.*
@@ -228,15 +231,17 @@ class GifConfigureActivity : AppCompatActivity() {
         }
         lifecycleScope.launch {
             saveImageDialog.show()
-            val result = viewModel.saveWidget()
-            saveImageDialog.dismiss()
-
-            if (!result) {
+            try {
+                viewModel.saveWidget()
+            } catch (e: SaveWidgetException) {
+                saveImageDialog.dismiss()
+                logE("GifConfigureActivity", e.message, e)
                 Snackbar.make(binding.root, R.string.save_widget_error_gif, Snackbar.LENGTH_SHORT)
                     .setAnchorView(binding.fabAddPhoto)
                     .show()
                 return@launch
             }
+            saveImageDialog.dismiss()
 
             setResult(RESULT_OK, Intent().apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)

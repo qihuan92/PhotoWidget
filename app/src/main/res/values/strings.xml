@@ -122,4 +122,7 @@
     <string name="preview_widget_frame">相框预览</string>
     <string name="widget_frame">相框</string>
     <string name="widget_frame_color_dialog_title">请选择颜色</string>
+    <string name="save_fail_frame_file_not_exists">保存失败，请重新选择相框</string>
+    <string name="save_fail">保存失败，请重试</string>
+    <string name="save_fail_copy_photo_files">相片文件保存失败，请重试</string>
 </resources>

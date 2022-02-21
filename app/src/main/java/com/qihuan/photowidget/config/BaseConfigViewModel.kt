@@ -8,13 +8,12 @@ import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.*
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.frame.WidgetFrameRepository
-import com.qihuan.photowidget.ktx.copyAssetsFile
-import com.qihuan.photowidget.ktx.copyFile
-import com.qihuan.photowidget.ktx.getExtension
+import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.settings.SettingsRepository
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
@@ -250,7 +249,8 @@ abstract class BaseConfigViewModel(
                 val fileName = if (fileExt != null) "custom_frame.${fileExt}" else "custom_frame"
                 val file = File(tempFrameFolder, fileName)
                 context.copyFile(uri, file)
-                widgetFrameUri.value = file.toUri()
+                val compressFile = context.compressImageFile(file)
+                widgetFrameUri.value = compressFile.toUri()
             }
         } else {
             widgetFrameUri.value = uri
@@ -262,14 +262,18 @@ abstract class BaseConfigViewModel(
         isFrameLoading.value = false
     }
 
-    suspend fun saveWidget(): Boolean {
+    @Throws(SaveWidgetException::class)
+    suspend fun saveWidget() {
         val widgetInfo = getCurrentWidgetInfo()
 
         val uriList: List<Uri>
         try {
             uriList = saveWidgetPhotoFiles()
         } catch (e: Exception) {
-            return false
+            logE("BaseConfigViewModel", e.message, e)
+            throw SaveWidgetException(
+                e.message ?: context.getString(R.string.save_fail_copy_photo_files)
+            )
         }
 
         val imageList = uriList.mapIndexed { index, uri ->
@@ -296,11 +300,15 @@ abstract class BaseConfigViewModel(
             // 保存相框文件
             if (widgetFrameType.value == WidgetFrameType.BUILD_IN || widgetFrameType.value == WidgetFrameType.IMAGE) {
                 val tempFrameFile = widgetFrameUri.value?.toFile()
-                val frameFile = tempFrameFile?.let { File(frameFolder, it.name) }
-                if (tempFrameFile != null && frameFile != null) {
-                    tempFrameFile.copyTo(frameFile, overwrite = true)
-                    frameFileUri = frameFile.toUri()
+
+                if (tempFrameFile == null || !tempFrameFile.exists()) {
+                    throw SaveWidgetException(context.getString(R.string.save_fail_frame_file_not_exists))
                 }
+                val frameFile = File(frameFolder, tempFrameFile.name)
+                withContext(Dispatchers.IO) {
+                    tempFrameFile.copyTo(frameFile, overwrite = true)
+                }
+                frameFileUri = frameFile.toUri()
             }
 
             WidgetFrame(
@@ -315,7 +323,6 @@ abstract class BaseConfigViewModel(
         val widgetBean = WidgetBean(widgetInfo, imageList, linkInfo.value, widgetFrame)
         widgetDao.save(widgetBean)
         updateAppWidget(context, AppWidgetManager.getInstance(context), widgetBean)
-        return true
     }
 
     protected abstract fun getCurrentWidgetInfo(): WidgetInfo
@@ -342,6 +349,10 @@ abstract class BaseConfigViewModel(
             }
 
             afterSaveFiles(widgetDir, uriList)
+
+            if (uriList.isEmpty()) {
+                logE("BaseConfigViewModel", "saveWidgetPhotoFiles() - Output uri list is Empty!")
+            }
 
             return@withContext uriList
         }
