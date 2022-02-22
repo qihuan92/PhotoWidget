@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.RemoteViews
 import com.qihuan.photowidget.db.AppDatabase
@@ -71,6 +72,9 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
         newOptions: Bundle?
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return
+        }
         logD("PhotoWidgetProvider", "onAppWidgetOptionsChanged() appWidgetId=$appWidgetId")
         val widgetDao = AppDatabase.getDatabase(context).widgetDao()
         goAsync(GlobalScope) {

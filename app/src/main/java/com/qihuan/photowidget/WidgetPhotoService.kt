@@ -3,13 +3,18 @@ package com.qihuan.photowidget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.util.TypedValue
+import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.net.toFile
+import com.bumptech.glide.Glide
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.ktx.calculateRadiusPx
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.toRoundedBitmap
 
@@ -74,19 +79,33 @@ class WidgetPhotoViewFactory(
         val radius = widgetInfo.widgetRadius
         val radiusUnit = widgetInfo.widgetRadiusUnit
         val remoteViews = createImageRemoteViews(context, scaleType)
+        val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo).toFloat().dp
+        val imageHeight = appWidgetManager.getWidgetImageHeight(widgetInfo).toFloat().dp
         if (imageUri.toFile().exists()) {
-            val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo).toFloat().dp
-            val imageHeight = appWidgetManager.getWidgetImageHeight(widgetInfo).toFloat().dp
-            val imageBitmap =
-                imageUri.toRoundedBitmap(
-                    context,
-                    radius,
-                    radiusUnit,
-                    scaleType,
-                    imageWidth,
-                    imageHeight
-                )
-            remoteViews.setImageViewBitmap(R.id.iv_picture, imageBitmap)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && scaleType == ImageView.ScaleType.CENTER_CROP) {
+                val bitmap = Glide.with(context).asBitmap().load(imageUri).submit().get()
+                remoteViews.setImageViewBitmap(R.id.iv_picture, bitmap)
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    remoteViews.setViewOutlinePreferredRadius(
+                        R.id.iv_picture,
+                        calculateRadiusPx(imageWidth, imageHeight, radius, radiusUnit).toFloat(),
+                        TypedValue.COMPLEX_UNIT_PX
+                    )
+                    remoteViews.setBoolean(R.id.iv_picture, "setClipToOutline", true)
+                }
+            } else {
+                val imageBitmap =
+                    imageUri.toRoundedBitmap(
+                        context,
+                        radius,
+                        radiusUnit,
+                        scaleType,
+                        imageWidth,
+                        imageHeight
+                    )
+                remoteViews.setImageViewBitmap(R.id.iv_picture, imageBitmap)
+            }
             remoteViews.setOnClickFillInIntent(
                 R.id.iv_picture,
                 createLinkIntent(context, linkInfo, imageUri)

@@ -221,7 +221,11 @@ fun createImageRemoteViews(context: Context, scaleType: ImageView.ScaleType): Re
     return if (scaleType == ImageView.ScaleType.FIT_CENTER) {
         RemoteViews(context.packageName, R.layout.layout_widget_image)
     } else {
-        RemoteViews(context.packageName, R.layout.layout_widget_image_fitxy)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            RemoteViews(context.packageName, R.layout.layout_widget_image_centercrop)
+        } else {
+            RemoteViews(context.packageName, R.layout.layout_widget_image_fitxy)
+        }
     }
 }
 
