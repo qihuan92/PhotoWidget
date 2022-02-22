@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.RemoteViews
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.goAsync
 import com.qihuan.photowidget.ktx.logD
@@ -48,13 +49,12 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
             AppWidgetManager.EXTRA_APPWIDGET_ID,
             AppWidgetManager.INVALID_APPWIDGET_ID
         )
-        val interval = intent.getIntExtra(EXTRA_INTERVAL, -1)
-        val views = createFlipperRemoteViews(context, interval)
+        val remoteViews = RemoteViews(context.packageName, R.layout.widget_photo)
         when (navAction) {
-            NAV_WIDGET_NEXT -> views.showNext(R.id.vf_picture)
-            NAV_WIDGET_PREV -> views.showPrevious(R.id.vf_picture)
+            NAV_WIDGET_NEXT -> remoteViews.showNext(R.id.vf_picture)
+            NAV_WIDGET_PREV -> remoteViews.showPrevious(R.id.vf_picture)
         }
-        AppWidgetManager.getInstance(context).updateAppWidget(widgetId, views)
+        AppWidgetManager.getInstance(context).updateAppWidget(widgetId, remoteViews)
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {

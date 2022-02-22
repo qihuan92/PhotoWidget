@@ -331,10 +331,10 @@ class ConfigureActivity : AppCompatActivity() {
             widgetAdapter.setScaleType(it.scaleType)
         }
 
-        binding.layoutPhotoWidget.photoWidgetInfo.areaLeft.setOnClickListener {
+        binding.layoutPhotoWidget.areaLeft.setOnClickListener {
             binding.layoutPhotoWidget.vfPicture.showPrevious()
         }
-        binding.layoutPhotoWidget.photoWidgetInfo.areaRight.setOnClickListener {
+        binding.layoutPhotoWidget.areaRight.setOnClickListener {
             binding.layoutPhotoWidget.vfPicture.showNext()
         }
 
