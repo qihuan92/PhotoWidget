@@ -5,9 +5,11 @@
 
         <import type="android.view.View" />
 
-        <import type="com.qihuan.photowidget.config.BaseConfigViewModel.UIState" />
+        <import type="com.qihuan.photowidget.config.ConfigureViewModel.UIState" />
 
         <import type="com.qihuan.photowidget.ktx.UIExtKt" />
+
+        <import type="com.qihuan.photowidget.common.WidgetType" />
 
         <import type="com.qihuan.photowidget.common.WidgetFrameType" />
 
@@ -17,7 +19,7 @@
 
         <variable
             name="activity"
-            type="com.qihuan.photowidget.config.ConfigureActivity" />
+            type="com.qihuan.photowidget.config.BaseConfigureActivity" />
     </data>
 
 
@@ -136,7 +138,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:dividerPadding="5dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:isVisible="@{activity.widgetType != WidgetType.GIF}">
 
                     <com.qihuan.photowidget.view.TextSelectionView
                         style="@style/Widget.PhotoWidget.CardView.Small"

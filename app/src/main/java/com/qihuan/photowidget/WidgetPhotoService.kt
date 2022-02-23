@@ -110,10 +110,6 @@ class WidgetPhotoViewFactory(
                 R.id.iv_picture,
                 createLinkIntent(context, linkInfo, imageUri)
             )
-
-            // Set widget alpha
-            val alpha = (255 * (1f - widgetInfo.widgetTransparency / 100f)).toInt()
-            remoteViews.setInt(R.id.iv_picture, "setImageAlpha", alpha)
         } else {
             remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
         }

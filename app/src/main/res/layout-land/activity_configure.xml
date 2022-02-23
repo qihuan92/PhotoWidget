@@ -5,7 +5,7 @@
 
         <import type="android.view.View" />
 
-        <import type="com.qihuan.photowidget.config.BaseConfigViewModel.UIState" />
+        <import type="com.qihuan.photowidget.config.ConfigureViewModel.UIState" />
 
         <import type="com.qihuan.photowidget.ktx.UIExtKt" />
 
@@ -15,7 +15,7 @@
 
         <variable
             name="activity"
-            type="com.qihuan.photowidget.config.ConfigureActivity" />
+            type="com.qihuan.photowidget.config.BaseConfigureActivity" />
     </data>
 
 

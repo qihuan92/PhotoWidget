@@ -129,7 +129,7 @@ fun updateAppWidget(
         }
     }
 
-    // Set widget padding
+    // Set widget padding.
     remoteViews.setViewPadding(
         R.id.fl_picture_container,
         frameWidth + leftPadding,
@@ -138,7 +138,7 @@ fun updateAppWidget(
         frameWidth + bottomPadding
     )
 
-    // 处理边框相关逻辑
+    // Set widget photo frame.
     remoteViews.setImageViewResource(R.id.iv_widget_background, R.drawable.app_widget_background)
     if (widgetFrame != null && widgetFrame.type != WidgetFrameType.NONE) {
         remoteViews.setViewVisibility(R.id.iv_widget_background, View.VISIBLE)
@@ -158,6 +158,10 @@ fun updateAppWidget(
         remoteViews.setViewVisibility(R.id.iv_widget_background, View.GONE)
         remoteViews.setInt(R.id.iv_widget_background, "setColorFilter", Color.TRANSPARENT)
     }
+
+    // Set widget alpha.
+    val alpha = 1f - widgetInfo.widgetTransparency / 100f
+    remoteViews.setFloat(R.id.vf_picture, "setAlpha", alpha)
 
     try {
         appWidgetManager.updateAppWidget(widgetId, remoteViews)

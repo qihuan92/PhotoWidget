@@ -125,4 +125,5 @@
     <string name="save_fail_frame_file_not_exists">保存失败，请重新选择相框</string>
     <string name="save_fail">保存失败，请重试</string>
     <string name="save_fail_copy_photo_files">相片文件保存失败，请重试</string>
+    <string name="multi_gif_widget_unsupported">抱歉，暂不支持添加多个GIF图片</string>
 </resources>
