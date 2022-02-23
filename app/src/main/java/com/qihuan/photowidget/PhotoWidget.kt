@@ -159,8 +159,12 @@ fun updateAppWidget(
         remoteViews.setInt(R.id.iv_widget_background, "setColorFilter", Color.TRANSPARENT)
     }
 
-    appWidgetManager.updateAppWidget(widgetId, remoteViews)
-    appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.vf_picture)
+    try {
+        appWidgetManager.updateAppWidget(widgetId, remoteViews)
+        appWidgetManager.notifyAppWidgetViewDataChanged(widgetId, R.id.vf_picture)
+    } catch (e: Exception) {
+        logE("PhotoWidget", "updateAppWidget() -> Error:" + e.message, e)
+    }
 }
 
 fun createLinkIntent(context: Context, linkInfo: LinkInfo?, imageUri: Uri?): Intent {
