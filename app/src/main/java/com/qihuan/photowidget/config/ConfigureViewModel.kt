@@ -261,7 +261,7 @@ class ConfigureViewModel(
 
         // Save new image files.
         val newImageList = imageList.value
-        newImageList?.filter { it.imageId == null }?.forEachIndexed { index, widgetImage ->
+        newImageList?.filter { it.imageId == null }?.forEach { widgetImage ->
             val destFileDir = File(context.filesDir, "widget_${appWidgetId}")
             if (!destFileDir.exists()) {
                 destFileDir.mkdirs()
@@ -284,6 +284,10 @@ class ConfigureViewModel(
                 val compressedFile = context.compressImageFile(destFile)
                 widgetImage.imageUri = compressedFile.toUri()
             }
+        }
+
+        // Reorder.
+        newImageList?.forEachIndexed { index, widgetImage ->
             widgetImage.sort = index
         }
 

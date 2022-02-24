@@ -26,7 +26,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.adapter.*
+import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
+import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
+import com.qihuan.photowidget.adapter.WidgetFrameResourceAdapter
+import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.createAlbumLink
 import com.qihuan.photowidget.bean.createFileLink
@@ -139,13 +142,13 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private val previewAdapter by lazy { PreviewPhotoAdapter2() }
+    private val previewAdapter by lazy { PreviewPhotoAdapter() }
     private val previewAddAdapter by lazy {
         val previewPhotoAddAdapter = PreviewPhotoAddAdapter()
         previewPhotoAddAdapter.submitList(listOf(1))
         previewPhotoAddAdapter
     }
-    private val widgetAdapter by lazy { WidgetPhotoAdapter2(this) }
+    private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
     private val widgetFrameResourceAdapter by lazy {
         WidgetFrameResourceAdapter {
             when (it.type) {

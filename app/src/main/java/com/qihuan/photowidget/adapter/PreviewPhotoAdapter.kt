@@ -1,6 +1,5 @@
 package com.qihuan.photowidget.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,21 +7,24 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.databinding.ItemPreviewPhotoBinding
 
 /**
  * PreviewPhotoAdapter
+ *
  * @author qi
  * @since 12/9/20
  */
-class PreviewPhotoAdapter : ListAdapter<Uri, PreviewPhotoAdapter.ViewHolder>(DiffCallback()) {
+class PreviewPhotoAdapter :
+    ListAdapter<WidgetImage, PreviewPhotoAdapter.ViewHolder>(DiffCallback()) {
 
-    private class DiffCallback : DiffUtil.ItemCallback<Uri>() {
-        override fun areItemsTheSame(oldItem: Uri, newItem: Uri): Boolean {
+    private class DiffCallback : DiffUtil.ItemCallback<WidgetImage>() {
+        override fun areItemsTheSame(oldItem: WidgetImage, newItem: WidgetImage): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Uri, newItem: Uri): Boolean {
+        override fun areContentsTheSame(oldItem: WidgetImage, newItem: WidgetImage): Boolean {
             return oldItem == newItem
         }
     }
@@ -33,13 +35,13 @@ class PreviewPhotoAdapter : ListAdapter<Uri, PreviewPhotoAdapter.ViewHolder>(Dif
 
         init {
             binding.btnDelete.setOnClickListener {
-                onItemDeleteListener?.invoke(layoutPosition - 1, it)
+                onItemDeleteListener?.invoke(bindingAdapterPosition, it)
             }
         }
 
-        fun bind(item: Uri) {
+        fun bind(item: WidgetImage) {
             Glide.with(itemView.context)
-                .load(item)
+                .load(item.imageUri)
                 .thumbnail(0.1f)
                 .into(binding.ivPicture)
         }
