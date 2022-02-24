@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RemoteViews
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.AppWidgetTarget
 import com.qihuan.photowidget.analysis.EventStatistics
 import com.qihuan.photowidget.bean.LinkInfo
@@ -145,6 +146,8 @@ fun updateAppWidget(
         if (widgetFrame.type == WidgetFrameType.BUILD_IN || widgetFrame.type == WidgetFrameType.IMAGE) {
             Glide.with(context)
                 .asBitmap()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .load(widgetFrame.frameUri)
                 .into(AppWidgetTarget(context, R.id.iv_widget_background, remoteViews, widgetId))
         } else if (widgetFrame.type == WidgetFrameType.COLOR) {

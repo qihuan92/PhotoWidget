@@ -46,19 +46,24 @@ fun ImageView.load(uri: Uri) {
 }
 
 fun View.loadToBackground(uri: Uri) {
-    Glide.with(context)
-        .load(uri)
-        .skipMemoryCache(true)
-        .diskCacheStrategy(DiskCacheStrategy.NONE)
-        .into(object : CustomTarget<Drawable>() {
-            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                background = resource
-            }
+    post {
+        Glide.with(context)
+            .load(uri)
+            .skipMemoryCache(true)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .into(object : CustomTarget<Drawable>(width, height) {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    background = resource
+                }
 
-            override fun onLoadCleared(placeholder: Drawable?) {
-                background = placeholder
-            }
-        })
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    background = placeholder
+                }
+            })
+    }
 }
 
 fun Uri.toRoundedBitmap(
