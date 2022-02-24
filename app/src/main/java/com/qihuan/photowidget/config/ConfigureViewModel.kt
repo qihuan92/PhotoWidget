@@ -208,11 +208,13 @@ class ConfigureViewModel(
         val widgetInfo = getCurrentWidgetInfo()
 
         // Delete image files.
-        deleteImageList.forEach {
-            try {
-                it.imageUri.toFile().delete()
-            } catch (e: Exception) {
-                logE("ConfigureViewModel", "Delete image fail: " + e.message, e)
+        withContext(Dispatchers.IO) {
+            deleteImageList.forEach {
+                try {
+                    it.imageUri.toFile().delete()
+                } catch (e: Exception) {
+                    logE("ConfigureViewModel", "Delete image fail: " + e.message, e)
+                }
             }
         }
 
@@ -227,7 +229,9 @@ class ConfigureViewModel(
             val fileExtension = imageUri.getExtension(context) ?: FileExtension.PNG
             val fileName = "${System.currentTimeMillis()}.${fileExtension}"
             val destFile = File(widgetFileDir, fileName)
-            context.copyFileSmart(imageUri, destFile)
+            withContext(Dispatchers.IO) {
+                context.copyFileSmart(imageUri, destFile)
+            }
             if (widgetType == WidgetType.GIF) {
                 widgetImage.imageUri = destFile.toUri()
                 withContext(Dispatchers.IO) {
