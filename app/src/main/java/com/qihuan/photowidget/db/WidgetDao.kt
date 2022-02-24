@@ -67,9 +67,12 @@ abstract class WidgetDao {
     abstract suspend fun deleteWidgetFrameByWidgetId(widgetId: Int)
 
     @Transaction
-    open suspend fun save(widgetBean: WidgetBean) {
+    open suspend fun save(widgetBean: WidgetBean, deleteImageList: List<WidgetImage>?) {
         insertInfo(widgetBean.widgetInfo)
-        //deleteImageByWidgetId(widgetBean.widgetInfo.widgetId)
+
+        if (!deleteImageList.isNullOrEmpty()) {
+            deleteImageByIdList(deleteImageList.mapNotNull { it.imageId })
+        }
         insertImage(widgetBean.imageList)
 
         val linkInfo = widgetBean.linkInfo

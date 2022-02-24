@@ -95,19 +95,20 @@ class ConfigureViewModel(
                 widgetFrameType.value = widgetFrameFromDb.type
                 widgetFrameWidth.value = widgetFrameFromDb.width
                 widgetFrameColor.value = widgetFrameFromDb.frameColor
-                if (widgetFrameFromDb.type == WidgetFrameType.BUILD_IN || widgetFrameFromDb.type == WidgetFrameType.IMAGE) {
-                    // 复制到临时文件
-                    val frameFile = widgetFrameFromDb.frameUri?.toFile()
-                    if (frameFile != null && frameFile.exists()) {
-                        val tempFrameFolder =
-                            File(context.cacheDir, TEMP_DIR_NAME + File.separator + FRAME_DIR_NAME)
-                        val tempFrameFile = File(tempFrameFolder, frameFile.name)
-                        withContext(Dispatchers.IO) {
-                            frameFile.copyTo(tempFrameFile, overwrite = true)
-                        }
-                        widgetFrameUri.value = tempFrameFile.toUri()
-                    }
-                }
+                widgetFrameUri.value = widgetFrameFromDb.frameUri
+//                if (widgetFrameFromDb.type == WidgetFrameType.BUILD_IN || widgetFrameFromDb.type == WidgetFrameType.IMAGE) {
+//                    // 复制到临时文件
+//                    val frameFile = widgetFrameFromDb.frameUri?.toFile()
+//                    if (frameFile != null && frameFile.exists()) {
+//                        val tempFrameFolder =
+//                            File(context.cacheDir, TEMP_DIR_NAME + File.separator + FRAME_DIR_NAME)
+//                        val tempFrameFile = File(tempFrameFolder, frameFile.name)
+//                        withContext(Dispatchers.IO) {
+//                            frameFile.copyTo(tempFrameFile, overwrite = true)
+//                        }
+//                        widgetFrameUri.value = tempFrameFile.toUri()
+//                    }
+//                }
             }
 
             uiState.value = UIState.SHOW_CONTENT
@@ -326,11 +327,8 @@ class ConfigureViewModel(
             )
         }
 
-        if (deleteImageList.isNotEmpty()) {
-            widgetDao.deleteImageByIdList(deleteImageList.mapNotNull { it.imageId })
-        }
         val widgetBean = WidgetBean(widgetInfo, newImageList.orEmpty(), linkInfo.value, widgetFrame)
-        widgetDao.save(widgetBean)
+        widgetDao.save(widgetBean, deleteImageList)
         updateAppWidget(context, AppWidgetManager.getInstance(context), widgetBean)
     }
 
