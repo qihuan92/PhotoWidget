@@ -48,6 +48,9 @@ abstract class WidgetDao {
     @Query("delete from widget_image where imageId = :id")
     abstract suspend fun deleteImageById(id: Int)
 
+    @Query("delete from widget_image where imageId in (:idList)")
+    abstract suspend fun deleteImageByIdList(idList: List<Int>)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertLinkInfo(record: LinkInfo)
 
@@ -66,7 +69,7 @@ abstract class WidgetDao {
     @Transaction
     open suspend fun save(widgetBean: WidgetBean) {
         insertInfo(widgetBean.widgetInfo)
-        deleteImageByWidgetId(widgetBean.widgetInfo.widgetId)
+        //deleteImageByWidgetId(widgetBean.widgetInfo.widgetId)
         insertImage(widgetBean.imageList)
 
         val linkInfo = widgetBean.linkInfo

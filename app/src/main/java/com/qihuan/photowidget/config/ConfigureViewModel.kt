@@ -44,30 +44,27 @@ class ConfigureViewModel(
     private val settingsRepository by lazy { SettingsRepository(application) }
     private val widgetFrameRepository by lazy { WidgetFrameRepository(application) }
 
+    val imageList by lazy { MutableLiveData<MutableList<WidgetImage>>(mutableListOf()) }
+    private val deleteImageList by lazy { mutableListOf<WidgetImage>() }
+    val widgetFrameResourceList by lazy { MutableLiveData<List<WidgetFrameResource>>(mutableListOf()) }
+
     val topPadding by lazy { MutableLiveData(0f) }
     val bottomPadding by lazy { MutableLiveData(0f) }
     val leftPadding by lazy { MutableLiveData(0f) }
     val rightPadding by lazy { MutableLiveData(0f) }
-
     val widgetRadius by lazy { MutableLiveData(0f) }
     val widgetRadiusUnit by lazy { MutableLiveData(RadiusUnit.ANGLE) }
-
     val linkInfo by lazy { MutableLiveData<LinkInfo>() }
-
     val widgetFrameType by lazy { MutableLiveData(WidgetFrameType.NONE) }
     val widgetFrameUri by lazy { MutableLiveData<Uri>() }
     val widgetFrameColor by lazy { MutableLiveData<String>() }
     val widgetFrameWidth by lazy { MutableLiveData(0f) }
-    val widgetFrameResourceList by lazy { MutableLiveData<List<WidgetFrameResource>>(mutableListOf()) }
-
     val widgetTransparency by lazy { MutableLiveData(0f) }
     val autoPlayInterval by lazy { MutableLiveData(PlayInterval.NONE) }
     val photoScaleType by lazy { MutableLiveData(if (widgetType == WidgetType.GIF) PhotoScaleType.FIT_CENTER else PhotoScaleType.CENTER_CROP) }
 
     val uiState by lazy { MutableLiveData(UIState.LOADING) }
-    val imageUriList by lazy { MutableLiveData<MutableList<Uri>>(mutableListOf()) }
     val isEditState by lazy { MutableLiveData(false) }
-
     val isFrameLoading = MutableLiveData(false)
 
     init {
@@ -82,7 +79,7 @@ class ConfigureViewModel(
             val widgetInfo = widgetInfoDao.selectById(appWidgetId)
             if (widgetInfo != null) {
                 isEditState.value = true
-                copyToTempDir()
+                imageList.value = widgetDao.selectImageList(appWidgetId).toMutableList()
                 displayWidget(widgetInfo)
             } else {
                 isEditState.value = false
@@ -145,66 +142,26 @@ class ConfigureViewModel(
         photoScaleType.value = widgetInfo.photoScaleType
     }
 
-    private suspend fun copyToTempDir() {
-        val cacheDir = context.cacheDir
-        val imageList = widgetDao.selectImageList(appWidgetId)
-        if (imageList.isEmpty()) {
-            return
-        }
-
-        val uriList = mutableListOf<Uri>()
-        withContext(Dispatchers.IO) {
-            val tempDir = File(cacheDir, TEMP_DIR_NAME)
-            if (!tempDir.exists()) {
-                tempDir.mkdirs()
-            }
-
-            imageList.forEach {
-                val imageFile = it.imageUri.toFile()
-                if (imageFile.exists()) {
-                    val tempFile = File(tempDir, imageFile.name)
-                    imageFile.copyTo(tempFile, true)
-                    uriList.add(tempFile.toUri())
-                }
-            }
-        }
-        replaceImageList(uriList)
-    }
-
     fun addImage(uri: Uri) {
-        val value = imageUriList.value
-        value?.add(uri)
-        imageUriList.value = value
-    }
-
-    private fun replaceImageList(uriList: List<Uri>) {
-        imageUriList.value = uriList.toMutableList()
+        val imageListValue = imageList.value
+        val widgetImage = WidgetImage(
+            null,
+            appWidgetId,
+            uri,
+            System.currentTimeMillis(),
+            imageListValue?.size ?: 0
+        )
+        imageListValue?.add(widgetImage)
+        imageList.value = imageListValue
     }
 
     fun deleteImage(position: Int) {
-        val value = imageUriList.value
-        val uri = value?.get(position)
-        value?.removeAt(value.indexOf(uri))
-        imageUriList.value = value
-
-        viewModelScope.launch {
-            deleteFiles(uri)
+        val imageListValue = imageList.value
+        val deleteImage = imageListValue?.removeAt(position)
+        if (deleteImage?.imageId != null) {
+            deleteImageList.add(deleteImage)
         }
-    }
-
-    private suspend fun deleteFiles(vararg uris: Uri?) {
-        if (uris.isEmpty()) {
-            return
-        }
-        withContext(Dispatchers.IO) {
-            uris.filterNotNull()
-                .forEach { uri ->
-                    val tempFile = uri.toFile()
-                    if (tempFile.exists()) {
-                        tempFile.delete()
-                    }
-                }
-        }
+        imageList.value = imageListValue
     }
 
     fun deleteLink() {
@@ -232,9 +189,9 @@ class ConfigureViewModel(
     }
 
     fun swapImageList(fromPosition: Int, toPosition: Int) {
-        val list = imageUriList.value ?: mutableListOf()
+        val list = imageList.value ?: mutableListOf()
         Collections.swap(list, fromPosition, toPosition)
-        imageUriList.value = list
+        imageList.value = list
     }
 
     suspend fun setWidgetFrame(
@@ -293,23 +250,41 @@ class ConfigureViewModel(
     suspend fun saveWidget() {
         val widgetInfo = getCurrentWidgetInfo()
 
-        val uriList: List<Uri>
-        try {
-            uriList = saveWidgetPhotoFiles()
-        } catch (e: Exception) {
-            logE("BaseConfigViewModel", e.message, e)
-            throw SaveWidgetException(
-                e.message ?: context.getString(R.string.save_fail_copy_photo_files)
-            )
+        // Delete image files.
+        deleteImageList.forEach {
+            try {
+                it.imageUri.toFile().delete()
+            } catch (e: Exception) {
+                logE("ConfigureViewModel", "Delete image fail: " + e.message, e)
+            }
         }
 
-        val imageList = uriList.mapIndexed { index, uri ->
-            WidgetImage(
-                widgetId = appWidgetId,
-                imageUri = uri,
-                createTime = System.currentTimeMillis(),
-                sort = index
-            )
+        // Save new image files.
+        val newImageList = imageList.value
+        newImageList?.filter { it.imageId == null }?.forEachIndexed { index, widgetImage ->
+            val destFileDir = File(context.filesDir, "widget_${appWidgetId}")
+            if (!destFileDir.exists()) {
+                destFileDir.mkdirs()
+            }
+            val imageUri = widgetImage.imageUri
+            val fileExtension = imageUri.getExtension(context) ?: FileExtension.PNG
+            val fileName = "${System.currentTimeMillis()}.${fileExtension}"
+            val destFile = File(destFileDir, fileName)
+            context.copyFile(imageUri, destFile)
+            if (widgetType == WidgetType.GIF) {
+                widgetImage.imageUri = destFile.toUri()
+                withContext(Dispatchers.IO) {
+                    destFile.toUri().saveGifFramesToDir(
+                        File(destFileDir, destFile.nameWithoutExtension),
+                        widgetRadius.value ?: 0f,
+                        widgetRadiusUnit.value ?: RadiusUnit.ANGLE
+                    )
+                }
+            } else {
+                val compressedFile = context.compressImageFile(destFile)
+                widgetImage.imageUri = compressedFile.toUri()
+            }
+            widgetImage.sort = index
         }
 
         var frameFileUri: Uri? = null
@@ -347,7 +322,10 @@ class ConfigureViewModel(
             )
         }
 
-        val widgetBean = WidgetBean(widgetInfo, imageList, linkInfo.value, widgetFrame)
+        if (deleteImageList.isNotEmpty()) {
+            widgetDao.deleteImageByIdList(deleteImageList.mapNotNull { it.imageId })
+        }
+        val widgetBean = WidgetBean(widgetInfo, newImageList.orEmpty(), linkInfo.value, widgetFrame)
         widgetDao.save(widgetBean)
         updateAppWidget(context, AppWidgetManager.getInstance(context), widgetBean)
     }
@@ -366,48 +344,5 @@ class ConfigureViewModel(
             photoScaleType = photoScaleType.value ?: PhotoScaleType.CENTER_CROP,
             widgetType = widgetType
         )
-    }
-
-    private suspend fun saveWidgetPhotoFiles(): List<Uri> {
-        return withContext(Dispatchers.IO) {
-            val widgetDir = File(context.filesDir, "widget_${appWidgetId}")
-            if (widgetDir.exists() && widgetDir.isDirectory) {
-                widgetDir.delete()
-            }
-            if (!widgetDir.exists()) {
-                widgetDir.mkdirs()
-            }
-
-            val tempUriList = imageUriList.value
-            val uriList = mutableListOf<Uri>()
-            tempUriList?.forEach {
-                val tempFile = it.toFile()
-                if (tempFile.exists()) {
-                    val file = File(widgetDir, tempFile.name)
-                    tempFile.copyTo(file, true)
-                    uriList.add(file.toUri())
-                }
-            }
-
-            afterSaveFiles(widgetDir, uriList)
-
-            if (uriList.isEmpty()) {
-                logE("BaseConfigViewModel", "saveWidgetPhotoFiles() - Output uri list is Empty!")
-            }
-
-            return@withContext uriList
-        }
-    }
-
-    private fun afterSaveFiles(widgetDir: File, uriList: List<Uri>) {
-        if (widgetType == WidgetType.GIF) {
-            uriList.forEach { uri ->
-                uri.saveGifFramesToDir(
-                    File(widgetDir, uri.toFile().nameWithoutExtension),
-                    widgetRadius.value ?: 0f,
-                    widgetRadiusUnit.value ?: RadiusUnit.ANGLE
-                )
-            }
-        }
     }
 }

@@ -17,8 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toFile
-import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.lifecycle.lifecycleScope
@@ -28,10 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
-import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
-import com.qihuan.photowidget.adapter.WidgetFrameResourceAdapter
-import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
+import com.qihuan.photowidget.adapter.*
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.createAlbumLink
 import com.qihuan.photowidget.bean.createFileLink
@@ -63,10 +58,6 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     abstract val widgetType: WidgetType
-
-    private val processImageDialog by lazy(LazyThreadSafetyMode.NONE) {
-        createLoadingDialog(R.string.processing)
-    }
 
     private val saveImageDialog by lazy(LazyThreadSafetyMode.NONE) {
         createLoadingDialog(R.string.saving)
@@ -148,13 +139,13 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
         }
     }
 
-    private val previewAdapter by lazy { PreviewPhotoAdapter() }
+    private val previewAdapter by lazy { PreviewPhotoAdapter2() }
     private val previewAddAdapter by lazy {
         val previewPhotoAddAdapter = PreviewPhotoAddAdapter()
         previewPhotoAddAdapter.submitList(listOf(1))
         previewPhotoAddAdapter
     }
-    private val widgetAdapter by lazy { WidgetPhotoAdapter(this) }
+    private val widgetAdapter by lazy { WidgetPhotoAdapter2(this) }
     private val widgetFrameResourceAdapter by lazy {
         WidgetFrameResourceAdapter {
             when (it.type) {
@@ -294,7 +285,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
             showDeletePhotoAlert(position)
         }
         previewAddAdapter.setOnItemAddListener {
-            if (widgetType == WidgetType.GIF && viewModel.imageUriList.value?.size ?: 0 >= 1) {
+            if (widgetType == WidgetType.GIF && viewModel.imageList.value?.size ?: 0 >= 1) {
                 showSnackbar(R.string.multi_gif_widget_unsupported)
                 return@setOnItemAddListener
             }
@@ -303,7 +294,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
         }
         bindDragHelper()
 
-        viewModel.imageUriList.observe(this) {
+        viewModel.imageList.observe(this) {
             previewAdapter.submitList(it.toList())
             binding.layoutPhotoWidget.vfPicture.adapter = widgetAdapter
             widgetAdapter.setData(it)
@@ -440,36 +431,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
         if (uris.isNullOrEmpty()) {
             return
         }
-        lifecycleScope.launch {
-            processImageDialog.show()
-            for (uri in uris) {
-                val tempOutFile = if (uris.size == 1 && widgetType == WidgetType.NORMAL) {
-                    uri.toFile()
-                } else {
-                    val outDir = File(cacheDir, TEMP_DIR_NAME)
-                    createFile(
-                        outDir,
-                        System.currentTimeMillis().toString(),
-                        uri.getExtension(this@BaseConfigureActivity)
-                    ).also { file ->
-                        copyFile(uri, file.toUri())
-                    }
-                }
-                try {
-                    val imageFile =
-                        if (widgetType == WidgetType.NORMAL) {
-                            compressImageFile(tempOutFile)
-                        } else {
-                            tempOutFile
-                        }
-
-                    viewModel.addImage(imageFile.toUri())
-                } catch (e: NoSuchFileException) {
-                    logE("ConfigureActivity", e.message, e)
-                }
-            }
-            processImageDialog.dismiss()
-        }
+        uris.forEach { viewModel.addImage(it) }
     }
 
     private fun saveWidget() {
@@ -479,7 +441,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
         if (viewModel.uiState.value == ConfigureViewModel.UIState.LOADING) {
             return
         }
-        if (viewModel.imageUriList.value.isNullOrEmpty()) {
+        if (viewModel.imageList.value.isNullOrEmpty()) {
             showSnackbar(R.string.warning_select_picture)
             return
         }
