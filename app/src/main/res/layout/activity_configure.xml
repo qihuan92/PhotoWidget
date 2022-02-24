@@ -97,15 +97,6 @@
             </com.google.android.material.card.MaterialCardView>
         </FrameLayout>
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:isVisible="@{viewModel.isFrameLoading()}"
-            app:layout_constraintBottom_toBottomOf="@id/container_photo_widget_preview"
-            app:layout_constraintLeft_toLeftOf="@id/container_photo_widget_preview"
-            app:layout_constraintRight_toRightOf="@id/container_photo_widget_preview"
-            app:layout_constraintTop_toTopOf="@id/container_photo_widget_preview" />
-
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scroll_view_info"
             android:layout_width="match_parent"

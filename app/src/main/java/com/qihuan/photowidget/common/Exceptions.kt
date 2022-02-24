@@ -6,3 +6,10 @@ package com.qihuan.photowidget.common
  * @since 2022/2/21
  */
 class SaveWidgetException(message: String) : Exception(message)
+
+/**
+ * CopyFileException
+ * @author qi
+ * @since 2022/02/24
+ */
+class CopyFileException(message: String) : Exception(message)

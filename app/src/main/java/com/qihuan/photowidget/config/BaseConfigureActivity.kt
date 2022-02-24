@@ -159,9 +159,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
                     selectWidgetFrameForResult.launch("image/*")
                 }
                 else -> {
-                    lifecycleScope.launch {
-                        viewModel.setWidgetFrame(it.type, uri = it.frameUri)
-                    }
+                    setWidgetFrame(it.type, uri = it.frameUri)
                 }
             }
         }
@@ -220,9 +218,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
     private val selectWidgetFrameForResult =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
             if (it != null) {
-                lifecycleScope.launch {
-                    viewModel.setWidgetFrame(WidgetFrameType.IMAGE, uri = it)
-                }
+                setWidgetFrame(WidgetFrameType.IMAGE, uri = it)
             }
         }
 
@@ -363,12 +359,6 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
                 binding.containerPhotoWidgetPreview.loadToBackground(it)
             }
         }
-
-        viewModel.isFrameLoading.observe(this) {
-            if (it) {
-                binding.containerPhotoWidgetPreview.startScaleAnimation(1.1f, 1f)
-            }
-        }
     }
 
     private fun View.startScaleAnimation(startValue: Float, finalValue: Float) {
@@ -437,10 +427,16 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
         uris.forEach { viewModel.addImage(it) }
     }
 
+    private fun setWidgetFrame(
+        type: WidgetFrameType,
+        color: String? = null,
+        uri: Uri? = null
+    ) {
+        binding.containerPhotoWidgetPreview.startScaleAnimation(1.1f, 1f)
+        viewModel.setWidgetFrame(type, color, uri)
+    }
+
     private fun saveWidget() {
-        if (viewModel.isFrameLoading.value == true) {
-            return
-        }
         if (viewModel.uiState.value == ConfigureViewModel.UIState.LOADING) {
             return
         }
@@ -497,12 +493,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
             .setPositiveButton(R.string.sure, object : ColorEnvelopeListener {
                 override fun onColorSelected(envelope: ColorEnvelope?, fromUser: Boolean) {
                     if (envelope != null) {
-                        lifecycleScope.launch {
-                            viewModel.setWidgetFrame(
-                                WidgetFrameType.COLOR,
-                                color = "#${envelope.hexCode}"
-                            )
-                        }
+                        setWidgetFrame(WidgetFrameType.COLOR, color = "#${envelope.hexCode}")
                     }
                 }
             })

@@ -8,6 +8,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.qihuan.photowidget.BuildConfig
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.*
@@ -46,7 +47,9 @@ class ConfigureViewModel(
 
     val imageList by lazy { MutableLiveData<MutableList<WidgetImage>>(mutableListOf()) }
     private val deleteImageList by lazy { mutableListOf<WidgetImage>() }
+
     val widgetFrameResourceList by lazy { MutableLiveData<List<WidgetFrameResource>>(mutableListOf()) }
+    private var unsavedWidgetFrameUri: Uri? = null
 
     val topPadding by lazy { MutableLiveData(0f) }
     val bottomPadding by lazy { MutableLiveData(0f) }
@@ -65,7 +68,6 @@ class ConfigureViewModel(
 
     val uiState by lazy { MutableLiveData(UIState.LOADING) }
     val isEditState by lazy { MutableLiveData(false) }
-    val isFrameLoading = MutableLiveData(false)
 
     init {
         loadWidget()
@@ -96,19 +98,6 @@ class ConfigureViewModel(
                 widgetFrameWidth.value = widgetFrameFromDb.width
                 widgetFrameColor.value = widgetFrameFromDb.frameColor
                 widgetFrameUri.value = widgetFrameFromDb.frameUri
-//                if (widgetFrameFromDb.type == WidgetFrameType.BUILD_IN || widgetFrameFromDb.type == WidgetFrameType.IMAGE) {
-//                    // 复制到临时文件
-//                    val frameFile = widgetFrameFromDb.frameUri?.toFile()
-//                    if (frameFile != null && frameFile.exists()) {
-//                        val tempFrameFolder =
-//                            File(context.cacheDir, TEMP_DIR_NAME + File.separator + FRAME_DIR_NAME)
-//                        val tempFrameFile = File(tempFrameFolder, frameFile.name)
-//                        withContext(Dispatchers.IO) {
-//                            frameFile.copyTo(tempFrameFile, overwrite = true)
-//                        }
-//                        widgetFrameUri.value = tempFrameFile.toUri()
-//                    }
-//                }
             }
 
             uiState.value = UIState.SHOW_CONTENT
@@ -195,16 +184,11 @@ class ConfigureViewModel(
         imageList.value = list
     }
 
-    suspend fun setWidgetFrame(
+    fun setWidgetFrame(
         type: WidgetFrameType,
         color: String? = null,
         uri: Uri? = null
     ) {
-        if (isFrameLoading.value == true) {
-            return
-        }
-
-        isFrameLoading.value = true
         if (type == WidgetFrameType.NONE) {
             widgetFrameWidth.value = 0f
         } else {
@@ -213,38 +197,10 @@ class ConfigureViewModel(
             }
         }
 
-        val tempFrameFolder =
-            File(context.cacheDir, TEMP_DIR_NAME + File.separator + FRAME_DIR_NAME)
-        if (tempFrameFolder.exists()) {
-            tempFrameFolder.deleteRecursively()
-        }
-        tempFrameFolder.mkdirs()
-
-        if (type == WidgetFrameType.BUILD_IN) {
-            val assetName = uri?.path?.substringAfterLast("android_asset/")
-            if (assetName != null) {
-                val fileName = assetName.substringAfterLast("frame/")
-                val file = File(tempFrameFolder, fileName)
-                context.copyAssetsFile(assetName, file)
-                widgetFrameUri.value = file.toUri()
-            }
-        } else if (type == WidgetFrameType.IMAGE) {
-            if (uri != null) {
-                val fileExt = uri.getExtension(context)
-                val fileName = if (fileExt != null) "custom_frame.${fileExt}" else "custom_frame"
-                val file = File(tempFrameFolder, fileName)
-                context.copyFile(uri, file)
-                val compressFile = context.compressImageFile(file)
-                widgetFrameUri.value = compressFile.toUri()
-            }
-        } else {
-            widgetFrameUri.value = uri
-        }
-
+        unsavedWidgetFrameUri = uri
+        widgetFrameUri.value = uri
         widgetFrameType.value = type
         widgetFrameColor.value = color
-
-        isFrameLoading.value = false
     }
 
     @Throws(SaveWidgetException::class)
@@ -260,23 +216,23 @@ class ConfigureViewModel(
             }
         }
 
+        val widgetFileDir = File(context.filesDir, "widget_${appWidgetId}").apply {
+            createOrExistsDir()
+        }
+
         // Save new image files.
         val newImageList = imageList.value
         newImageList?.filter { it.imageId == null }?.forEach { widgetImage ->
-            val destFileDir = File(context.filesDir, "widget_${appWidgetId}")
-            if (!destFileDir.exists()) {
-                destFileDir.mkdirs()
-            }
             val imageUri = widgetImage.imageUri
             val fileExtension = imageUri.getExtension(context) ?: FileExtension.PNG
             val fileName = "${System.currentTimeMillis()}.${fileExtension}"
-            val destFile = File(destFileDir, fileName)
-            context.copyFile(imageUri, destFile)
+            val destFile = File(widgetFileDir, fileName)
+            context.copyFileSmart(imageUri, destFile)
             if (widgetType == WidgetType.GIF) {
                 widgetImage.imageUri = destFile.toUri()
                 withContext(Dispatchers.IO) {
                     destFile.toUri().saveGifFramesToDir(
-                        File(destFileDir, destFile.nameWithoutExtension),
+                        File(widgetFileDir, destFile.nameWithoutExtension),
                         widgetRadius.value ?: 0f,
                         widgetRadiusUnit.value ?: RadiusUnit.ANGLE
                     )
@@ -292,35 +248,39 @@ class ConfigureViewModel(
             widgetImage.sort = index
         }
 
-        var frameFileUri: Uri? = null
-        val widgetFrame = if (widgetFrameType.value == WidgetFrameType.NONE) {
-            null
-        } else {
-            // 相框文件目录
-            val frameFolder =
-                File(context.filesDir, "widget_${appWidgetId}" + File.separator + FRAME_DIR_NAME)
-            // 删除原来相框文件
-            if (frameFolder.exists()) {
-                withContext(Dispatchers.IO) { frameFolder.deleteRecursively() }
-            }
-
-            // 保存相框文件
-            if (widgetFrameType.value == WidgetFrameType.BUILD_IN || widgetFrameType.value == WidgetFrameType.IMAGE) {
-                val tempFrameFile = widgetFrameUri.value?.toFile()
-
-                if (tempFrameFile == null || !tempFrameFile.exists()) {
-                    throw SaveWidgetException(context.getString(R.string.save_fail_frame_file_not_exists))
+        // Save photo frame file.
+        var widgetFrame: WidgetFrame? = null
+        if (widgetFrameType.value != WidgetFrameType.NONE) {
+            var frameUri = widgetFrameUri.value
+            unsavedWidgetFrameUri?.let {
+                val frameDir = File(widgetFileDir, FRAME_DIR_NAME).apply {
+                    if (exists()) {
+                        withContext(Dispatchers.IO) { deleteRecursively() }
+                    }
+                    createOrExistsDir()
                 }
-                val frameFile = File(frameFolder, tempFrameFile.name)
+
+                val frameFileName = "frame." + it.getExtension(context)
+                val frameFile = File(frameDir, frameFileName)
                 withContext(Dispatchers.IO) {
-                    tempFrameFile.copyTo(frameFile, overwrite = true)
+                    try {
+                        context.copyFileSmart(it, frameFile)
+                    } catch (e: CopyFileException) {
+                        val errorMessage =
+                            if (BuildConfig.DEBUG) e.message else context.getString(R.string.save_fail_copy_photo_files)
+                        throw SaveWidgetException(errorMessage.orEmpty())
+                    }
                 }
-                frameFileUri = frameFile.toUri()
+
+                frameUri = frameFile.toUri()
+                if (widgetFrameType.value == WidgetFrameType.IMAGE) {
+                    frameUri = context.compressImageFile(frameFile).toUri()
+                }
             }
 
-            WidgetFrame(
+            widgetFrame = WidgetFrame(
                 widgetId = appWidgetId,
-                frameUri = frameFileUri,
+                frameUri = frameUri,
                 frameColor = widgetFrameColor.value,
                 width = widgetFrameWidth.value ?: 0f,
                 type = widgetFrameType.value ?: WidgetFrameType.NONE
