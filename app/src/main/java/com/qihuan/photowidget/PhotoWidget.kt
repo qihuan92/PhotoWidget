@@ -31,7 +31,7 @@ const val EXTRA_NAV = "nav"
 const val NAV_WIDGET_PREV = "nav_widget_prev"
 const val NAV_WIDGET_NEXT = "nav_widget_next"
 
-val MUTABLE_FLAG = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+val FLAG_MUTABLE_COMPAT = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
     PendingIntent.FLAG_MUTABLE
 } else {
     PendingIntent.FLAG_UPDATE_CURRENT
@@ -97,7 +97,7 @@ fun updateAppWidget(
         // Set widget link
         val linkIntent = createLinkIntent(context, linkInfo, imageList.first().imageUri)
         val linkPendingIntent =
-            PendingIntent.getActivity(context, widgetId, linkIntent, MUTABLE_FLAG)
+            PendingIntent.getActivity(context, widgetId, linkIntent, FLAG_MUTABLE_COMPAT)
         remoteViews.setOnClickPendingIntent(android.R.id.background, linkPendingIntent)
     } else {
         // Create flipper remote views
@@ -111,7 +111,7 @@ fun updateAppWidget(
         // Set widget link
         val linkIntent = createLinkIntent(context, linkInfo, null)
         val linkPendingIntent =
-            PendingIntent.getActivity(context, widgetId, linkIntent, MUTABLE_FLAG)
+            PendingIntent.getActivity(context, widgetId, linkIntent, FLAG_MUTABLE_COMPAT)
         remoteViews.setPendingIntentTemplate(R.id.vf_picture, linkPendingIntent)
 
         if (isMultiImage) {
@@ -206,12 +206,7 @@ private fun createWidgetNavPendingIntent(
         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
         putExtra(EXTRA_NAV, navAction)
     }
-    return PendingIntent.getBroadcast(
-        context,
-        Random.nextInt(),
-        navIntent,
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
-    )
+    return PendingIntent.getBroadcast(context, Random.nextInt(), navIntent, FLAG_MUTABLE_COMPAT)
 }
 
 fun createFlipperRemoteViews(context: Context, interval: Int): RemoteViews {
@@ -232,11 +227,7 @@ fun createImageRemoteViews(context: Context, scaleType: ImageView.ScaleType): Re
     return if (scaleType == ImageView.ScaleType.FIT_CENTER) {
         RemoteViews(context.packageName, R.layout.layout_widget_image)
     } else {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            RemoteViews(context.packageName, R.layout.layout_widget_image_centercrop)
-        } else {
-            RemoteViews(context.packageName, R.layout.layout_widget_image_fitxy)
-        }
+        RemoteViews(context.packageName, R.layout.layout_widget_image_fitxy)
     }
 }
 
