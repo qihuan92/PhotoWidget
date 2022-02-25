@@ -264,7 +264,7 @@ class ConfigureViewModel(
                     createOrExistsDir()
                 }
 
-                val frameFileName = "frame." + it.getExtension(context)
+                val frameFileName = "${System.currentTimeMillis()}.${it.getExtension(context)}"
                 val frameFile = File(frameDir, frameFileName)
                 withContext(Dispatchers.IO) {
                     try {
