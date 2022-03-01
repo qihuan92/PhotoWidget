@@ -86,14 +86,21 @@
                 app:cardCornerRadius="@{viewModel.widgetRadius}"
                 app:cardCornerRadiusUnit="@{viewModel.widgetRadiusUnit}"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/divider_color"
-                app:strokeWidth="@{viewModel.imageList.empty ? 2f: 0f}">
+                app:strokeWidth="0dp">
 
                 <include
                     android:id="@+id/layout_photo_widget"
                     layout="@layout/widget_photo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/widget_preview"
+                    android:scaleType="@{viewModel.photoScaleType.scaleType}"
+                    android:src="@drawable/preview"
+                    app:isVisible="@{viewModel.imageList.empty}" />
             </com.google.android.material.card.MaterialCardView>
         </FrameLayout>
 

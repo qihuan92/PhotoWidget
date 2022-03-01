@@ -139,4 +139,13 @@ object BindingAdapters {
             view.radius = radiusPx.toFloat()
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("android:scaleType")
+    fun setScaleType(
+        view: ImageView,
+        scaleType: ImageView.ScaleType? = ImageView.ScaleType.CENTER_CROP
+    ) {
+        view.scaleType = scaleType
+    }
 }

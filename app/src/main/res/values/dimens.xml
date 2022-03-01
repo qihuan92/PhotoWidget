@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="widget_margin">0dp</dimen>
-    <dimen name="widget_radius">16dp</dimen>
+    <dimen name="widget_radius">0dp</dimen>
     <dimen name="card_radius_large">20dp</dimen>
     <dimen name="card_radius_medium">16dp</dimen>
     <dimen name="card_radius_small">8dp</dimen>
