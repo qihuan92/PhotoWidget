@@ -41,6 +41,12 @@ fun ImageView.load(uri: Uri) {
         .into(this)
 }
 
+fun ImageView.load(drawable: Drawable) {
+    Glide.with(context)
+        .load(drawable)
+        .into(this)
+}
+
 fun View.loadToBackground(uri: Uri) {
     post {
         Glide.with(context)

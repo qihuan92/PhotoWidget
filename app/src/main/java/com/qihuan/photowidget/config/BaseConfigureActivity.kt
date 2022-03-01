@@ -189,7 +189,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
                 val wallpaperManager = WallpaperManager.getInstance(this)
-                binding.ivWallpaper.setImageDrawable(wallpaperManager.drawable)
+                binding.ivWallpaper.load(wallpaperManager.drawable)
             }
         }
 
