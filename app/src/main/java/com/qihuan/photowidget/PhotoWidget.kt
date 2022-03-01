@@ -24,6 +24,7 @@ import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.logE
 import com.qihuan.photowidget.ktx.providerUri
+import com.qihuan.photowidget.ktx.setBackgroundColor
 import java.io.File
 import kotlin.random.Random
 
@@ -140,10 +141,10 @@ fun updateAppWidget(
     )
 
     // Set widget photo frame.
-    remoteViews.setImageViewResource(R.id.iv_widget_background, R.drawable.app_widget_background)
     if (widgetFrame != null && widgetFrame.type != WidgetFrameType.NONE) {
         remoteViews.setViewVisibility(R.id.iv_widget_background, View.VISIBLE)
         if (widgetFrame.type == WidgetFrameType.BUILD_IN || widgetFrame.type == WidgetFrameType.IMAGE) {
+            remoteViews.setBackgroundColor(R.id.iv_widget_background, Color.TRANSPARENT)
             Glide.with(context)
                 .asBitmap()
                 .skipMemoryCache(true)
@@ -151,20 +152,15 @@ fun updateAppWidget(
                 .load(widgetFrame.frameUri)
                 .into(AppWidgetTarget(context, R.id.iv_widget_background, remoteViews, widgetId))
         } else if (widgetFrame.type == WidgetFrameType.COLOR) {
-            remoteViews.setInt(
+            remoteViews.setBackgroundColor(
                 R.id.iv_widget_background,
-                "setColorFilter",
                 Color.parseColor(widgetFrame.frameColor)
             )
         }
     } else {
         remoteViews.setViewVisibility(R.id.iv_widget_background, View.GONE)
-        remoteViews.setInt(R.id.iv_widget_background, "setColorFilter", Color.TRANSPARENT)
+        remoteViews.setBackgroundColor(R.id.iv_widget_background, Color.TRANSPARENT)
     }
-
-    // Set widget alpha.
-    val alpha = 1f - widgetInfo.widgetTransparency / 100f
-    remoteViews.setFloat(R.id.vf_picture, "setAlpha", alpha)
 
     try {
         appWidgetManager.updateAppWidget(widgetId, remoteViews)
@@ -243,13 +239,6 @@ fun AppWidgetManager.getWidgetImageHeight(widgetInfo: WidgetInfo): Int {
         .getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
     val imageHeight = height - widgetInfo.topPadding - widgetInfo.bottomPadding
     return imageHeight.toInt()
-}
-
-suspend fun deleteWidget(context: Context, widgetId: Int) {
-    val widgetDao = AppDatabase.getDatabase(context).widgetDao()
-    widgetDao.deleteByWidgetId(widgetId)
-    val outFile = File(context.filesDir, "widget_${widgetId}")
-    outFile.deleteRecursively()
 }
 
 suspend fun deleteWidgets(context: Context, widgetIds: IntArray) {

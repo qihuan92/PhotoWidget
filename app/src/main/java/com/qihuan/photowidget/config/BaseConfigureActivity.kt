@@ -486,7 +486,6 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
     private fun showWidgetFrameColorSelector() {
         MaterialColorPickerDialog.Builder(this)
             .setTitle(R.string.widget_frame_color_dialog_title)
-            .attachAlphaSlideBar(false)
             .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }

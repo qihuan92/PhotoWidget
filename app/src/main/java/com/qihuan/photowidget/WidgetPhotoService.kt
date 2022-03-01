@@ -20,6 +20,7 @@ import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.calculateRadiusPx
 import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.ktx.setImageTransparency
 
 /**
  * PhotoImageService
@@ -123,6 +124,9 @@ class WidgetPhotoViewFactory(
                 .submit(targetWidth, targetHeight)
                 .get()
             remoteViews.setImageViewBitmap(R.id.iv_picture, bitmap)
+
+            // Set widget alpha
+            remoteViews.setImageTransparency(R.id.iv_picture, widgetInfo.widgetTransparency)
 
             remoteViews.setOnClickFillInIntent(
                 R.id.iv_picture,

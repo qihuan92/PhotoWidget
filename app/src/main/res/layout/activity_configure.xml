@@ -375,6 +375,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    app:isVisible="@{activity.widgetType != WidgetType.GIF}"
                     app:sliderSelectionIcon="@drawable/ic_round_opacity_24"
                     app:sliderSelectionTitle="@string/widget_transparency"
                     app:sliderSelectionValue="@={viewModel.widgetTransparency}"
