@@ -94,6 +94,7 @@
     <color name="default_color_on_surface_inverse">@android:color/background_light</color>
 
     <!-- 控件配色 -->
+    <color name="ripple_color">#1f000000</color>
     <color name="divider_color">#E1E1E1</color>
     <color name="navigation_bar_color">#B3FFFFFF</color>
     <color name="wallpaper">#EEEEEE</color>
