@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.gifdecoder.StandardGifDecoder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.qihuan.photowidget.App
@@ -24,17 +23,6 @@ import java.io.FileOutputStream
  * @author qi
  * @since 3/30/21
  */
-fun ImageView.loadRounded(uri: Uri, radius: Int) {
-    if (radius == 0) {
-        load(uri)
-        return
-    }
-    Glide.with(context)
-        .load(uri)
-        .apply(RequestOptions.bitmapTransform(RoundedCorners(radius)))
-        .into(this)
-}
-
 fun ImageView.load(uri: Uri) {
     Glide.with(context)
         .load(uri)

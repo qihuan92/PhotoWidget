@@ -1,7 +1,5 @@
 package com.qihuan.photowidget.adapter
 
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,8 +10,6 @@ import com.google.android.material.slider.Slider
 import com.qihuan.photowidget.common.LinkType
 import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.ktx.calculateRadiusPx
-import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.loadRounded
 import com.qihuan.photowidget.ktx.performHapticFeedback
 import com.qihuan.photowidget.view.SliderSelectionView
 import com.qihuan.photowidget.view.TextSelectionView
@@ -64,12 +60,6 @@ object BindingAdapters {
     }
 
     @JvmStatic
-    @BindingAdapter("cardCornerRadius")
-    fun setCardCornerRadius(view: MaterialCardView, value: Float) {
-        view.radius = value.dp.toFloat()
-    }
-
-    @JvmStatic
     @BindingAdapter("isVisible")
     fun setVisible(view: View, value: Boolean) {
         view.isVisible = value
@@ -82,12 +72,6 @@ object BindingAdapters {
             return
         }
         view.setCompoundDrawablesWithIntrinsicBounds(type.icon, 0, 0, 0)
-    }
-
-    @JvmStatic
-    @BindingAdapter("strokeWidth")
-    fun setStrokeWidth(view: MaterialCardView, value: Float) {
-        view.strokeWidth = value.dp
     }
 
     @JvmStatic
@@ -111,24 +95,6 @@ object BindingAdapters {
                 slider.performHapticFeedback()
             }
         }
-    }
-
-    @JvmStatic
-    @BindingAdapter("imagePath", "imageRadius", "imageRadiusUnit", requireAll = false)
-    fun loadImage(
-        view: ImageView,
-        imagePath: Uri?,
-        imageRadius: Float,
-        imageRadiusUnit: RadiusUnit
-    ) {
-        if (imagePath == null) {
-            return
-        }
-        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeFile(imagePath.path, options)
-        val radiusPx =
-            calculateRadiusPx(options.outWidth, options.outHeight, imageRadius, imageRadiusUnit)
-        view.loadRounded(imagePath, radiusPx)
     }
 
     @JvmStatic
