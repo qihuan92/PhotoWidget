@@ -7,12 +7,10 @@ import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Outline
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.ViewOutlineProvider
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
@@ -41,6 +39,7 @@ import com.qihuan.photowidget.link.InstalledAppActivity
 import com.qihuan.photowidget.link.UrlInputActivity
 import com.qihuan.photowidget.view.ItemSelectionDialog
 import com.qihuan.photowidget.view.MaterialColorPickerDialog
+import com.qihuan.photowidget.view.RoundedViewOutlineProvider
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import kotlinx.coroutines.launch
@@ -238,26 +237,6 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
 
         bindView()
         initView()
-
-        // Android 12 以上版本，微件预览为圆角矩形
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            binding.containerPhotoWidgetPreview.outlineProvider = object : ViewOutlineProvider() {
-                override fun getOutline(view: View?, outline: Outline?) {
-                    if (view != null && outline != null) {
-                        outline.setRoundRect(
-                            0,
-                            0,
-                            view.width,
-                            view.height,
-                            resources.getDimension(R.dimen.widget_radius)
-                        )
-                    }
-                }
-            }
-            binding.containerPhotoWidgetPreview.clipToOutline = true
-        }
-
-        binding.layoutInfo.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
     }
 
     private fun initView() {
@@ -271,6 +250,16 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
             }
             true
         }
+
+        // Android 12 以上版本，微件预览为圆角矩形
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            binding.containerPhotoWidgetPreview.outlineProvider = RoundedViewOutlineProvider(
+                resources.getDimension(R.dimen.widget_radius)
+            )
+            binding.containerPhotoWidgetPreview.clipToOutline = true
+        }
+
+        binding.layoutInfo.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
     }
 
     private fun bindView() {
