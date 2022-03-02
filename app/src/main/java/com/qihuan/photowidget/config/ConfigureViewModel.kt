@@ -56,7 +56,7 @@ class ConfigureViewModel(
     val leftPadding by lazy { MutableLiveData(0f) }
     val rightPadding by lazy { MutableLiveData(0f) }
     val widgetRadius by lazy { MutableLiveData(0f) }
-    val widgetRadiusUnit by lazy { MutableLiveData(RadiusUnit.ANGLE) }
+    val widgetRadiusUnit by lazy { MutableLiveData(RadiusUnit.LENGTH) }
     val linkInfo by lazy { MutableLiveData<LinkInfo>() }
     val widgetFrameType by lazy { MutableLiveData(WidgetFrameType.NONE) }
     val widgetFrameUri by lazy { MutableLiveData<Uri>() }
@@ -238,7 +238,7 @@ class ConfigureViewModel(
                     destFile.toUri().saveGifFramesToDir(
                         File(widgetFileDir, destFile.nameWithoutExtension),
                         widgetRadius.value ?: 0f,
-                        widgetRadiusUnit.value ?: RadiusUnit.ANGLE
+                        widgetRadiusUnit.value ?: RadiusUnit.LENGTH
                     )
                 }
             } else {
@@ -304,7 +304,7 @@ class ConfigureViewModel(
             leftPadding = leftPadding.value ?: 0f,
             rightPadding = rightPadding.value ?: 0f,
             widgetRadius = widgetRadius.value ?: 0f,
-            widgetRadiusUnit = widgetRadiusUnit.value ?: RadiusUnit.ANGLE,
+            widgetRadiusUnit = widgetRadiusUnit.value ?: RadiusUnit.LENGTH,
             widgetTransparency = widgetTransparency.value ?: 0f,
             autoPlayInterval = autoPlayInterval.value ?: PlayInterval.NONE,
             photoScaleType = photoScaleType.value ?: PhotoScaleType.CENTER_CROP,

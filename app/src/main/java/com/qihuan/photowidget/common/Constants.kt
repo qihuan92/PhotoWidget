@@ -212,7 +212,7 @@ enum class RadiusUnit(
 
     companion object {
         fun get(value: String): RadiusUnit {
-            return values().firstOrNull { it.value == value } ?: ANGLE
+            return values().firstOrNull { it.value == value } ?: LENGTH
         }
     }
 }

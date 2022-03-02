@@ -60,8 +60,8 @@ class SettingsRepository(private val application: Application) {
     suspend fun getWidgetDefaultRadius(): WidgetRadius {
         return withContext(Dispatchers.IO) {
             val radius = sp.getFloat(KEY_DEFAULT_WIDGET_RADIUS, 0f)
-            val unitValue = sp.getString(KEY_DEFAULT_WIDGET_RADIUS_UNIT, RadiusUnit.ANGLE.value)
-                ?: RadiusUnit.ANGLE.value
+            val unitValue = sp.getString(KEY_DEFAULT_WIDGET_RADIUS_UNIT, RadiusUnit.LENGTH.value)
+                ?: RadiusUnit.LENGTH.value
             val unit = RadiusUnit.get(unitValue)
             WidgetRadius(radius, unit)
         }

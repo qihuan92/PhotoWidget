@@ -25,8 +25,8 @@ data class WidgetInfo(
     val leftPadding: Float,
     val rightPadding: Float,
     val widgetRadius: Float,
-    @ColumnInfo(defaultValue = "angle")
-    val widgetRadiusUnit: RadiusUnit = RadiusUnit.ANGLE,
+    @ColumnInfo(defaultValue = "length")
+    val widgetRadiusUnit: RadiusUnit = RadiusUnit.LENGTH,
     val widgetTransparency: Float = 0f,
     val autoPlayInterval: PlayInterval = PlayInterval.NONE,
     val widgetType: WidgetType = WidgetType.NORMAL,

@@ -101,7 +101,7 @@ fun calculateRadiusPx(
     width: Int,
     height: Int,
     value: Float,
-    unit: RadiusUnit = RadiusUnit.ANGLE
+    unit: RadiusUnit = RadiusUnit.LENGTH
 ): Int {
     when (unit) {
         RadiusUnit.ANGLE -> {

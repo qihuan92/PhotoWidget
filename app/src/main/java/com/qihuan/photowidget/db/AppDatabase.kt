@@ -18,11 +18,12 @@ import com.qihuan.photowidget.db.migration.*
         WidgetFrame::class,
         WidgetFrameResource::class,
     ],
-    version = 14,
+    version = 15,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 12, to = 13),
         AutoMigration(from = 13, to = 14),
+        AutoMigration(from = 14, to = 15),
     ]
 )
 @TypeConverters(Converters::class)

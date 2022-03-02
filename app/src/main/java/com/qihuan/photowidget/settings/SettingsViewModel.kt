@@ -34,7 +34,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     val isIgnoreBatteryOptimizations = MutableLiveData(false)
 
     val widgetRadius = MutableStateFlow(0f)
-    val widgetRadiusUnit = MutableLiveData(RadiusUnit.ANGLE)
+    val widgetRadiusUnit = MutableLiveData(RadiusUnit.LENGTH)
     val widgetScaleType = MutableLiveData(PhotoScaleType.CENTER_CROP)
 
     init {
@@ -46,7 +46,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
             // Save the widget default radius.
             widgetRadius.debounce(500).collect {
-                repository.saveWidgetDefaultRadius(it, widgetRadiusUnit.value ?: RadiusUnit.ANGLE)
+                repository.saveWidgetDefaultRadius(it, widgetRadiusUnit.value ?: RadiusUnit.LENGTH)
             }
         }
     }
