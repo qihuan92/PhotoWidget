@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.qihuan.photowidget.common
 
 import android.graphics.Bitmap
@@ -39,6 +41,7 @@ object FileExtension {
     const val WEBP = "webp"
 }
 
+@Suppress("DEPRECATION")
 object CompressFormatCompat {
     val WEBP_LOSSY = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         Bitmap.CompressFormat.WEBP_LOSSY
