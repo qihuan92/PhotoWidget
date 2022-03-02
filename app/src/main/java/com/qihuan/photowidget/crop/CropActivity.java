@@ -60,7 +60,7 @@ import java.util.Locale;
  * CropActivity
  * 基于 UCrop 修改
  */
-@SuppressWarnings({"ConstantConditions", "SameParameterValue"})
+@SuppressWarnings({"ConstantConditions", "SameParameterValue", "PrivateResource", "deprecation", "InflateParams"})
 public class CropActivity extends AppCompatActivity {
 
     public static final int DEFAULT_COMPRESS_QUALITY = 90;
