@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.dynamicanimation.animation.SpringAnimation
@@ -22,7 +21,6 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
@@ -274,7 +272,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
         }
         previewAddAdapter.setOnItemAddListener {
             if (widgetType == WidgetType.GIF && viewModel.imageList.value?.size ?: 0 >= 1) {
-                showSnackbar(R.string.multi_gif_widget_unsupported)
+                binding.root.showSnackbar(R.string.multi_gif_widget_unsupported)
                 return@setOnItemAddListener
             }
             val mimeType = if (widgetType == WidgetType.GIF) "image/gif" else "image/*"
@@ -430,7 +428,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
             return
         }
         if (viewModel.imageList.value.isNullOrEmpty()) {
-            showSnackbar(R.string.warning_select_picture)
+            binding.root.showSnackbar(R.string.warning_select_picture)
             return
         }
         lifecycleScope.launch {
@@ -439,7 +437,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
                 viewModel.saveWidget()
             } catch (e: SaveWidgetException) {
                 saveImageDialog.dismiss()
-                showSnackbar(e.message ?: getString(R.string.save_fail))
+                binding.root.showSnackbar(e.message ?: getString(R.string.save_fail))
                 logE("ConfigureActivity", e.message, e)
                 return@launch
             }
@@ -517,13 +515,5 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
 
     private fun launchOpenFile() {
         getOpenFileLink.launch(arrayOf("*/*"))
-    }
-
-    private fun showSnackbar(@StringRes text: Int) {
-        Snackbar.make(binding.root, getString(text), Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun showSnackbar(text: String) {
-        Snackbar.make(binding.root, text, Snackbar.LENGTH_SHORT).show()
     }
 }
