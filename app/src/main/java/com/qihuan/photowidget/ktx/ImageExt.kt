@@ -9,9 +9,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.gifdecoder.StandardGifDecoder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.qihuan.photowidget.App
+import com.qihuan.photowidget.GlideApp
 import com.qihuan.photowidget.common.CompressFormatCompat
 import com.qihuan.photowidget.common.RadiusUnit
 import java.io.ByteArrayOutputStream
@@ -24,23 +26,27 @@ import java.io.FileOutputStream
  * @since 3/30/21
  */
 fun ImageView.load(uri: Uri) {
-    Glide.with(context)
+    val request = GlideApp.with(context)
         .load(uri)
+    request.thumbnail(request.clone().sizeMultiplier(0.01f))
+        .transition(DrawableTransitionOptions.withCrossFade())
         .into(this)
 }
 
 fun ImageView.load(drawable: Drawable) {
-    Glide.with(context)
+    GlideApp.with(context)
         .load(drawable)
+        .transition(DrawableTransitionOptions.withCrossFade())
         .into(this)
 }
 
 fun View.loadToBackground(uri: Uri) {
     post {
-        Glide.with(context)
+        GlideApp.with(context)
             .load(uri)
             .skipMemoryCache(true)
             .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .transition(DrawableTransitionOptions.withCrossFade())
             .into(object : CustomTarget<Drawable>(width, height) {
                 override fun onResourceReady(
                     resource: Drawable,

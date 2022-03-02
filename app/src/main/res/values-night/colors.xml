@@ -10,6 +10,7 @@
 
     <!-- 控件配色 -->
     <color name="ripple_color">#33ffffff</color>
+    <color name="image_place_holder_color">#1FFFFFFF</color>
     <color name="divider_color">#1FFFFFFF</color>
     <color name="navigation_bar_color">#B3000000</color>
     <color name="wallpaper">#424242</color>

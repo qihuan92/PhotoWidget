@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.databinding.ItemPreviewPhotoBinding
+import com.qihuan.photowidget.ktx.load
 
 /**
  * PreviewPhotoAdapter
@@ -40,10 +40,7 @@ class PreviewPhotoAdapter :
         }
 
         fun bind(item: WidgetImage) {
-            Glide.with(itemView.context)
-                .load(item.imageUri)
-                .thumbnail(0.1f)
-                .into(binding.ivPicture)
+            binding.ivPicture.load(item.imageUri)
         }
     }
 

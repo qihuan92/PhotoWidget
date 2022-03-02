@@ -95,6 +95,7 @@
 
     <!-- 控件配色 -->
     <color name="ripple_color">#1f000000</color>
+    <color name="image_place_holder_color">#E1E1E1</color>
     <color name="divider_color">#E1E1E1</color>
     <color name="navigation_bar_color">#B3FFFFFF</color>
     <color name="wallpaper">#EEEEEE</color>
