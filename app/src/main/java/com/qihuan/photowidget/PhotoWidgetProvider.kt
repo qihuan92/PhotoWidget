@@ -6,10 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.RemoteViews
-import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.goAsync
 import com.qihuan.photowidget.ktx.logD
-import kotlinx.coroutines.GlobalScope
+import com.qihuan.photowidget.worker.JobManager
 
 /**
  * Implementation of App Widget functionality.
@@ -21,16 +19,8 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        logD("PhotoWidgetProvider", "onAppWidgetOptionsChanged() appWidgetIds=$appWidgetIds")
-        val widgetDao = AppDatabase.getDatabase(context).widgetDao()
-        goAsync(GlobalScope) {
-            for (appWidgetId in appWidgetIds) {
-                val widgetBean = widgetDao.selectById(appWidgetId)
-                if (widgetBean != null) {
-                    updateAppWidget(context, appWidgetManager, widgetBean)
-                }
-            }
-        }
+        logD("PhotoWidgetProvider", "onUpdate() appWidgetIds=${appWidgetIds.joinToString()}")
+        JobManager.scheduleUpdateWidgetJob(context, appWidgetIds)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -58,10 +48,8 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
-        logD("PhotoWidgetProvider", "onDeleted() appWidgetIds=$appWidgetIds")
-        goAsync(GlobalScope) {
-            deleteWidgets(context, appWidgetIds)
-        }
+        logD("PhotoWidgetProvider", "onDeleted() appWidgetIds=${appWidgetIds.joinToString()}")
+        JobManager.scheduleDeleteWidgetJob(context, appWidgetIds)
     }
 
     override fun onAppWidgetOptionsChanged(

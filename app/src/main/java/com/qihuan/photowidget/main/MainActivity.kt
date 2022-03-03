@@ -10,10 +10,6 @@ import androidx.core.view.WindowCompat
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
-import androidx.work.WorkManager
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
 import com.qihuan.photowidget.adapter.TipAdapter
@@ -21,13 +17,12 @@ import com.qihuan.photowidget.adapter.WidgetPagingAdapter
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.common.TipsType
 import com.qihuan.photowidget.common.WidgetType
-import com.qihuan.photowidget.common.WorkTags
 import com.qihuan.photowidget.config.ConfigureActivity
 import com.qihuan.photowidget.config.GifConfigureActivity
 import com.qihuan.photowidget.databinding.ActivityMainBinding
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.settings.SettingsActivity
-import com.qihuan.photowidget.worker.ForceUpdateWidgetWorker
+import com.qihuan.photowidget.worker.JobManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -168,14 +163,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun forceRefreshWidget() {
-        val workRequest = OneTimeWorkRequestBuilder<ForceUpdateWidgetWorker>()
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-            .build()
-        WorkManager.getInstance(applicationContext)
-            .enqueueUniqueWork(
-                WorkTags.ONE_TIME_REFRESH_WIDGET,
-                ExistingWorkPolicy.KEEP,
-                workRequest
-            )
+        JobManager.scheduleUpdateWidgetJob(this)
     }
 }

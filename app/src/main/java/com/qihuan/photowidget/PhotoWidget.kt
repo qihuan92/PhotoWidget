@@ -25,6 +25,8 @@ import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.logE
 import com.qihuan.photowidget.ktx.providerUri
 import com.qihuan.photowidget.ktx.setBackgroundColor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.random.Random
 
@@ -246,6 +248,8 @@ suspend fun deleteWidgets(context: Context, widgetIds: IntArray) {
     for (widgetId in widgetIds) {
         widgetDao.deleteByWidgetId(widgetId)
         val outFile = File(context.filesDir, "widget_${widgetId}")
-        outFile.deleteRecursively()
+        withContext(Dispatchers.IO) {
+            outFile.deleteRecursively()
+        }
     }
 }
