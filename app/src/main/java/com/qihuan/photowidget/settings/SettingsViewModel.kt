@@ -1,7 +1,6 @@
 package com.qihuan.photowidget.settings
 
 import android.app.Application
-import android.app.job.JobScheduler
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -26,7 +25,6 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository by lazy { SettingsRepository(application) }
-    private val jobScheduler by lazy { application.getSystemService(JobScheduler::class.java) }
     val cacheSize = MutableLiveData("0.00KB")
     val autoRefreshInterval = MutableLiveData(AutoRefreshInterval.NONE)
     val isIgnoreBatteryOptimizations = MutableLiveData(false)
@@ -90,10 +88,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun startOrCancelRefreshTask(item: AutoRefreshInterval) {
-        if (item == AutoRefreshInterval.NONE) {
-            JobManager.cancelJob(getApplication(), JOB_ID_REFRESH_WIDGET_PERIODIC)
-            return
-        }
+        JobManager.cancelJob(getApplication(), JOB_ID_REFRESH_WIDGET_PERIODIC)
         JobManager.schedulePeriodicUpdateWidgetJob(getApplication(), item.value)
     }
 
