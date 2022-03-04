@@ -31,8 +31,8 @@ android {
         applicationId "com.qihuan.photowidget"
         minSdkVersion 24
         targetSdkVersion 31
-        versionCode 34
-        versionName "1.33"
+        versionCode 35
+        versionName "1.34"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
