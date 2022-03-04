@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.RemoteViews
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.qihuan.photowidget.common.BroadcastAction
 import com.qihuan.photowidget.ktx.logD
 import com.qihuan.photowidget.worker.JobManager
 
@@ -50,6 +52,10 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         logD("PhotoWidgetProvider", "onDeleted() appWidgetIds=${appWidgetIds.joinToString()}")
         JobManager.scheduleDeleteWidgetJob(context, appWidgetIds)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(
+            Intent(BroadcastAction.APPWIDGET_DELETED)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
+        )
     }
 
     override fun onAppWidgetOptionsChanged(

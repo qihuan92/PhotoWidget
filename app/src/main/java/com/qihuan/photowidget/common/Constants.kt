@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import com.qihuan.photowidget.BuildConfig
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.view.ItemSelectionDialog
 
@@ -23,6 +24,10 @@ const val KEY_AUTO_REFRESH_INTERVAL = "autoRefreshInterval"
 const val KEY_DEFAULT_WIDGET_RADIUS = "defaultWidgetRadius"
 const val KEY_DEFAULT_WIDGET_RADIUS_UNIT = "defaultWidgetRadiusUnit"
 const val KEY_DEFAULT_WIDGET_SCALE_TYPE = "defaultWidgetScaleType"
+
+object BroadcastAction {
+    const val APPWIDGET_DELETED = "${BuildConfig.APPLICATION_ID}.APPWIDGET_DELETED"
+}
 
 object License {
     const val MIT = "MIT License"

@@ -5,7 +5,10 @@ import android.animation.LayoutTransition
 import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.appwidget.AppWidgetManager
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -17,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +46,7 @@ import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import kotlinx.coroutines.launch
 import java.io.File
+import java.lang.ref.WeakReference
 
 /**
  * AppWidget base config activity.
@@ -50,6 +55,40 @@ import java.io.File
  * @since 2022/02/23
  */
 abstract class BaseConfigureActivity : AppCompatActivity() {
+
+    private class WidgetDeletedBroadcastReceiver(
+        private val activityReference: WeakReference<BaseConfigureActivity>
+    ) : BroadcastReceiver() {
+        companion object {
+            private const val TAG = "BaseConfigureActivity.WidgetDeletedBroadcastReceiver"
+        }
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val deleteWidgetIds = intent?.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
+            if (deleteWidgetIds == null || deleteWidgetIds.isEmpty()) {
+                logD(TAG, "No widgets were deleted.")
+                return
+            }
+
+            val currentWidgetId = activityReference.get()?.appWidgetId
+            if (currentWidgetId == null || currentWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+                logD(TAG, "The current widget ID is invalid.")
+                return
+            }
+
+            if (deleteWidgetIds.contains(currentWidgetId)) {
+                activityReference.get()?.finish()
+                logD(TAG, "The current widget ID is in the deleted list.")
+            } else {
+                logD(TAG, "The current widget ID is not in the deleted list.")
+            }
+
+            logD(
+                TAG,
+                "currentWidgetId=${currentWidgetId}; deleteWidgetIds=${deleteWidgetIds.joinToString()}"
+            )
+        }
+    }
 
     private val binding by viewBinding(ActivityConfigureBinding::inflate)
     private val viewModel by viewModels<ConfigureViewModel> {
@@ -181,6 +220,10 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
             }
         }
 
+    private val widgetDeletedBroadcastReceiver by lazy {
+        WidgetDeletedBroadcastReceiver(WeakReference(this))
+    }
+
     @SuppressLint("MissingPermission")
     private val externalStorageResult =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -235,6 +278,16 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
 
         bindView()
         initView()
+
+        val deletedIntentFilter = IntentFilter(BroadcastAction.APPWIDGET_DELETED)
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(widgetDeletedBroadcastReceiver, deletedIntentFilter)
+    }
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this)
+            .unregisterReceiver(widgetDeletedBroadcastReceiver)
+        super.onDestroy()
     }
 
     private fun initView() {
