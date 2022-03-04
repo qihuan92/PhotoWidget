@@ -1,12 +1,12 @@
 package com.qihuan.photowidget.adapter
 
 import android.content.Context
-import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.ktx.load
 
 /**
@@ -18,7 +18,7 @@ class WidgetPhotoAdapter(
     private val context: Context
 ) : BaseAdapter() {
 
-    private val itemList = mutableListOf<Uri>()
+    private val itemList = mutableListOf<WidgetImage>()
     private var scaleType = ImageView.ScaleType.CENTER_CROP
 
     override fun getCount(): Int {
@@ -41,11 +41,11 @@ class WidgetPhotoAdapter(
         return ImageView(parent.context).apply {
             layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             scaleType = this@WidgetPhotoAdapter.scaleType
-            load(itemList[position])
+            load(itemList[position].imageUri)
         }
     }
 
-    fun setData(itemList: List<Uri>) {
+    fun setData(itemList: List<WidgetImage>) {
         this.itemList.clear()
         this.itemList.addAll(itemList)
         notifyDataSetChanged()

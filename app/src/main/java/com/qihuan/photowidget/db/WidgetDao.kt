@@ -19,6 +19,10 @@ abstract class WidgetDao {
     @Query("select * from widget_info order by createTime desc")
     abstract suspend fun selectList(): Array<WidgetBean>
 
+    @Transaction
+    @Query("select * from widget_info where widgetId in (:ids) order by createTime desc")
+    abstract suspend fun selectListByIds(ids: IntArray): Array<WidgetBean>
+
     @Query("select count(*) from widget_info")
     abstract suspend fun selectWidgetCount(): Int
 
@@ -48,6 +52,9 @@ abstract class WidgetDao {
     @Query("delete from widget_image where imageId = :id")
     abstract suspend fun deleteImageById(id: Int)
 
+    @Query("delete from widget_image where imageId in (:idList)")
+    abstract suspend fun deleteImageByIdList(idList: List<Int>)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertLinkInfo(record: LinkInfo)
 
@@ -64,9 +71,12 @@ abstract class WidgetDao {
     abstract suspend fun deleteWidgetFrameByWidgetId(widgetId: Int)
 
     @Transaction
-    open suspend fun save(widgetBean: WidgetBean) {
+    open suspend fun save(widgetBean: WidgetBean, deleteImageList: List<WidgetImage>?) {
         insertInfo(widgetBean.widgetInfo)
-        deleteImageByWidgetId(widgetBean.widgetInfo.widgetId)
+
+        if (!deleteImageList.isNullOrEmpty()) {
+            deleteImageByIdList(deleteImageList.mapNotNull { it.imageId })
+        }
         insertImage(widgetBean.imageList)
 
         val linkInfo = widgetBean.linkInfo

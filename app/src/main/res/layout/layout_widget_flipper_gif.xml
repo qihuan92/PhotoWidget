@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AdapterViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/vf_picture"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateFirstView="false"
+    android:autoStart="true"
+    android:flipInterval="100"
+    android:inAnimation="@animator/anim_gif_view_flipper_in"
+    android:outAnimation="@animator/anim_gif_view_flipper_out" />

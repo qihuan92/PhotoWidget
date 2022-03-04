@@ -10,6 +10,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.databinding.DialogLoadingBinding
@@ -100,7 +101,7 @@ fun calculateRadiusPx(
     width: Int,
     height: Int,
     value: Float,
-    unit: RadiusUnit = RadiusUnit.ANGLE
+    unit: RadiusUnit = RadiusUnit.LENGTH
 ): Int {
     when (unit) {
         RadiusUnit.ANGLE -> {
@@ -119,4 +120,12 @@ fun calculateRadiusPx(
             return value.dp
         }
     }
+}
+
+fun View.showSnackbar(@StringRes text: Int) {
+    showSnackbar(context.getString(text))
+}
+
+fun View.showSnackbar(text: String) {
+    Snackbar.make(this, text, Snackbar.LENGTH_SHORT).show()
 }

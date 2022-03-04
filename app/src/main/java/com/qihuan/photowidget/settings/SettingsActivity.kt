@@ -2,7 +2,6 @@ package com.qihuan.photowidget.settings
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -76,22 +75,22 @@ class SettingsActivity : AppCompatActivity() {
 
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        binding.sliderDefaultRadius.addOnChangeListener { slider, value, fromUser ->
+        binding.sliderDefaultRadius.addOnChangeListener { slider, _, fromUser ->
             if (fromUser) {
                 slider.performHapticFeedback()
             }
         }
     }
 
-    fun switchAutoRefresh(view: View) {
+    fun switchAutoRefresh() {
         intervalDialog.show()
     }
 
-    fun launchAboutActivity(view: View) {
+    fun launchAboutActivity() {
         startActivity(Intent(this, AboutActivity::class.java))
     }
 
-    fun ignoreBatteryOptimizations(view: View) {
+    fun ignoreBatteryOptimizations() {
         try {
             ignoringBatteryOptimizationsLauncher.launch(packageName)
         } catch (e: Exception) {
@@ -99,11 +98,11 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    fun showScaleTypeSelector(view: View) {
+    fun showScaleTypeSelector() {
         scaleTypeDialog.show()
     }
 
-    fun showDefaultRadiusUnitSelector(view: View) {
+    fun showDefaultRadiusUnitSelector() {
         radiusUnitDialog.show()
     }
 }

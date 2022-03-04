@@ -3,15 +3,24 @@ package com.qihuan.photowidget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import androidx.core.net.toFile
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.Transformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.target.Target
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.WidgetImage
 import com.qihuan.photowidget.bean.WidgetInfo
 import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.ktx.calculateRadiusPx
 import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.toRoundedBitmap
+import com.qihuan.photowidget.ktx.setImageTransparency
 
 /**
  * PhotoImageService
@@ -74,27 +83,55 @@ class WidgetPhotoViewFactory(
         val radius = widgetInfo.widgetRadius
         val radiusUnit = widgetInfo.widgetRadiusUnit
         val remoteViews = createImageRemoteViews(context, scaleType)
+        val widgetWidth = appWidgetManager.getWidgetImageWidth(widgetInfo).toFloat().dp
+        val widgetHeight = appWidgetManager.getWidgetImageHeight(widgetInfo).toFloat().dp
         if (imageUri.toFile().exists()) {
-            val imageWidth = appWidgetManager.getWidgetImageWidth(widgetInfo).toFloat().dp
-            val imageHeight = appWidgetManager.getWidgetImageHeight(widgetInfo).toFloat().dp
-            val imageBitmap =
-                imageUri.toRoundedBitmap(
-                    context,
-                    radius,
-                    radiusUnit,
-                    scaleType,
-                    imageWidth,
-                    imageHeight
-                )
-            remoteViews.setImageViewBitmap(R.id.iv_picture, imageBitmap)
+            var targetWidth = Target.SIZE_ORIGINAL
+            var targetHeight = Target.SIZE_ORIGINAL
+            val transformList = arrayListOf<Transformation<Bitmap>>()
+
+            if (widgetWidth > 0 && widgetHeight > 0 && scaleType == ImageView.ScaleType.CENTER_CROP) {
+                targetWidth = widgetWidth
+                targetHeight = widgetHeight
+                transformList.add(CenterCrop())
+            }
+
+            if (radius > 0) {
+                val calculateWidth: Int
+                val calculateHeight: Int
+                if (widgetWidth > 0 && widgetHeight > 0 && scaleType == ImageView.ScaleType.CENTER_CROP) {
+                    calculateWidth = widgetWidth
+                    calculateHeight = widgetHeight
+                } else {
+                    val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                    BitmapFactory.decodeFile(imageUri.path, options)
+                    calculateWidth = options.outWidth
+                    calculateHeight = options.outHeight
+                }
+
+                val calculateRadius =
+                    calculateRadiusPx(calculateWidth, calculateHeight, radius, radiusUnit)
+
+                if (calculateRadius > 0) {
+                    transformList.add(RoundedCorners(calculateRadius))
+                }
+            }
+
+            val bitmap = Glide.with(context)
+                .asBitmap()
+                .load(imageUri)
+                .transform(*transformList.toTypedArray())
+                .submit(targetWidth, targetHeight)
+                .get()
+            remoteViews.setImageViewBitmap(R.id.iv_picture, bitmap)
+
+            // Set widget alpha
+            remoteViews.setImageTransparency(R.id.iv_picture, widgetInfo.widgetTransparency)
+
             remoteViews.setOnClickFillInIntent(
                 R.id.iv_picture,
                 createLinkIntent(context, linkInfo, imageUri)
             )
-
-            // Set widget alpha
-            val alpha = (255 * (1f - widgetInfo.widgetTransparency / 100f)).toInt()
-            remoteViews.setInt(R.id.iv_picture, "setImageAlpha", alpha)
         } else {
             remoteViews.setImageViewResource(R.id.iv_picture, R.drawable.shape_photo_404)
         }

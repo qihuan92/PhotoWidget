@@ -6,6 +6,7 @@ import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
 import androidx.core.net.toFile
 import com.qihuan.photowidget.common.CompressFormatCompat
+import com.qihuan.photowidget.common.CopyFileException
 import com.qihuan.photowidget.common.DEFAULT_COMPRESSION_QUALITY
 import com.qihuan.photowidget.common.FileExtension
 import com.yalantis.ucrop.util.BitmapLoadUtils
@@ -28,50 +29,40 @@ import kotlin.math.pow
  * @author qi
  * @since 12/10/20
  */
-suspend fun Context.copyFile(inputUri: Uri, outputUri: Uri) =
-    copyFile(inputUri, File(checkNotNull(outputUri.path)))
+fun File.createOrExistsDir(): Boolean {
+    return if (exists()) isDirectory else mkdirs()
+}
 
-@Suppress("BlockingMethodInNonBlockingContext")
-suspend fun Context.copyFile(inputUri: Uri, outputFile: File) = withContext(Dispatchers.IO) {
+@Throws(CopyFileException::class)
+fun Context.copyFileSmart(inputUri: Uri, outputFile: File) {
+    val path = inputUri.path ?: return
     var inputStream: InputStream? = null
     var outputStream: OutputStream? = null
     try {
-        inputStream = contentResolver.openInputStream(inputUri)
-        outputStream = FileOutputStream(outputFile)
+        inputStream = if (path.startsWith("/android_asset")) {
+            val assetsName = path.substringAfterLast("android_asset/")
+            assets.open(assetsName)
+        } else {
+            contentResolver.openInputStream(inputUri)
+        }
+
         checkNotNull(inputStream) { "InputStream for given input Uri is null" }
+
+        outputStream = FileOutputStream(outputFile)
+
         val buffer = ByteArray(1024)
         var length: Int
         while (inputStream.read(buffer).also { length = it } > 0) {
             outputStream.write(buffer, 0, length)
         }
     } catch (e: Exception) {
-        logE("FileExt", "copyFile() Exception", e)
+        logE("FileExt", "copyFileSmart() Exception", e)
+        throw CopyFileException(e.message ?: "保存文件失败")
     } finally {
         BitmapLoadUtils.close(outputStream)
         BitmapLoadUtils.close(inputStream)
     }
 }
-
-@Suppress("BlockingMethodInNonBlockingContext")
-suspend fun Context.copyAssetsFile(assetsName: String, outputFile: File) =
-    withContext(Dispatchers.IO) {
-        var inputStream: InputStream? = null
-        var outputStream: OutputStream? = null
-        try {
-            inputStream = assets.open(assetsName)
-            outputStream = FileOutputStream(outputFile)
-            val buffer = ByteArray(1024)
-            var length: Int
-            while (inputStream.read(buffer).also { length = it } > 0) {
-                outputStream.write(buffer, 0, length)
-            }
-        } catch (e: Exception) {
-            logE("FileExt", "copyAssetsFile() Exception", e)
-        } finally {
-            BitmapLoadUtils.close(outputStream)
-            BitmapLoadUtils.close(inputStream)
-        }
-    }
 
 suspend fun Context.compressImageFile(imageFile: File): File {
     val destination = File(
@@ -96,8 +87,12 @@ fun File.providerUri(context: Context): Uri =
 fun Uri.providerUri(context: Context) = toFile().providerUri(context)
 
 fun Uri.getExtension(context: Context): String? {
-    val mimeType = context.contentResolver.getType(this)
-    return MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
+    return if ("content" == scheme) {
+        val mimeType = context.contentResolver.getType(this)
+        MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
+    } else {
+        path?.substringAfterLast(".")
+    }
 }
 
 fun createFile(parent: File, nameWithoutExtension: String, extension: String? = null): File {

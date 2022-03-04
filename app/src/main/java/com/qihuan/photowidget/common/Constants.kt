@@ -1,9 +1,12 @@
+@file:Suppress("unused")
+
 package com.qihuan.photowidget.common
 
 import android.graphics.Bitmap
 import android.os.Build
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import com.qihuan.photowidget.BuildConfig
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.view.ItemSelectionDialog
 
@@ -22,9 +25,8 @@ const val KEY_DEFAULT_WIDGET_RADIUS = "defaultWidgetRadius"
 const val KEY_DEFAULT_WIDGET_RADIUS_UNIT = "defaultWidgetRadiusUnit"
 const val KEY_DEFAULT_WIDGET_SCALE_TYPE = "defaultWidgetScaleType"
 
-object WorkTags {
-    const val PERIODIC_REFRESH_WIDGET = "periodic_refresh_widget"
-    const val ONE_TIME_REFRESH_WIDGET = "one_time_refresh_widget"
+object BroadcastAction {
+    const val APPWIDGET_DELETED = "${BuildConfig.APPLICATION_ID}.APPWIDGET_DELETED"
 }
 
 object License {
@@ -39,6 +41,7 @@ object FileExtension {
     const val WEBP = "webp"
 }
 
+@Suppress("DEPRECATION")
 object CompressFormatCompat {
     val WEBP_LOSSY = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         Bitmap.CompressFormat.WEBP_LOSSY
@@ -212,7 +215,7 @@ enum class RadiusUnit(
 
     companion object {
         fun get(value: String): RadiusUnit {
-            return values().firstOrNull { it.value == value } ?: ANGLE
+            return values().firstOrNull { it.value == value } ?: LENGTH
         }
     }
 }

@@ -84,7 +84,7 @@ class GifWidgetPhotoViewFactory(
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .submit()
             .get()
-        val remoteViews = RemoteViews(context.packageName, R.layout.widget_photo_single)
+        val remoteViews = RemoteViews(context.packageName, R.layout.layout_widget_image)
         remoteViews.setImageViewBitmap(R.id.iv_picture, bitmap)
         return remoteViews
     }

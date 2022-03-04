@@ -5,9 +5,11 @@
 
         <import type="android.view.View" />
 
-        <import type="com.qihuan.photowidget.config.BaseConfigViewModel.UIState" />
+        <import type="com.qihuan.photowidget.config.ConfigureViewModel.UIState" />
 
         <import type="com.qihuan.photowidget.ktx.UIExtKt" />
+
+        <import type="com.qihuan.photowidget.common.WidgetType" />
 
         <import type="com.qihuan.photowidget.common.WidgetFrameType" />
 
@@ -17,7 +19,7 @@
 
         <variable
             name="activity"
-            type="com.qihuan.photowidget.config.ConfigureActivity" />
+            type="com.qihuan.photowidget.config.BaseConfigureActivity" />
     </data>
 
 
@@ -84,25 +86,23 @@
                 app:cardCornerRadius="@{viewModel.widgetRadius}"
                 app:cardCornerRadiusUnit="@{viewModel.widgetRadiusUnit}"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/divider_color"
-                app:strokeWidth="@{viewModel.imageUriList.empty ? 2f: 0f}">
+                app:strokeWidth="0dp">
 
                 <include
                     android:id="@+id/layout_photo_widget"
                     layout="@layout/widget_photo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/widget_preview"
+                    android:scaleType="@{viewModel.photoScaleType.scaleType}"
+                    android:src="@drawable/preview"
+                    app:isVisible="@{viewModel.imageList.empty}" />
             </com.google.android.material.card.MaterialCardView>
         </FrameLayout>
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:isVisible="@{viewModel.isFrameLoading()}"
-            app:layout_constraintBottom_toBottomOf="@id/container_photo_widget_preview"
-            app:layout_constraintLeft_toLeftOf="@id/container_photo_widget_preview"
-            app:layout_constraintRight_toRightOf="@id/container_photo_widget_preview"
-            app:layout_constraintTop_toTopOf="@id/container_photo_widget_preview" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scroll_view_info"
@@ -136,7 +136,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:dividerPadding="5dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:isVisible="@{activity.widgetType != WidgetType.GIF}">
 
                     <com.qihuan.photowidget.view.TextSelectionView
                         style="@style/Widget.PhotoWidget.CardView.Small"
@@ -144,7 +145,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="@{() -> activity.showIntervalSelector()}"
-                        app:isVisible="@{viewModel.imageUriList.size() > 1}"
+                        app:isVisible="@{viewModel.imageList.size() > 1}"
                         app:textSelectionContent="@{viewModel.autoPlayInterval.simpleDescription}"
                         app:textSelectionIcon="@drawable/ic_round_timer_24"
                         app:textSelectionTitle="@string/auto_play_interval" />
@@ -152,7 +153,7 @@
                     <Space
                         android:layout_width="5dp"
                         android:layout_height="wrap_content"
-                        app:isVisible="@{viewModel.imageUriList.size() > 1}" />
+                        app:isVisible="@{viewModel.imageList.size() > 1}" />
 
                     <com.qihuan.photowidget.view.TextSelectionView
                         style="@style/Widget.PhotoWidget.CardView.Small"
@@ -381,6 +382,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    app:isVisible="@{activity.widgetType != WidgetType.GIF}"
                     app:sliderSelectionIcon="@drawable/ic_round_opacity_24"
                     app:sliderSelectionTitle="@string/widget_transparency"
                     app:sliderSelectionValue="@={viewModel.widgetTransparency}"

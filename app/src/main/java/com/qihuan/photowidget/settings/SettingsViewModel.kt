@@ -4,22 +4,18 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import com.qihuan.photowidget.App
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.common.AutoRefreshInterval
 import com.qihuan.photowidget.common.PhotoScaleType
 import com.qihuan.photowidget.common.RadiusUnit
-import com.qihuan.photowidget.common.WorkTags
 import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
-import com.qihuan.photowidget.worker.ForceUpdateWidgetWorker
+import com.qihuan.photowidget.worker.JobManager
+import com.qihuan.photowidget.worker.JobManager.JOB_ID_REFRESH_WIDGET_PERIODIC
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 
 /**
  * SettingsViewModel
@@ -34,7 +30,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     val isIgnoreBatteryOptimizations = MutableLiveData(false)
 
     val widgetRadius = MutableStateFlow(0f)
-    val widgetRadiusUnit = MutableLiveData(RadiusUnit.ANGLE)
+    val widgetRadiusUnit = MutableLiveData(RadiusUnit.LENGTH)
     val widgetScaleType = MutableLiveData(PhotoScaleType.CENTER_CROP)
 
     init {
@@ -46,7 +42,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
             // Save the widget default radius.
             widgetRadius.debounce(500).collect {
-                repository.saveWidgetDefaultRadius(it, widgetRadiusUnit.value ?: RadiusUnit.ANGLE)
+                repository.saveWidgetDefaultRadius(it, widgetRadiusUnit.value ?: RadiusUnit.LENGTH)
             }
         }
     }
@@ -92,23 +88,11 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun startOrCancelRefreshTask(item: AutoRefreshInterval) {
+        JobManager.cancelJob(getApplication(), JOB_ID_REFRESH_WIDGET_PERIODIC)
         if (item == AutoRefreshInterval.NONE) {
-            WorkManager.getInstance(getApplication())
-                .cancelAllWorkByTag(WorkTags.PERIODIC_REFRESH_WIDGET)
             return
         }
-
-        val workRequest =
-            PeriodicWorkRequestBuilder<ForceUpdateWidgetWorker>(item.value, TimeUnit.MILLISECONDS)
-                .addTag(WorkTags.PERIODIC_REFRESH_WIDGET)
-                .build()
-
-        WorkManager.getInstance(getApplication())
-            .enqueueUniquePeriodicWork(
-                WorkTags.PERIODIC_REFRESH_WIDGET,
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
+        JobManager.schedulePeriodicUpdateWidgetJob(getApplication(), item.value)
     }
 
     fun updateRadiusUnit(item: RadiusUnit) {

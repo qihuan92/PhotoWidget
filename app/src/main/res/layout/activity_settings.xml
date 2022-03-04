@@ -62,7 +62,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:foreground="?selectableItemBackground"
-                            android:onClick="@{(v) -> activity.switchAutoRefresh(v)}"
+                            android:onClick="@{() -> activity.switchAutoRefresh()}"
                             android:padding="10dp">
 
                             <ImageView
@@ -115,7 +115,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:foreground="?selectableItemBackground"
-                            android:onClick="@{(v) -> activity.ignoreBatteryOptimizations(v)}"
+                            android:onClick="@{() -> activity.ignoreBatteryOptimizations()}"
                             android:padding="10dp">
 
                             <ImageView
@@ -231,7 +231,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:foreground="?selectableItemBackground"
-                            android:onClick="@{(v) -> activity.showScaleTypeSelector(v)}"
+                            android:onClick="@{() -> activity.showScaleTypeSelector()}"
                             android:padding="10dp">
 
                             <ImageView
@@ -269,7 +269,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:foreground="?selectableItemBackground"
-                            android:onClick="@{(v) -> activity.showDefaultRadiusUnitSelector(v)}"
+                            android:onClick="@{() -> activity.showDefaultRadiusUnitSelector()}"
                             android:padding="10dp">
 
                             <ImageView
@@ -347,7 +347,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:foreground="?selectableItemBackground"
-                            android:onClick="@{(v) -> activity.launchAboutActivity(v)}"
+                            android:onClick="@{() -> activity.launchAboutActivity()}"
                             android:padding="10dp">
 
                             <ImageView

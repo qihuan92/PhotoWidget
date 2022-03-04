@@ -14,7 +14,7 @@ data class WidgetImage(
     @PrimaryKey(autoGenerate = true)
     val imageId: Int? = null,
     val widgetId: Int,
-    val imageUri: Uri,
+    var imageUri: Uri,
     val createTime: Long,
-    val sort: Int,
+    var sort: Int,
 )

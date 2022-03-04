@@ -1,22 +1,19 @@
 package com.qihuan.photowidget.ktx
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.gifdecoder.StandardGifDecoder
-import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.qihuan.photowidget.App
+import com.qihuan.photowidget.GlideApp
 import com.qihuan.photowidget.common.CompressFormatCompat
 import com.qihuan.photowidget.common.RadiusUnit
 import java.io.ByteArrayOutputStream
@@ -28,78 +25,41 @@ import java.io.FileOutputStream
  * @author qi
  * @since 3/30/21
  */
-fun ImageView.loadRounded(uri: Uri, radius: Int) {
-    if (radius == 0) {
-        load(uri)
-        return
-    }
-    Glide.with(context)
+fun ImageView.load(uri: Uri) {
+    val request = GlideApp.with(context)
         .load(uri)
-        .apply(RequestOptions.bitmapTransform(RoundedCorners(radius)))
+    request.thumbnail(request.clone().sizeMultiplier(0.01f))
+        .transition(DrawableTransitionOptions.withCrossFade())
         .into(this)
 }
 
-fun ImageView.load(uri: Uri) {
-    Glide.with(context)
-        .load(uri)
+fun ImageView.load(drawable: Drawable) {
+    GlideApp.with(context)
+        .load(drawable)
+        .transition(DrawableTransitionOptions.withCrossFade())
         .into(this)
 }
 
 fun View.loadToBackground(uri: Uri) {
-    Glide.with(context)
-        .load(uri)
-        .skipMemoryCache(true)
-        .diskCacheStrategy(DiskCacheStrategy.NONE)
-        .into(object : CustomTarget<Drawable>() {
-            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                background = resource
-            }
+    post {
+        GlideApp.with(context)
+            .load(uri)
+            .skipMemoryCache(true)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(object : CustomTarget<Drawable>(width, height) {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    background = resource
+                }
 
-            override fun onLoadCleared(placeholder: Drawable?) {
-                background = placeholder
-            }
-        })
-}
-
-fun Uri.toRoundedBitmap(
-    context: Context,
-    radius: Float,
-    radiusUnit: RadiusUnit,
-    scaleType: ImageView.ScaleType,
-    width: Int,
-    height: Int
-): Bitmap {
-    var builder = Glide.with(context)
-        .asBitmap()
-        .load(this)
-
-    val transformList = mutableListOf<Transformation<Bitmap>>()
-    if (width > 0 && height > 0) {
-        if (scaleType == ImageView.ScaleType.CENTER_CROP) {
-            transformList.add(CenterCrop())
-        }
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    background = placeholder
+                }
+            })
     }
-    if (radius > 0) {
-        // Calculate radiusPx
-        val radiusPx =
-            if (scaleType == ImageView.ScaleType.CENTER_CROP && width > 0 && height > 0) {
-                calculateRadiusPx(width, height, radius, radiusUnit)
-            } else {
-                val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                BitmapFactory.decodeFile(path, options)
-                calculateRadiusPx(options.outWidth, options.outHeight, radius, radiusUnit)
-            }
-        transformList.add(RoundedCorners(radiusPx))
-    }
-
-    if (transformList.isNotEmpty()) {
-        builder = builder.transform(*transformList.toTypedArray())
-    }
-
-    if (scaleType != ImageView.ScaleType.CENTER_CROP || (width <= 0 || height <= 0)) {
-        return builder.submit().get()
-    }
-    return builder.submit(width, height).get()
 }
 
 fun Uri.saveGifFramesToDir(dir: File, radius: Float = 0f, radiusUnit: RadiusUnit) {

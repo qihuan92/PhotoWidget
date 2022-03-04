@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <queries>
         <intent>
@@ -237,6 +238,14 @@
             android:name=".GifWidgetPhotoService"
             android:exported="true"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <service
+            android:name=".worker.UpdateWidgetService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name=".worker.DeleteWidgetService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
             android:name=".main.MainActivity"
