@@ -89,6 +89,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     private fun startOrCancelRefreshTask(item: AutoRefreshInterval) {
         JobManager.cancelJob(getApplication(), JOB_ID_REFRESH_WIDGET_PERIODIC)
+        if (item == AutoRefreshInterval.NONE) {
+            return
+        }
         JobManager.schedulePeriodicUpdateWidgetJob(getApplication(), item.value)
     }
 
