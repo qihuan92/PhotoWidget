@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import androidx.core.os.persistableBundleOf
+import com.qihuan.photowidget.ktx.logD
 import com.qihuan.photowidget.ktx.logE
 
 /**
@@ -45,7 +46,8 @@ object JobManager {
         val jobScheduler = context.getSystemService(JobScheduler::class.java)
 
         try {
-            jobScheduler.schedule(jobInfo)
+            val result = jobScheduler.schedule(jobInfo)
+            logD(TAG, "scheduleUpdateWidgetJob() success: ${result.isSuccess()}")
         } catch (e: Exception) {
             logE(TAG, "scheduleUpdateWidgetJob() error:" + e.message, e)
         }
@@ -66,7 +68,8 @@ object JobManager {
         val jobScheduler = context.getSystemService(JobScheduler::class.java)
 
         try {
-            jobScheduler.schedule(jobInfo)
+            val result = jobScheduler.schedule(jobInfo)
+            logD(TAG, "schedulePeriodicUpdateWidgetJob() success: ${result.isSuccess()}")
         } catch (e: Exception) {
             logE(TAG, "schedulePeriodicUpdateWidgetJob() error:" + e.message, e)
         }
@@ -82,9 +85,14 @@ object JobManager {
         val jobScheduler = context.getSystemService(JobScheduler::class.java)
 
         try {
-            jobScheduler.schedule(jobInfo)
+            val result = jobScheduler.schedule(jobInfo)
+            logD(TAG, "scheduleDeleteWidgetJob() success: ${result.isSuccess()}")
         } catch (e: Exception) {
             logE(TAG, "scheduleDeleteWidgetJob() error:" + e.message, e)
         }
+    }
+
+    private fun Int.isSuccess(): Boolean {
+        return this == JobScheduler.RESULT_SUCCESS
     }
 }
