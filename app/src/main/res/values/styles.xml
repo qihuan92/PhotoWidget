@@ -49,8 +49,6 @@
 
     <style name="Widget.PhotoWidget.Slider" parent="Widget.Material3.Slider">
         <item name="thumbElevation">1dp</item>
-        <item name="thumbStrokeWidth">2dp</item>
-        <item name="thumbStrokeColor">@color/divider_color</item>
         <item name="labelStyle">@style/Widget.PhotoWidget.Tooltip</item>
         <item name="trackColorInactive">@color/selector_slider_inactive_track_color</item>
         <item name="tickColorActive">?attr/colorSurfaceVariant</item>
