@@ -19,9 +19,10 @@ class UpdateWidgetService : CoroutineJobService() {
         private const val TAG = "UpdateWidgetService"
     }
 
-    override suspend fun startJob(params: JobParameters?): JobStatus {
+    override suspend fun startJob(params: JobParameters?) {
         try {
             val widgetIds = params?.extras?.getIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS)
+            logD(TAG, "Update widget start, widgetIds=${widgetIds?.joinToString().orEmpty()}.")
             val widgetDao = AppDatabase.getDatabase(application).widgetDao()
             val widgets = if (widgetIds != null && widgetIds.isNotEmpty()) {
                 widgetDao.selectListByIds(widgetIds)
@@ -37,10 +38,8 @@ class UpdateWidgetService : CoroutineJobService() {
             } else {
                 logD(TAG, "Widget list is empty.")
             }
-            return JobStatus.Success
         } catch (e: Throwable) {
             logE(TAG, "Update widget error: " + e.message, e)
-            return JobStatus.Failure(e)
         }
     }
 }
