@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.qihuan.photowidget.ktx
 
 import android.widget.RemoteViews

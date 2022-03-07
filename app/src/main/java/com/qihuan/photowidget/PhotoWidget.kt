@@ -45,29 +45,7 @@ fun updateAppWidget(
     appWidgetManager: AppWidgetManager,
     widgetBean: WidgetBean
 ) {
-    try {
-        EventStatistics.track(
-            EventStatistics.WIDGET_SAVE, mapOf(
-                "LinkType" to widgetBean.linkInfo?.type?.value,
-                "LinkUri" to widgetBean.linkInfo?.link,
-                "WidgetType" to widgetBean.widgetInfo.widgetType.code,
-                "WidgetPaddingLeft" to widgetBean.widgetInfo.leftPadding.toString(),
-                "WidgetPaddingTop" to widgetBean.widgetInfo.topPadding.toString(),
-                "WidgetPaddingRight" to widgetBean.widgetInfo.rightPadding.toString(),
-                "WidgetPaddingBottom" to widgetBean.widgetInfo.bottomPadding.toString(),
-                "WidgetRadius" to widgetBean.widgetInfo.widgetRadius.toString() + widgetBean.widgetInfo.widgetRadiusUnit.unitName,
-                "WidgetTransparency" to widgetBean.widgetInfo.widgetTransparency.toString(),
-                "WidgetAutoPlayInterval" to widgetBean.widgetInfo.autoPlayInterval.interval.toString(),
-                "WidgetPhotoScaleType" to widgetBean.widgetInfo.photoScaleType.description,
-                "WidgetImageSize" to widgetBean.imageList.size.toString(),
-                "WidgetFrameType" to widgetBean.frame?.type?.name,
-                "WidgetFrameUri" to widgetBean.frame?.frameUri?.toString(),
-                "WidgetFrameColor" to widgetBean.frame?.frameColor,
-            )
-        )
-    } catch (e: Exception) {
-        logE("PhotoWidget::updateAppWidget", "TrackError:" + e.message, e)
-    }
+    EventStatistics.trackSaveWidget(widgetBean)
 
     val imageList = widgetBean.imageList
     if (imageList.isNullOrEmpty()) {
