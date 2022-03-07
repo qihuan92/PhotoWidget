@@ -188,7 +188,8 @@
                             android:drawablePadding="5dp"
                             android:gravity="center_vertical"
                             android:text="@string/widget_frame"
-                            android:textAppearance="?textAppearanceBody1"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textStyle="bold"
                             app:drawableStartCompat="@drawable/ic_outline_add_photo_alternate_24" />
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -239,7 +240,8 @@
                             android:layout_height="wrap_content"
                             android:drawablePadding="5dp"
                             android:text="@{viewModel.linkInfo.title}"
-                            android:textAppearance="?textAppearanceBody1"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            android:textStyle="bold"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toLeftOf="@id/btn_delete_link"
                             app:layout_constraintTop_toTopOf="parent"

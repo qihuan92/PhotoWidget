@@ -323,6 +323,9 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
         previewAdapter.setOnItemDeleteListener { position, _ ->
             showDeletePhotoAlert(position)
         }
+        previewAdapter.setOnItemClickListener { i, _ ->
+            binding.layoutPhotoWidget.vfPicture.displayedChild = i
+        }
         previewAddAdapter.setOnItemAddListener {
             if (widgetType == WidgetType.GIF && viewModel.imageList.value?.size ?: 0 >= 1) {
                 binding.root.showSnackbar(R.string.multi_gif_widget_unsupported)

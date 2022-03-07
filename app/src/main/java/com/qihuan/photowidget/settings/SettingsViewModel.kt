@@ -41,6 +41,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             loadWidgetDefaultConfig()
 
             // Save the widget default radius.
+            @Suppress("EXPERIMENTAL_API_USAGE")
             widgetRadius.debounce(500).collect {
                 repository.saveWidgetDefaultRadius(it, widgetRadiusUnit.value ?: RadiusUnit.LENGTH)
             }

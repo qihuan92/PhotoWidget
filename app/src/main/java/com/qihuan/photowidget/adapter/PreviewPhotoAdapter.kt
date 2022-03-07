@@ -34,6 +34,9 @@ class PreviewPhotoAdapter :
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
+            binding.root.setOnClickListener {
+                onItemClickListener?.invoke(bindingAdapterPosition, it)
+            }
             binding.btnDelete.setOnClickListener {
                 onItemDeleteListener?.invoke(bindingAdapterPosition, it)
             }
@@ -45,6 +48,7 @@ class PreviewPhotoAdapter :
     }
 
     private var onItemDeleteListener: ((Int, View) -> Unit)? = null
+    private var onItemClickListener: ((Int, View) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -62,5 +66,9 @@ class PreviewPhotoAdapter :
 
     fun setOnItemDeleteListener(onItemDeleteListener: ((Int, View) -> Unit)) {
         this.onItemDeleteListener = onItemDeleteListener
+    }
+
+    fun setOnItemClickListener(onItemClickListener: ((Int, View) -> Unit)) {
+        this.onItemClickListener = onItemClickListener
     }
 }

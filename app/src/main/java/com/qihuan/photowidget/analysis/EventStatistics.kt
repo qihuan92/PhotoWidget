@@ -7,6 +7,7 @@ import android.provider.Settings
 import com.microsoft.appcenter.Flags
 import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
+import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.ktx.getCurrentTime
 import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
 import com.qihuan.photowidget.ktx.logE
@@ -25,7 +26,7 @@ object EventStatistics {
     const val ACTIVITY_ON_CREATE = "ACTIVITY_ON_CREATE"
     const val ACTIVITY_ON_DESTROY = "ACTIVITY_ON_DESTROY"
 
-    const val WIDGET_SAVE = "WIDGET_SAVE"
+    private const val WIDGET_SAVE = "WIDGET_SAVE"
 
     fun Application.trackLifecycle(lifecycleName: String) {
         try {
@@ -69,5 +70,31 @@ object EventStatistics {
 
     fun trackError(throwable: Throwable, properties: Map<String, String?>? = null) {
         Crashes.trackError(throwable, properties, null)
+    }
+
+    fun trackSaveWidget(widgetBean: WidgetBean) {
+        try {
+            track(
+                WIDGET_SAVE, mapOf(
+                    "LinkType" to widgetBean.linkInfo?.type?.value.toString(),
+                    "LinkUri" to widgetBean.linkInfo?.link.toString(),
+                    "WidgetType" to widgetBean.widgetInfo.widgetType.code,
+                    "WidgetPaddingLeft" to widgetBean.widgetInfo.leftPadding.toString(),
+                    "WidgetPaddingTop" to widgetBean.widgetInfo.topPadding.toString(),
+                    "WidgetPaddingRight" to widgetBean.widgetInfo.rightPadding.toString(),
+                    "WidgetPaddingBottom" to widgetBean.widgetInfo.bottomPadding.toString(),
+                    "WidgetRadius" to widgetBean.widgetInfo.widgetRadius.toString() + widgetBean.widgetInfo.widgetRadiusUnit.unitName,
+                    "WidgetTransparency" to widgetBean.widgetInfo.widgetTransparency.toString(),
+                    "WidgetAutoPlayInterval" to widgetBean.widgetInfo.autoPlayInterval.interval.toString(),
+                    "WidgetPhotoScaleType" to widgetBean.widgetInfo.photoScaleType.description,
+                    "WidgetImageSize" to widgetBean.imageList.size.toString(),
+                    "WidgetFrameType" to widgetBean.frame?.type?.name.toString(),
+                    "WidgetFrameUri" to widgetBean.frame?.frameUri.toString(),
+                    "WidgetFrameColor" to widgetBean.frame?.frameColor.toString(),
+                )
+            )
+        } catch (e: Exception) {
+            logE("SaveWidget", "TrackError:" + e.message, e)
+        }
     }
 }
