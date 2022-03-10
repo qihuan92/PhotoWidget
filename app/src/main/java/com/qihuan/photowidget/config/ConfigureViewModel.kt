@@ -224,7 +224,10 @@ class ConfigureViewModel(
 
         // Save new image files.
         val newImageList = imageList.value
-        newImageList?.filter { it.imageId == null }?.forEach { widgetImage ->
+        if (newImageList.isNullOrEmpty()) {
+            throw SaveWidgetException(context.getString(R.string.warning_select_picture))
+        }
+        newImageList.filter { it.imageId == null }.forEach { widgetImage ->
             val imageUri = widgetImage.imageUri
             val fileExtension = imageUri.getExtension(context) ?: FileExtension.PNG
             val fileName = "${System.currentTimeMillis()}.${fileExtension}"
@@ -248,7 +251,7 @@ class ConfigureViewModel(
         }
 
         // Reorder.
-        newImageList?.forEachIndexed { index, widgetImage ->
+        newImageList.forEachIndexed { index, widgetImage ->
             widgetImage.sort = index
         }
 
@@ -291,7 +294,7 @@ class ConfigureViewModel(
             )
         }
 
-        val widgetBean = WidgetBean(widgetInfo, newImageList.orEmpty(), linkInfo.value, widgetFrame)
+        val widgetBean = WidgetBean(widgetInfo, newImageList, linkInfo.value, widgetFrame)
         widgetDao.save(widgetBean, deleteImageList)
         updateAppWidget(context, AppWidgetManager.getInstance(context), widgetBean)
     }
