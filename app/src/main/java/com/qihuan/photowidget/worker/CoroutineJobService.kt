@@ -2,17 +2,14 @@ package com.qihuan.photowidget.worker
 
 import android.app.job.JobParameters
 import android.app.job.JobService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 @Suppress("unused")
 abstract class CoroutineJobService : JobService(), CoroutineScope {
-    private val job: Job = Job()
+    private val job: Job = SupervisorJob()
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+        get() = job + Dispatchers.Main.immediate
 
     abstract suspend fun startJob(params: JobParameters?)
 
