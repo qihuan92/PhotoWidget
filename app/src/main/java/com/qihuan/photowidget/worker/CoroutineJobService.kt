@@ -22,9 +22,7 @@ abstract class CoroutineJobService : JobService(), CoroutineScope {
     }
 
     override fun onStopJob(params: JobParameters?): Boolean {
-        if (job.isActive) {
-            job.cancel()
-        }
+        job.cancel()
         return false
     }
 }

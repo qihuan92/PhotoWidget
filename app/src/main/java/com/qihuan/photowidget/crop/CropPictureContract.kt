@@ -6,12 +6,13 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.util.TypedValue
-import android.webkit.MimeTypeMap
 import androidx.activity.result.contract.ActivityResultContract
 import com.qihuan.photowidget.R
+import com.qihuan.photowidget.common.FileExtension
 import com.qihuan.photowidget.common.MimeType
 import com.qihuan.photowidget.common.TEMP_DIR_NAME
-import com.qihuan.photowidget.ktx.createFile
+import com.qihuan.photowidget.ktx.createOrExistsDir
+import com.qihuan.photowidget.ktx.getExtension
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCropActivity
 import java.io.File
@@ -27,9 +28,10 @@ class CropPictureContract : ActivityResultContract<Uri, Uri?>() {
 
     override fun createIntent(context: Context, input: Uri): Intent {
         val inputMimeType = context.contentResolver.getType(input)
-        val inputFileExtension = MimeTypeMap.getSingleton().getExtensionFromMimeType(inputMimeType)
-        val outDir = File(context.cacheDir, TEMP_DIR_NAME)
-        tempOutFile = createFile(outDir, System.currentTimeMillis().toString(), inputFileExtension)
+        val outDir = File(context.cacheDir, TEMP_DIR_NAME).apply { createOrExistsDir() }
+        val fileExtension = input.getExtension(context) ?: FileExtension.WEBP
+        val fileName = "${System.currentTimeMillis()}.${fileExtension}"
+        tempOutFile = File(outDir, fileName)
 
         val intent = UCrop.of(input, Uri.fromFile(tempOutFile))
             .withOptions(UCrop.Options().apply {
