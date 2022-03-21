@@ -238,11 +238,15 @@ class ConfigureViewModel(
             if (widgetType == WidgetType.GIF) {
                 widgetImage.imageUri = destFile.toUri()
                 withContext(Dispatchers.IO) {
-                    destFile.toUri().saveGifFramesToDir(
-                        File(widgetFileDir, destFile.nameWithoutExtension),
-                        widgetRadius.value ?: 0f,
-                        widgetRadiusUnit.value ?: RadiusUnit.LENGTH
-                    )
+                    try {
+                        destFile.toUri().saveGifFramesToDir(
+                            File(widgetFileDir, destFile.nameWithoutExtension),
+                            widgetRadius.value ?: 0f,
+                            widgetRadiusUnit.value ?: RadiusUnit.LENGTH
+                        )
+                    } catch (e: Exception) {
+                        throw SaveWidgetException(context.getString(R.string.save_widget_error_gif))
+                    }
                 }
             } else {
                 val compressedFile = context.compressImageFile(destFile)
