@@ -225,7 +225,7 @@ class ConfigureViewModel(
         // Save new image files.
         val newImageList = imageList.value
         if (newImageList.isNullOrEmpty()) {
-            throw SaveWidgetException(context.getString(R.string.warning_select_picture))
+            throw SaveWidgetException(getString(R.string.warning_select_picture))
         }
         newImageList.filter { it.imageId == null }.forEach { widgetImage ->
             val imageUri = widgetImage.imageUri
@@ -245,7 +245,7 @@ class ConfigureViewModel(
                             widgetRadiusUnit.value ?: RadiusUnit.LENGTH
                         )
                     } catch (e: Exception) {
-                        throw SaveWidgetException(context.getString(R.string.save_widget_error_gif))
+                        throw SaveWidgetException(getString(R.string.save_widget_error_gif))
                     }
                 }
             } else {
@@ -278,7 +278,7 @@ class ConfigureViewModel(
                         context.copyFileSmart(it, frameFile)
                     } catch (e: CopyFileException) {
                         val errorMessage =
-                            if (BuildConfig.DEBUG) e.message else context.getString(R.string.save_fail_copy_photo_files)
+                            if (BuildConfig.DEBUG) e.message else getString(R.string.save_fail_copy_photo_files)
                         throw SaveWidgetException(errorMessage.orEmpty())
                     }
                 }
