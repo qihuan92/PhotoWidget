@@ -213,6 +213,18 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
             }
         }
 
+    private val selectOnePicForResult =
+        registerForActivityResult(ActivityResultContracts.GetContent()) {
+            if (it == null) {
+                return@registerForActivityResult
+            }
+            if (widgetType == WidgetType.NORMAL) {
+                cropPicForResult.launch(it)
+            } else {
+                addPhoto(it)
+            }
+        }
+
     private val cropPicForResult =
         registerForActivityResult(CropPictureContract()) {
             if (it != null) {
@@ -331,8 +343,12 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
                 binding.root.showSnackbar(R.string.multi_gif_widget_unsupported)
                 return@setOnItemAddListener
             }
-            val mimeType = if (widgetType == WidgetType.GIF) "image/gif" else "image/*"
-            selectPicForResult.launch(mimeType)
+
+            if (widgetType == WidgetType.GIF) {
+                selectOnePicForResult.launch(MimeType.GIF.mimeTypeName)
+            } else {
+                selectPicForResult.launch("image/*")
+            }
         }
         bindDragHelper()
 
