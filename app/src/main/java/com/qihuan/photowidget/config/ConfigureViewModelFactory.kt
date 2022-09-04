@@ -17,7 +17,7 @@ class ConfigureViewModelFactory(
 ) : ViewModelProvider.AndroidViewModelFactory(application) {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return ConfigureViewModel(application, appWidgetId, widgetType) as T
     }
 }

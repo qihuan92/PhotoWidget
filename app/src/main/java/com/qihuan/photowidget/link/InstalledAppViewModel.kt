@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.bean.InstalledAppInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
@@ -30,7 +29,6 @@ class InstalledAppViewModel(application: Application) : AndroidViewModel(applica
 
     init {
         viewModelScope.launch {
-            @Suppress("EXPERIMENTAL_API_USAGE")
             queryKeyWord.sample(500)
                 .filter { it != null }
                 .collect { installedAppList.value = getInstalledPackages() }
