@@ -35,13 +35,13 @@ android {
         }
     }
 
-    compileSdk = 32
-    buildToolsVersion = "32.0.0"
+    compileSdk = libs.versions.compilesdk.get().toInt()
+    buildToolsVersion = libs.versions.build.tools.version.get()
 
     defaultConfig {
         applicationId = "com.qihuan.photowidget"
-        minSdk = 24
-        targetSdk = 31
+        minSdk = libs.versions.minsdk.get().toInt()
+        targetSdk = libs.versions.targetsdk.get().toInt()
         versionCode = 38
         versionName = "1.37"
 
@@ -96,29 +96,27 @@ ksp {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.5.0")
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.constraintlayout)
+    testImplementation(libs.test.junit)
+    androidTestImplementation(libs.test.androidx.junit)
+    androidTestImplementation(libs.test.androidx.espresso)
 
-    implementation("com.google.android.material:material:1.8.0-alpha01")
-    implementation("androidx.activity:activity-ktx:1.5.1")
-    implementation("androidx.fragment:fragment-ktx:1.5.2")
+    implementation(libs.google.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.fragment)
 
-    val paging_version = "3.1.1"
-    implementation("androidx.paging:paging-runtime-ktx:$paging_version")
-    testImplementation("androidx.paging:paging-common-ktx:$paging_version")
+    implementation(libs.androidx.paging)
+    testImplementation(libs.androidx.paging.testing)
 
-    val room_version = "2.4.3"
-    implementation("androidx.room:room-runtime:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    implementation("androidx.room:room-paging:$room_version")
-    testImplementation("androidx.room:room-testing:$room_version")
+    implementation(libs.androidx.room)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
+    testImplementation(libs.androidx.room.testing)
 
     // WorkManager 执行时会触发 AppWidgetProvider.onUpdate() 回调，导致不可控的行为。
     // 在 AppWidgetProvider.onUpdate() 通过 WorkManager 执行刷新微件，会导致无限循环，所以暂时改用 JobScheduler 代替。
@@ -126,15 +124,12 @@ dependencies {
     // def work_version = "2.7.1"
     // implementation("androidx.work:work-runtime-ktx:$work_version")
 
-    implementation("com.github.yalantis:ucrop:2.2.7")
-    implementation("id.zelory:compressor:3.0.1")
-    implementation("com.github.skydoves:colorpickerview:2.2.4")
+    implementation(libs.ucrop)
+    implementation(libs.compressor)
+    implementation(libs.colorpickerview)
 
-    val glide_version = "4.13.1"
-    implementation("com.github.bumptech.glide:glide:${glide_version}")
-    kapt("com.github.bumptech.glide:compiler:${glide_version}")
+    implementation(libs.glide)
+    kapt(libs.glide.compiler)
 
-    val appCenterSdkVersion = "4.3.1"
-    implementation("com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}")
-    implementation("com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}")
+    implementation(libs.bundles.appcenter)
 }
