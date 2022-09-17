@@ -43,7 +43,7 @@ class UrlInputActivity : AppCompatActivity() {
             binding.etOpenUrl.setText(openUrl)
             binding.etOpenUrl.requestFocus()
             WindowCompat.getInsetsController(window, binding.etOpenUrl)
-                ?.show(WindowInsetsCompat.Type.ime())
+                .show(WindowInsetsCompat.Type.ime())
         }
         binding.etOpenUrl.addTextChangedListener {
             if (!it.isNullOrEmpty()) {

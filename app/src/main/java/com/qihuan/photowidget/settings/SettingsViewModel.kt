@@ -12,8 +12,8 @@ import com.qihuan.photowidget.common.RadiusUnit
 import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
 import com.qihuan.photowidget.worker.JobManager
 import com.qihuan.photowidget.worker.JobManager.JOB_ID_REFRESH_WIDGET_PERIODIC
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
  * @author qi
  * @since 2021/11/8
  */
+@OptIn(FlowPreview::class)
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository by lazy { SettingsRepository(application) }
@@ -41,7 +42,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             loadWidgetDefaultConfig()
 
             // Save the widget default radius.
-            @Suppress("EXPERIMENTAL_API_USAGE")
             widgetRadius.debounce(500).collect {
                 repository.saveWidgetDefaultRadius(it, widgetRadiusUnit.value ?: RadiusUnit.LENGTH)
             }
