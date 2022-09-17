@@ -42,8 +42,8 @@ android {
         applicationId = "com.qihuan.photowidget"
         minSdk = libs.versions.minsdk.get().toInt()
         targetSdk = libs.versions.targetsdk.get().toInt()
-        versionCode = 38
-        versionName = "1.37"
+        versionCode = project.property("app.versionCode").toString().toInt()
+        versionName = project.property("app.versionName").toString()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
