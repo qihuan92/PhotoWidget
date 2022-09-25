@@ -12,26 +12,20 @@ plugins {
 val localProperties = Properties().apply {
     load(FileInputStream(rootProject.file("local.properties")))
 }
-val keyStoreFile = file(localProperties.getProperty("storeFilePath"))
-val keyStorePassword: String? = localProperties.getProperty("storePassword")
-val keyAlias: String? = localProperties.getProperty("keyAlias")
-val keyPassword: String? = localProperties.getProperty("keyPassword")
-val appCenterSecretRelease: String? = localProperties.getProperty("appCenterSecretRelease")
-val appCenterSecretDebug: String? = localProperties.getProperty("appCenterSecretDebug")
 
 android {
     signingConfigs {
         getByName("debug") {
-            storeFile = keyStoreFile
-            storePassword = keyStorePassword
-            keyAlias = keyAlias
-            keyPassword = keyPassword
+            storeFile = file(localProperties.getProperty("storeFilePath"))
+            storePassword = localProperties.getProperty("storePassword")
+            keyAlias = localProperties.getProperty("keyAlias")
+            keyPassword = localProperties.getProperty("keyPassword")
         }
         create("release") {
-            storeFile = keyStoreFile
-            storePassword = keyStorePassword
-            keyAlias = keyAlias
-            keyPassword = keyPassword
+            storeFile = file(localProperties.getProperty("storeFilePath"))
+            storePassword = localProperties.getProperty("storePassword")
+            keyAlias = localProperties.getProperty("keyAlias")
+            keyPassword = localProperties.getProperty("keyPassword")
         }
     }
 
@@ -58,12 +52,14 @@ android {
             )
             signingConfig = signingConfigs.getByName("release")
 
+            val appCenterSecretRelease: String? = localProperties.getProperty("appCenterSecretRelease")
             buildConfigField("String", "APP_CENTER_SECRET", "\"${appCenterSecretRelease}\"")
         }
 
         debug {
             signingConfig = signingConfigs.getByName("debug")
 
+            val appCenterSecretDebug: String? = localProperties.getProperty("appCenterSecretDebug")
             buildConfigField("String", "APP_CENTER_SECRET", "\"${appCenterSecretDebug}\"")
         }
     }
