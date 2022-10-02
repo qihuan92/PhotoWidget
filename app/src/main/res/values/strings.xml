@@ -126,4 +126,23 @@
     <string name="save_fail">保存失败，请重试</string>
     <string name="save_fail_copy_photo_files">相片文件保存失败，请重试</string>
     <string name="multi_gif_widget_unsupported">抱歉，暂不支持添加多个GIF图片</string>
+    <string name="link_type_open_app">打开应用</string>
+    <string name="link_type_open_url">打开URL</string>
+    <string name="link_type_open_album">打开相册</string>
+    <string name="link_type_open_file">打开文件</string>
+    <string name="scale_type_center_crop">中心裁剪</string>
+    <string name="scale_type_fit_center">居中展示</string>
+    <string name="play_interval_none">关闭（可以点击左右边缘进行切换）</string>
+    <string name="play_interval_none_simple">关闭</string>
+    <string name="play_interval_three_seconds">3秒</string>
+    <string name="play_interval_five_seconds">5秒</string>
+    <string name="play_interval_ten_seconds">10秒</string>
+    <string name="play_interval_thirty_seconds">30秒</string>
+    <string name="radius_unit_angle">角度(°)</string>
+    <string name="radius_unit_length">长度(dp)</string>
+    <string name="auto_refresh_interval_none">关闭</string>
+    <string name="auto_refresh_interval_day">每天</string>
+    <string name="auto_refresh_interval_twelve_hours">每12小时</string>
+    <string name="auto_refresh_interval_hour">每小时</string>
+    <string name="auto_refresh_interval_fifteen_minutes">每15分钟</string>
 </resources>

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.qihuan.photowidget.R
+import com.qihuan.photowidget.bean.SelectionItem
 import com.qihuan.photowidget.databinding.DialogItemSelectionBinding
 import com.qihuan.photowidget.databinding.ItemDialogSelectionBinding
 import com.qihuan.photowidget.ktx.performHapticFeedback
@@ -23,7 +23,7 @@ import com.qihuan.photowidget.ktx.viewBinding
  * @author qi
  * @since 2021/10/8
  */
-class ItemSelectionDialog<T : ItemSelectionDialog.Item>(
+class ItemSelectionDialog<T : SelectionItem>(
     context: Context,
     private val title: String? = null,
     private val itemList: List<T>? = null,
@@ -49,6 +49,7 @@ class ItemSelectionDialog<T : ItemSelectionDialog.Item>(
         }
     }
 
+    @Suppress("unused")
     fun setItemList(itemList: List<T>) {
         adapter.submitList(itemList)
     }
@@ -62,7 +63,7 @@ class ItemSelectionDialog<T : ItemSelectionDialog.Item>(
         }
     }
 
-    class Adapter<T : Item>(
+    class Adapter<T : SelectionItem>(
         private val dialog: ItemSelectionDialog<T>,
         private val onItemClickListener: ((ItemSelectionDialog<T>, T) -> Unit)? = null
     ) : ListAdapter<T, Adapter.ViewHolder<T>>(DiffCallback()) {
@@ -80,17 +81,17 @@ class ItemSelectionDialog<T : ItemSelectionDialog.Item>(
             holder.bind(getItem(position))
         }
 
-        class DiffCallback<T : Item> : DiffUtil.ItemCallback<T>() {
+        class DiffCallback<T : SelectionItem> : DiffUtil.ItemCallback<T>() {
             override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
                 return oldItem == newItem
             }
 
             override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
-                return oldItem.getItemText() == newItem.getItemText()
+                return oldItem.text == newItem.text
             }
         }
 
-        class ViewHolder<T : Item>(
+        class ViewHolder<T : SelectionItem>(
             private val binding: ItemDialogSelectionBinding,
             dialog: ItemSelectionDialog<T>,
             onItemClickListener: ((ItemSelectionDialog<T>, T) -> Unit)? = null
@@ -110,19 +111,13 @@ class ItemSelectionDialog<T : ItemSelectionDialog.Item>(
             fun bind(item: T) {
                 currentItem = item
 
-                val icon = item.getIcon()
+                val icon = item.icon
                 binding.ivIcon.isVisible = icon != null
                 if (icon != null) {
                     binding.ivIcon.setImageResource(icon)
                 }
-                binding.tvItem.text = item.getItemText()
+                binding.tvItem.setText(item.text)
             }
         }
-    }
-
-    interface Item {
-        @DrawableRes
-        fun getIcon(): Int?
-        fun getItemText(): String
     }
 }

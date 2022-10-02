@@ -83,9 +83,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun getAutoRefreshIntervalDescription(item: AutoRefreshInterval): String {
-        val format =
-            getApplication<App>().getString(R.string.auto_refresh_widget_interval_description)
-        return String.format(format, item.description)
+        return getApplication<App>().run {
+            getString(R.string.auto_refresh_widget_interval_description, getString(item.text))
+        }
     }
 
     private fun startOrCancelRefreshTask(item: AutoRefreshInterval) {

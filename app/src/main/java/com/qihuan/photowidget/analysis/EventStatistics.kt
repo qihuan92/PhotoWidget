@@ -86,7 +86,7 @@ object EventStatistics {
                     "WidgetRadius" to widgetBean.widgetInfo.widgetRadius.toString() + widgetBean.widgetInfo.widgetRadiusUnit.unitName,
                     "WidgetTransparency" to widgetBean.widgetInfo.widgetTransparency.toString(),
                     "WidgetAutoPlayInterval" to widgetBean.widgetInfo.autoPlayInterval.interval.toString(),
-                    "WidgetPhotoScaleType" to widgetBean.widgetInfo.photoScaleType.description,
+                    "WidgetPhotoScaleType" to widgetBean.widgetInfo.photoScaleType.name,
                     "WidgetImageSize" to widgetBean.imageList.size.toString(),
                     "WidgetFrameType" to widgetBean.frame?.type?.name.toString(),
                     "WidgetFrameUri" to widgetBean.frame?.frameUri.toString(),

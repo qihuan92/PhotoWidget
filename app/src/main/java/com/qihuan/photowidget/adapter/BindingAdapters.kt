@@ -3,6 +3,7 @@ package com.qihuan.photowidget.adapter
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.databinding.*
 import com.google.android.material.card.MaterialCardView
@@ -71,13 +72,19 @@ object BindingAdapters {
         if (type == null) {
             return
         }
-        view.setCompoundDrawablesWithIntrinsicBounds(type.icon, 0, 0, 0)
+        view.setCompoundDrawablesWithIntrinsicBounds(type.icon ?: 0, 0, 0, 0)
     }
 
     @JvmStatic
     @BindingAdapter("textSelectionContent")
     fun setTextSelectionContent(view: TextSelectionView, value: String) {
         view.setContent(value)
+    }
+
+    @JvmStatic
+    @BindingAdapter("textSelectionContent")
+    fun setTextSelectionContent(view: TextSelectionView, @StringRes value: Int) {
+        view.setContent(view.context.getString(value))
     }
 
     @JvmStatic

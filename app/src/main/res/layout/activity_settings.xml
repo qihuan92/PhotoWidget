@@ -258,7 +258,7 @@
                                 android:id="@+id/tv_description_default_scale_type"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@{viewModel.widgetScaleType.description}"
+                                android:text="@{viewModel.widgetScaleType.text}"
                                 android:textAppearance="?textAppearanceBodySmall"
                                 app:layout_constraintLeft_toLeftOf="@id/tv_title_default_scale_type"
                                 app:layout_constraintTop_toBottomOf="@id/tv_title_default_scale_type"

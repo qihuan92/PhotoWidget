@@ -8,6 +8,10 @@ import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
 import com.qihuan.photowidget.analysis.EventStatistics
 import com.qihuan.photowidget.analysis.EventStatistics.trackLifecycle
+import com.qihuan.photowidget.di.appModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 
 
 /**
@@ -33,6 +37,12 @@ class App : Application() {
 
         registerActivityLifecycleCallbacks(PhotoWidgetActivityLifecycleCallbacks())
         trackLifecycle(EventStatistics.APPLICATION_ON_CREATE)
+
+        startKoin {
+            androidLogger()
+            androidContext(this@App)
+            modules(appModule)
+        }
     }
 }
 

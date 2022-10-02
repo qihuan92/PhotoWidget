@@ -6,9 +6,10 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.qihuan.photowidget.BuildConfig
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.view.ItemSelectionDialog
+import com.qihuan.photowidget.bean.SelectionItem
 
 /**
  * Constants
@@ -86,24 +87,14 @@ enum class MimeType(
  */
 enum class LinkType(
     val value: String,
-    val description: String,
-    @DrawableRes val icon: Int,
-) : ItemSelectionDialog.Item {
-    OPEN_APP("openApp", "打开应用", R.drawable.ic_round_apps_24),
-    OPEN_URL("openUrl", "打开URL", R.drawable.ic_round_link_24),
-    OPEN_ALBUM("openAlbum", "打开相册", R.drawable.ic_round_photo_album_24),
-    OPEN_FILE("openFile", "打开文件", R.drawable.ic_round_insert_drive_file_24),
-    //OPEN_FOLDER("openFolder", "打开文件夹", R.drawable.ic_round_folder_24),
-    //LOCK_SCREEN("lockScreen", "锁定屏幕", R.drawable.ic_round_screen_lock_portrait_24),
+    @StringRes override val text: Int,
+    @DrawableRes override val icon: Int?,
+) : SelectionItem {
+    OPEN_APP("openApp", R.string.link_type_open_app, R.drawable.ic_round_apps_24),
+    OPEN_URL("openUrl", R.string.link_type_open_url, R.drawable.ic_round_link_24),
+    OPEN_ALBUM("openAlbum", R.string.link_type_open_album, R.drawable.ic_round_photo_album_24),
+    OPEN_FILE("openFile", R.string.link_type_open_file, R.drawable.ic_round_insert_drive_file_24),
     ;
-
-    override fun getIcon(): Int? {
-        return icon
-    }
-
-    override fun getItemText(): String {
-        return description
-    }
 
     companion object {
         fun get(value: String?): LinkType? {
@@ -119,29 +110,24 @@ enum class LinkType(
  */
 enum class PhotoScaleType(
     val scaleType: ImageView.ScaleType,
-    val description: String,
-    @DrawableRes val icon: Int,
-) : ItemSelectionDialog.Item {
-    CENTER_CROP(ImageView.ScaleType.CENTER_CROP, "中心裁剪", R.drawable.ic_round_crop_24),
-    FIT_CENTER(ImageView.ScaleType.FIT_CENTER, "居中展示", R.drawable.ic_outline_image_24),
-    //FIT_XY(ImageView.ScaleType.FIT_XY, "拉伸显示"),
+    @StringRes override val text: Int,
+    @DrawableRes override val icon: Int,
+) : SelectionItem {
+    CENTER_CROP(
+        ImageView.ScaleType.CENTER_CROP,
+        R.string.scale_type_center_crop,
+        R.drawable.ic_round_crop_24
+    ),
+    FIT_CENTER(
+        ImageView.ScaleType.FIT_CENTER,
+        R.string.scale_type_fit_center,
+        R.drawable.ic_outline_image_24
+    ),
     ;
-
-    override fun getIcon(): Int? {
-        return icon
-    }
-
-    override fun getItemText(): String {
-        return description
-    }
 
     companion object {
         fun get(scaleType: ImageView.ScaleType): PhotoScaleType? {
             return values().find { it.scaleType == scaleType }
-        }
-
-        fun getDescription(scaleType: ImageView.ScaleType): String {
-            return get(scaleType)?.description ?: ""
         }
     }
 }
@@ -156,24 +142,41 @@ enum class PlayInterval(
      * 毫秒值
      */
     val interval: Int = -1,
-    val description: String,
-    val simpleDescription: String,
-    @DrawableRes val icon: Int,
-) : ItemSelectionDialog.Item {
-    NONE(-1, "关闭（可以点击左右边缘进行切换）", "关闭", R.drawable.ic_round_timer_off_24),
-    THREE_SECONDS(3000, "3秒", "3秒", R.drawable.ic_round_timer_24),
-    FIVE_SECONDS(5000, "5秒", "5秒", R.drawable.ic_round_timer_24),
-    TEN_SECONDS(10000, "10秒", "10秒", R.drawable.ic_round_timer_24),
-    THIRTY_SECONDS(30000, "30秒", "30秒", R.drawable.ic_round_timer_24),
+    @StringRes override val text: Int,
+    @StringRes val simpleDescription: Int,
+    @DrawableRes override val icon: Int?
+) : SelectionItem {
+    NONE(
+        -1,
+        R.string.play_interval_none,
+        R.string.play_interval_none_simple,
+        R.drawable.ic_round_timer_off_24
+    ),
+    THREE_SECONDS(
+        3000,
+        R.string.play_interval_three_seconds,
+        R.string.play_interval_three_seconds,
+        R.drawable.ic_round_timer_24
+    ),
+    FIVE_SECONDS(
+        5000,
+        R.string.play_interval_five_seconds,
+        R.string.play_interval_five_seconds,
+        R.drawable.ic_round_timer_24
+    ),
+    TEN_SECONDS(
+        10000,
+        R.string.play_interval_ten_seconds,
+        R.string.play_interval_ten_seconds,
+        R.drawable.ic_round_timer_24
+    ),
+    THIRTY_SECONDS(
+        30000,
+        R.string.play_interval_thirty_seconds,
+        R.string.play_interval_thirty_seconds,
+        R.drawable.ic_round_timer_24
+    ),
     ;
-
-    override fun getIcon(): Int? {
-        return icon
-    }
-
-    override fun getItemText(): String {
-        return description
-    }
 
     companion object {
         fun get(interval: Int): PlayInterval {
@@ -199,19 +202,12 @@ enum class RadiusUnit(
     val value: String,
     val unitName: String,
     val maxValue: Float,
-    val description: String,
-) : ItemSelectionDialog.Item {
-    ANGLE("angle", "°", 90f, "角度(°)"),
-    LENGTH("length", "dp", 50f, "长度(dp)"),
+    override val text: Int,
+    override val icon: Int? = null
+) : SelectionItem {
+    ANGLE("angle", "°", 90f, R.string.radius_unit_angle),
+    LENGTH("length", "dp", 50f, R.string.radius_unit_length),
     ;
-
-    override fun getIcon(): Int? {
-        return null
-    }
-
-    override fun getItemText(): String {
-        return description
-    }
 
     companion object {
         fun get(value: String): RadiusUnit {
@@ -263,22 +259,15 @@ enum class WidgetType(
  */
 enum class AutoRefreshInterval(
     val value: Long,
-    val description: String,
-) : ItemSelectionDialog.Item {
-    NONE(INVALID_AUTO_REFRESH_INTERVAL, "关闭"),
-    DAY(86400000L, "每天"),
-    TWELVE_HOURS(43200000L, "每12小时"),
-    HOUR(3600000L, "每小时"),
-    FIFTEEN_MINUTES(900000L, "每15分钟"),
+    @StringRes override val text: Int,
+    override val icon: Int? = null
+) : SelectionItem {
+    NONE(INVALID_AUTO_REFRESH_INTERVAL, R.string.auto_refresh_interval_none),
+    DAY(86400000L, R.string.auto_refresh_interval_day),
+    TWELVE_HOURS(43200000L, R.string.auto_refresh_interval_twelve_hours),
+    HOUR(3600000L, R.string.auto_refresh_interval_hour),
+    FIFTEEN_MINUTES(900000L, R.string.auto_refresh_interval_fifteen_minutes),
     ;
-
-    override fun getIcon(): Int? {
-        return null
-    }
-
-    override fun getItemText(): String {
-        return description
-    }
 
     companion object {
         fun get(value: Long): AutoRefreshInterval {

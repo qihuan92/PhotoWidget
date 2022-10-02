@@ -128,4 +128,8 @@ dependencies {
     kapt(libs.glide.compiler)
 
     implementation(libs.bundles.appcenter)
+
+    implementation(libs.koin.android)
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit)
 }

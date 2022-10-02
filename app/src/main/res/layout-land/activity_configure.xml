@@ -158,7 +158,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="@{() -> activity.showScaleTypeSelector()}"
-                        app:textSelectionContent="@{viewModel.photoScaleType.description}"
+                        app:textSelectionContent="@{viewModel.photoScaleType.text}"
                         app:textSelectionIcon="@drawable/ic_round_center_focus_strong_24"
                         app:textSelectionTitle="@string/photo_scale_type" />
                 </LinearLayout>
