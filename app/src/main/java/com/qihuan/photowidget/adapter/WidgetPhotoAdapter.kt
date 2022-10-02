@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import com.qihuan.photowidget.bean.WidgetImage
+import com.qihuan.photowidget.core.database.model.WidgetImage
 import com.qihuan.photowidget.ktx.load
 
 /**
@@ -34,7 +34,7 @@ class WidgetPhotoAdapter(
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        if (itemList.isNullOrEmpty()) {
+        if (itemList.isEmpty()) {
             return View(context)
         }
 

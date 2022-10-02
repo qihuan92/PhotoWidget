@@ -11,7 +11,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.bean.WidgetBean
+import com.qihuan.photowidget.core.database.model.WidgetBean
 import com.qihuan.photowidget.core.model.WidgetFrameType
 import com.qihuan.photowidget.core.model.WidgetType
 import com.qihuan.photowidget.databinding.ItemWidgetInfoBinding

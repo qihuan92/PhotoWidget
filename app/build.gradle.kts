@@ -6,7 +6,6 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("kotlin-parcelize")
-    id("com.google.devtools.ksp").version("1.7.10-1.0.6")
 }
 
 val localProperties = Properties().apply {
@@ -85,14 +84,9 @@ android {
     }
 }
 
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
-    arg("room.incremental", "true")
-    arg("room.expandProjection", "true")
-}
-
 dependencies {
     implementation(project(":core:model"))
+    implementation(project(":core:database"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -109,12 +103,6 @@ dependencies {
 
     implementation(libs.androidx.paging)
     testImplementation(libs.androidx.paging.testing)
-
-    implementation(libs.androidx.room)
-    ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.room.paging)
-    testImplementation(libs.androidx.room.testing)
 
     // WorkManager 执行时会触发 AppWidgetProvider.onUpdate() 回调，导致不可控的行为。
     // 在 AppWidgetProvider.onUpdate() 通过 WorkManager 执行刷新微件，会导致无限循环，所以暂时改用 JobScheduler 代替。

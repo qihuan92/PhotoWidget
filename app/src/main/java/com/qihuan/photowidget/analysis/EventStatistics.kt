@@ -7,7 +7,7 @@ import android.provider.Settings
 import com.microsoft.appcenter.Flags
 import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
-import com.qihuan.photowidget.bean.WidgetBean
+import com.qihuan.photowidget.core.database.model.WidgetBean
 import com.qihuan.photowidget.ktx.getCurrentTime
 import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
 import com.qihuan.photowidget.ktx.logE

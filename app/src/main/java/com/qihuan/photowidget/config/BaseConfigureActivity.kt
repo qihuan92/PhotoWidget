@@ -30,10 +30,8 @@ import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetFrameResourceAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.createAlbumLink
-import com.qihuan.photowidget.bean.createFileLink
 import com.qihuan.photowidget.common.SaveWidgetException
+import com.qihuan.photowidget.core.database.model.LinkInfo
 import com.qihuan.photowidget.core.model.*
 import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
@@ -340,7 +338,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
             binding.layoutPhotoWidget.vfPicture.displayedChild = i
         }
         previewAddAdapter.setOnItemAddListener {
-            if (widgetType == WidgetType.GIF && viewModel.imageList.value?.size ?: 0 >= 1) {
+            if (widgetType == WidgetType.GIF && (viewModel.imageList.value?.size ?: 0) >= 1) {
                 binding.root.showSnackbar(R.string.multi_gif_widget_unsupported)
                 return@setOnItemAddListener
             }
@@ -481,7 +479,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
     }
 
     private fun addPhoto(vararg uris: Uri) {
-        if (uris.isNullOrEmpty()) {
+        if (uris.isEmpty()) {
             return
         }
         uris.forEach { viewModel.addImage(it) }

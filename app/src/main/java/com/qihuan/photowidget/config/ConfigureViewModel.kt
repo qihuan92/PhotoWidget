@@ -10,11 +10,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.BuildConfig
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.bean.*
 import com.qihuan.photowidget.common.CopyFileException
 import com.qihuan.photowidget.common.SaveWidgetException
+import com.qihuan.photowidget.core.database.AppDatabase
+import com.qihuan.photowidget.core.database.model.*
 import com.qihuan.photowidget.core.model.*
-import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.frame.WidgetFrameRepository
 import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.settings.SettingsRepository

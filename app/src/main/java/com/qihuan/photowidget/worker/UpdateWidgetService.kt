@@ -2,7 +2,7 @@ package com.qihuan.photowidget.worker
 
 import android.app.job.JobParameters
 import android.appwidget.AppWidgetManager
-import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.core.database.AppDatabase
 import com.qihuan.photowidget.ktx.logD
 import com.qihuan.photowidget.ktx.logE
 import com.qihuan.photowidget.updateAppWidget

@@ -14,13 +14,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.AppWidgetTarget
 import com.qihuan.photowidget.analysis.EventStatistics
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.WidgetBean
-import com.qihuan.photowidget.bean.WidgetInfo
+import com.qihuan.photowidget.core.database.AppDatabase
+import com.qihuan.photowidget.core.database.model.LinkInfo
+import com.qihuan.photowidget.core.database.model.WidgetBean
+import com.qihuan.photowidget.core.database.model.WidgetInfo
 import com.qihuan.photowidget.core.model.LinkType
 import com.qihuan.photowidget.core.model.WidgetFrameType
 import com.qihuan.photowidget.core.model.WidgetType
-import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.logE
 import com.qihuan.photowidget.ktx.providerUri
@@ -48,7 +48,7 @@ fun updateAppWidget(
     EventStatistics.trackSaveWidget(widgetBean)
 
     val imageList = widgetBean.imageList
-    if (imageList.isNullOrEmpty()) {
+    if (imageList.isEmpty()) {
         logE("PhotoWidget", "updateAppWidget() -> imageList.isNullOrEmpty")
         return
     }

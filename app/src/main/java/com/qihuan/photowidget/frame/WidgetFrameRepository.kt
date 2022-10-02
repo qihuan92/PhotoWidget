@@ -2,7 +2,7 @@ package com.qihuan.photowidget.frame
 
 import android.app.Application
 import android.net.Uri
-import com.qihuan.photowidget.bean.WidgetFrameResource
+import com.qihuan.photowidget.core.database.model.WidgetFrameResource
 import com.qihuan.photowidget.core.model.WidgetFrameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

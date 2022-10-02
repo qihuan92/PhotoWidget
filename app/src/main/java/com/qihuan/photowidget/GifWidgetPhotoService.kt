@@ -8,7 +8,7 @@ import android.widget.RemoteViewsService
 import androidx.core.net.toFile
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.core.database.AppDatabase
 import com.qihuan.photowidget.ktx.dp
 import java.io.File
 
@@ -72,7 +72,7 @@ class GifWidgetPhotoViewFactory(
     }
 
     override fun getViewAt(position: Int): RemoteViews? {
-        if (imagePathList.isNullOrEmpty()) {
+        if (imagePathList.isEmpty()) {
             return null
         }
 
