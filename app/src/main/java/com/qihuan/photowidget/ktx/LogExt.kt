@@ -1,8 +1,8 @@
 package com.qihuan.photowidget.ktx
 
 import android.util.Log
-import com.microsoft.appcenter.BuildConfig
-import com.qihuan.photowidget.analysis.EventStatistics
+import com.qihuan.photowidget.BuildConfig
+import com.qihuan.photowidget.core.analysis.EventStatistics
 
 /**
  * LogExt

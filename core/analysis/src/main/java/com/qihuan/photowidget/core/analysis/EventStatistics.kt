@@ -1,16 +1,18 @@
-package com.qihuan.photowidget.analysis
+package com.qihuan.photowidget.core.analysis
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.os.Build
+import android.os.PowerManager
 import android.provider.Settings
+import android.util.Log
+import com.microsoft.appcenter.AppCenter
 import com.microsoft.appcenter.Flags
 import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
-import com.qihuan.photowidget.core.database.model.WidgetBean
-import com.qihuan.photowidget.ktx.getCurrentTime
-import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
-import com.qihuan.photowidget.ktx.logE
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * EventStatistics
@@ -18,17 +20,30 @@ import com.qihuan.photowidget.ktx.logE
  * @since 2022/2/18
  */
 object EventStatistics {
+    private const val TAG = "EventStatistics"
+
     const val LOG_DEBUG = "LOG_DEBUG"
     const val LOG_INFO = "LOG_INFO"
     const val LOG_ERROR = "LOG_ERROR"
 
-    const val APPLICATION_ON_CREATE = "APPLICATION_ON_CREATE"
+    private const val APPLICATION_ON_CREATE = "APPLICATION_ON_CREATE"
     const val ACTIVITY_ON_CREATE = "ACTIVITY_ON_CREATE"
     const val ACTIVITY_ON_DESTROY = "ACTIVITY_ON_DESTROY"
 
-    private const val WIDGET_SAVE = "WIDGET_SAVE"
+    @JvmStatic
+    fun init(application: Application) {
+        AppCenter.start(
+            application,
+            BuildConfig.APP_CENTER_SECRET,
+            Analytics::class.java,
+            Crashes::class.java
+        )
 
-    fun Application.trackLifecycle(lifecycleName: String) {
+        application.registerActivityLifecycleCallbacks(AppActivityLifecycleCallbacks())
+        application.trackLifecycle(APPLICATION_ON_CREATE)
+    }
+
+    private fun Application.trackLifecycle(lifecycleName: String) {
         try {
             track(
                 lifecycleName, mapOf(
@@ -47,7 +62,7 @@ object EventStatistics {
                 )
             )
         } catch (e: Exception) {
-            logE("Application::trackLifecycle", "TrackAppLifecycleError:" + e.message, e)
+            Log.e(TAG, "TrackAppLifecycleError:" + e.message, e)
         }
     }
 
@@ -72,29 +87,20 @@ object EventStatistics {
         Crashes.trackError(throwable, properties, null)
     }
 
-    fun trackSaveWidget(widgetBean: WidgetBean) {
+    private fun getCurrentTime(pattern: String = "yyyy-MM-dd HH:mm:ss"): String {
+        var dateStr = ""
         try {
-            track(
-                WIDGET_SAVE, mapOf(
-                    "LinkType" to widgetBean.linkInfo?.type?.value.toString(),
-                    "LinkUri" to widgetBean.linkInfo?.link.toString(),
-                    "WidgetType" to widgetBean.widgetInfo.widgetType.code,
-                    "WidgetPaddingLeft" to widgetBean.widgetInfo.leftPadding.toString(),
-                    "WidgetPaddingTop" to widgetBean.widgetInfo.topPadding.toString(),
-                    "WidgetPaddingRight" to widgetBean.widgetInfo.rightPadding.toString(),
-                    "WidgetPaddingBottom" to widgetBean.widgetInfo.bottomPadding.toString(),
-                    "WidgetRadius" to widgetBean.widgetInfo.widgetRadius.toString() + widgetBean.widgetInfo.widgetRadiusUnit.unitName,
-                    "WidgetTransparency" to widgetBean.widgetInfo.widgetTransparency.toString(),
-                    "WidgetAutoPlayInterval" to widgetBean.widgetInfo.autoPlayInterval.interval.toString(),
-                    "WidgetPhotoScaleType" to widgetBean.widgetInfo.photoScaleType.name,
-                    "WidgetImageSize" to widgetBean.imageList.size.toString(),
-                    "WidgetFrameType" to widgetBean.frame?.type?.name.toString(),
-                    "WidgetFrameUri" to widgetBean.frame?.frameUri.toString(),
-                    "WidgetFrameColor" to widgetBean.frame?.frameColor.toString(),
-                )
-            )
+            val calendar = Calendar.getInstance()
+            val sdf = SimpleDateFormat(pattern, Locale.getDefault())
+            dateStr = sdf.format(calendar.time)
         } catch (e: Exception) {
-            logE("SaveWidget", "TrackError:" + e.message, e)
+            Log.e(TAG, "时间转换异常", e)
         }
+        return dateStr
+    }
+
+    private fun Context.isIgnoringBatteryOptimizations(): Boolean {
+        val powerManager = getSystemService(PowerManager::class.java)
+        return powerManager?.isIgnoringBatteryOptimizations(applicationContext.packageName) ?: false
     }
 }

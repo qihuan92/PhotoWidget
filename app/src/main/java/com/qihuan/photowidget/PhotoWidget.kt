@@ -13,7 +13,7 @@ import android.widget.RemoteViews
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.AppWidgetTarget
-import com.qihuan.photowidget.analysis.EventStatistics
+import com.qihuan.photowidget.core.analysis.EventStatistics
 import com.qihuan.photowidget.core.database.AppDatabase
 import com.qihuan.photowidget.core.database.model.LinkInfo
 import com.qihuan.photowidget.core.database.model.WidgetBean
@@ -33,6 +33,7 @@ import kotlin.random.Random
 const val EXTRA_NAV = "nav"
 const val NAV_WIDGET_PREV = "nav_widget_prev"
 const val NAV_WIDGET_NEXT = "nav_widget_next"
+private const val WIDGET_SAVE = "WIDGET_SAVE"
 
 val FLAG_MUTABLE_COMPAT = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
     PendingIntent.FLAG_MUTABLE
@@ -45,7 +46,7 @@ fun updateAppWidget(
     appWidgetManager: AppWidgetManager,
     widgetBean: WidgetBean
 ) {
-    EventStatistics.trackSaveWidget(widgetBean)
+    trackSaveWidget(widgetBean)
 
     val imageList = widgetBean.imageList
     if (imageList.isEmpty()) {
@@ -229,5 +230,31 @@ suspend fun deleteWidgets(context: Context, widgetIds: IntArray) {
         withContext(Dispatchers.IO) {
             outFile.deleteRecursively()
         }
+    }
+}
+
+private fun trackSaveWidget(widgetBean: WidgetBean) {
+    try {
+        EventStatistics.track(
+            WIDGET_SAVE, mapOf(
+                "LinkType" to widgetBean.linkInfo?.type?.value.toString(),
+                "LinkUri" to widgetBean.linkInfo?.link.toString(),
+                "WidgetType" to widgetBean.widgetInfo.widgetType.code,
+                "WidgetPaddingLeft" to widgetBean.widgetInfo.leftPadding.toString(),
+                "WidgetPaddingTop" to widgetBean.widgetInfo.topPadding.toString(),
+                "WidgetPaddingRight" to widgetBean.widgetInfo.rightPadding.toString(),
+                "WidgetPaddingBottom" to widgetBean.widgetInfo.bottomPadding.toString(),
+                "WidgetRadius" to widgetBean.widgetInfo.widgetRadius.toString() + widgetBean.widgetInfo.widgetRadiusUnit.unitName,
+                "WidgetTransparency" to widgetBean.widgetInfo.widgetTransparency.toString(),
+                "WidgetAutoPlayInterval" to widgetBean.widgetInfo.autoPlayInterval.interval.toString(),
+                "WidgetPhotoScaleType" to widgetBean.widgetInfo.photoScaleType.name,
+                "WidgetImageSize" to widgetBean.imageList.size.toString(),
+                "WidgetFrameType" to widgetBean.frame?.type?.name.toString(),
+                "WidgetFrameUri" to widgetBean.frame?.frameUri.toString(),
+                "WidgetFrameColor" to widgetBean.frame?.frameColor.toString(),
+            )
+        )
+    } catch (e: Exception) {
+        logE("SaveWidget", "TrackError:" + e.message, e)
     }
 }

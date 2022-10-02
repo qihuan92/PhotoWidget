@@ -50,16 +50,10 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("release")
-
-            val appCenterSecretRelease: String? = localProperties.getProperty("appCenterSecretRelease")
-            buildConfigField("String", "APP_CENTER_SECRET", "\"${appCenterSecretRelease}\"")
         }
 
         debug {
             signingConfig = signingConfigs.getByName("debug")
-
-            val appCenterSecretDebug: String? = localProperties.getProperty("appCenterSecretDebug")
-            buildConfigField("String", "APP_CENTER_SECRET", "\"${appCenterSecretDebug}\"")
         }
     }
     compileOptions {
@@ -87,6 +81,7 @@ android {
 dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:database"))
+    implementation(project(":core:analysis"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -116,8 +111,6 @@ dependencies {
 
     implementation(libs.glide)
     kapt(libs.glide.compiler)
-
-    implementation(libs.bundles.appcenter)
 
     implementation(libs.koin.android)
     testImplementation(libs.koin.test)

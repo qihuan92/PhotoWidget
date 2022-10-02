@@ -34,6 +34,7 @@ androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "
 androidx-swiperefreshlayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 androidx-recyclerview = "androidx.recyclerview:recyclerview:1.2.1"
 androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.4"
+androidx-startup = "androidx.startup:startup-runtime:1.1.1"
 
 # paging
 androidx-paging = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging-version" }
