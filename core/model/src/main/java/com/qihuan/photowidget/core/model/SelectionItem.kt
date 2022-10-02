@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.bean
+package com.qihuan.photowidget.core.model
 
 /**
  * 筛选项条目

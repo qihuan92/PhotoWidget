@@ -14,8 +14,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.qihuan.photowidget.App
 import com.qihuan.photowidget.GlideApp
-import com.qihuan.photowidget.common.CompressFormatCompat
-import com.qihuan.photowidget.common.RadiusUnit
+import com.qihuan.photowidget.core.model.CompressFormatCompat
+import com.qihuan.photowidget.core.model.RadiusUnit
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream

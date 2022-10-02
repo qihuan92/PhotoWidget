@@ -3,7 +3,7 @@ package com.qihuan.photowidget.bean
 import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.qihuan.photowidget.common.WidgetFrameType
+import com.qihuan.photowidget.core.model.WidgetFrameType
 
 /**
  * WidgetFrameResource

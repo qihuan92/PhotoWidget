@@ -12,7 +12,7 @@ import androidx.core.view.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.common.RadiusUnit
+import com.qihuan.photowidget.core.model.RadiusUnit
 import com.qihuan.photowidget.databinding.DialogLoadingBinding
 import kotlin.math.min
 import kotlin.math.tan

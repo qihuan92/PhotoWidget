@@ -7,9 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.about.AboutActivity
-import com.qihuan.photowidget.common.AutoRefreshInterval
-import com.qihuan.photowidget.common.PhotoScaleType
-import com.qihuan.photowidget.common.RadiusUnit
+import com.qihuan.photowidget.core.model.AutoRefreshInterval
+import com.qihuan.photowidget.core.model.PhotoScaleType
+import com.qihuan.photowidget.core.model.RadiusUnit
 import com.qihuan.photowidget.databinding.ActivitySettingsBinding
 import com.qihuan.photowidget.ktx.IgnoringBatteryOptimizationsContract
 import com.qihuan.photowidget.ktx.logE

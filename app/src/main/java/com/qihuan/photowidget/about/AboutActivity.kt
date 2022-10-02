@@ -14,7 +14,7 @@ import androidx.core.view.WindowCompat
 import com.google.android.material.chip.Chip
 import com.qihuan.photowidget.BuildConfig
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.common.License
+import com.qihuan.photowidget.core.model.License
 import com.qihuan.photowidget.databinding.ActivityAboutBinding
 import com.qihuan.photowidget.databinding.ItemAboutLicenseBinding
 import com.qihuan.photowidget.ktx.dp

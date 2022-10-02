@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.App
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.common.AutoRefreshInterval
-import com.qihuan.photowidget.common.PhotoScaleType
-import com.qihuan.photowidget.common.RadiusUnit
+import com.qihuan.photowidget.core.model.AutoRefreshInterval
+import com.qihuan.photowidget.core.model.PhotoScaleType
+import com.qihuan.photowidget.core.model.RadiusUnit
 import com.qihuan.photowidget.ktx.isIgnoringBatteryOptimizations
 import com.qihuan.photowidget.worker.JobManager
 import com.qihuan.photowidget.worker.JobManager.JOB_ID_REFRESH_WIDGET_PERIODIC

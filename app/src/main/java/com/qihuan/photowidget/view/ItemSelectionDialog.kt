@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.bean.SelectionItem
+import com.qihuan.photowidget.core.model.SelectionItem
 import com.qihuan.photowidget.databinding.DialogItemSelectionBinding
 import com.qihuan.photowidget.databinding.ItemDialogSelectionBinding
 import com.qihuan.photowidget.ktx.performHapticFeedback
@@ -23,7 +23,7 @@ import com.qihuan.photowidget.ktx.viewBinding
  * @author qi
  * @since 2021/10/8
  */
-class ItemSelectionDialog<T : SelectionItem>(
+class ItemSelectionDialog<T : com.qihuan.photowidget.core.model.SelectionItem>(
     context: Context,
     private val title: String? = null,
     private val itemList: List<T>? = null,
@@ -63,7 +63,7 @@ class ItemSelectionDialog<T : SelectionItem>(
         }
     }
 
-    class Adapter<T : SelectionItem>(
+    class Adapter<T : com.qihuan.photowidget.core.model.SelectionItem>(
         private val dialog: ItemSelectionDialog<T>,
         private val onItemClickListener: ((ItemSelectionDialog<T>, T) -> Unit)? = null
     ) : ListAdapter<T, Adapter.ViewHolder<T>>(DiffCallback()) {
@@ -81,7 +81,7 @@ class ItemSelectionDialog<T : SelectionItem>(
             holder.bind(getItem(position))
         }
 
-        class DiffCallback<T : SelectionItem> : DiffUtil.ItemCallback<T>() {
+        class DiffCallback<T : com.qihuan.photowidget.core.model.SelectionItem> : DiffUtil.ItemCallback<T>() {
             override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
                 return oldItem == newItem
             }
@@ -91,7 +91,7 @@ class ItemSelectionDialog<T : SelectionItem>(
             }
         }
 
-        class ViewHolder<T : SelectionItem>(
+        class ViewHolder<T : com.qihuan.photowidget.core.model.SelectionItem>(
             private val binding: ItemDialogSelectionBinding,
             dialog: ItemSelectionDialog<T>,
             onItemClickListener: ((ItemSelectionDialog<T>, T) -> Unit)? = null

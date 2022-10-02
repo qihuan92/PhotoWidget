@@ -3,15 +3,13 @@ package com.qihuan.photowidget.bean
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.qihuan.photowidget.common.PhotoScaleType
-import com.qihuan.photowidget.common.PlayInterval
-import com.qihuan.photowidget.common.RadiusUnit
-import com.qihuan.photowidget.common.WidgetType
+import com.qihuan.photowidget.core.model.PhotoScaleType
+import com.qihuan.photowidget.core.model.PlayInterval
+import com.qihuan.photowidget.core.model.RadiusUnit
+import com.qihuan.photowidget.core.model.WidgetType
 
 /**
  * PictureInfo
- * Dao: [com.qihuan.photowidget.db.WidgetInfoDao]
- * Database:[com.qihuan.photowidget.db.AppDatabase]
  *
  * @author qi
  * @since 11/19/20

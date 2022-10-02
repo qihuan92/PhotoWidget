@@ -1,6 +1,6 @@
 package com.qihuan.photowidget.config
 
-import com.qihuan.photowidget.common.WidgetType
+import com.qihuan.photowidget.core.model.WidgetType
 
 /**
  * The configuration screen for the [com.qihuan.photowidget.PhotoWidgetProvider] AppWidget.

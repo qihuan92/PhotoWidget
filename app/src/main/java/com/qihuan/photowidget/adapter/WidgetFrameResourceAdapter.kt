@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.WidgetFrameResource
-import com.qihuan.photowidget.common.WidgetFrameType
+import com.qihuan.photowidget.core.model.WidgetFrameType
 import com.qihuan.photowidget.databinding.ItemWidgetFramePreviewBinding
 import com.qihuan.photowidget.ktx.load
 import com.qihuan.photowidget.ktx.performHapticFeedback

@@ -33,7 +33,8 @@ import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.createAlbumLink
 import com.qihuan.photowidget.bean.createFileLink
-import com.qihuan.photowidget.common.*
+import com.qihuan.photowidget.common.SaveWidgetException
+import com.qihuan.photowidget.core.model.*
 import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.ktx.*

@@ -3,7 +3,7 @@ package com.qihuan.photowidget.config
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.qihuan.photowidget.common.WidgetType
+import com.qihuan.photowidget.core.model.WidgetType
 
 /**
  * ConfigureViewModelFactory

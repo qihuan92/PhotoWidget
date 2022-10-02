@@ -8,8 +8,8 @@ import androidx.core.view.isVisible
 import androidx.databinding.*
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
-import com.qihuan.photowidget.common.LinkType
-import com.qihuan.photowidget.common.RadiusUnit
+import com.qihuan.photowidget.core.model.LinkType
+import com.qihuan.photowidget.core.model.RadiusUnit
 import com.qihuan.photowidget.ktx.calculateRadiusPx
 import com.qihuan.photowidget.ktx.performHapticFeedback
 import com.qihuan.photowidget.view.SliderSelectionView

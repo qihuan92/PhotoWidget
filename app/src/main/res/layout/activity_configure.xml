@@ -9,9 +9,9 @@
 
         <import type="com.qihuan.photowidget.ktx.UIExtKt" />
 
-        <import type="com.qihuan.photowidget.common.WidgetType" />
+        <import type="com.qihuan.photowidget.core.model.WidgetType" />
 
-        <import type="com.qihuan.photowidget.common.WidgetFrameType" />
+        <import type="com.qihuan.photowidget.core.model.WidgetFrameType" />
 
         <variable
             name="viewModel"

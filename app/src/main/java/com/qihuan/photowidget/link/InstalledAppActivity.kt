@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.InstalledAppAdapter
 import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.common.LinkType
+import com.qihuan.photowidget.core.model.LinkType
 import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
 import com.qihuan.photowidget.ktx.paddingNavigationBar
 import com.qihuan.photowidget.ktx.viewBinding

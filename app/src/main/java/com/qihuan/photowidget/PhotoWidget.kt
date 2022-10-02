@@ -17,9 +17,9 @@ import com.qihuan.photowidget.analysis.EventStatistics
 import com.qihuan.photowidget.bean.LinkInfo
 import com.qihuan.photowidget.bean.WidgetBean
 import com.qihuan.photowidget.bean.WidgetInfo
-import com.qihuan.photowidget.common.LinkType
-import com.qihuan.photowidget.common.WidgetFrameType
-import com.qihuan.photowidget.common.WidgetType
+import com.qihuan.photowidget.core.model.LinkType
+import com.qihuan.photowidget.core.model.WidgetFrameType
+import com.qihuan.photowidget.core.model.WidgetType
 import com.qihuan.photowidget.db.AppDatabase
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.logE

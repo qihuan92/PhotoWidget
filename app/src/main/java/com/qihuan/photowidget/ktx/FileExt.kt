@@ -5,10 +5,10 @@ import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
 import androidx.core.net.toFile
-import com.qihuan.photowidget.common.CompressFormatCompat
 import com.qihuan.photowidget.common.CopyFileException
-import com.qihuan.photowidget.common.DEFAULT_COMPRESSION_QUALITY
-import com.qihuan.photowidget.common.FileExtension
+import com.qihuan.photowidget.core.model.CompressFormatCompat
+import com.qihuan.photowidget.core.model.DEFAULT_COMPRESSION_QUALITY
+import com.qihuan.photowidget.core.model.FileExtension
 import com.yalantis.ucrop.util.BitmapLoadUtils
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default

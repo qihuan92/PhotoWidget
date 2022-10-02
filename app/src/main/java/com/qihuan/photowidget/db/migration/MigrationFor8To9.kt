@@ -5,7 +5,7 @@ import androidx.core.content.contentValuesOf
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.common.LinkType
+import com.qihuan.photowidget.core.model.LinkType
 
 /**
  * MigrationFor8To9

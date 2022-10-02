@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="com.qihuan.photowidget.common.AutoRefreshInterval" />
+        <import type="com.qihuan.photowidget.core.model.AutoRefreshInterval" />
 
         <variable
             name="viewModel"

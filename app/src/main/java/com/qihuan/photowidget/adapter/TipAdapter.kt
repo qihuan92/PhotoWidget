@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.qihuan.photowidget.common.TipsType
+import com.qihuan.photowidget.core.model.TipsType
 import com.qihuan.photowidget.databinding.ItemTipAddWidgetBinding
 import com.qihuan.photowidget.databinding.ItemTipIgnoreBatteryOptimizationsBinding
 

@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.bean.WidgetBean
-import com.qihuan.photowidget.common.WidgetFrameType
-import com.qihuan.photowidget.common.WidgetType
+import com.qihuan.photowidget.core.model.WidgetFrameType
+import com.qihuan.photowidget.core.model.WidgetType
 import com.qihuan.photowidget.databinding.ItemWidgetInfoBinding
 import com.qihuan.photowidget.ktx.dp
 import com.qihuan.photowidget.ktx.load
