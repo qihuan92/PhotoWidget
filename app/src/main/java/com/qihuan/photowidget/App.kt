@@ -1,6 +1,7 @@
 package com.qihuan.photowidget
 
 import android.app.Application
+import com.qihuan.photowidget.core.database.di.dbModule
 import com.qihuan.photowidget.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -25,7 +26,7 @@ class App : Application() {
         startKoin {
             androidLogger()
             androidContext(this@App)
-            modules(appModule)
+            modules(appModule, dbModule)
         }
     }
 }

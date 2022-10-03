@@ -57,4 +57,8 @@ dependencies {
     api(libs.androidx.room.ktx)
     api(libs.androidx.room.paging)
     testImplementation(libs.androidx.room.testing)
+
+    implementation(libs.koin.android)
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit)
 }
