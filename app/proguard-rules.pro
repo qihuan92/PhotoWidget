@@ -43,28 +43,20 @@
 -keep interface com.bumptech.glide.load.resource.gif** { *; }
 -keep class com.bumptech.glide.gifdecoder** { *; }
 
-# DeviceInfoActivity list Device properties dynamically like a bean
--keepclasseswithmembers class com.microsoft.appcenter.ingestion.models.Device {
-   public ** get*();
+-keep class androidx.annotation.Keep
+-keep @androidx.annotation.Keep class * {*;}
+-keepclassmembers class * {
+    @androidx.annotation.Keep *;
 }
--keepclasseswithmembers class com.microsoft.appcenter.analytics.EventProperties {
-   ** getProperties();
+-keepclasseswithmembers class * {
+    @androidx.annotation.Keep <methods>;
 }
--keepclasseswithmembers class com.microsoft.appcenter.analytics.PropertyConfigurator {
-   private ** get*();
-   private ** mEventProperties;
+-keepclasseswithmembers class * {
+    @androidx.annotation.Keep <fields>;
 }
--keepclasseswithmembers class * extends com.microsoft.appcenter.ingestion.models.properties.TypedProperty {
-   ** getValue();
+-keepclasseswithmembers class * {
+    @androidx.annotation.Keep <init>(...);
 }
-
-# For some reason the previous rule doesn't work with primitive getValue return type
--keepclasseswithmembers class com.microsoft.appcenter.ingestion.models.properties.BooleanTypedProperty {
-   public boolean getValue();
-}
--keepclasseswithmembers class com.microsoft.appcenter.ingestion.models.properties.LongTypedProperty {
-   public long getValue();
-}
--keepclasseswithmembers class com.microsoft.appcenter.ingestion.models.properties.DoubleTypedProperty {
-   public double getValue();
+-keepclasseswithmembers class * {
+    @com.therouter.router.Autowired <fields>;
 }

@@ -1,21 +1,21 @@
 package com.qihuan.photowidget.settings
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.about.AboutActivity
 import com.qihuan.photowidget.core.common.ktx.IgnoringBatteryOptimizationsContract
+import com.qihuan.photowidget.core.common.ktx.logE
+import com.qihuan.photowidget.core.common.ktx.performHapticFeedback
+import com.qihuan.photowidget.core.common.ktx.viewBinding
+import com.qihuan.photowidget.core.common.navigation.AboutNavigation
+import com.qihuan.photowidget.core.common.view.ItemSelectionDialog
 import com.qihuan.photowidget.core.model.AutoRefreshInterval
 import com.qihuan.photowidget.core.model.PhotoScaleType
 import com.qihuan.photowidget.core.model.RadiusUnit
 import com.qihuan.photowidget.databinding.ActivitySettingsBinding
-import com.qihuan.photowidget.core.common.ktx.logE
-import com.qihuan.photowidget.core.common.ktx.performHapticFeedback
-import com.qihuan.photowidget.core.common.ktx.viewBinding
-import com.qihuan.photowidget.core.common.view.ItemSelectionDialog
+import com.therouter.TheRouter
 
 /**
  * SettingsActivity
@@ -87,7 +87,8 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     fun launchAboutActivity() {
-        startActivity(Intent(this, AboutActivity::class.java))
+        TheRouter.build(AboutNavigation.PATH_ABOUT)
+            .navigation(this)
     }
 
     fun ignoreBatteryOptimizations() {

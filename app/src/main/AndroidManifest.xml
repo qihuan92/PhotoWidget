@@ -291,11 +291,7 @@
 
         <activity android:name=".link.UrlInputActivity" />
 
-        <activity android:name=".about.AboutActivity" />
-
         <activity android:name=".settings.SettingsActivity" />
-
-        <activity android:name=".about.PrivacyPolicyActivity" />
     </application>
 
 </manifest>

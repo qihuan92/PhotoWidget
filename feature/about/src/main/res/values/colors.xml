@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="ic_launcher_background">#7F63C3</color>
     <!-- 三方平台配色 -->
     <color name="coolapk">#0f9d58</color>
     <color name="github">#25292E</color>

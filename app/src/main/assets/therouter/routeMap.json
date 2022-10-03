@@ -1,0 +1,23 @@
+[
+  {
+    "path": "/about/privacy",
+    "className": "com.qihuan.photowidget.feature.about.activity.PrivacyPolicyActivity",
+    "action": "",
+    "description": "",
+    "params": {}
+  },
+  {
+    "path": "/about/privacy",
+    "className": "com.qihuan.photowidget.feature.about.activity.AboutActivity",
+    "action": "",
+    "description": "",
+    "params": {}
+  },
+  {
+    "path": "/about/main",
+    "className": "com.qihuan.photowidget.feature.about.activity.AboutActivity",
+    "action": "",
+    "description": "",
+    "params": {}
+  }
+]

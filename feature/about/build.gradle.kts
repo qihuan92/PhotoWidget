@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.qihuan.photowidget.core.common"
+    namespace = "com.qihuan.photowidget.feature.about"
     compileSdk = libs.versions.compilesdk.get().toInt()
 
     defaultConfig {
@@ -40,8 +40,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:model"))
-    implementation(project(":core:analysis"))
+    implementation(project(":core:common"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -50,16 +49,5 @@ dependencies {
     androidTestImplementation(libs.test.androidx.junit)
     androidTestImplementation(libs.test.androidx.espresso)
 
-    api(libs.therouter.runtime)
-
-    implementation(libs.ucrop)
-    implementation(libs.compressor)
-    implementation(libs.colorpickerview)
-
-    implementation(libs.glide)
-    kapt(libs.glide.compiler)
-
-    api(libs.koin.android)
-    testApi(libs.koin.test)
-    testApi(libs.koin.test.junit)
+    kapt(libs.therouter.compiler)
 }

@@ -6,6 +6,7 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("kotlin-parcelize")
+    id("therouter")
 }
 
 val localProperties = Properties().apply {
@@ -84,6 +85,8 @@ dependencies {
     implementation(project(":core:analysis"))
     implementation(project(":core:common"))
 
+    implementation(project(":feature:about"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.swiperefreshlayout)
@@ -100,6 +103,8 @@ dependencies {
     implementation(libs.androidx.paging)
     testImplementation(libs.androidx.paging.testing)
 
+    kapt(libs.therouter.compiler)
+
     // WorkManager 执行时会触发 AppWidgetProvider.onUpdate() 回调，导致不可控的行为。
     // 在 AppWidgetProvider.onUpdate() 通过 WorkManager 执行刷新微件，会导致无限循环，所以暂时改用 JobScheduler 代替。
     // 具体可见：https://medium.com/intive-developers/toss-a-coin-to-your-widget-or-dont-part-1-of-3-188c39d50b66
@@ -112,8 +117,4 @@ dependencies {
 
     implementation(libs.glide)
     kapt(libs.glide.compiler)
-
-    implementation(libs.koin.android)
-    testImplementation(libs.koin.test)
-    testImplementation(libs.koin.test.junit)
 }
