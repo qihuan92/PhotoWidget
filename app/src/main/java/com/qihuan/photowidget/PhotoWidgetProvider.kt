@@ -7,22 +7,26 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.qihuan.photowidget.core.model.BroadcastAction
+import com.qihuan.photowidget.core.common.JobManager
 import com.qihuan.photowidget.core.common.ktx.logD
-import com.qihuan.photowidget.worker.JobManager
+import com.qihuan.photowidget.core.model.BroadcastAction
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * Implementation of App Widget functionality.
  * App Widget Configuration implemented in [com.qihuan.photowidget.config.ConfigureActivity]
  */
-open class PhotoWidgetProvider : AppWidgetProvider() {
+open class PhotoWidgetProvider : AppWidgetProvider(), KoinComponent {
+    private val jobManager: JobManager by inject()
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
         logD("PhotoWidgetProvider", "onUpdate() appWidgetIds=${appWidgetIds.joinToString()}")
-        JobManager.scheduleUpdateWidgetJob(context, appWidgetIds)
+        jobManager.scheduleUpdateWidgetJob(appWidgetIds)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -51,7 +55,7 @@ open class PhotoWidgetProvider : AppWidgetProvider() {
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         logD("PhotoWidgetProvider", "onDeleted() appWidgetIds=${appWidgetIds.joinToString()}")
-        JobManager.scheduleDeleteWidgetJob(context, appWidgetIds)
+        jobManager.scheduleDeleteWidgetJob(appWidgetIds)
         LocalBroadcastManager.getInstance(context).sendBroadcast(
             Intent(BroadcastAction.APPWIDGET_DELETED)
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)

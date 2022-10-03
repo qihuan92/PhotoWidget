@@ -1,10 +1,11 @@
-package com.qihuan.photowidget.settings
+package com.qihuan.photowidget.feature.settings.repository
 
 import android.app.Application
 import android.content.Context
 import com.qihuan.photowidget.core.common.ktx.calculateFormatSizeRecursively
 import com.qihuan.photowidget.core.common.ktx.logD
 import com.qihuan.photowidget.core.model.*
+import com.qihuan.photowidget.feature.settings.model.WidgetRadius
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -14,8 +15,6 @@ import kotlinx.coroutines.withContext
  * @since 2021/11/8
  */
 class SettingsRepository(private val application: Application) {
-
-    data class WidgetRadius(val radius: Float, val unit: RadiusUnit)
 
     private val sp by lazy { application.getSharedPreferences("settings", Context.MODE_PRIVATE) }
 

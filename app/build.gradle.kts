@@ -86,6 +86,7 @@ dependencies {
     implementation(project(":core:common"))
 
     implementation(project(":feature:about"))
+    implementation(project(":feature:settings"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

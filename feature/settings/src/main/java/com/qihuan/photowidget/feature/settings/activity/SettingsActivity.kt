@@ -1,30 +1,34 @@
-package com.qihuan.photowidget.settings
+package com.qihuan.photowidget.feature.settings.activity
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import com.qihuan.photowidget.R
-import com.qihuan.photowidget.core.common.ktx.IgnoringBatteryOptimizationsContract
+import com.qihuan.photowidget.core.common.battery.IgnoringBatteryOptimizationsContract
 import com.qihuan.photowidget.core.common.ktx.logE
 import com.qihuan.photowidget.core.common.ktx.performHapticFeedback
 import com.qihuan.photowidget.core.common.ktx.viewBinding
 import com.qihuan.photowidget.core.common.navigation.AboutNavigation
+import com.qihuan.photowidget.core.common.navigation.SettingsNavigation
 import com.qihuan.photowidget.core.common.view.ItemSelectionDialog
 import com.qihuan.photowidget.core.model.AutoRefreshInterval
 import com.qihuan.photowidget.core.model.PhotoScaleType
 import com.qihuan.photowidget.core.model.RadiusUnit
-import com.qihuan.photowidget.databinding.ActivitySettingsBinding
+import com.qihuan.photowidget.feature.settings.R
+import com.qihuan.photowidget.feature.settings.databinding.ActivitySettingsBinding
+import com.qihuan.photowidget.feature.settings.viewmodel.SettingsViewModel
 import com.therouter.TheRouter
+import com.therouter.router.Route
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * SettingsActivity
  * @author qi
  * @since 2021/11/8
  */
+@Route(path = SettingsNavigation.PATH)
 class SettingsActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivitySettingsBinding::inflate)
-    private val viewModel by viewModels<SettingsViewModel>()
+    private val viewModel by viewModel<SettingsViewModel>()
 
     private val scaleTypeDialog by lazy(LazyThreadSafetyMode.NONE) {
         ItemSelectionDialog(

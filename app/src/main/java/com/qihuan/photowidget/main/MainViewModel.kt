@@ -9,7 +9,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.qihuan.photowidget.App
-import com.qihuan.photowidget.core.common.ktx.isIgnoringBatteryOptimizations
+import com.qihuan.photowidget.core.common.battery.isIgnoringBatteryOptimizations
 import com.qihuan.photowidget.core.database.AppDatabase
 import com.qihuan.photowidget.core.database.model.WidgetBean
 import com.qihuan.photowidget.core.model.TipsType

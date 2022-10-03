@@ -1,5 +1,12 @@
 [
   {
+    "path": "/setting/main",
+    "className": "com.qihuan.photowidget.feature.settings.activity.SettingsActivity",
+    "action": "",
+    "description": "",
+    "params": {}
+  },
+  {
     "path": "/about/privacy",
     "className": "com.qihuan.photowidget.feature.about.activity.PrivacyPolicyActivity",
     "action": "",

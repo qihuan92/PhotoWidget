@@ -4,4 +4,10 @@
     <string name="option_icon">选项图标</string>
     <string name="item_selection_dialog_title">请选择</string>
     <string name="app_icon">应用图标</string>
+    <string name="about">关于</string>
+    <string name="about_description">应用信息与开发者信息</string>
+    <string name="alert_title_scale_type">请选择相片位置</string>
+    <string name="alert_title_radius_unit">请选择圆角单位</string>
+    <string name="settings">设置</string>
+    <string name="tip_ignore_battery_optimizations_content">相片微件轮播控件使用了后台服务。如果您遇到相片微件不断消失，请考虑关闭电池优化</string>
 </resources>

@@ -39,7 +39,6 @@
     <string name="wallpaper">壁纸</string>
     <string name="widget_transparency">透明度\u3000</string>
     <string name="photo_scale_type">相片位置</string>
-    <string name="alert_title_scale_type">请选择相片位置</string>
     <string-array name="open_link_types">
         <item>打开应用</item>
         <item>打开URL</item>
@@ -54,8 +53,6 @@
     <string name="conform_delete_photo">是否删除该图片</string>
     <string name="tip_add_widget_title">如何添加相片微件</string>
     <string name="tip_add_widget_content">1. 触摸并按住主屏幕\n2. 在微件列表中找到相片微件\n3. 将相片微件拖拽到主屏幕上\n4. 添加照片并进行配置，点击右上角确定按钮</string>
-    <string name="tip_ignore_battery_optimizations_title">关闭电池优化</string>
-    <string name="tip_ignore_battery_optimizations_content">相片微件轮播控件使用了后台服务。如果您遇到相片微件不断消失，请考虑关闭电池优化</string>
     <string name="ignore_battery_optimizations_setting">设置</string>
     <string name="ignore_tip">不再提示</string>
     <string name="installed_app_page_title">选择应用</string>
@@ -77,21 +74,8 @@
     <string name="widget_preview">微件预览</string>
     <string name="widget_item_gif_tag">GIF标签</string>
     <string name="save_widget_error_gif">保存失败：GIF解析错误</string>
-    <string name="settings">设置</string>
-    <string name="auto_refresh_widget">自动刷新微件</string>
-    <string name="auto_refresh_widget_description">可定时刷新所有微件，需要开启后台运行</string>
-    <string name="auto_refresh_widget_interval_description">%s刷新一次</string>
     <string name="settings_general">常规</string>
-    <string name="clean_cache">清除缓存</string>
-    <string name="clean_cache_description">清除图片缓存和临时数据</string>
-    <string name="about_description">应用信息与开发者信息</string>
     <string name="settings_other">其他</string>
-    <string name="alert_title_auto_refresh_interval">请选择自动刷新间隔</string>
-    <string name="alert_title_radius_unit">请选择圆角单位</string>
-    <string name="default_radius_unit">默认圆角单位</string>
-    <string name="default_radius">默认圆角</string>
-    <string name="radius_unit_description">可点击条目选择圆角单位</string>
-    <string name="default_scale_type">默认相片位置</string>
     <string name="widget_background">微件背景</string>
     <string name="add_widget_frame">添加微件相框</string>
     <string name="delete_widget_frame">删除微件相框</string>

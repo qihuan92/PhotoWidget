@@ -7,11 +7,11 @@
 
         <variable
             name="viewModel"
-            type="com.qihuan.photowidget.settings.SettingsViewModel" />
+            type="com.qihuan.photowidget.feature.settings.viewmodel.SettingsViewModel" />
 
         <variable
             name="activity"
-            type="com.qihuan.photowidget.settings.SettingsActivity" />
+            type="com.qihuan.photowidget.feature.settings.activity.SettingsActivity" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -90,7 +90,7 @@
                                 android:id="@+id/tv_description_auto_refresh_widget"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:text="@{viewModel.autoRefreshInterval == AutoRefreshInterval.NONE ? @string/auto_refresh_widget_description : viewModel.getAutoRefreshIntervalDescription(viewModel.autoRefreshInterval)}"
+                                android:text="@{viewModel.autoRefreshInterval == AutoRefreshInterval.NONE ? @string/auto_refresh_widget_description : @string/auto_refresh_widget_interval_description(activity.getString(viewModel.autoRefreshInterval.text))}"
                                 android:textAppearance="?textAppearanceBodySmall"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintLeft_toLeftOf="@id/tv_title_auto_refresh_widget"

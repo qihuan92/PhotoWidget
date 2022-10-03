@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="privacy_policy">隐私政策</string>
-    <string name="about">关于</string>
     <string name="about_title_introduction">介绍</string>
     <string name="app_name" translatable="false">相片微件</string>
     <string name="about_introduction">一款相片小组件应用，可添加多张相片，可以打开应用、链接，支持图片裁剪、组件圆角以及边距调整。</string>

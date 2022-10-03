@@ -16,18 +16,25 @@ import com.qihuan.photowidget.adapter.TipAdapter
 import com.qihuan.photowidget.adapter.WidgetPagingAdapter
 import com.qihuan.photowidget.config.ConfigureActivity
 import com.qihuan.photowidget.config.GifConfigureActivity
-import com.qihuan.photowidget.core.common.ktx.*
+import com.qihuan.photowidget.core.common.JobManager
+import com.qihuan.photowidget.core.common.battery.IgnoringBatteryOptimizationsContract
+import com.qihuan.photowidget.core.common.ktx.logE
+import com.qihuan.photowidget.core.common.ktx.paddingNavigationBar
+import com.qihuan.photowidget.core.common.ktx.performHapticFeedback
+import com.qihuan.photowidget.core.common.ktx.viewBinding
+import com.qihuan.photowidget.core.common.navigation.SettingsNavigation
 import com.qihuan.photowidget.core.database.model.WidgetInfo
 import com.qihuan.photowidget.core.model.TipsType
 import com.qihuan.photowidget.core.model.WidgetType
 import com.qihuan.photowidget.databinding.ActivityMainBinding
-import com.qihuan.photowidget.settings.SettingsActivity
-import com.qihuan.photowidget.worker.JobManager
+import com.therouter.TheRouter
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityMainBinding::inflate)
     private val viewModel by viewModels<MainViewModel>()
+    private val jobManager by inject<JobManager>()
     private val widgetAdapter by lazy { WidgetPagingAdapter() }
     private val tipAdapter by lazy { TipAdapter() }
     private val adapter by lazy {
@@ -76,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                     binding.toolbar.performHapticFeedback()
                     forceRefreshWidget()
                 }
-                R.id.settings -> startActivity(Intent(this, SettingsActivity::class.java))
+                R.id.settings -> TheRouter.build(SettingsNavigation.PATH).navigation(this)
             }
             true
         }
@@ -163,6 +170,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun forceRefreshWidget() {
-        JobManager.scheduleUpdateWidgetJob(this)
+        jobManager.scheduleUpdateWidgetJob()
     }
 }

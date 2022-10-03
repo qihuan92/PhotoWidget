@@ -290,8 +290,6 @@
         <activity android:name=".link.InstalledAppActivity" />
 
         <activity android:name=".link.UrlInputActivity" />
-
-        <activity android:name=".settings.SettingsActivity" />
     </application>
 
 </manifest>

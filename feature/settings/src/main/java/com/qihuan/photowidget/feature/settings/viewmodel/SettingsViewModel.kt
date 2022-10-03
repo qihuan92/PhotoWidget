@@ -1,17 +1,15 @@
-package com.qihuan.photowidget.settings
+package com.qihuan.photowidget.feature.settings.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.qihuan.photowidget.App
-import com.qihuan.photowidget.R
-import com.qihuan.photowidget.core.common.ktx.isIgnoringBatteryOptimizations
+import com.qihuan.photowidget.core.common.JobManager
+import com.qihuan.photowidget.core.common.JobManager.Companion.JOB_ID_REFRESH_WIDGET_PERIODIC
+import com.qihuan.photowidget.core.common.battery.KeepService
 import com.qihuan.photowidget.core.model.AutoRefreshInterval
 import com.qihuan.photowidget.core.model.PhotoScaleType
 import com.qihuan.photowidget.core.model.RadiusUnit
-import com.qihuan.photowidget.worker.JobManager
-import com.qihuan.photowidget.worker.JobManager.JOB_ID_REFRESH_WIDGET_PERIODIC
+import com.qihuan.photowidget.feature.settings.repository.SettingsRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -23,9 +21,12 @@ import kotlinx.coroutines.launch
  * @since 2021/11/8
  */
 @OptIn(FlowPreview::class)
-class SettingsViewModel(application: Application) : AndroidViewModel(application) {
+class SettingsViewModel(
+    private val repository: SettingsRepository,
+    private val jobManager: JobManager,
+    private val keepService: KeepService,
+) : ViewModel() {
 
-    private val repository by lazy { SettingsRepository(application) }
     val cacheSize = MutableLiveData("0.00KB")
     val autoRefreshInterval = MutableLiveData(AutoRefreshInterval.NONE)
     val isIgnoreBatteryOptimizations = MutableLiveData(false)
@@ -56,7 +57,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun loadIgnoreBatteryOptimizations() {
-        isIgnoreBatteryOptimizations.value = getApplication<App>().isIgnoringBatteryOptimizations()
+        isIgnoreBatteryOptimizations.value = keepService.isIgnoringBatteryOptimizations()
     }
 
     private suspend fun loadCacheSize() {
@@ -82,18 +83,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         startOrCancelRefreshTask(item)
     }
 
-    fun getAutoRefreshIntervalDescription(item: AutoRefreshInterval): String {
-        return getApplication<App>().run {
-            getString(R.string.auto_refresh_widget_interval_description, getString(item.text))
-        }
-    }
-
     private fun startOrCancelRefreshTask(item: AutoRefreshInterval) {
-        JobManager.cancelJob(getApplication(), JOB_ID_REFRESH_WIDGET_PERIODIC)
+        jobManager.cancelJob(JOB_ID_REFRESH_WIDGET_PERIODIC)
         if (item == AutoRefreshInterval.NONE) {
             return
         }
-        JobManager.schedulePeriodicUpdateWidgetJob(getApplication(), item.value)
+        jobManager.schedulePeriodicUpdateWidgetJob(item.value)
     }
 
     fun updateRadiusUnit(item: RadiusUnit) {

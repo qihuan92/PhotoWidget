@@ -17,7 +17,7 @@ import com.qihuan.photowidget.core.database.AppDatabase
 import com.qihuan.photowidget.core.database.model.*
 import com.qihuan.photowidget.core.model.*
 import com.qihuan.photowidget.frame.WidgetFrameRepository
-import com.qihuan.photowidget.settings.SettingsRepository
+import com.qihuan.photowidget.feature.settings.repository.SettingsRepository
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
