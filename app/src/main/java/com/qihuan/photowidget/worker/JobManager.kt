@@ -6,8 +6,8 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import androidx.core.os.persistableBundleOf
-import com.qihuan.photowidget.ktx.logD
-import com.qihuan.photowidget.ktx.logE
+import com.qihuan.photowidget.core.common.ktx.logD
+import com.qihuan.photowidget.core.common.ktx.logE
 
 /**
  * JobManager

@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.qihuan.photowidget.core.model.BroadcastAction
-import com.qihuan.photowidget.ktx.logD
+import com.qihuan.photowidget.core.common.ktx.logD
 import com.qihuan.photowidget.worker.JobManager
 
 /**

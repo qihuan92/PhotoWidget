@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_20">#F9F1FA</color>
+    <color name="purple_50">#F3E5F5</color>
+    <color name="purple_100">#E1BEE7</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="purple_custom">#7F63C3</color>
+
+    <!--yellow -->
+    <color name="yellow_50">#FFFDE7</color>
+    <color name="yellow_100">#FFF9C4</color>
+    <color name="yellow_200">#FFF590</color>
+    <color name="yellow_300">#FFF176</color>
+    <color name="yellow_400">#FFEE58</color>
+    <color name="yellow_500">#FFEB3B</color>
+    <color name="yellow_600">#FDD835</color>
+    <color name="yellow_700">#FBC02D</color>
+    <color name="yellow_800">#F9A825</color>
+    <color name="yellow_900">#F57F17</color>
+    <color name="yellow_A100">#FFFF82</color>
+    <color name="yellow_A200">#FFFF00</color>
+    <color name="yellow_A400">#FFEA00</color>
+    <color name="yellow_A700">#FFD600</color>
+
+    <!--amber-->
+    <color name="amber_50">#FFF8E1</color>
+    <color name="amber_100">#FFECB3</color>
+    <color name="amber_200">#FFE082</color>
+    <color name="amber_300">#FFD54F</color>
+    <color name="amber_400">#FFCA28</color>
+    <color name="amber_500">#FFC107</color>
+    <color name="amber_600">#FFB300</color>
+    <color name="amber_700">#FFA000</color>
+    <color name="amber_800">#FF8F00</color>
+    <color name="amber_900">#FF6F00</color>
+    <color name="amber_A100">#FFE57F</color>
+    <color name="amber_A200">#FFD740</color>
+    <color name="amber_A400">#FFC400</color>
+    <color name="amber_A700">#FFAB00</color>
+
+    <!--orange-->
+    <color name="orange_50">#FFF3E0</color>
+    <color name="orange_100">#FFE0B2</color>
+    <color name="orange_200">#FFCC80</color>
+    <color name="orange_300">#FFB74D</color>
+    <color name="orange_400">#FFA726</color>
+    <color name="orange_500">#FF9800</color>
+    <color name="orange_600">#FB8C00</color>
+    <color name="orange_700">#F57C00</color>
+    <color name="orange_800">#EF6C00</color>
+    <color name="orange_900">#E65100</color>
+    <color name="orange_A100">#FFD180</color>
+    <color name="orange_A200">#FFAB40</color>
+    <color name="orange_A400">#FF9100</color>
+    <color name="orange_A700">#FF6D00</color>
+
+    <color name="deep_purple_700">#512DA8</color>
+    <color name="deep_purple_800">#4527A0</color>
+    <color name="deep_purple_900">#311B92</color>
+
+    <color name="dark_purple_50">#20F3E5F5</color>
+
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
+    <color name="light_blue_50">#FFE1F5FE</color>
+    <color name="light_blue_200">#FF81D4FA</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="red">#FF5252</color>
+    <color name="translucent">#50000000</color>
+
+    <!-- 默认主题颜色 -->
+    <color name="default_color_primary">@color/purple_custom</color>
+    <color name="default_color_primary_variant">@color/purple_200</color>
+    <color name="default_color_on_primary">@color/white</color>
+    <color name="default_color_secondary">@color/purple_custom</color>
+    <color name="default_color_secondary_variant">@color/purple_200</color>
+    <color name="default_color_on_secondary">@color/white</color>
+
+    <color name="default_color_outline">@color/purple_custom</color>
+    <color name="default_color_background">@android:color/background_light</color>
+    <color name="default_color_on_background">@color/purple_custom</color>
+    <color name="default_color_surface">@android:color/background_light</color>
+    <color name="default_color_on_surface">@color/purple_custom</color>
+    <color name="default_color_surface_variant">@color/purple_50</color>
+    <color name="default_color_on_surface_variant">@color/purple_custom</color>
+    <color name="default_color_surface_inverse">@color/purple_custom</color>
+    <color name="default_color_on_surface_inverse">@android:color/background_light</color>
+
+    <!-- 控件配色 -->
+    <color name="ripple_color">#1f000000</color>
+    <color name="image_place_holder_color">#E1E1E1</color>
+    <color name="divider_color">#E1E1E1</color>
+    <color name="navigation_bar_color">#B3FFFFFF</color>
+    <color name="wallpaper">#EEEEEE</color>
+    <color name="card_background_color">@color/purple_20</color>
+    <color name="launcher_icon_background_start_color">@color/purple_200</color>
+    <color name="launcher_icon_background_end_color">@color/deep_purple_800</color>
+    <color name="launcher_icon_sun_color">@color/yellow_800</color>
+</resources>

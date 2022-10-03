@@ -9,7 +9,7 @@ import androidx.core.net.toFile
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.qihuan.photowidget.core.database.AppDatabase
-import com.qihuan.photowidget.ktx.dp
+import com.qihuan.photowidget.core.common.ktx.dp
 import java.io.File
 
 /**

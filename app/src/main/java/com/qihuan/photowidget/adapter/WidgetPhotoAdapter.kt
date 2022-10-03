@@ -7,7 +7,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import com.qihuan.photowidget.core.database.model.WidgetImage
-import com.qihuan.photowidget.ktx.load
+import com.qihuan.photowidget.core.common.ktx.load
 
 /**
  * WidgetPhotoAdapter

@@ -15,9 +15,9 @@ import com.qihuan.photowidget.core.database.model.WidgetBean
 import com.qihuan.photowidget.core.model.WidgetFrameType
 import com.qihuan.photowidget.core.model.WidgetType
 import com.qihuan.photowidget.databinding.ItemWidgetInfoBinding
-import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.load
-import com.qihuan.photowidget.ktx.loadToBackground
+import com.qihuan.photowidget.core.common.ktx.dp
+import com.qihuan.photowidget.core.common.ktx.load
+import com.qihuan.photowidget.core.common.ktx.loadToBackground
 
 /**
  * WidgetPagingAdapter

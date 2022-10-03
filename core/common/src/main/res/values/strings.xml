@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loading">加载中…</string>
+    <string name="option_icon">选项图标</string>
+    <string name="item_selection_dialog_title">请选择</string>
+</resources>

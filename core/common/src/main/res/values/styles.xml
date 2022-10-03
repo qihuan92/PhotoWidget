@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ShapeRound">
+        <item name="cornerFamily">rounded</item>
+    </style>
+
+    <style name="ShapeRound.Item">
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="ShapeRound.WallpaperBackground">
+        <item name="cornerSize">20dp</item>
+    </style>
+
+    <style name="ViewFlipperStyle">
+        <item name="android:inAnimation">@animator/anim_view_flipper_in</item>
+        <item name="android:outAnimation">@animator/anim_view_flipper_out</item>
+    </style>
+
+    <style name="ModalBottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="backgroundTint">@android:color/transparent</item>
+    </style>
+
+    <style name="Chip.About" parent="Widget.Material3.Chip.Assist">
+        <item name="chipStrokeWidth">2dp</item>
+        <item name="chipStrokeColor">@color/default_color_primary</item>
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipCornerRadius">20dp</item>
+    </style>
+
+    <style name="Widget.PhotoWidget.Switch" parent="Widget.Material3.CompoundButton.Switch">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+    </style>
+
+    <style name="Widget.PhotoWidget.CardView" parent="@style/Widget.Material3.CardView.Filled">
+        <item name="cardCornerRadius">@dimen/card_radius_medium</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/card_background_color</item>
+    </style>
+
+    <style name="Widget.PhotoWidget.CardView.Small" parent="@style/Widget.Material3.CardView.Filled">
+        <item name="cardCornerRadius">@dimen/card_radius_small</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/card_background_color</item>
+    </style>
+
+    <style name="Widget.PhotoWidget.Slider" parent="Widget.Material3.Slider">
+        <item name="thumbElevation">1dp</item>
+        <item name="labelStyle">@style/Widget.PhotoWidget.Tooltip</item>
+        <item name="trackColorInactive">@color/selector_slider_inactive_track_color</item>
+        <item name="tickColorActive">?attr/colorSurfaceVariant</item>
+    </style>
+
+    <style name="Widget.PhotoWidget.Tooltip" parent="Widget.Material3.Tooltip">
+        <item name="android:textColor">?attr/colorOnTertiaryContainer</item>
+        <item name="android:textAppearance">@style/TextAppearance.PhotoWidget.Tooltip</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.PhotoWidget.Tooltip</item>
+        <item name="backgroundTint">?attr/colorTertiaryContainer</item>
+    </style>
+
+    <style name="ShapeAppearance.PhotoWidget.Tooltip" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="TextAppearance.PhotoWidget.Tooltip" parent="TextAppearance.MaterialComponents.Tooltip">
+        <item name="android:textColor">?android:attr/colorBackground</item>
+    </style>
+</resources>

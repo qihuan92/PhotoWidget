@@ -3,7 +3,7 @@ package com.qihuan.photowidget.about
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.qihuan.photowidget.databinding.ActivityPrivacyPolicyBinding
-import com.qihuan.photowidget.ktx.viewBinding
+import com.qihuan.photowidget.core.common.ktx.viewBinding
 
 /**
  * PrivacyPolicyActivity

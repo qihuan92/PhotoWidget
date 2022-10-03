@@ -14,8 +14,8 @@ import com.qihuan.photowidget.adapter.InstalledAppAdapter
 import com.qihuan.photowidget.core.database.model.LinkInfo
 import com.qihuan.photowidget.core.model.LinkType
 import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
-import com.qihuan.photowidget.ktx.paddingNavigationBar
-import com.qihuan.photowidget.ktx.viewBinding
+import com.qihuan.photowidget.core.common.ktx.paddingNavigationBar
+import com.qihuan.photowidget.core.common.ktx.viewBinding
 
 class InstalledAppActivity : AppCompatActivity() {
     enum class UIState {

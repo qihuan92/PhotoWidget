@@ -18,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.documentfile.provider.DocumentFile
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -30,17 +31,17 @@ import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetFrameResourceAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
-import com.qihuan.photowidget.common.SaveWidgetException
+import com.qihuan.photowidget.core.common.SaveWidgetException
+import com.qihuan.photowidget.core.common.ktx.*
 import com.qihuan.photowidget.core.database.model.LinkInfo
 import com.qihuan.photowidget.core.model.*
 import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
-import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.link.InstalledAppActivity
 import com.qihuan.photowidget.link.UrlInputActivity
-import com.qihuan.photowidget.view.ItemSelectionDialog
-import com.qihuan.photowidget.view.MaterialColorPickerDialog
-import com.qihuan.photowidget.view.RoundedViewOutlineProvider
+import com.qihuan.photowidget.core.common.view.ItemSelectionDialog
+import com.qihuan.photowidget.core.common.view.MaterialColorPickerDialog
+import com.qihuan.photowidget.core.common.view.RoundedViewOutlineProvider
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import kotlinx.coroutines.launch
@@ -262,7 +263,15 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
                     it,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
-                viewModel.updateLinkInfo(createFileLink(appWidgetId, it))
+                val fileName = DocumentFile.fromSingleUri(this, it)?.name
+                val linkInfo = LinkInfo(
+                    appWidgetId,
+                    LinkType.OPEN_FILE,
+                    getString(R.string.widget_link_open_file_title),
+                    String.format(getString(R.string.widget_link_open_file_description), fileName),
+                    it.toString()
+                )
+                viewModel.updateLinkInfo(linkInfo)
             }
         }
 
@@ -581,7 +590,14 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
     }
 
     private fun widgetOpenAlbum() {
-        viewModel.updateLinkInfo(createAlbumLink(appWidgetId))
+        val linkInfo = LinkInfo(
+            appWidgetId,
+            LinkType.OPEN_ALBUM,
+            getString(R.string.widget_link_open_album_title),
+            getString(R.string.widget_link_open_album_description),
+            ""
+        )
+        viewModel.updateLinkInfo(linkInfo)
     }
 
     private fun launchOpenFile() {

@@ -9,8 +9,8 @@ import com.qihuan.photowidget.R
 import com.qihuan.photowidget.core.database.model.WidgetFrameResource
 import com.qihuan.photowidget.core.model.WidgetFrameType
 import com.qihuan.photowidget.databinding.ItemWidgetFramePreviewBinding
-import com.qihuan.photowidget.ktx.load
-import com.qihuan.photowidget.ktx.performHapticFeedback
+import com.qihuan.photowidget.core.common.ktx.load
+import com.qihuan.photowidget.core.common.ktx.performHapticFeedback
 
 /**
  * WidgetFrameResourceAdapter

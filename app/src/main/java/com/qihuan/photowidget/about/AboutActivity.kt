@@ -14,12 +14,12 @@ import androidx.core.view.WindowCompat
 import com.google.android.material.chip.Chip
 import com.qihuan.photowidget.BuildConfig
 import com.qihuan.photowidget.R
+import com.qihuan.photowidget.core.common.ktx.viewBinding
 import com.qihuan.photowidget.core.model.License
 import com.qihuan.photowidget.databinding.ActivityAboutBinding
 import com.qihuan.photowidget.databinding.ItemAboutLicenseBinding
-import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.logE
-import com.qihuan.photowidget.ktx.viewBinding
+import com.qihuan.photowidget.core.common.ktx.dp
+import com.qihuan.photowidget.core.common.ktx.logE
 
 /**
  * AboutActivity

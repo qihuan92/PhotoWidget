@@ -7,15 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.about.AboutActivity
+import com.qihuan.photowidget.core.common.ktx.IgnoringBatteryOptimizationsContract
 import com.qihuan.photowidget.core.model.AutoRefreshInterval
 import com.qihuan.photowidget.core.model.PhotoScaleType
 import com.qihuan.photowidget.core.model.RadiusUnit
 import com.qihuan.photowidget.databinding.ActivitySettingsBinding
-import com.qihuan.photowidget.ktx.IgnoringBatteryOptimizationsContract
-import com.qihuan.photowidget.ktx.logE
-import com.qihuan.photowidget.ktx.performHapticFeedback
-import com.qihuan.photowidget.ktx.viewBinding
-import com.qihuan.photowidget.view.ItemSelectionDialog
+import com.qihuan.photowidget.core.common.ktx.logE
+import com.qihuan.photowidget.core.common.ktx.performHapticFeedback
+import com.qihuan.photowidget.core.common.ktx.viewBinding
+import com.qihuan.photowidget.core.common.view.ItemSelectionDialog
 
 /**
  * SettingsActivity

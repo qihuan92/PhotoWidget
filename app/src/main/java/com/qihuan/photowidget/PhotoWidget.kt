@@ -21,10 +21,10 @@ import com.qihuan.photowidget.core.database.model.WidgetInfo
 import com.qihuan.photowidget.core.model.LinkType
 import com.qihuan.photowidget.core.model.WidgetFrameType
 import com.qihuan.photowidget.core.model.WidgetType
-import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.logE
-import com.qihuan.photowidget.ktx.providerUri
-import com.qihuan.photowidget.ktx.setBackgroundColor
+import com.qihuan.photowidget.core.common.ktx.dp
+import com.qihuan.photowidget.core.common.ktx.logE
+import com.qihuan.photowidget.core.common.ktx.providerUri
+import com.qihuan.photowidget.core.common.ktx.setBackgroundColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

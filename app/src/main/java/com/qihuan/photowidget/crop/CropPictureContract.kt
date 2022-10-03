@@ -11,8 +11,8 @@ import com.qihuan.photowidget.R
 import com.qihuan.photowidget.core.model.FileExtension
 import com.qihuan.photowidget.core.model.MimeType
 import com.qihuan.photowidget.core.model.TEMP_DIR_NAME
-import com.qihuan.photowidget.ktx.createOrExistsDir
-import com.qihuan.photowidget.ktx.getExtension
+import com.qihuan.photowidget.core.common.ktx.createOrExistsDir
+import com.qihuan.photowidget.core.common.ktx.getExtension
 import com.yalantis.ucrop.UCrop
 import com.yalantis.ucrop.UCropActivity
 import java.io.File

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.qihuan.photowidget.core.database.model.WidgetImage
 import com.qihuan.photowidget.databinding.ItemPreviewPhotoBinding
-import com.qihuan.photowidget.ktx.load
+import com.qihuan.photowidget.core.common.ktx.load
 
 /**
  * PreviewPhotoAdapter

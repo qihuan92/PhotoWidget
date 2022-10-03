@@ -18,9 +18,9 @@ import com.qihuan.photowidget.core.database.AppDatabase
 import com.qihuan.photowidget.core.database.model.LinkInfo
 import com.qihuan.photowidget.core.database.model.WidgetImage
 import com.qihuan.photowidget.core.database.model.WidgetInfo
-import com.qihuan.photowidget.ktx.calculateRadiusPx
-import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.setImageTransparency
+import com.qihuan.photowidget.core.common.ktx.calculateRadiusPx
+import com.qihuan.photowidget.core.common.ktx.dp
+import com.qihuan.photowidget.core.common.ktx.setImageTransparency
 
 /**
  * PhotoImageService

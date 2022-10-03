@@ -11,7 +11,7 @@ import com.qihuan.photowidget.R
 import com.qihuan.photowidget.core.database.model.LinkInfo
 import com.qihuan.photowidget.core.model.LinkType
 import com.qihuan.photowidget.databinding.ActivityUrlInputBinding
-import com.qihuan.photowidget.ktx.viewBinding
+import com.qihuan.photowidget.core.common.ktx.viewBinding
 
 class UrlInputActivity : AppCompatActivity() {
 

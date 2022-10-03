@@ -35,7 +35,6 @@
     <string name="add_widget_link">添加微件链接</string>
     <string name="delete_widget_link">删除微件链接</string>
     <string name="app_icon">应用图标</string>
-    <string name="option_icon">选项图标</string>
     <string name="delete_photo">删除相片</string>
     <string name="widget_photo">微件相片</string>
     <string name="wallpaper">壁纸</string>
@@ -70,10 +69,8 @@
     <string name="about_title_link_telegram">Telegram</string>
     <string name="about_developer_weibo">https://weibo.com/qihuan86</string>
     <string name="about_developer_telegram">https://t.me/qihuan92</string>
-    <string name="item_selection_dialog_title">请选择</string>
     <string name="conform_delete_photo_link">是否删除相片链接</string>
     <string name="conform_delete_photo">是否删除该图片</string>
-    <string name="loading">加载中…</string>
     <string name="tip_add_widget_title">如何添加相片微件</string>
     <string name="tip_add_widget_content">1. 触摸并按住主屏幕\n2. 在微件列表中找到相片微件\n3. 将相片微件拖拽到主屏幕上\n4. 添加照片并进行配置，点击右上角确定按钮</string>
     <string name="tip_ignore_battery_optimizations_title">关闭电池优化</string>

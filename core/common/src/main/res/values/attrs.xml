@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TextSelectionView">
+        <attr name="textSelectionTitle" format="reference|string" />
+        <attr name="textSelectionContent" format="reference|string" />
+        <attr name="textSelectionIcon" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="SliderSelectionView">
+        <attr name="sliderSelectionTitle" format="reference|string" />
+        <attr name="sliderSelectionValue" format="float" />
+        <attr name="sliderSelectionValueFrom" format="float" />
+        <attr name="sliderSelectionValueTo" format="float" />
+        <attr name="sliderSelectionStepSize" format="float" />
+        <attr name="sliderSelectionIcon" format="reference" />
+        <attr name="sliderSelectionValueUnit" format="string" />
+    </declare-styleable>
+</resources>

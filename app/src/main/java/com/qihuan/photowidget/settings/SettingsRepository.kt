@@ -2,9 +2,9 @@ package com.qihuan.photowidget.settings
 
 import android.app.Application
 import android.content.Context
+import com.qihuan.photowidget.core.common.ktx.calculateFormatSizeRecursively
+import com.qihuan.photowidget.core.common.ktx.logD
 import com.qihuan.photowidget.core.model.*
-import com.qihuan.photowidget.ktx.calculateFormatSizeRecursively
-import com.qihuan.photowidget.ktx.logD
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

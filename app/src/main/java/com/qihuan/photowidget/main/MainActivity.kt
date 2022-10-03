@@ -16,11 +16,11 @@ import com.qihuan.photowidget.adapter.TipAdapter
 import com.qihuan.photowidget.adapter.WidgetPagingAdapter
 import com.qihuan.photowidget.config.ConfigureActivity
 import com.qihuan.photowidget.config.GifConfigureActivity
+import com.qihuan.photowidget.core.common.ktx.*
 import com.qihuan.photowidget.core.database.model.WidgetInfo
 import com.qihuan.photowidget.core.model.TipsType
 import com.qihuan.photowidget.core.model.WidgetType
 import com.qihuan.photowidget.databinding.ActivityMainBinding
-import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.settings.SettingsActivity
 import com.qihuan.photowidget.worker.JobManager
 
