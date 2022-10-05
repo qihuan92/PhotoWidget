@@ -17,13 +17,8 @@ import org.koin.core.context.startKoin
  */
 class App : Application() {
 
-    companion object {
-        lateinit var context: Application
-    }
-
     override fun onCreate() {
         super.onCreate()
-        context = this
 
         startKoin {
             androidLogger()
