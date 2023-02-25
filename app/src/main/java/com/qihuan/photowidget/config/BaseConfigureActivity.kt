@@ -311,7 +311,9 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.confirm -> {

@@ -53,7 +53,9 @@ class InstalledAppActivity : AppCompatActivity() {
     }
 
     private fun bindView() {
-        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         binding.toolbar.inflateMenu(R.menu.menu_installed_app)
         binding.toolbar.findViewById<SearchView>(R.id.search).apply {
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
