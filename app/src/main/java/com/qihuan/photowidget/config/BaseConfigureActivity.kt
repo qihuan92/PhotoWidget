@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -202,7 +203,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
     }
 
     private val selectPicForResult =
-        registerForActivityResult(ActivityResultContracts.GetMultipleContents()) {
+        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) {
             if (it.isNullOrEmpty()) {
                 return@registerForActivityResult
             }
@@ -214,7 +215,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
         }
 
     private val selectOnePicForResult =
-        registerForActivityResult(ActivityResultContracts.GetContent()) {
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
             if (it == null) {
                 return@registerForActivityResult
             }
@@ -355,9 +356,21 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
             }
 
             if (widgetType == WidgetType.GIF) {
-                selectOnePicForResult.launch(MimeType.GIF.mimeTypeName)
+                selectOnePicForResult.launch(
+                    PickVisualMediaRequest.Builder()
+                        .setMediaType(
+                            ActivityResultContracts.PickVisualMedia.SingleMimeType(
+                                MimeType.GIF.mimeTypeName
+                            )
+                        )
+                        .build()
+                )
             } else {
-                selectPicForResult.launch("image/*")
+                selectPicForResult.launch(
+                    PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        .build()
+                )
             }
         }
         bindDragHelper()
