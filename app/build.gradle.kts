@@ -69,6 +69,7 @@ android {
         viewBinding = true
         dataBinding = true
     }
+    namespace = "com.qihuan.photowidget"
 
     applicationVariants.all {
         outputs.all {
