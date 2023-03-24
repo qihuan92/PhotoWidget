@@ -44,7 +44,9 @@ class AboutActivity : ScopeActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(binding.root)
 
-        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.privacy_policy -> startActivity(

@@ -77,7 +77,9 @@ class SettingsActivity : AppCompatActivity() {
         binding.activity = this
         binding.viewModel = viewModel
 
-        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         binding.sliderDefaultRadius.addOnChangeListener { slider, _, fromUser ->
             if (fromUser) {

@@ -18,7 +18,7 @@ class MigrationFor8To9 : Migration(8, 9) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `link_info` (`widgetId` INTEGER NOT NULL, `type` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `link` TEXT NOT NULL, PRIMARY KEY(`widgetId`))")
         val cursor = database.query("select widgetId, linkInfo from widget_info")
         cursor.use {
-            while (it != null && it.moveToNext()) {
+            while (it.moveToNext()) {
                 val widgetId = it.getInt(cursor.getColumnIndexOrThrow("widgetId"))
                 val linkInfoStr = it.getString(cursor.getColumnIndexOrThrow("linkInfo"))
                 val linkInfo = convertLinkInfo(widgetId, linkInfoStr)
