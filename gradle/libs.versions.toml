@@ -1,7 +1,7 @@
 [versions]
 kotlin-version = "1.8.10"
 ksp-version = "1.8.10-1.0.9"
-agp-version = "7.4.2"
+agp-version = "8.0.0"
 compilesdk = "33"
 build-tools-version = "33.0.2"
 minsdk = "24"
@@ -70,7 +70,6 @@ koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin-version" 
 koin-test-junit = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin-version" }
 
 # Router
-therouter-plugin = { module = "cn.therouter:plugin", version.ref = "therouter-version" }
 therouter-compiler = { module = "cn.therouter:apt", version.ref = "therouter-version" }
 therouter-runtime = { module = "cn.therouter:router", version.ref = "therouter-version" }
 
