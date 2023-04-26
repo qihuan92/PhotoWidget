@@ -17,7 +17,6 @@ room-version = "2.5.1"
 glide-version = "4.15.1"
 appcenter-version = "4.3.1"
 koin-version = "3.4.0"
-therouter-version = "1.1.0"
 
 test-junit-version = "4.13.2"
 test-androidx-junit-version = "1.1.5"
@@ -68,10 +67,6 @@ appcenter-crashes = { module = "com.microsoft.appcenter:appcenter-crashes", vers
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin-version" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin-version" }
 koin-test-junit = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin-version" }
-
-# Router
-therouter-compiler = { module = "cn.therouter:apt", version.ref = "therouter-version" }
-therouter-runtime = { module = "cn.therouter:router", version.ref = "therouter-version" }
 
 ucrop = "com.github.yalantis:ucrop:2.2.7"
 compressor = "id.zelory:compressor:3.0.1"

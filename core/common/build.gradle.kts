@@ -47,8 +47,6 @@ dependencies {
     androidTestImplementation(libs.test.androidx.junit)
     androidTestImplementation(libs.test.androidx.espresso)
 
-    api(libs.therouter.runtime)
-
     implementation(libs.ucrop)
     implementation(libs.compressor)
     implementation(libs.colorpickerview)

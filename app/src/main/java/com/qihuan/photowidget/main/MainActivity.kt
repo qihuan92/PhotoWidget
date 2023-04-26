@@ -3,6 +3,7 @@ package com.qihuan.photowidget.main
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -22,12 +23,10 @@ import com.qihuan.photowidget.core.common.ktx.logE
 import com.qihuan.photowidget.core.common.ktx.paddingNavigationBar
 import com.qihuan.photowidget.core.common.ktx.performHapticFeedback
 import com.qihuan.photowidget.core.common.ktx.viewBinding
-import com.qihuan.photowidget.core.common.navigation.SettingsNavigation
 import com.qihuan.photowidget.core.database.model.WidgetInfo
 import com.qihuan.photowidget.core.model.TipsType
 import com.qihuan.photowidget.core.model.WidgetType
 import com.qihuan.photowidget.databinding.ActivityMainBinding
-import com.therouter.TheRouter
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
@@ -83,7 +82,14 @@ class MainActivity : AppCompatActivity() {
                     binding.toolbar.performHapticFeedback()
                     forceRefreshWidget()
                 }
-                R.id.settings -> TheRouter.build(SettingsNavigation.PATH).navigation(this)
+                R.id.settings -> {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("qihuan://photowidget/settings/main")
+                        )
+                    )
+                }
             }
             true
         }

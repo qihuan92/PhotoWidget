@@ -57,6 +57,3 @@
 -keepclasseswithmembers class * {
     @androidx.annotation.Keep <init>(...);
 }
--keepclasseswithmembers class * {
-    @com.therouter.router.Autowired <fields>;
-}

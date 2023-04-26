@@ -1,5 +1,5 @@
 import java.io.FileInputStream
-import java.util.*
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -101,8 +101,6 @@ dependencies {
 
     implementation(libs.androidx.paging)
     testImplementation(libs.androidx.paging.testing)
-
-    kapt(libs.therouter.compiler)
 
     // WorkManager 执行时会触发 AppWidgetProvider.onUpdate() 回调，导致不可控的行为。
     // 在 AppWidgetProvider.onUpdate() 通过 WorkManager 执行刷新微件，会导致无限循环，所以暂时改用 JobScheduler 代替。

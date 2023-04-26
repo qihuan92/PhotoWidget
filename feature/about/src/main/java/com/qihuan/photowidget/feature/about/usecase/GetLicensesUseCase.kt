@@ -65,11 +65,5 @@ class GetLicensesUseCase {
             License.APACHE_2,
             "https://github.com/InsertKoinIO/koin"
         ),
-        LicenseItem(
-            "TheRouter",
-            "HuolalaTech",
-            License.APACHE_2,
-            "https://github.com/HuolalaTech/hll-wp-therouter-android"
-        ),
     )
 }

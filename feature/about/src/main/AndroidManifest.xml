@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application>
-        <activity android:name=".activity.AboutActivity" />
 
-        <activity android:name=".activity.PrivacyPolicyActivity" />
+    <application>
+        <activity
+            android:name=".activity.AboutActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="photowidget"
+                    android:path="/about/main"
+                    android:scheme="qihuan" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activity.PrivacyPolicyActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="photowidget"
+                    android:path="/about/privacy"
+                    android:scheme="qihuan" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

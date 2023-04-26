@@ -13,7 +13,6 @@ import com.qihuan.photowidget.core.common.AppInfo
 import com.qihuan.photowidget.core.common.ktx.dp
 import com.qihuan.photowidget.core.common.ktx.logE
 import com.qihuan.photowidget.core.common.ktx.viewBinding
-import com.qihuan.photowidget.core.common.navigation.AboutNavigation
 import com.qihuan.photowidget.feature.about.R
 import com.qihuan.photowidget.feature.about.databinding.ActivityAboutBinding
 import com.qihuan.photowidget.feature.about.databinding.ItemAboutLicenseBinding
@@ -22,7 +21,6 @@ import com.qihuan.photowidget.feature.about.module.LinkItem
 import com.qihuan.photowidget.feature.about.usecase.GetAppLinksUseCase
 import com.qihuan.photowidget.feature.about.usecase.GetDeveloperLinksUseCase
 import com.qihuan.photowidget.feature.about.usecase.GetLicensesUseCase
-import com.therouter.router.Route
 import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.ScopeActivity
 
@@ -31,7 +29,6 @@ import org.koin.androidx.scope.ScopeActivity
  * @author qi
  * @since 2021/10/14
  */
-@Route(path = AboutNavigation.PATH_ABOUT)
 class AboutActivity : ScopeActivity() {
     private val binding by viewBinding(ActivityAboutBinding::inflate)
     private val appInfo: AppInfo by inject()
