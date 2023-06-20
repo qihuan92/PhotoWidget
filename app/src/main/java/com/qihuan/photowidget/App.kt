@@ -1,6 +1,7 @@
 package com.qihuan.photowidget
 
 import android.app.Application
+import android.content.Context
 import com.qihuan.photowidget.core.database.di.dbModule
 import com.qihuan.photowidget.di.appModule
 import com.qihuan.photowidget.feature.about.di.aboutModule
@@ -17,8 +18,8 @@ import org.koin.core.context.startKoin
  */
 class App : Application() {
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
 
         startKoin {
             androidLogger()
