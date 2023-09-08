@@ -1,7 +1,7 @@
 [versions]
 kotlin-version = "1.8.10"
 ksp-version = "1.8.10-1.0.9"
-agp-version = "8.1.0"
+agp-version = "8.1.1"
 compilesdk = "33"
 build-tools-version = "33.0.2"
 minsdk = "24"
