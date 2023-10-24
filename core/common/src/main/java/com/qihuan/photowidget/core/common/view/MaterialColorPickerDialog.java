@@ -34,7 +34,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.qihuan.photowidget.core.common.R;
 import com.qihuan.photowidget.core.common.ktx.UIExtKt;
 import com.skydoves.colorpickerview.ColorPickerView;
-import com.skydoves.colorpickerview.databinding.DialogColorpickerColorpickerviewSkydovesBinding;
+import com.skydoves.colorpickerview.databinding.ColorpickerviewDialogColorpickerBinding;
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 import com.skydoves.colorpickerview.listeners.ColorListener;
 import com.skydoves.colorpickerview.listeners.ColorPickerViewListener;
@@ -59,7 +59,7 @@ public class MaterialColorPickerDialog extends AlertDialog {
      * Builder class for create {@link MaterialColorPickerDialog}.
      */
     public static class Builder extends MaterialAlertDialogBuilder {
-        private DialogColorpickerColorpickerviewSkydovesBinding dialogBinding;
+        private ColorpickerviewDialogColorpickerBinding dialogBinding;
         private ColorPickerView colorPickerView;
         private boolean shouldAttachAlphaSlideBar = true;
         private boolean shouldAttachBrightnessSlideBar = true;
@@ -78,7 +78,7 @@ public class MaterialColorPickerDialog extends AlertDialog {
         private void onCreate() {
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
             this.dialogBinding =
-                    DialogColorpickerColorpickerviewSkydovesBinding.inflate(layoutInflater, null, false);
+                    ColorpickerviewDialogColorpickerBinding.inflate(layoutInflater, null, false);
             this.colorPickerView = dialogBinding.colorPickerView;
             this.colorPickerView.attachAlphaSlider(dialogBinding.alphaSlideBar);
             this.colorPickerView.attachBrightnessSlider(dialogBinding.brightnessSlideBar);

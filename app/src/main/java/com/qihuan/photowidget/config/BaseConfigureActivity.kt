@@ -34,15 +34,15 @@ import com.qihuan.photowidget.adapter.WidgetFrameResourceAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
 import com.qihuan.photowidget.core.common.SaveWidgetException
 import com.qihuan.photowidget.core.common.ktx.*
+import com.qihuan.photowidget.core.common.view.ItemSelectionDialog
+import com.qihuan.photowidget.core.common.view.MaterialColorPickerDialog
+import com.qihuan.photowidget.core.common.view.RoundedViewOutlineProvider
 import com.qihuan.photowidget.core.database.model.LinkInfo
 import com.qihuan.photowidget.core.model.*
 import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
 import com.qihuan.photowidget.link.InstalledAppActivity
 import com.qihuan.photowidget.link.UrlInputActivity
-import com.qihuan.photowidget.core.common.view.ItemSelectionDialog
-import com.qihuan.photowidget.core.common.view.MaterialColorPickerDialog
-import com.qihuan.photowidget.core.common.view.RoundedViewOutlineProvider
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import kotlinx.coroutines.launch
@@ -192,9 +192,11 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
                 WidgetFrameType.COLOR -> {
                     showWidgetFrameColorSelector()
                 }
+
                 WidgetFrameType.IMAGE -> {
                     selectWidgetFrameForResult.launch("image/*")
                 }
+
                 else -> {
                     setWidgetFrame(it.type, uri = it.frameUri)
                 }
@@ -239,10 +241,11 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private val externalStorageResult =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it) {
-                val wallpaperManager = WallpaperManager.getInstance(this)
-                binding.ivWallpaper.load(wallpaperManager.drawable)
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+            if (result) {
+                WallpaperManager.getInstance(this).drawable?.let {
+                    binding.ivWallpaper.load(it)
+                }
             }
         }
 
@@ -425,6 +428,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
                 WidgetFrameType.NONE -> {
                     binding.containerPhotoWidgetPreview.setBackgroundResource(android.R.color.transparent)
                 }
+
                 else -> {
                 }
             }

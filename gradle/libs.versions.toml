@@ -2,16 +2,16 @@
 kotlin-version = "1.8.10"
 ksp-version = "1.8.10-1.0.9"
 agp-version = "8.1.2"
-compilesdk = "33"
-build-tools-version = "33.0.2"
+compilesdk = "34"
+build-tools-version = "34.0.0"
 minsdk = "24"
 targetsdk = "31"
 
-androidx-core-version = "1.10.0"
+androidx-core-version = "1.12.0"
 androidx-appcompat-version = "1.6.1"
 material-version = "1.9.0-rc01"
-androidx-activity-version = "1.7.0"
-androidx-fragment-version = "1.5.6"
+androidx-activity-version = "1.8.0"
+androidx-fragment-version = "1.6.1"
 paging-version = "3.1.1"
 room-version = "2.5.1"
 glide-version = "4.16.0"
@@ -70,7 +70,7 @@ koin-test-junit = { module = "io.insert-koin:koin-test-junit4", version.ref = "k
 
 ucrop = "com.github.yalantis:ucrop:2.2.7"
 compressor = "id.zelory:compressor:3.0.1"
-colorpickerview = "com.github.skydoves:colorpickerview:2.2.4"
+colorpickerview = "com.github.skydoves:colorpickerview:2.3.0"
 
 [bundles]
 appcenter = ["appcenter-analytics", "appcenter-crashes"]
