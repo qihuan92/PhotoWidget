@@ -11,11 +11,11 @@ import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.qihuan.photowidget.R
 import com.qihuan.photowidget.adapter.InstalledAppAdapter
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.common.LinkType
+import com.qihuan.photowidget.core.database.model.LinkInfo
+import com.qihuan.photowidget.core.model.LinkType
 import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
-import com.qihuan.photowidget.ktx.paddingNavigationBar
-import com.qihuan.photowidget.ktx.viewBinding
+import com.qihuan.photowidget.core.common.ktx.paddingNavigationBar
+import com.qihuan.photowidget.core.common.ktx.viewBinding
 
 class InstalledAppActivity : AppCompatActivity() {
     enum class UIState {
@@ -53,7 +53,9 @@ class InstalledAppActivity : AppCompatActivity() {
     }
 
     private fun bindView() {
-        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         binding.toolbar.inflateMenu(R.menu.menu_installed_app)
         binding.toolbar.findViewById<SearchView>(R.id.search).apply {
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_radius_unit">默认圆角单位</string>
+    <string name="default_radius">默认圆角</string>
+    <string name="default_scale_type">默认相片位置</string>
+    <string name="alert_title_auto_refresh_interval">请选择自动刷新间隔</string>
+    <string name="auto_refresh_widget">自动刷新微件</string>
+    <string name="auto_refresh_widget_description">可定时刷新所有微件，需要开启后台运行</string>
+    <string name="auto_refresh_widget_interval_description">%s刷新一次</string>
+    <string name="tip_ignore_battery_optimizations_title">关闭电池优化</string>
+    <string name="clean_cache">清除缓存</string>
+    <string name="clean_cache_description">清除图片缓存和临时数据</string>
+    <string name="radius_unit_description">可点击条目选择圆角单位</string>
+</resources>

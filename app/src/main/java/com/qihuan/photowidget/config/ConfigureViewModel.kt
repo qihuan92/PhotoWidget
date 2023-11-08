@@ -10,12 +10,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.BuildConfig
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.bean.*
-import com.qihuan.photowidget.common.*
-import com.qihuan.photowidget.db.AppDatabase
+import com.qihuan.photowidget.core.common.CopyFileException
+import com.qihuan.photowidget.core.common.SaveWidgetException
+import com.qihuan.photowidget.core.common.ktx.*
+import com.qihuan.photowidget.core.database.AppDatabase
+import com.qihuan.photowidget.core.database.model.*
+import com.qihuan.photowidget.core.model.*
 import com.qihuan.photowidget.frame.WidgetFrameRepository
-import com.qihuan.photowidget.ktx.*
-import com.qihuan.photowidget.settings.SettingsRepository
+import com.qihuan.photowidget.feature.settings.repository.SettingsRepository
 import com.qihuan.photowidget.updateAppWidget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -225,7 +227,7 @@ class ConfigureViewModel(
         // Save new image files.
         val newImageList = imageList.value
         if (newImageList.isNullOrEmpty()) {
-            throw SaveWidgetException(context.getString(R.string.warning_select_picture))
+            throw SaveWidgetException(getString(R.string.warning_select_picture))
         }
         newImageList.filter { it.imageId == null }.forEach { widgetImage ->
             val imageUri = widgetImage.imageUri
@@ -240,12 +242,13 @@ class ConfigureViewModel(
                 withContext(Dispatchers.IO) {
                     try {
                         destFile.toUri().saveGifFramesToDir(
+                            getApplication(),
                             File(widgetFileDir, destFile.nameWithoutExtension),
                             widgetRadius.value ?: 0f,
                             widgetRadiusUnit.value ?: RadiusUnit.LENGTH
                         )
                     } catch (e: Exception) {
-                        throw SaveWidgetException(context.getString(R.string.save_widget_error_gif))
+                        throw SaveWidgetException(getString(R.string.save_widget_error_gif))
                     }
                 }
             } else {
@@ -278,7 +281,7 @@ class ConfigureViewModel(
                         context.copyFileSmart(it, frameFile)
                     } catch (e: CopyFileException) {
                         val errorMessage =
-                            if (BuildConfig.DEBUG) e.message else context.getString(R.string.save_fail_copy_photo_files)
+                            if (BuildConfig.DEBUG) e.message else getString(R.string.save_fail_copy_photo_files)
                         throw SaveWidgetException(errorMessage.orEmpty())
                     }
                 }

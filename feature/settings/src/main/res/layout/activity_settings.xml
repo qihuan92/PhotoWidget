@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.qihuan.photowidget.core.model.AutoRefreshInterval" />
+
+        <variable
+            name="viewModel"
+            type="com.qihuan.photowidget.feature.settings.viewmodel.SettingsViewModel" />
+
+        <variable
+            name="activity"
+            type="com.qihuan.photowidget.feature.settings.activity.SettingsActivity" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:liftOnScroll="true">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:navigationIcon="@drawable/ic_round_arrow_back_24"
+                app:title="@string/settings" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/main_padding"
+            android:paddingVertical="10dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.PhotoWidget.CardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@drawable/divider_settings"
+                        android:orientation="vertical"
+                        android:showDividers="middle">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:foreground="?selectableItemBackground"
+                            android:onClick="@{() -> activity.switchAutoRefresh()}"
+                            android:padding="10dp">
+
+                            <ImageView
+                                android:id="@+id/iv_auto_refresh_widget"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="@string/auto_refresh_widget"
+                                android:src="@drawable/ic_round_autorenew_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_title_auto_refresh_widget"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="@string/auto_refresh_widget"
+                                android:textAppearance="?textAppearanceSubtitle1"
+                                app:layout_constraintBottom_toTopOf="@id/tv_description_auto_refresh_widget"
+                                app:layout_constraintLeft_toRightOf="@id/iv_auto_refresh_widget"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_description_auto_refresh_widget"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="@{viewModel.autoRefreshInterval == AutoRefreshInterval.NONE ? @string/auto_refresh_widget_description : @string/auto_refresh_widget_interval_description(activity.getString(viewModel.autoRefreshInterval.text))}"
+                                android:textAppearance="?textAppearanceBodySmall"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="@id/tv_title_auto_refresh_widget"
+                                app:layout_constraintRight_toLeftOf="@id/switch_auto_refresh_widget"
+                                app:layout_constraintTop_toBottomOf="@id/tv_title_auto_refresh_widget"
+                                tools:text="关闭" />
+
+                            <com.google.android.material.switchmaterial.SwitchMaterial
+                                android:id="@+id/switch_auto_refresh_widget"
+                                style="@style/Widget.PhotoWidget.Switch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="@{viewModel.autoRefreshInterval != AutoRefreshInterval.NONE}"
+                                android:clickable="false"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toRightOf="@id/tv_description_auto_refresh_widget"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:foreground="?selectableItemBackground"
+                            android:onClick="@{() -> activity.ignoreBatteryOptimizations()}"
+                            android:padding="10dp">
+
+                            <ImageView
+                                android:id="@+id/iv_ignore_battery_optimizations"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="@string/tip_ignore_battery_optimizations_title"
+                                android:src="@drawable/ic_round_battery_alert_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_title_ignore_battery_optimizations"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="@string/tip_ignore_battery_optimizations_title"
+                                android:textAppearance="?textAppearanceSubtitle1"
+                                app:layout_constraintBottom_toTopOf="@id/tv_description_ignore_battery_optimizations"
+                                app:layout_constraintLeft_toRightOf="@id/iv_ignore_battery_optimizations"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_description_ignore_battery_optimizations"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tip_ignore_battery_optimizations_content"
+                                android:textAppearance="?textAppearanceBodySmall"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="@id/tv_title_ignore_battery_optimizations"
+                                app:layout_constraintRight_toLeftOf="@id/switch_ignore_battery_optimizations"
+                                app:layout_constraintTop_toBottomOf="@id/tv_title_ignore_battery_optimizations" />
+
+                            <com.google.android.material.switchmaterial.SwitchMaterial
+                                android:id="@+id/switch_ignore_battery_optimizations"
+                                style="@style/Widget.PhotoWidget.Switch"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="@{viewModel.isIgnoreBatteryOptimizations}"
+                                android:clickable="false"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toRightOf="@id/tv_description_ignore_battery_optimizations"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:foreground="?selectableItemBackground"
+                            android:onClick="@{() -> viewModel.clearCache()}"
+                            android:padding="10dp">
+
+                            <ImageView
+                                android:id="@+id/iv_clean_cache"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="@string/clean_cache"
+                                android:src="@drawable/ic_round_cleaning_services_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_title_clean_cache"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="@string/clean_cache"
+                                android:textAppearance="?textAppearanceSubtitle1"
+                                app:layout_constraintLeft_toRightOf="@id/iv_clean_cache"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_description_clean_cache"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/clean_cache_description"
+                                android:textAppearance="?textAppearanceBodySmall"
+                                app:layout_constraintLeft_toLeftOf="@id/tv_title_clean_cache"
+                                app:layout_constraintRight_toLeftOf="@id/tv_cache_size"
+                                app:layout_constraintTop_toBottomOf="@id/tv_title_clean_cache" />
+
+                            <TextView
+                                android:id="@+id/tv_cache_size"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{viewModel.cacheSize}"
+                                android:textAppearance="?textAppearanceLabelSmall"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="0.00KB" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.PhotoWidget.CardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@drawable/divider_settings"
+                        android:orientation="vertical"
+                        android:showDividers="middle">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:foreground="?selectableItemBackground"
+                            android:onClick="@{() -> activity.showScaleTypeSelector()}"
+                            android:padding="10dp">
+
+                            <ImageView
+                                android:id="@+id/iv_default_scale_type"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="@string/default_scale_type"
+                                android:src="@drawable/ic_round_center_focus_strong_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_title_default_scale_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="@string/default_scale_type"
+                                android:textAppearance="?textAppearanceSubtitle1"
+                                app:layout_constraintLeft_toRightOf="@id/iv_default_scale_type"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_description_default_scale_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@{viewModel.widgetScaleType.text}"
+                                android:textAppearance="?textAppearanceBodySmall"
+                                app:layout_constraintLeft_toLeftOf="@id/tv_title_default_scale_type"
+                                app:layout_constraintTop_toBottomOf="@id/tv_title_default_scale_type"
+                                tools:text="中心裁剪" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:foreground="?selectableItemBackground"
+                            android:onClick="@{() -> activity.showDefaultRadiusUnitSelector()}"
+                            android:padding="10dp">
+
+                            <ImageView
+                                android:id="@+id/iv_default_radius"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="@string/default_radius"
+                                android:src="@drawable/ic_round_rounded_corner_24"
+                                app:layout_constraintBottom_toBottomOf="@id/tv_description_radius_unit"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="@id/tv_title_default_radius" />
+
+                            <TextView
+                                android:id="@+id/tv_title_default_radius"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="@string/default_radius"
+                                android:textAppearance="?textAppearanceSubtitle1"
+                                app:layout_constraintLeft_toRightOf="@id/iv_default_radius"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_description_radius_unit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/radius_unit_description"
+                                android:textAppearance="?textAppearanceBodySmall"
+                                app:layout_constraintLeft_toLeftOf="@id/tv_title_default_radius"
+                                app:layout_constraintTop_toBottomOf="@id/tv_title_default_radius" />
+
+                            <com.google.android.material.slider.Slider
+                                android:id="@+id/slider_default_radius"
+                                style="@style/Widget.PhotoWidget.Slider"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:stepSize="1"
+                                android:value="@={viewModel.widgetRadius}"
+                                android:valueFrom="0"
+                                android:valueTo="@{viewModel.widgetRadiusUnit.maxValue}"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/tv_description_radius_unit" />
+
+                            <TextView
+                                android:id="@+id/tv_default_radius_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="16dp"
+                                android:text="@{viewModel.widgetRadius + viewModel.widgetRadiusUnit.unitName}"
+                                android:textAppearance="?textAppearanceCaption"
+                                android:textStyle="italic"
+                                app:layout_constraintBottom_toTopOf="@id/slider_default_radius"
+                                app:layout_constraintRight_toRightOf="parent"
+                                tools:text="29dp" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.PhotoWidget.CardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@drawable/divider_settings"
+                        android:orientation="vertical"
+                        android:showDividers="middle">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:foreground="?selectableItemBackground"
+                            android:onClick="@{() -> activity.launchAboutActivity()}"
+                            android:padding="10dp">
+
+                            <ImageView
+                                android:id="@+id/iv_about"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:contentDescription="@string/about"
+                                android:src="@drawable/ic_outline_info_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_title_about"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="@string/about"
+                                android:textAppearance="?textAppearanceSubtitle1"
+                                app:layout_constraintLeft_toRightOf="@id/iv_about"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/tv_description_about"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/about_description"
+                                android:textAppearance="?textAppearanceBodySmall"
+                                app:layout_constraintLeft_toLeftOf="@id/tv_title_about"
+                                app:layout_constraintTop_toBottomOf="@id/tv_title_about" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

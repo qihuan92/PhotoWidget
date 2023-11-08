@@ -14,10 +14,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.documentfile.provider.DocumentFile
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -30,18 +32,17 @@ import com.qihuan.photowidget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.adapter.PreviewPhotoAddAdapter
 import com.qihuan.photowidget.adapter.WidgetFrameResourceAdapter
 import com.qihuan.photowidget.adapter.WidgetPhotoAdapter
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.createAlbumLink
-import com.qihuan.photowidget.bean.createFileLink
-import com.qihuan.photowidget.common.*
+import com.qihuan.photowidget.core.common.SaveWidgetException
+import com.qihuan.photowidget.core.common.ktx.*
+import com.qihuan.photowidget.core.common.view.ItemSelectionDialog
+import com.qihuan.photowidget.core.common.view.MaterialColorPickerDialog
+import com.qihuan.photowidget.core.common.view.RoundedViewOutlineProvider
+import com.qihuan.photowidget.core.database.model.LinkInfo
+import com.qihuan.photowidget.core.model.*
 import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
-import com.qihuan.photowidget.ktx.*
 import com.qihuan.photowidget.link.InstalledAppActivity
 import com.qihuan.photowidget.link.UrlInputActivity
-import com.qihuan.photowidget.view.ItemSelectionDialog
-import com.qihuan.photowidget.view.MaterialColorPickerDialog
-import com.qihuan.photowidget.view.RoundedViewOutlineProvider
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import kotlinx.coroutines.launch
@@ -191,9 +192,11 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
                 WidgetFrameType.COLOR -> {
                     showWidgetFrameColorSelector()
                 }
+
                 WidgetFrameType.IMAGE -> {
                     selectWidgetFrameForResult.launch("image/*")
                 }
+
                 else -> {
                     setWidgetFrame(it.type, uri = it.frameUri)
                 }
@@ -202,7 +205,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
     }
 
     private val selectPicForResult =
-        registerForActivityResult(ActivityResultContracts.GetMultipleContents()) {
+        registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) {
             if (it.isNullOrEmpty()) {
                 return@registerForActivityResult
             }
@@ -210,6 +213,18 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
                 cropPicForResult.launch(it[0])
             } else {
                 addPhoto(*it.toTypedArray())
+            }
+        }
+
+    private val selectOnePicForResult =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+            if (it == null) {
+                return@registerForActivityResult
+            }
+            if (widgetType == WidgetType.NORMAL) {
+                cropPicForResult.launch(it)
+            } else {
+                addPhoto(it)
             }
         }
 
@@ -226,10 +241,11 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private val externalStorageResult =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it) {
-                val wallpaperManager = WallpaperManager.getInstance(this)
-                binding.ivWallpaper.load(wallpaperManager.drawable)
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+            if (result) {
+                WallpaperManager.getInstance(this).drawable?.let {
+                    binding.ivWallpaper.load(it)
+                }
             }
         }
 
@@ -251,7 +267,15 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
                     it,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
-                viewModel.updateLinkInfo(createFileLink(appWidgetId, it))
+                val fileName = DocumentFile.fromSingleUri(this, it)?.name
+                val linkInfo = LinkInfo(
+                    appWidgetId,
+                    LinkType.OPEN_FILE,
+                    getString(R.string.widget_link_open_file_title),
+                    String.format(getString(R.string.widget_link_open_file_description), fileName),
+                    it.toString()
+                )
+                viewModel.updateLinkInfo(linkInfo)
             }
         }
 
@@ -291,7 +315,9 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.confirm -> {
@@ -327,12 +353,28 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
             binding.layoutPhotoWidget.vfPicture.displayedChild = i
         }
         previewAddAdapter.setOnItemAddListener {
-            if (widgetType == WidgetType.GIF && viewModel.imageList.value?.size ?: 0 >= 1) {
+            if (widgetType == WidgetType.GIF && (viewModel.imageList.value?.size ?: 0) >= 1) {
                 binding.root.showSnackbar(R.string.multi_gif_widget_unsupported)
                 return@setOnItemAddListener
             }
-            val mimeType = if (widgetType == WidgetType.GIF) "image/gif" else "image/*"
-            selectPicForResult.launch(mimeType)
+
+            if (widgetType == WidgetType.GIF) {
+                selectOnePicForResult.launch(
+                    PickVisualMediaRequest.Builder()
+                        .setMediaType(
+                            ActivityResultContracts.PickVisualMedia.SingleMimeType(
+                                MimeType.GIF.mimeTypeName
+                            )
+                        )
+                        .build()
+                )
+            } else {
+                selectPicForResult.launch(
+                    PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        .build()
+                )
+            }
         }
         bindDragHelper()
 
@@ -386,6 +428,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
                 WidgetFrameType.NONE -> {
                     binding.containerPhotoWidgetPreview.setBackgroundResource(android.R.color.transparent)
                 }
+
                 else -> {
                 }
             }
@@ -464,7 +507,7 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
     }
 
     private fun addPhoto(vararg uris: Uri) {
-        if (uris.isNullOrEmpty()) {
+        if (uris.isEmpty()) {
             return
         }
         uris.forEach { viewModel.addImage(it) }
@@ -566,7 +609,14 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
     }
 
     private fun widgetOpenAlbum() {
-        viewModel.updateLinkInfo(createAlbumLink(appWidgetId))
+        val linkInfo = LinkInfo(
+            appWidgetId,
+            LinkType.OPEN_ALBUM,
+            getString(R.string.widget_link_open_album_title),
+            getString(R.string.widget_link_open_album_description),
+            ""
+        )
+        viewModel.updateLinkInfo(linkInfo)
     }
 
     private fun launchOpenFile() {

@@ -14,13 +14,13 @@ import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.Target
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.bean.WidgetImage
-import com.qihuan.photowidget.bean.WidgetInfo
-import com.qihuan.photowidget.db.AppDatabase
-import com.qihuan.photowidget.ktx.calculateRadiusPx
-import com.qihuan.photowidget.ktx.dp
-import com.qihuan.photowidget.ktx.setImageTransparency
+import com.qihuan.photowidget.core.database.AppDatabase
+import com.qihuan.photowidget.core.database.model.LinkInfo
+import com.qihuan.photowidget.core.database.model.WidgetImage
+import com.qihuan.photowidget.core.database.model.WidgetInfo
+import com.qihuan.photowidget.core.common.ktx.calculateRadiusPx
+import com.qihuan.photowidget.core.common.ktx.dp
+import com.qihuan.photowidget.core.common.ktx.setImageTransparency
 
 /**
  * PhotoImageService
@@ -74,7 +74,7 @@ class WidgetPhotoViewFactory(
 
     override fun getViewAt(position: Int): RemoteViews? {
         val widgetInfo = this.widgetInfo ?: return null
-        if (imageList.isNullOrEmpty()) {
+        if (imageList.isEmpty()) {
             return null
         }
 

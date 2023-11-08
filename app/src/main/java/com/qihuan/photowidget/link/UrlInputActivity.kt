@@ -8,10 +8,10 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.bean.LinkInfo
-import com.qihuan.photowidget.common.LinkType
+import com.qihuan.photowidget.core.database.model.LinkInfo
+import com.qihuan.photowidget.core.model.LinkType
 import com.qihuan.photowidget.databinding.ActivityUrlInputBinding
-import com.qihuan.photowidget.ktx.viewBinding
+import com.qihuan.photowidget.core.common.ktx.viewBinding
 
 class UrlInputActivity : AppCompatActivity() {
 
@@ -32,7 +32,9 @@ class UrlInputActivity : AppCompatActivity() {
     }
 
     private fun bindView() {
-        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.confirm -> confirm()
@@ -43,7 +45,7 @@ class UrlInputActivity : AppCompatActivity() {
             binding.etOpenUrl.setText(openUrl)
             binding.etOpenUrl.requestFocus()
             WindowCompat.getInsetsController(window, binding.etOpenUrl)
-                ?.show(WindowInsetsCompat.Type.ime())
+                .show(WindowInsetsCompat.Type.ime())
         }
         binding.etOpenUrl.addTextChangedListener {
             if (!it.isNullOrEmpty()) {

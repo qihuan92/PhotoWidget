@@ -3,8 +3,8 @@ package com.qihuan.photowidget.worker
 import android.app.job.JobParameters
 import android.appwidget.AppWidgetManager
 import com.qihuan.photowidget.deleteWidgets
-import com.qihuan.photowidget.ktx.logD
-import com.qihuan.photowidget.ktx.logE
+import com.qihuan.photowidget.core.common.ktx.logD
+import com.qihuan.photowidget.core.common.ktx.logE
 
 /**
  * DeleteWidgetService
