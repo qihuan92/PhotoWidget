@@ -12,7 +12,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import com.qihuan.photowidget.R
-import com.qihuan.photowidget.adapter.DefaultLoadStateAdapter
+import com.qihuan.photowidget.core.common.adapter.DefaultLoadStateAdapter
 import com.qihuan.photowidget.adapter.TipAdapter
 import com.qihuan.photowidget.adapter.WidgetPagingAdapter
 import com.qihuan.photowidget.config.ConfigureActivity

@@ -47,6 +47,9 @@ dependencies {
     androidTestImplementation(libs.test.androidx.junit)
     androidTestImplementation(libs.test.androidx.espresso)
 
+    api(libs.androidx.paging)
+    testApi(libs.androidx.paging.testing)
+
     implementation(libs.ucrop)
     implementation(libs.compressor)
     implementation(libs.colorpickerview)

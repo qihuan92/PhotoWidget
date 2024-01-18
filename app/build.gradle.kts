@@ -100,9 +100,6 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.fragment)
 
-    implementation(libs.androidx.paging)
-    testImplementation(libs.androidx.paging.testing)
-
     // WorkManager 执行时会触发 AppWidgetProvider.onUpdate() 回调，导致不可控的行为。
     // 在 AppWidgetProvider.onUpdate() 通过 WorkManager 执行刷新微件，会导致无限循环，所以暂时改用 JobScheduler 代替。
     // 具体可见：https://medium.com/intive-developers/toss-a-coin-to-your-widget-or-dont-part-1-of-3-188c39d50b66
