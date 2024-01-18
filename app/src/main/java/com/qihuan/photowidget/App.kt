@@ -2,6 +2,7 @@ package com.qihuan.photowidget
 
 import android.app.Application
 import android.content.Context
+import com.qihuan.photowidget.core.common.di.commonModule
 import com.qihuan.photowidget.core.database.di.dbModule
 import com.qihuan.photowidget.di.appModule
 import com.qihuan.photowidget.feature.about.di.aboutModule
@@ -26,6 +27,7 @@ class App : Application() {
             androidContext(this@App)
             modules(
                 appModule,
+                commonModule,
                 dbModule,
                 aboutModule,
                 settingsModule,
