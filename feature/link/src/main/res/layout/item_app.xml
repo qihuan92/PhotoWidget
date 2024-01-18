@@ -21,7 +21,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@mipmap/ic_launcher" />
+            tools:src="@color/default_color_primary" />
 
         <TextView
             android:id="@+id/tv_app_name"
@@ -32,7 +32,7 @@
             app:layout_constraintLeft_toRightOf="@id/iv_icon"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/app_name" />
+            tools:text="PhotoWidget" />
 
         <TextView
             android:id="@+id/tv_package_name"

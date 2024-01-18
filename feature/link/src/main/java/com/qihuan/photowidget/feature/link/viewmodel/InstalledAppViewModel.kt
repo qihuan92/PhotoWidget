@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.link
+package com.qihuan.photowidget.feature.link.viewmodel
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -7,7 +7,8 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.qihuan.photowidget.bean.InstalledAppInfo
+import com.qihuan.photowidget.feature.link.activity.InstalledAppActivity
+import com.qihuan.photowidget.feature.link.model.InstalledAppInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow

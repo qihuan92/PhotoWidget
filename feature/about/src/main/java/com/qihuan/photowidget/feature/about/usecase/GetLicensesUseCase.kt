@@ -1,7 +1,7 @@
 package com.qihuan.photowidget.feature.about.usecase
 
-import com.qihuan.photowidget.feature.about.module.License
-import com.qihuan.photowidget.feature.about.module.LicenseItem
+import com.qihuan.photowidget.feature.about.model.License
+import com.qihuan.photowidget.feature.about.model.LicenseItem
 
 /**
  * 三方库协议

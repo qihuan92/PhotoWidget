@@ -286,9 +286,9 @@
             android:name=".crop.CropActivity"
             android:theme="@style/Theme.Crop" />
 
-        <activity android:name=".link.InstalledAppActivity" />
+        <activity android:name=".feature.link.activity.InstalledAppActivity" />
 
-        <activity android:name=".link.UrlInputActivity" />
+        <activity android:name=".feature.link.activity.UrlInputActivity" />
     </application>
 
 </manifest>

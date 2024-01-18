@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.feature.about.module
+package com.qihuan.photowidget.feature.about.model
 
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes

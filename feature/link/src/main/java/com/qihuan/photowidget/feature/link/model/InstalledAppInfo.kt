@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.bean
+package com.qihuan.photowidget.feature.link.model
 
 import android.graphics.drawable.Drawable
 

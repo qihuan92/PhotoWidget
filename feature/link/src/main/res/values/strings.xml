@@ -1,0 +1,8 @@
+<resources>
+    <string name="system_apps">显示系统应用</string>
+    <string name="search">搜索</string>
+    <string name="warn_url_empty">URL不能为空</string>
+    <string name="widget_open_url">相片链接</string>
+    <string name="widget_open_url_help_text">支持 http/https 链接，以及 URL Scheme</string>
+    <string name="installed_app_page_title">选择应用</string>
+</resources>

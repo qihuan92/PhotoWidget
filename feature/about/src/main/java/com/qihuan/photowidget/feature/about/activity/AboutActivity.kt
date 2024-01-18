@@ -16,8 +16,8 @@ import com.qihuan.photowidget.core.common.ktx.viewBinding
 import com.qihuan.photowidget.feature.about.R
 import com.qihuan.photowidget.feature.about.databinding.ActivityAboutBinding
 import com.qihuan.photowidget.feature.about.databinding.ItemAboutLicenseBinding
-import com.qihuan.photowidget.feature.about.module.LicenseItem
-import com.qihuan.photowidget.feature.about.module.LinkItem
+import com.qihuan.photowidget.feature.about.model.LicenseItem
+import com.qihuan.photowidget.feature.about.model.LinkItem
 import com.qihuan.photowidget.feature.about.usecase.GetAppLinksUseCase
 import com.qihuan.photowidget.feature.about.usecase.GetDeveloperLinksUseCase
 import com.qihuan.photowidget.feature.about.usecase.GetLicensesUseCase

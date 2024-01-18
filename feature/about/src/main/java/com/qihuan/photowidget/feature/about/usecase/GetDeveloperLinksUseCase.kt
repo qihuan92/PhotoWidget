@@ -2,7 +2,7 @@ package com.qihuan.photowidget.feature.about.usecase
 
 import android.content.Context
 import com.qihuan.photowidget.feature.about.R
-import com.qihuan.photowidget.feature.about.module.LinkItem
+import com.qihuan.photowidget.feature.about.model.LinkItem
 
 /**
  * 开发者链接

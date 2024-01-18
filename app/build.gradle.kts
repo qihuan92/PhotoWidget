@@ -85,6 +85,7 @@ dependencies {
 
     implementation(project(":feature:about"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:link"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

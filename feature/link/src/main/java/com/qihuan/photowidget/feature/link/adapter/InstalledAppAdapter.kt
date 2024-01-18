@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.adapter
+package com.qihuan.photowidget.feature.link.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.qihuan.photowidget.bean.InstalledAppInfo
-import com.qihuan.photowidget.databinding.ItemAppBinding
+import com.qihuan.photowidget.feature.link.databinding.ItemAppBinding
+import com.qihuan.photowidget.feature.link.model.InstalledAppInfo
 
 /**
  * InstalledAppAdapter
@@ -22,7 +22,7 @@ class InstalledAppAdapter :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): InstalledAppAdapter.ViewHolder {
+    ): ViewHolder {
         return ViewHolder(
             ItemAppBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -32,7 +32,7 @@ class InstalledAppAdapter :
         )
     }
 
-    override fun onBindViewHolder(holder: InstalledAppAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 

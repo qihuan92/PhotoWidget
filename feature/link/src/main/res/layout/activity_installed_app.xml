@@ -3,11 +3,13 @@
 
     <data>
 
-        <import type="com.qihuan.photowidget.link.InstalledAppActivity.UIState" />
+        <import type="com.qihuan.photowidget.feature.link.activity.InstalledAppActivity" />
+
+        <import type="com.qihuan.photowidget.feature.link.activity.InstalledAppActivity.UIState" />
 
         <variable
             name="viewModel"
-            type="com.qihuan.photowidget.link.InstalledAppViewModel" />
+            type="com.qihuan.photowidget.feature.link.viewmodel.InstalledAppViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -16,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".link.InstalledAppActivity">
+        tools:context=".activity.InstalledAppActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"

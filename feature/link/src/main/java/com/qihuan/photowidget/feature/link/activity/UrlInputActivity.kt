@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.link
+package com.qihuan.photowidget.feature.link.activity
 
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -7,11 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
-import com.qihuan.photowidget.R
+import com.qihuan.photowidget.core.common.ktx.viewBinding
 import com.qihuan.photowidget.core.database.model.LinkInfo
 import com.qihuan.photowidget.core.model.LinkType
-import com.qihuan.photowidget.databinding.ActivityUrlInputBinding
-import com.qihuan.photowidget.core.common.ktx.viewBinding
+import com.qihuan.photowidget.feature.link.R
+import com.qihuan.photowidget.feature.link.databinding.ActivityUrlInputBinding
 
 class UrlInputActivity : AppCompatActivity() {
 

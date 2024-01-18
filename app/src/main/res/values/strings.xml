@@ -9,20 +9,14 @@
     <string name="widget_radius" translatable="false">微件圆角</string>
     <string name="select_picture" translatable="false">选择图片</string>
     <string name="warning_select_picture" translatable="false">请选择一张照片</string>
-    <string name="confirm" translatable="false">确定</string>
     <string name="text_photo" translatable="false">相片</string>
     <string name="switch_auto_play" translatable="false">自动播放</string>
     <string name="auto_play_interval" translatable="false">播放间隔</string>
     <string name="auto_play_interval_empty" translatable="false">无（可以点击左右边缘进行切换）</string>
     <string name="auto_play_interval_content" translatable="false">%s 秒</string>
     <string name="widget_re_edit">是否可以再次编辑</string>
-    <string name="widget_open_url">相片链接</string>
-    <string name="widget_open_url_help_text">支持 http/https 链接，以及 URL Scheme</string>
-    <string name="warn_url_empty">URL不能为空</string>
     <string name="alert_title_interval">请选择播放间隔</string>
     <string name="alert_title_link_type">请选择链接类型</string>
-    <string name="search">搜索</string>
-    <string name="system_apps">显示系统应用</string>
     <string name="widget_image">微件图片</string>
     <string name="retry">重试</string>
     <string name="delete">删除</string>
@@ -55,7 +49,6 @@
     <string name="tip_add_widget_content">1. 触摸并按住主屏幕\n2. 在微件列表中找到相片微件\n3. 将相片微件拖拽到主屏幕上\n4. 添加照片并进行配置，点击右上角确定按钮</string>
     <string name="ignore_battery_optimizations_setting">设置</string>
     <string name="ignore_tip">不再提示</string>
-    <string name="installed_app_page_title">选择应用</string>
     <string name="force_refresh_widget">强制刷新</string>
     <string name="alert_msg_force_refresh_widget">如果您遇到相片微件消失等显示异常的问题，可通过此功能刷新所有微件</string>
     <string name="alert_title_force_refresh_widget">刷新微件</string>

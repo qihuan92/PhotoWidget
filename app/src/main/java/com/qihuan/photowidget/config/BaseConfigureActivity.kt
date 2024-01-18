@@ -41,8 +41,8 @@ import com.qihuan.photowidget.core.database.model.LinkInfo
 import com.qihuan.photowidget.core.model.*
 import com.qihuan.photowidget.crop.CropPictureContract
 import com.qihuan.photowidget.databinding.ActivityConfigureBinding
-import com.qihuan.photowidget.link.InstalledAppActivity
-import com.qihuan.photowidget.link.UrlInputActivity
+import com.qihuan.photowidget.feature.link.activity.InstalledAppActivity
+import com.qihuan.photowidget.feature.link.activity.UrlInputActivity
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import kotlinx.coroutines.launch

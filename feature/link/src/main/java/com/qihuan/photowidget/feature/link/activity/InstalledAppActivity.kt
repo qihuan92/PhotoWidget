@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.link
+package com.qihuan.photowidget.feature.link.activity
 
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -9,13 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import com.qihuan.photowidget.R
-import com.qihuan.photowidget.adapter.InstalledAppAdapter
-import com.qihuan.photowidget.core.database.model.LinkInfo
-import com.qihuan.photowidget.core.model.LinkType
-import com.qihuan.photowidget.databinding.ActivityInstalledAppBinding
 import com.qihuan.photowidget.core.common.ktx.paddingNavigationBar
 import com.qihuan.photowidget.core.common.ktx.viewBinding
+import com.qihuan.photowidget.core.database.model.LinkInfo
+import com.qihuan.photowidget.core.model.LinkType
+import com.qihuan.photowidget.feature.link.R
+import com.qihuan.photowidget.feature.link.adapter.InstalledAppAdapter
+import com.qihuan.photowidget.feature.link.databinding.ActivityInstalledAppBinding
+import com.qihuan.photowidget.feature.link.viewmodel.InstalledAppViewModel
 
 class InstalledAppActivity : AppCompatActivity() {
     enum class UIState {

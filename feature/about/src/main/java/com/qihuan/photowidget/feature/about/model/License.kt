@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.feature.about.module
+package com.qihuan.photowidget.feature.about.model
 
 object License {
     const val MIT = "MIT License"
