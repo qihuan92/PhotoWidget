@@ -9,7 +9,7 @@ targetsdk = "31"
 
 androidx-core-version = "1.12.0"
 androidx-appcompat-version = "1.6.1"
-material-version = "1.9.0-rc01"
+material-version = "1.9.0"
 androidx-activity-version = "1.8.0"
 androidx-fragment-version = "1.6.1"
 paging-version = "3.1.1"
