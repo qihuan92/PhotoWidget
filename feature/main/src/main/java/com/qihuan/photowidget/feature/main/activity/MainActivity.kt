@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.main
+package com.qihuan.photowidget.feature.main.activity
 
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -11,13 +11,8 @@ import androidx.core.view.WindowCompat
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import com.qihuan.photowidget.R
-import com.qihuan.photowidget.core.common.adapter.DefaultLoadStateAdapter
-import com.qihuan.photowidget.adapter.TipAdapter
-import com.qihuan.photowidget.adapter.WidgetPagingAdapter
-import com.qihuan.photowidget.config.ConfigureActivity
-import com.qihuan.photowidget.config.GifConfigureActivity
 import com.qihuan.photowidget.core.common.JobManager
+import com.qihuan.photowidget.core.common.adapter.DefaultLoadStateAdapter
 import com.qihuan.photowidget.core.common.battery.IgnoringBatteryOptimizationsContract
 import com.qihuan.photowidget.core.common.ktx.logE
 import com.qihuan.photowidget.core.common.ktx.paddingNavigationBar
@@ -26,7 +21,11 @@ import com.qihuan.photowidget.core.common.ktx.viewBinding
 import com.qihuan.photowidget.core.database.model.WidgetInfo
 import com.qihuan.photowidget.core.model.TipsType
 import com.qihuan.photowidget.core.model.WidgetType
-import com.qihuan.photowidget.databinding.ActivityMainBinding
+import com.qihuan.photowidget.feature.main.R
+import com.qihuan.photowidget.feature.main.adapter.TipAdapter
+import com.qihuan.photowidget.feature.main.adapter.WidgetPagingAdapter
+import com.qihuan.photowidget.feature.main.databinding.ActivityMainBinding
+import com.qihuan.photowidget.feature.main.viewmodel.MainViewModel
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
@@ -82,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                     binding.toolbar.performHapticFeedback()
                     forceRefreshWidget()
                 }
+
                 R.id.settings -> {
                     startActivity(
                         Intent(
@@ -116,6 +116,7 @@ class MainActivity : AppCompatActivity() {
                         logE("MainActivity", "申请关闭电池优化异常", e)
                     }
                 }
+
                 else -> {
                 }
             }
@@ -144,7 +145,10 @@ class MainActivity : AppCompatActivity() {
         when (item.widgetType) {
             WidgetType.NORMAL -> {
                 startActivity(
-                    Intent(this, ConfigureActivity::class.java).apply {
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("qihuan://photowidget/config/normal")
+                    ).apply {
                         val extras = Bundle().apply {
                             putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                         }
@@ -152,9 +156,13 @@ class MainActivity : AppCompatActivity() {
                     }
                 )
             }
+
             WidgetType.GIF -> {
                 startActivity(
-                    Intent(this, GifConfigureActivity::class.java).apply {
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("qihuan://photowidget/config/gif")
+                    ).apply {
                         val extras = Bundle().apply {
                             putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
                         }

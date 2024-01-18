@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.adapter
+package com.qihuan.photowidget.feature.main.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -10,14 +10,14 @@ import androidx.core.view.setPadding
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.qihuan.photowidget.R
-import com.qihuan.photowidget.core.database.model.WidgetBean
-import com.qihuan.photowidget.core.model.WidgetFrameType
-import com.qihuan.photowidget.core.model.WidgetType
-import com.qihuan.photowidget.databinding.ItemWidgetInfoBinding
 import com.qihuan.photowidget.core.common.ktx.dp
 import com.qihuan.photowidget.core.common.ktx.load
 import com.qihuan.photowidget.core.common.ktx.loadToBackground
+import com.qihuan.photowidget.core.database.model.WidgetBean
+import com.qihuan.photowidget.core.model.WidgetFrameType
+import com.qihuan.photowidget.core.model.WidgetType
+import com.qihuan.photowidget.feature.main.R
+import com.qihuan.photowidget.feature.main.databinding.ItemWidgetInfoBinding
 
 /**
  * WidgetPagingAdapter

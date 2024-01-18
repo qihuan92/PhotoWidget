@@ -5,11 +5,11 @@
 
         <variable
             name="viewModel"
-            type="com.qihuan.photowidget.main.MainViewModel" />
+            type="com.qihuan.photowidget.feature.main.viewmodel.MainViewModel" />
 
         <variable
             name="activity"
-            type="com.qihuan.photowidget.main.MainActivity" />
+            type="com.qihuan.photowidget.feature.main.activity.MainActivity" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"

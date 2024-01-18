@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.main
+package com.qihuan.photowidget.feature.main.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -8,7 +8,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.qihuan.photowidget.App
 import com.qihuan.photowidget.core.common.battery.isIgnoringBatteryOptimizations
 import com.qihuan.photowidget.core.database.AppDatabase
 import com.qihuan.photowidget.core.database.model.WidgetBean
@@ -20,7 +19,7 @@ import kotlinx.coroutines.launch
  * @author qi
  * @since 3/29/21
  */
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class MainViewModel(private val application: Application) : AndroidViewModel(application) {
     val widgetPagingData by lazy { MutableLiveData<PagingData<WidgetBean>>() }
     val tipList by lazy { MutableLiveData<MutableList<TipsType>>(mutableListOf()) }
     private val widgetDao by lazy { AppDatabase.getDatabase(application).widgetDao() }
@@ -45,7 +44,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     ).flow
 
     fun loadIgnoreBatteryOptimizations() {
-        val application = getApplication<App>()
         viewModelScope.launch {
             if (application.isIgnoringBatteryOptimizations()) {
                 removeTip(TipsType.IGNORE_BATTERY_OPTIMIZATIONS)

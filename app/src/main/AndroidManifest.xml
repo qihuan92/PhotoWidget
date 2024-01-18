@@ -247,7 +247,7 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <activity
-            android:name=".main.MainActivity"
+            android:name=".feature.main.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -264,6 +264,13 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="photowidget"
+                    android:path="/config/normal"
+                    android:scheme="qihuan" />
             </intent-filter>
         </activity>
 
@@ -275,6 +282,13 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="photowidget"
+                    android:path="/config/gif"
+                    android:scheme="qihuan" />
             </intent-filter>
         </activity>
 
@@ -285,10 +299,6 @@
         <activity
             android:name=".crop.CropActivity"
             android:theme="@style/Theme.Crop" />
-
-        <activity android:name=".feature.link.activity.InstalledAppActivity" />
-
-        <activity android:name=".feature.link.activity.UrlInputActivity" />
     </application>
 
 </manifest>

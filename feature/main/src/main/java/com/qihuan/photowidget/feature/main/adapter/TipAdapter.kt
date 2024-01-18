@@ -1,4 +1,4 @@
-package com.qihuan.photowidget.adapter
+package com.qihuan.photowidget.feature.main.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.qihuan.photowidget.core.model.TipsType
-import com.qihuan.photowidget.databinding.ItemTipAddWidgetBinding
-import com.qihuan.photowidget.databinding.ItemTipIgnoreBatteryOptimizationsBinding
+import com.qihuan.photowidget.feature.main.databinding.ItemTipAddWidgetBinding
+import com.qihuan.photowidget.feature.main.databinding.ItemTipIgnoreBatteryOptimizationsBinding
 
 /**
  * TipAdapter
