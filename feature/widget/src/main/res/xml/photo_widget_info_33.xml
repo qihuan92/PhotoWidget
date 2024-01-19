@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:configure="com.qihuan.photowidget.feature.widget.activity.ConfigureActivity"
+    android:initialKeyguardLayout="@layout/widget_photo"
+    android:initialLayout="@layout/widget_photo"
+    android:minWidth="180dp"
+    android:minHeight="180dp"
+    android:minResizeWidth="40dp"
+    android:minResizeHeight="40dp"
+    android:previewImage="@drawable/preview"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="@integer/widget_update_period_millis"
+    android:widgetCategory="home_screen"
+    android:widgetFeatures="reconfigurable"
+    tools:targetApi="p" />

@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.qihuan.photowidget.core.common.JobManager
 import com.qihuan.photowidget.core.common.JobManager.Companion.JOB_ID_REFRESH_WIDGET_PERIODIC
 import com.qihuan.photowidget.core.common.battery.KeepService
+import com.qihuan.photowidget.core.common.data.repository.SettingsRepository
 import com.qihuan.photowidget.core.model.AutoRefreshInterval
 import com.qihuan.photowidget.core.model.PhotoScaleType
 import com.qihuan.photowidget.core.model.RadiusUnit
-import com.qihuan.photowidget.feature.settings.repository.SettingsRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce

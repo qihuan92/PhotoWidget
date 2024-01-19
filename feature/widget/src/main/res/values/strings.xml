@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vertical_padding">上下边距</string>
+    <string name="horizontal_padding">左右边距</string>
+    <string name="top_padding">上边距\u3000</string>
+    <string name="bottom_padding">下边距\u3000</string>
+    <string name="left_padding">左边距\u3000</string>
+    <string name="right_padding">右边距\u3000</string>
+    <string name="widget_radius">微件圆角</string>
+    <string name="select_picture">选择图片</string>
+    <string name="warning_select_picture">请选择一张照片</string>
+    <string name="text_photo">相片</string>
+    <string name="switch_auto_play">自动播放</string>
+    <string name="auto_play_interval">播放间隔</string>
+    <string name="auto_play_interval_empty">无（可以点击左右边缘进行切换）</string>
+    <string name="auto_play_interval_content">%s 秒</string>
+    <string name="widget_re_edit">是否可以再次编辑</string>
+    <string name="alert_title_interval">请选择播放间隔</string>
+    <string name="alert_title_link_type">请选择链接类型</string>
+    <string name="retry">重试</string>
+    <string name="delete">删除</string>
+    <string name="alert_title_default">提示</string>
+    <string name="alert_msg_delete_widget">是否删除该微件？</string>
+    <string name="sure">确定</string>
+    <string name="cancel">取消</string>
+    <string name="tips_widget_empty">请在桌面添加相片微件</string>
+    <string name="click_to_refresh">点击刷新</string>
+    <string name="add_widget_link">添加微件链接</string>
+    <string name="delete_widget_link">删除微件链接</string>
+    <string name="delete_photo">删除相片</string>
+    <string name="widget_photo">微件相片</string>
+    <string name="wallpaper">壁纸</string>
+    <string name="widget_transparency">透明度\u3000</string>
+    <string name="photo_scale_type">相片位置</string>
+    <string-array name="open_link_types">
+        <item>打开应用</item>
+        <item>打开URL</item>
+    </string-array>
+    <string name="crop_freestyle_enable">自由裁剪已开启</string>
+    <string name="crop_freestyle_disable">自由裁剪已关闭</string>
+    <string name="processing">处理中…</string>
+    <string name="saving">保存中…</string>
+    <string name="add_widget">添加微件</string>
+    <string name="edit_widget">编辑微件</string>
+    <string name="conform_delete_photo_link">是否删除相片链接</string>
+    <string name="conform_delete_photo">是否删除该图片</string>
+    <string name="ignore_tip">不再提示</string>
+    <string name="alert_msg_force_refresh_widget">如果您遇到相片微件消失等显示异常的问题，可通过此功能刷新所有微件</string>
+    <string name="alert_title_force_refresh_widget">刷新微件</string>
+    <string name="alert_positive_btn">刷新</string>
+    <string name="background_task_notification_channel_id">background_task</string>
+    <string name="background_task_channel_name">后台任务</string>
+    <string name="force_refresh_widget_notification_title">强制刷新微件</string>
+    <string name="force_refresh_widget_cancel_processing">取消</string>
+    <string name="widget_link_open_album_title">打开相册</string>
+    <string name="widget_link_open_album_description">在相册中显示当前照片</string>
+    <string name="widget_link_open_file_title">打开文件</string>
+    <string name="widget_link_open_file_description">打开文件: %s</string>
+    <string name="widget_link_open_folder_title">打开文件夹</string>
+    <string name="widget_link_open_folder_description">打开文件夹: %s</string>
+    <string name="add_widget_photo">添加图片</string>
+    <string name="widget_preview">微件预览</string>
+    <string name="save_widget_error_gif">保存失败：GIF解析错误</string>
+    <string name="widget_background">微件背景</string>
+    <string name="add_widget_frame">添加微件相框</string>
+    <string name="delete_widget_frame">删除微件相框</string>
+    <string name="preview_widget_frame">相框预览</string>
+    <string name="widget_frame">相框</string>
+    <string name="widget_frame_color_dialog_title">请选择颜色</string>
+    <string name="save_fail_frame_file_not_exists">保存失败，请重新选择相框</string>
+    <string name="save_fail">保存失败，请重试</string>
+    <string name="save_fail_copy_photo_files">相片文件保存失败，请重试</string>
+    <string name="multi_gif_widget_unsupported">抱歉，暂不支持添加多个GIF图片</string>
+</resources>

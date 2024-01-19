@@ -2,4 +2,9 @@
 <resources>
     <string name="app_name">相片微件</string>
     <string name="force_refresh_widget">强制刷新</string>
+    <string name="tip_add_widget_title">如何添加相片微件</string>
+    <string name="tip_add_widget_content">1. 触摸并按住主屏幕\n2. 在微件列表中找到相片微件\n3. 将相片微件拖拽到主屏幕上\n4. 添加照片并进行配置，点击右上角确定按钮</string>
+    <string name="ignore_battery_optimizations_setting">设置</string>
+    <string name="widget_image">微件图片</string>
+    <string name="widget_item_gif_tag">GIF标签</string>
 </resources>

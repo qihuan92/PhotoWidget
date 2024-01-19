@@ -2,8 +2,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-        <activity android:name=".activity.InstalledAppActivity" />
+        <activity
+            android:name=".activity.InstalledAppActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="photowidget"
+                    android:path="/link/app"
+                    android:scheme="qihuan" />
+            </intent-filter>
+        </activity>
 
-        <activity android:name=".activity.UrlInputActivity" />
+        <activity
+            android:name=".activity.UrlInputActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="photowidget"
+                    android:path="/link/url"
+                    android:scheme="qihuan" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

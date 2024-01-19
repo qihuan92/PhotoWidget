@@ -87,6 +87,7 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":feature:link"))
     implementation(project(":feature:main"))
+    implementation(project(":feature:widget"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -106,10 +107,6 @@ dependencies {
     // 具体可见：https://medium.com/intive-developers/toss-a-coin-to-your-widget-or-dont-part-1-of-3-188c39d50b66
     // def work_version = "2.7.1"
     // implementation("androidx.work:work-runtime-ktx:$work_version")
-
-    implementation(libs.ucrop)
-    implementation(libs.compressor)
-    implementation(libs.colorpickerview)
 
     implementation(libs.glide)
     kapt(libs.glide.compiler)
