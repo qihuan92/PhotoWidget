@@ -17,8 +17,6 @@
     <string name="widget_re_edit">是否可以再次编辑</string>
     <string name="alert_title_interval">请选择播放间隔</string>
     <string name="alert_title_link_type">请选择链接类型</string>
-    <string name="retry">重试</string>
-    <string name="delete">删除</string>
     <string name="alert_title_default">提示</string>
     <string name="alert_msg_delete_widget">是否删除该微件？</string>
     <string name="sure">确定</string>

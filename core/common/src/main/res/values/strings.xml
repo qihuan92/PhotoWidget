@@ -9,6 +9,9 @@
     <string name="alert_title_scale_type">请选择相片位置</string>
     <string name="alert_title_radius_unit">请选择圆角单位</string>
     <string name="settings">设置</string>
+    <string name="tip_ignore_battery_optimizations_title">关闭电池优化</string>
     <string name="tip_ignore_battery_optimizations_content">相片微件轮播控件使用了后台服务。如果您遇到相片微件不断消失，请考虑关闭电池优化</string>
     <string name="confirm">确定</string>
+    <string name="retry">重试</string>
+    <string name="delete">删除</string>
 </resources>
