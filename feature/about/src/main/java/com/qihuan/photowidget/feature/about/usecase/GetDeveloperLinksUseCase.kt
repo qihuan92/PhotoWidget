@@ -13,12 +13,6 @@ import com.qihuan.photowidget.feature.about.model.LinkItem
 class GetDeveloperLinksUseCase(private val context: Context) {
     operator fun invoke() = listOf(
         LinkItem(
-            context.getString(R.string.about_title_link_coolapk),
-            context.getString(R.string.about_developer_coolapk_profile_url),
-            R.color.coolapk,
-            R.drawable.ic_coolapk
-        ),
-        LinkItem(
             context.getString(R.string.about_title_link_github),
             context.getString(R.string.about_developer_github),
             R.color.github,

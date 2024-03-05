@@ -11,7 +11,6 @@
 ## 下载
 
 - [GitHub Releases](https://github.com/qihuan92/PhotoWidget/releases)
-- [酷安](https://www.coolapk.com/apk/com.qihuan.photowidget)
 
 ## 关于我
 

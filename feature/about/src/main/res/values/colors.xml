@@ -2,7 +2,6 @@
 <resources>
     <color name="ic_launcher_background">#7F63C3</color>
     <!-- 三方平台配色 -->
-    <color name="coolapk">#0f9d58</color>
     <color name="github">#25292E</color>
     <color name="weibo">#C43D35</color>
     <color name="telegram">#3B85D1</color>
