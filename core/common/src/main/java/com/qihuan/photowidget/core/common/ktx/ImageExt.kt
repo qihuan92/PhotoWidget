@@ -13,7 +13,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.qihuan.photowidget.core.common.GlideApp
 import com.qihuan.photowidget.core.model.CompressFormatCompat
 import com.qihuan.photowidget.core.model.RadiusUnit
 import java.io.ByteArrayOutputStream
@@ -26,7 +25,7 @@ import java.io.FileOutputStream
  * @since 3/30/21
  */
 fun ImageView.load(uri: Uri) {
-    val request = GlideApp.with(context)
+    val request = Glide.with(context)
         .load(uri)
     request.thumbnail(request.clone().sizeMultiplier(0.01f))
         .transition(DrawableTransitionOptions.withCrossFade())
@@ -34,7 +33,7 @@ fun ImageView.load(uri: Uri) {
 }
 
 fun ImageView.load(drawable: Drawable) {
-    GlideApp.with(context)
+    Glide.with(context)
         .load(drawable)
         .transition(DrawableTransitionOptions.withCrossFade())
         .into(this)
@@ -42,7 +41,7 @@ fun ImageView.load(drawable: Drawable) {
 
 fun View.loadToBackground(uri: Uri) {
     post {
-        GlideApp.with(context)
+        Glide.with(context)
             .load(uri)
             .skipMemoryCache(true)
             .diskCacheStrategy(DiskCacheStrategy.NONE)

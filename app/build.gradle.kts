@@ -5,6 +5,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("com.google.devtools.ksp").version(libs.versions.ksp.version)
     id("kotlin-parcelize")
 }
 
@@ -29,7 +30,6 @@ android {
     }
 
     compileSdk = libs.versions.compilesdk.get().toInt()
-    buildToolsVersion = libs.versions.build.tools.version.get()
 
     defaultConfig {
         applicationId = "com.qihuan.photowidget"
@@ -58,13 +58,14 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     buildFeatures {
         viewBinding = true
         dataBinding = true
+        buildConfig = true
     }
     namespace = "com.qihuan.photowidget"
 
@@ -109,5 +110,5 @@ dependencies {
     // implementation("androidx.work:work-runtime-ktx:$work_version")
 
     implementation(libs.glide)
-    kapt(libs.glide.compiler)
+    ksp(libs.glide.compiler)
 }
