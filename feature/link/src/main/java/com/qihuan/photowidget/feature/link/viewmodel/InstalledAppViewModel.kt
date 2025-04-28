@@ -50,16 +50,17 @@ class InstalledAppViewModel(application: Application) : AndroidViewModel(applica
     private suspend fun getInstalledPackages(): MutableList<InstalledAppInfo> {
         return withContext(Dispatchers.IO) {
             packageManager.getInstalledPackages(0)
+                .filter { it.applicationInfo != null }
                 .filter {
                     if (showSystemApps.value == false) {
-                        return@filter it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0
+                        return@filter it.applicationInfo!!.flags and ApplicationInfo.FLAG_SYSTEM == 0
                     }
                     return@filter true
                 }
                 .map {
                     InstalledAppInfo(
-                        it.applicationInfo.loadIcon(packageManager),
-                        it.applicationInfo.loadLabel(packageManager).toString(),
+                        it.applicationInfo!!.loadIcon(packageManager),
+                        it.applicationInfo!!.loadLabel(packageManager).toString(),
                         it.packageName
                     )
                 }.filter {
