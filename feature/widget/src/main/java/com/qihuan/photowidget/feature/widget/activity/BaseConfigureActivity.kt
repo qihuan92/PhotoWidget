@@ -17,6 +17,7 @@ import android.view.View
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.IntentCompat
 import androidx.core.view.WindowCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.dynamicanimation.animation.SpringAnimation
@@ -26,12 +27,29 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.qihuan.photowidget.core.common.ktx.*
+import com.qihuan.photowidget.core.common.ktx.createLoadingDialog
+import com.qihuan.photowidget.core.common.ktx.load
+import com.qihuan.photowidget.core.common.ktx.loadToBackground
+import com.qihuan.photowidget.core.common.ktx.logD
+import com.qihuan.photowidget.core.common.ktx.paddingNavigationBar
+import com.qihuan.photowidget.core.common.ktx.paddingStatusBar
+import com.qihuan.photowidget.core.common.ktx.performHapticFeedback
+import com.qihuan.photowidget.core.common.ktx.performHapticHeavyClick
+import com.qihuan.photowidget.core.common.ktx.showSnackbar
+import com.qihuan.photowidget.core.common.ktx.viewBinding
 import com.qihuan.photowidget.core.common.view.ItemSelectionDialog
 import com.qihuan.photowidget.core.common.view.MaterialColorPickerDialog
 import com.qihuan.photowidget.core.common.view.RoundedViewOutlineProvider
 import com.qihuan.photowidget.core.database.model.LinkInfo
-import com.qihuan.photowidget.core.model.*
+import com.qihuan.photowidget.core.model.BroadcastAction
+import com.qihuan.photowidget.core.model.LinkType
+import com.qihuan.photowidget.core.model.MimeType
+import com.qihuan.photowidget.core.model.PhotoScaleType
+import com.qihuan.photowidget.core.model.PlayInterval
+import com.qihuan.photowidget.core.model.RadiusUnit
+import com.qihuan.photowidget.core.model.TEMP_DIR_NAME
+import com.qihuan.photowidget.core.model.WidgetFrameType
+import com.qihuan.photowidget.core.model.WidgetType
 import com.qihuan.photowidget.feature.widget.R
 import com.qihuan.photowidget.feature.widget.adapter.PreviewPhotoAdapter
 import com.qihuan.photowidget.feature.widget.adapter.PreviewPhotoAddAdapter
@@ -252,7 +270,8 @@ abstract class BaseConfigureActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
                 it.data?.apply {
-                    val linkInfo = getParcelableExtra<LinkInfo>("linkInfo")
+                    val linkInfo =
+                        IntentCompat.getParcelableExtra(intent, "linkInfo", LinkInfo::class.java)
                     viewModel.updateLinkInfo(linkInfo)
                 }
             }

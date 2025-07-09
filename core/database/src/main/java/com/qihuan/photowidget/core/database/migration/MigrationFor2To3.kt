@@ -15,9 +15,9 @@ class MigrationFor2To3(
     private val context: Context
 ) : Migration(2, 3) {
 
-    override fun migrate(database: SupportSQLiteDatabase) {
+    override fun migrate(db: SupportSQLiteDatabase) {
         // 迁移图片地址
-        database.query("select * from widget_info").use { cursor ->
+        db.query("select * from widget_info").use { cursor ->
             while (cursor.moveToNext()) {
                 val widgetId = cursor.getInt(cursor.getColumnIndexOrThrow("widgetId"))
                 val sourceFile = File(context.filesDir, "widget_${widgetId}.png")
@@ -30,17 +30,20 @@ class MigrationFor2To3(
                     sourceFile.copyTo(targetFile, overwrite = true)
                     sourceFile.delete()
 
-                    database.execSQL("update widget_info set uri = ? where widgetId = ?", arrayOf(targetFile.toUri().toString(), widgetId))
+                    db.execSQL(
+                        "update widget_info set uri = ? where widgetId = ?",
+                        arrayOf<Any>(targetFile.toUri().toString(), widgetId)
+                    )
                 }
             }
         }
 
         // 新增字段
-        database.execSQL("ALTER TABLE widget_info ADD COLUMN autoPlayInterval INTEGER")
+        db.execSQL("ALTER TABLE widget_info ADD COLUMN autoPlayInterval INTEGER")
         // 创建图片表
-        database.execSQL("CREATE TABLE IF NOT EXISTS `widget_image` (`imageId` INTEGER PRIMARY KEY AUTOINCREMENT, `widgetId` INTEGER NOT NULL, `imageUri` TEXT NOT NULL, `createTime` INTEGER NOT NULL)")
+        db.execSQL("CREATE TABLE IF NOT EXISTS `widget_image` (`imageId` INTEGER PRIMARY KEY AUTOINCREMENT, `widgetId` INTEGER NOT NULL, `imageUri` TEXT NOT NULL, `createTime` INTEGER NOT NULL)")
         // 迁移图片地址数据
-        database.execSQL(
+        db.execSQL(
             """
            insert into widget_image(widgetId, imageUri, createTime)
            select widgetId, uri, strftime('%s','now') from widget_info 
@@ -48,7 +51,7 @@ class MigrationFor2To3(
         )
 
         // 删除 info 表中 uri 字段
-        database.execSQL(
+        db.execSQL(
             """
                 CREATE TABLE IF NOT EXISTS `temp_widget_info`
                 (
@@ -61,14 +64,14 @@ class MigrationFor2To3(
                 )
             """
         )
-        database.execSQL(
+        db.execSQL(
             """
                 insert into temp_widget_info(widgetId, verticalPadding, horizontalPadding, widgetRadius, autoPlayInterval)
                 select widgetId, verticalPadding, horizontalPadding, widgetRadius, null
                 from widget_info
             """
         )
-        database.execSQL("drop table widget_info")
-        database.execSQL("alter table temp_widget_info rename to widget_info")
+        db.execSQL("drop table widget_info")
+        db.execSQL("alter table temp_widget_info rename to widget_info")
     }
 }

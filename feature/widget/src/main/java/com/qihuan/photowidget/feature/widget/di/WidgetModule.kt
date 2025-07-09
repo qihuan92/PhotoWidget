@@ -3,7 +3,7 @@ package com.qihuan.photowidget.feature.widget.di
 import com.qihuan.photowidget.feature.widget.data.repository.WidgetFrameRepository
 import com.qihuan.photowidget.feature.widget.domain.usecase.SaveWidgetUseCase
 import com.qihuan.photowidget.feature.widget.viewmodel.ConfigureViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val widgetModule = module {
