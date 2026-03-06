@@ -45,6 +45,8 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.localbroadcastmanager)
+    implementation(libs.androidx.documentfile)
     implementation(libs.google.material)
     testImplementation(libs.test.junit)
     androidTestImplementation(libs.test.androidx.junit)
